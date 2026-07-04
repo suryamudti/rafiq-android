@@ -4,8 +4,7 @@ import android.content.Context
 import com.smiledev.rafiq.core.DatabaseCopier
 import com.smiledev.rafiq.data.local.BookmarkDatabase
 import com.smiledev.rafiq.data.local.BookmarkDao
-import com.smiledev.rafiq.data.local.PrayerLogDatabase
-import com.smiledev.rafiq.data.local.PrayerLogDao
+
 import com.smiledev.rafiq.data.preferences.PreferencesManager
 
 import dagger.Module
@@ -36,16 +35,7 @@ object AppModule {
         return database.bookmarkDao()
     }
 
-    @Provides
-    @Singleton
-    fun providePrayerLogDatabase(@ApplicationContext context: Context): PrayerLogDatabase {
-        return PrayerLogDatabase.getInstance(context)
-    }
 
-    @Provides
-    fun providePrayerLogDao(database: PrayerLogDatabase): PrayerLogDao {
-        return database.prayerLogDao()
-    }
 
     @Provides
     @Singleton
