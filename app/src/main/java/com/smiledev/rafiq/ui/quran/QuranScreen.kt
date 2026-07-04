@@ -15,28 +15,38 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.smiledev.rafiq.ui.bookmarks.BookmarkListTabContent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QuranScreen(
+    initialTab: Int = 0,
     onSurahClick: (Int, String) -> Unit,
+    onBookmarkClick: (Int, String, Int) -> Unit,
     onBack: () -> Unit,
     viewModel: QuranViewModel = hiltViewModel(),
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.uiState.collectAsState()
+    val tabs = listOf("Surahs", "Bookmarks")
+    var selectedTabIndex by remember(initialTab) { mutableStateOf(initialTab) }
 
     Scaffold(
         topBar = {
@@ -51,71 +61,93 @@ fun QuranScreen(
             )
         }
     ) { padding ->
-        Box(modifier = Modifier.fillMaxSize().padding(padding)) {
-            when {
-                state.isLoading -> {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-                }
-                state.error != null -> {
-                    Text(
-                        text = "Error: ${state.error}",
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(16.dp),
-                        color = MaterialTheme.colorScheme.error
+        Column(modifier = Modifier.fillMaxSize().padding(padding)) {
+            TabRow(selectedTabIndex = selectedTabIndex) {
+                tabs.forEachIndexed { index, title ->
+                    Tab(
+                        selected = selectedTabIndex == index,
+                        onClick = { selectedTabIndex = index },
+                        text = { Text(title) }
                     )
                 }
-                else -> {
-                    LazyColumn(
-                        modifier = modifier.fillMaxSize()
-                    ) {
-                    itemsIndexed(state.surahs) { index, surah ->
-                        Card(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp, vertical = 4.dp)
-                                .clickable { onSurahClick(surah.chapterNumber, surah.nameSimple) },
-                            elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
-                        ) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
+            }
+
+            Box(modifier = Modifier.fillMaxSize().weight(1f)) {
+                when (selectedTabIndex) {
+                    0 -> {
+                        when {
+                            state.isLoading -> {
+                                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                            }
+                            state.error != null -> {
                                 Text(
-                                    text = "${surah.chapterNumber}.",
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    fontWeight = FontWeight.Bold,
-                                    modifier = Modifier.padding(end = 12.dp)
+                                    text = "Error: ${state.error}",
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(16.dp),
+                                    color = MaterialTheme.colorScheme.error
                                 )
-                                Column(modifier = Modifier.weight(1f)) {
-                                    Text(
-                                        text = surah.nameSimple,
-                                        style = MaterialTheme.typography.bodyLarge,
-                                        fontWeight = FontWeight.Medium
-                                    )
-                                    Text(
-                                        text = surah.translatedName,
-                                        style = MaterialTheme.typography.bodySmall,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
-                                }
-                                Column(horizontalAlignment = Alignment.End) {
-                                    Text(
-                                        text = surah.nameArabic,
-                                        style = MaterialTheme.typography.titleMedium,
-                                        textAlign = TextAlign.End
-                                    )
-                                    Text(
-                                        text = "${surah.versesCount} verses",
-                                        style = MaterialTheme.typography.bodySmall,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
+                            }
+                            else -> {
+                                LazyColumn(
+                                    modifier = modifier.fillMaxSize()
+                                ) {
+                                    itemsIndexed(state.surahs) { index, surah ->
+                                        Card(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(horizontal = 16.dp, vertical = 4.dp)
+                                                .clickable { onSurahClick(surah.chapterNumber, surah.nameSimple) },
+                                            elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+                                        ) {
+                                            Row(
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .padding(16.dp),
+                                                verticalAlignment = Alignment.CenterVertically
+                                            ) {
+                                                Text(
+                                                    text = "${surah.chapterNumber}.",
+                                                    style = MaterialTheme.typography.bodyLarge,
+                                                    fontWeight = FontWeight.Bold,
+                                                    modifier = Modifier.padding(end = 12.dp)
+                                                )
+                                                Column(modifier = Modifier.weight(1f)) {
+                                                    Text(
+                                                        text = surah.nameSimple,
+                                                        style = MaterialTheme.typography.bodyLarge,
+                                                        fontWeight = FontWeight.Medium
+                                                    )
+                                                    Text(
+                                                        text = surah.translatedName,
+                                                        style = MaterialTheme.typography.bodySmall,
+                                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                    )
+                                                }
+                                                Column(horizontalAlignment = Alignment.End) {
+                                                    Text(
+                                                        text = surah.nameArabic,
+                                                        style = MaterialTheme.typography.titleMedium,
+                                                        textAlign = TextAlign.End
+                                                    )
+                                                    Text(
+                                                        text = "${surah.versesCount} verses",
+                                                        style = MaterialTheme.typography.bodySmall,
+                                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
+                    1 -> {
+                        BookmarkListTabContent(
+                            onBookmarkClick = onBookmarkClick,
+                            modifier = modifier
+                        )
                     }
                 }
             }

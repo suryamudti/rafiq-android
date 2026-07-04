@@ -21,8 +21,8 @@ import com.smiledev.rafiq.ui.recitation.RecitationScreen
 import com.smiledev.rafiq.ui.zakat.ZakatCalculatorScreen
 import com.smiledev.rafiq.ui.asmaulhusna.AsmaulHusnaScreen
 import com.smiledev.rafiq.ui.tasbih.TasbihScreen
-import com.smiledev.rafiq.ui.bookmarks.BookmarkListScreen
-import com.smiledev.rafiq.ui.prayerlog.PrayerLogScreen
+
+import com.smiledev.rafiq.ui.settings.SettingsScreen
 
 @Composable
 fun MainNavigation() {
@@ -39,9 +39,13 @@ fun MainNavigation() {
             modifier = Modifier.safeDrawingPadding().padding(16.dp)
           )
         }
-        entry<Quran> {
+        entry<Quran> { key ->
           QuranScreen(
+            initialTab = key.initialTab,
             onSurahClick = { num, name -> backStack.add(Ayah(num, name)) },
+            onBookmarkClick = { sura, name, aya ->
+              backStack.add(Ayah(suraNumber = sura, suraName = name, scrollToAya = aya))
+            },
             onBack = { backStack.removeLastOrNull() },
             modifier = Modifier.safeDrawingPadding()
           )
@@ -50,6 +54,7 @@ fun MainNavigation() {
           AyahScreen(
             suraNumber = key.suraNumber,
             suraName = key.suraName,
+            scrollToAya = key.scrollToAya,
             onBack = { backStack.removeLastOrNull() },
             modifier = Modifier.safeDrawingPadding()
           )
@@ -116,14 +121,10 @@ fun MainNavigation() {
             modifier = Modifier.safeDrawingPadding()
           )
         }
-        entry<BookmarkList> {
-          BookmarkListScreen(
-            onBack = { backStack.removeLastOrNull() },
-            modifier = Modifier.safeDrawingPadding()
-          )
-        }
-        entry<PrayerLog> {
-          PrayerLogScreen(
+
+
+        entry<Settings> {
+          SettingsScreen(
             onBack = { backStack.removeLastOrNull() },
             modifier = Modifier.safeDrawingPadding()
           )

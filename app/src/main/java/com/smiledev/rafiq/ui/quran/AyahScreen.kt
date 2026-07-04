@@ -1,8 +1,10 @@
 package com.smiledev.rafiq.ui.quran
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,19 +17,25 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -49,14 +57,63 @@ private val arabicFont = FontFamily(Font(R.font.me_quran))
 fun AyahScreen(
     suraNumber: Int,
     suraName: String,
+    scrollToAya: Int = 0,
     onBack: () -> Unit,
     viewModel: QuranViewModel = hiltViewModel(),
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.uiState.collectAsState()
+    var longPressedAyah by remember { mutableStateOf<AyahData?>(null) }
+
+    val listState = rememberLazyListState()
+    var hasScrolled by remember(suraNumber, scrollToAya) { mutableStateOf(false) }
 
     LaunchedEffect(suraNumber) {
         viewModel.loadAyahs(suraNumber)
+    }
+
+    LaunchedEffect(state.isLoading, state.ayahs, scrollToAya) {
+        if (!state.isLoading && state.ayahs.isNotEmpty() && scrollToAya > 0 && !hasScrolled) {
+            val ayahIndex = state.ayahs.indexOfFirst { it.aya == scrollToAya }
+            if (ayahIndex != -1) {
+                val targetIndex = if (state.currentSurah != null) ayahIndex + 1 else ayahIndex
+                listState.scrollToItem(targetIndex)
+                hasScrolled = true
+            }
+        }
+    }
+
+    longPressedAyah?.let { ayah ->
+        val isBookmarked = state.bookmarkedAyahs.contains(ayah.aya)
+        AlertDialog(
+            onDismissRequest = { longPressedAyah = null },
+            title = { Text("$suraNumber:${ayah.aya} - $suraName") },
+            text = {
+                Text(
+                    text = ayah.text,
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        fontFamily = arabicFont,
+                        fontSize = 20.sp,
+                        textDirection = TextDirection.Rtl
+                    ),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    viewModel.toggleBookmark(suraNumber, ayah.aya, suraName)
+                    longPressedAyah = null
+                }) {
+                    Text(if (isBookmarked) "Remove Bookmark" else "Add Bookmark")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { longPressedAyah = null }) {
+                    Text("Cancel")
+                }
+            }
+        )
     }
 
     Scaffold(
@@ -85,7 +142,10 @@ fun AyahScreen(
                     )
                 }
                 else -> {
-                    LazyColumn(modifier = modifier.fillMaxSize()) {
+                    LazyColumn(
+                        state = listState,
+                        modifier = modifier.fillMaxSize()
+                    ) {
                         state.currentSurah?.let { surah ->
                             item {
                                 Text(
@@ -102,7 +162,10 @@ fun AyahScreen(
                             }
                         }
                         itemsIndexed(state.ayahs) { index, ayah ->
-                            VerseCell(ayah = ayah)
+                            VerseCell(
+                                ayah = ayah,
+                                onLongPress = { longPressedAyah = ayah }
+                            )
                         }
                     }
                 }
@@ -111,10 +174,18 @@ fun AyahScreen(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun VerseCell(ayah: AyahData) {
+private fun VerseCell(
+    ayah: AyahData,
+    onLongPress: () -> Unit
+) {
     Column(modifier = Modifier
         .fillMaxWidth()
+        .combinedClickable(
+            onClick = {},
+            onLongClick = onLongPress
+        )
         .padding(horizontal = 12.dp, vertical = 8.dp)
     ) {
         if (ayah.isFirstAyaOfJuz || ayah.isFirstAyaOfPage) {
@@ -133,11 +204,11 @@ private fun VerseCell(ayah: AyahData) {
             HorizontalDivider(color = Color.Gray.copy(alpha = 0.3f))
         }
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.End
-        ) {
-            if (ayah.sajda) {
+        if (ayah.sajda) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
+            ) {
                 Text(
                     text = "\u06E9",
                     fontSize = 24.sp,
