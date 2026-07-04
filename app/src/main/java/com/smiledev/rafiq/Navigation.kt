@@ -21,6 +21,8 @@ import com.smiledev.rafiq.ui.recitation.RecitationScreen
 import com.smiledev.rafiq.ui.zakat.ZakatCalculatorScreen
 import com.smiledev.rafiq.ui.asmaulhusna.AsmaulHusnaScreen
 import com.smiledev.rafiq.ui.tasbih.TasbihScreen
+import com.smiledev.rafiq.ui.bookmarks.BookmarkListScreen
+import com.smiledev.rafiq.ui.prayerlog.PrayerLogScreen
 
 @Composable
 fun MainNavigation() {
@@ -110,6 +112,18 @@ fun MainNavigation() {
         }
         entry<Tasbih> {
           TasbihScreen(
+            onBack = { backStack.removeLastOrNull() },
+            modifier = Modifier.safeDrawingPadding()
+          )
+        }
+        entry<BookmarkList> {
+          BookmarkListScreen(
+            onBack = { backStack.removeLastOrNull() },
+            modifier = Modifier.safeDrawingPadding()
+          )
+        }
+        entry<PrayerLog> {
+          PrayerLogScreen(
             onBack = { backStack.removeLastOrNull() },
             modifier = Modifier.safeDrawingPadding()
           )

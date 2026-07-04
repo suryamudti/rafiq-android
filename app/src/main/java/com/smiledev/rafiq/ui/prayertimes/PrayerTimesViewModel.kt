@@ -2,7 +2,7 @@ package com.smiledev.rafiq.ui.prayertimes
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.smiledev.rafiq.data.remote.AladhanApi
+import com.smiledev.rafiq.data.repository.PrayerTimesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -34,7 +34,7 @@ data class PrayerTimesUiState(
 
 @HiltViewModel
 class PrayerTimesViewModel @Inject constructor(
-    private val aladhanApi: AladhanApi
+    private val prayerTimesRepository: PrayerTimesRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(PrayerTimesUiState())
@@ -59,7 +59,7 @@ class PrayerTimesViewModel @Inject constructor(
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             try {
                 val date = _uiState.value.currentDate
-                val response = aladhanApi.fetchPrayerTimes(defaultLat, defaultLon, dateFormat.format(date))
+                val response = prayerTimesRepository.fetchPrayerTimes(defaultLat, defaultLon, dateFormat.format(date))
                 if (response.code == 200) {
                     val t = response.data.timings
                     val times = listOf(

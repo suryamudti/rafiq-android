@@ -65,70 +65,80 @@ fun IslamicCalendarScreen(
             )
         }
     ) { padding ->
-        if (state.isLoading) {
-            CircularProgressIndicator(modifier = Modifier.fillMaxSize().padding(padding))
-        } else {
-            Column(modifier = Modifier.fillMaxSize().padding(padding)) {
-                if (state.todayEvents.isNotEmpty()) {
-                    Card(
-                        modifier = Modifier.fillMaxWidth().padding(12.dp),
-                        shape = RoundedCornerShape(12.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color(0xFFE0F2F1))
-                    ) {
-                        Column(modifier = Modifier.padding(12.dp)) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text(text = "\uD83D\uDCC5", fontSize = 16.sp)
-                                Spacer(Modifier.width(8.dp))
-                                Text(
-                                    text = "Today's Events",
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color(0xFF00695C)
-                                )
-                            }
-                            Spacer(Modifier.height(8.dp))
-                            state.todayEvents.forEach { event ->
-                                Text(
-                                    text = if (viewModel.localeCode == "id") event.titleId else event.titleEn,
-                                    fontWeight = FontWeight.Medium
-                                )
+        when {
+            state.isLoading -> {
+                CircularProgressIndicator(modifier = Modifier.fillMaxSize().padding(padding))
+            }
+            state.error != null -> {
+                Text(
+                    text = "Error: ${state.error}",
+                    modifier = Modifier.fillMaxSize().padding(padding).padding(16.dp),
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
+            else -> {
+                Column(modifier = Modifier.fillMaxSize().padding(padding)) {
+                    if (state.todayEvents.isNotEmpty()) {
+                        Card(
+                            modifier = Modifier.fillMaxWidth().padding(12.dp),
+                            shape = RoundedCornerShape(12.dp),
+                            colors = CardDefaults.cardColors(containerColor = Color(0xFFE0F2F1))
+                        ) {
+                            Column(modifier = Modifier.padding(12.dp)) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Text(text = "\uD83D\uDCC5", fontSize = 16.sp)
+                                    Spacer(Modifier.width(8.dp))
+                                    Text(
+                                        text = "Today's Events",
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color(0xFF00695C)
+                                    )
+                                }
+                                Spacer(Modifier.height(8.dp))
+                                state.todayEvents.forEach { event ->
+                                    Text(
+                                        text = if (viewModel.localeCode == "id") event.titleId else event.titleEn,
+                                        fontWeight = FontWeight.Medium
+                                    )
+                                }
                             }
                         }
                     }
-                }
 
-                LazyRow(
-                    modifier = Modifier.padding(horizontal = 8.dp)
-                ) {
-                    items((1..12).toList()) { month ->
-                        FilterChip(
-                            label = { Text(viewModel.getMonthName(month), fontSize = 12.sp) },
-                            selected = month == state.selectedMonth,
-                            onClick = { viewModel.selectMonth(month) },
-                            modifier = Modifier.padding(horizontal = 3.dp),
-                            colors = FilterChipDefaults.filterChipColors(
-                                selectedContainerColor = Color(0xFF009688)
+                    LazyRow(
+                        modifier = Modifier.padding(horizontal = 8.dp)
+                    ) {
+                        items((1..12).toList()) { month ->
+                            FilterChip(
+                                label = { Text(viewModel.getMonthName(month), fontSize = 12.sp) },
+                                selected = month == state.selectedMonth,
+                                onClick = { viewModel.selectMonth(month) },
+                                modifier = Modifier.padding(horizontal = 3.dp),
+                                colors = FilterChipDefaults.filterChipColors(
+                                    selectedContainerColor = Color(0xFF009688)
+                                )
                             )
-                        )
+                        }
                     }
-                }
 
-                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
-                if (state.events.isEmpty()) {
-                    Text(
-                        text = "No events for this month",
-                        modifier = Modifier.fillMaxSize().padding(16.dp),
-                        color = Color.Gray
-                    )
-                } else {
-                    LazyColumn(modifier = Modifier.fillMaxSize()) {
-                        items(state.events) { event ->
-                            EventCard(
-                                event = event,
-                                localeCode = viewModel.localeCode,
-                                monthName = viewModel.getMonthName(event.hijriMonth),
-                                onClick = { selectedEvent = event }
-                            )
+                    if (state.events.isEmpty()) {
+                        Text(
+                            text = "No events for this month",
+                            modifier = Modifier.fillMaxSize().padding(16.dp),
+                            color = Color.Gray
+                        )
+                    } else {
+                        LazyColumn(modifier = Modifier.fillMaxSize()) {
+                            items(state.events) { event ->
+                                EventCard(
+                                    event = event,
+                                    localeCode = viewModel.localeCode,
+                                    monthName = viewModel.getMonthName(event.hijriMonth),
+                                    onClick = { selectedEvent = event }
+                                )
+                            }
                         }
                     }
                 }

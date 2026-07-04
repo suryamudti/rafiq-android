@@ -15,7 +15,8 @@ import javax.inject.Inject
 data class ProphetsUiState(
     val prophets: List<ProphetStory> = emptyList(),
     val searchQuery: String = "",
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val error: String? = null
 )
 
 @HiltViewModel
@@ -32,9 +33,13 @@ class ProphetsViewModel @Inject constructor(
 
     fun loadProphets() {
         viewModelScope.launch(Dispatchers.IO) {
-            _uiState.value = _uiState.value.copy(isLoading = true)
-            val prophets = prophetRepository.getProphets()
-            _uiState.value = _uiState.value.copy(prophets = prophets, isLoading = false)
+            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+            try {
+                val prophets = prophetRepository.getProphets()
+                _uiState.value = _uiState.value.copy(prophets = prophets, isLoading = false)
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(isLoading = false, error = e.message)
+            }
         }
     }
 

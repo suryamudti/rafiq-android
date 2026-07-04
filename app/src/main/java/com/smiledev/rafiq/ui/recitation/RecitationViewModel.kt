@@ -13,7 +13,8 @@ import javax.inject.Inject
 
 data class RecitationUiState(
     val reciters: List<Reciter> = emptyList(),
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val error: String? = null
 )
 
 @HiltViewModel
@@ -28,9 +29,13 @@ class RecitationViewModel @Inject constructor(
 
     private fun load() {
         viewModelScope.launch(Dispatchers.IO) {
-            _uiState.value = _uiState.value.copy(isLoading = true)
-            val reciters = reciterRepository.getReciters()
-            _uiState.value = _uiState.value.copy(reciters = reciters, isLoading = false)
+            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+            try {
+                val reciters = reciterRepository.getReciters()
+                _uiState.value = _uiState.value.copy(reciters = reciters, isLoading = false)
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(isLoading = false, error = e.message)
+            }
         }
     }
 }

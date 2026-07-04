@@ -26,9 +26,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -44,9 +41,6 @@ fun ZakatCalculatorScreen(
     viewModel: ZakatCalculatorViewModel = hiltViewModel(),
     modifier: Modifier = Modifier
 ) {
-    var goldWeight by remember { mutableStateOf("") }
-    var silverWeight by remember { mutableStateOf("") }
-    var cashAmount by remember { mutableStateOf("") }
     val state by viewModel.uiState.collectAsState()
 
     Scaffold(
@@ -76,24 +70,24 @@ fun ZakatCalculatorScreen(
             )
 
             OutlinedTextField(
-                value = goldWeight,
-                onValueChange = { goldWeight = it },
+                value = state.goldWeight,
+                onValueChange = { viewModel.updateGold(it) },
                 label = { Text("Gold (grams)") },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(Modifier.height(8.dp))
             OutlinedTextField(
-                value = silverWeight,
-                onValueChange = { silverWeight = it },
+                value = state.silverWeight,
+                onValueChange = { viewModel.updateSilver(it) },
                 label = { Text("Silver (grams)") },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(Modifier.height(8.dp))
             OutlinedTextField(
-                value = cashAmount,
-                onValueChange = { cashAmount = it },
+                value = state.cashAmount,
+                onValueChange = { viewModel.updateCash(it) },
                 label = { Text("Cash & Savings (USD)") },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.fillMaxWidth()
@@ -102,7 +96,7 @@ fun ZakatCalculatorScreen(
             Spacer(Modifier.height(16.dp))
 
             Button(
-                onClick = { viewModel.calculate(goldWeight, silverWeight, cashAmount) },
+                onClick = { viewModel.calculate() },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Calculate Zakat")

@@ -64,6 +64,13 @@ fun AsmaulHusnaScreen(
             state.isLoading -> {
                 CircularProgressIndicator(modifier = Modifier.fillMaxSize().padding(padding))
             }
+            state.error != null -> {
+                Text(
+                    text = "Error: ${state.error}",
+                    modifier = Modifier.fillMaxSize().padding(padding).padding(16.dp),
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
             else -> {
                 LazyColumn(
                     modifier = modifier

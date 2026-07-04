@@ -7,8 +7,7 @@ import com.smiledev.rafiq.data.local.BookmarkDao
 import com.smiledev.rafiq.data.local.PrayerLogDatabase
 import com.smiledev.rafiq.data.local.PrayerLogDao
 import com.smiledev.rafiq.data.preferences.PreferencesManager
-import com.smiledev.rafiq.data.remote.AladhanApi
-import com.smiledev.rafiq.data.remote.MetalPriceApi
+
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -54,15 +53,4 @@ object AppModule {
         return PreferencesManager(context)
     }
 
-    @Provides
-    @Singleton
-    fun provideAladhanApi(): AladhanApi {
-        return AladhanApi()
-    }
-
-    @Provides
-    @Singleton
-    fun provideMetalPriceApi(): MetalPriceApi {
-        return MetalPriceApi()
-    }
 }

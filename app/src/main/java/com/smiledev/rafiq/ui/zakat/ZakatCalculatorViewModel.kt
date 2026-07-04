@@ -1,8 +1,9 @@
 package com.smiledev.rafiq.ui.zakat
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.smiledev.rafiq.data.remote.MetalPriceApi
+import com.smiledev.rafiq.data.repository.MetalPriceRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,6 +21,9 @@ data class ZakatResult(
 )
 
 data class ZakatUiState(
+    val goldWeight: String = "",
+    val silverWeight: String = "",
+    val cashAmount: String = "",
     val result: ZakatResult = ZakatResult(),
     val isLoading: Boolean = false,
     val error: String? = null
@@ -27,22 +31,34 @@ data class ZakatUiState(
 
 @HiltViewModel
 class ZakatCalculatorViewModel @Inject constructor(
-    private val metalPriceApi: MetalPriceApi
+    private val metalPriceRepository: MetalPriceRepository,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(ZakatUiState())
+    private val _uiState = MutableStateFlow(
+        ZakatUiState(
+            goldWeight = savedStateHandle.get<String>("goldWeight") ?: "",
+            silverWeight = savedStateHandle.get<String>("silverWeight") ?: "",
+            cashAmount = savedStateHandle.get<String>("cashAmount") ?: ""
+        )
+    )
     val uiState: StateFlow<ZakatUiState> = _uiState
 
-    fun calculate(goldGrams: String, silverGrams: String, cash: String) {
+    fun updateGold(value: String) { _uiState.value = _uiState.value.copy(goldWeight = value) }
+    fun updateSilver(value: String) { _uiState.value = _uiState.value.copy(silverWeight = value) }
+    fun updateCash(value: String) { _uiState.value = _uiState.value.copy(cashAmount = value) }
+
+    fun calculate() {
+        val s = _uiState.value
         viewModelScope.launch(Dispatchers.IO) {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             try {
-                val goldW = goldGrams.toDoubleOrNull() ?: 0.0
-                val silverW = silverGrams.toDoubleOrNull() ?: 0.0
-                val cashV = cash.toDoubleOrNull() ?: 0.0
+                val goldW = s.goldWeight.toDoubleOrNull() ?: 0.0
+                val silverW = s.silverWeight.toDoubleOrNull() ?: 0.0
+                val cashV = s.cashAmount.toDoubleOrNull() ?: 0.0
 
-                val goldPrice = metalPriceApi.getGoldPricePerGram()
-                val silverPrice = metalPriceApi.getSilverPricePerGram()
+                val goldPrice = metalPriceRepository.getGoldPricePerGram()
+                val silverPrice = metalPriceRepository.getSilverPricePerGram()
 
                 val goldNisab = 85.0
                 val silverNisab = 595.0

@@ -15,7 +15,8 @@ import javax.inject.Inject
 data class AsmaulHusnaUiState(
     val names: List<AsmaulHusna> = emptyList(),
     val searchQuery: String = "",
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val error: String? = null
 )
 
 @HiltViewModel
@@ -32,9 +33,13 @@ class AsmaulHusnaViewModel @Inject constructor(
 
     private fun load() {
         viewModelScope.launch(Dispatchers.IO) {
-            _uiState.value = _uiState.value.copy(isLoading = true)
-            val names = repository.getNames()
-            _uiState.value = _uiState.value.copy(names = names, isLoading = false)
+            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+            try {
+                val names = repository.getNames()
+                _uiState.value = _uiState.value.copy(names = names, isLoading = false)
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(isLoading = false, error = e.message)
+            }
         }
     }
 

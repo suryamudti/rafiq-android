@@ -17,7 +17,8 @@ data class CalendarUiState(
     val events: List<IslamicEvent> = emptyList(),
     val todayEvents: List<IslamicEvent> = emptyList(),
     val selectedMonth: Int = Calendar.getInstance().get(Calendar.MONTH) + 1,
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val error: String? = null
 )
 
 @HiltViewModel
@@ -37,22 +38,30 @@ class CalendarViewModel @Inject constructor(
 
     private fun load() {
         viewModelScope.launch(Dispatchers.IO) {
-            _uiState.value = _uiState.value.copy(isLoading = true)
-            val todayEvents = repository.getTodayEvents()
-            val events = repository.getEventsForMonth(_uiState.value.selectedMonth)
-            _uiState.value = _uiState.value.copy(
-                events = events,
-                todayEvents = todayEvents,
-                isLoading = false
-            )
+            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+            try {
+                val todayEvents = repository.getTodayEvents()
+                val events = repository.getEventsForMonth(_uiState.value.selectedMonth)
+                _uiState.value = _uiState.value.copy(
+                    events = events,
+                    todayEvents = todayEvents,
+                    isLoading = false
+                )
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(isLoading = false, error = e.message)
+            }
         }
     }
 
     fun selectMonth(month: Int) {
         _uiState.value = _uiState.value.copy(selectedMonth = month)
         viewModelScope.launch(Dispatchers.IO) {
-            val events = repository.getEventsForMonth(month)
-            _uiState.value = _uiState.value.copy(events = events)
+            try {
+                val events = repository.getEventsForMonth(month)
+                _uiState.value = _uiState.value.copy(events = events, error = null)
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(error = e.message)
+            }
         }
     }
 
