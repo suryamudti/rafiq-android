@@ -8,6 +8,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -24,20 +25,22 @@ class BookmarkListViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(BookmarkListUiState())
     val uiState: StateFlow<BookmarkListUiState> = _uiState
 
-    init { load() }
+    init {
+        observeBookmarks()
+    }
 
-    private fun load() {
-        viewModelScope.launch(Dispatchers.IO) {
+    private fun observeBookmarks() {
+        viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
-            val bookmarks = bookmarkDao.getAllBookmarks()
-            _uiState.value = _uiState.value.copy(bookmarks = bookmarks, isLoading = false)
+            bookmarkDao.getAllBookmarks().collect { bookmarks ->
+                _uiState.value = _uiState.value.copy(bookmarks = bookmarks, isLoading = false)
+            }
         }
     }
 
     fun delete(sura: Int, aya: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             bookmarkDao.delete(sura, aya)
-            load()
         }
     }
 }

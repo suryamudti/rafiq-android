@@ -11,6 +11,7 @@ import androidx.room.Query
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import android.content.Context
+import kotlinx.coroutines.flow.Flow
 
 @Entity(tableName = "bookmarks")
 data class BookmarkEntity(
@@ -24,7 +25,7 @@ data class BookmarkEntity(
 @Dao
 interface BookmarkDao {
     @Query("SELECT * FROM bookmarks ORDER BY id DESC")
-    suspend fun getAllBookmarks(): List<BookmarkEntity>
+    fun getAllBookmarks(): Flow<List<BookmarkEntity>>
 
     @Query("SELECT * FROM bookmarks WHERE sura = :sura")
     suspend fun getBookmarksBySura(sura: Int): List<BookmarkEntity>
