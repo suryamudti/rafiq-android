@@ -30,11 +30,17 @@ jobs:
       - name: Build Release APK & Bundle
         run: ./gradlew assembleRelease bundleRelease
 
+      - name: Gather Build Artifacts
+        run: |
+          mkdir -p app/build/outputs/release
+          cp app/build/outputs/apk/release/*.apk app/build/outputs/release/
+          cp app/build/outputs/bundle/release/*.aab app/build/outputs/release/
+
       - name: Sign Artifacts
         uses: r0adkll/sign-android-release@v1
         id: sign_app
         with:
-          releaseDirectory: app/build/outputs
+          releaseDirectory: app/build/outputs/release
           signingKeyBase64: ${{ secrets.SIGNING_KEY }}
           alias: ${{ secrets.ALIAS }}
           keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
@@ -44,10 +50,11 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            app/build/outputs/apk/release/*-signed.apk
-            app/build/outputs/bundle/release/*-signed.aab
+            app/build/outputs/release/*-signed.apk
+            app/build/outputs/release/*.aab
           draft: true
           prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
