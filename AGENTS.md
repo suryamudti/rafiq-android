@@ -8,7 +8,14 @@ $env:JAVA_HOME = "C:\Program Files\Android\Android Studio\jbr"
 adb -s emulator-5554 install -r app\build\outputs\apk\debug\app-debug.apk
 ```
 
-Emulator: `Medium_Phone_API_35`. No lint, typecheck, or test commands currently set up.
+Emulator: `Medium_Phone_API_35`. No lint or typecheck commands currently set up.
+
+## Tests
+
+```powershell
+.\gradlew testDebug                # unit tests (JVM)
+.\gradlew connectedDebugAndroidTest # instrumented tests (emulator required)
+```
 
 ## Architecture Quirks
 
