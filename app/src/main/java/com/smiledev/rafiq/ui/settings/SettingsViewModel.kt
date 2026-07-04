@@ -12,7 +12,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class SettingsUiState(
-    val themeMode: String = "system"
+    val themeMode: String = "system",
+    val translationLanguage: String = "system"
 )
 
 @HiltViewModel
@@ -29,11 +30,22 @@ class SettingsViewModel @Inject constructor(
                 _uiState.value = _uiState.value.copy(themeMode = mode)
             }
         }
+        viewModelScope.launch(Dispatchers.IO) {
+            preferencesManager.translationLanguage.collect { lang ->
+                _uiState.value = _uiState.value.copy(translationLanguage = lang)
+            }
+        }
     }
 
     fun setThemeMode(mode: String) {
         viewModelScope.launch(Dispatchers.IO) {
             preferencesManager.setThemeMode(mode)
+        }
+    }
+
+    fun setTranslationLanguage(lang: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            preferencesManager.setTranslationLanguage(lang)
         }
     }
 }

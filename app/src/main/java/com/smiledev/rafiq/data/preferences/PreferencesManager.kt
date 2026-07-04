@@ -26,6 +26,7 @@ class PreferencesManager @Inject constructor(
         val CITY_NAME = stringPreferencesKey("city_name")
         val LAST_SELECTED_RECITER = intPreferencesKey("last_selected_reciter")
         val PRAYER_NOTIFICATIONS_ENABLED = booleanPreferencesKey("prayer_notifications_enabled")
+        val TRANSLATION_LANGUAGE = stringPreferencesKey("translation_language")
     }
 
     val themeMode: Flow<String> = context.dataStore.data.map { prefs ->
@@ -56,6 +57,10 @@ class PreferencesManager @Inject constructor(
         prefs[PRAYER_NOTIFICATIONS_ENABLED] ?: true
     }
 
+    val translationLanguage: Flow<String> = context.dataStore.data.map { prefs ->
+        prefs[TRANSLATION_LANGUAGE] ?: "system"
+    }
+
     suspend fun setThemeMode(mode: String) {
         context.dataStore.edit { prefs -> prefs[THEME_MODE] = mode }
     }
@@ -82,5 +87,9 @@ class PreferencesManager @Inject constructor(
 
     suspend fun setPrayerNotificationsEnabled(enabled: Boolean) {
         context.dataStore.edit { prefs -> prefs[PRAYER_NOTIFICATIONS_ENABLED] = enabled }
+    }
+
+    suspend fun setTranslationLanguage(lang: String) {
+        context.dataStore.edit { prefs -> prefs[TRANSLATION_LANGUAGE] = lang }
     }
 }
