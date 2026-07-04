@@ -54,6 +54,10 @@ jobs:
         env:
           BUILD_TOOLS_VERSION: "35.0.0"
 
+      - name: Rename Signed Artifacts
+        run: |
+          mv app/build/outputs/release/app-release-unsigned-signed.apk app/build/outputs/release/rafiq-v${{ steps.get_version.outputs.version }}.${{ github.run_number }}.apk
+          mv app/build/outputs/release/app-release.aab app/build/outputs/release/rafiq-v${{ steps.get_version.outputs.version }}.${{ github.run_number }}.aab
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
@@ -61,8 +65,8 @@ jobs:
           tag_name: v${{ steps.get_version.outputs.version }}.${{ github.run_number }}
           name: Release v${{ steps.get_version.outputs.version }}.${{ github.run_number }}
           files: |
-            app/build/outputs/release/*-signed.apk
-            app/build/outputs/release/*.aab
+            app/build/outputs/release/rafiq-*.apk
+            app/build/outputs/release/rafiq-*.aab
           draft: false
           prerelease: false
         env:
