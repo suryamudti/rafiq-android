@@ -15,14 +15,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -164,6 +168,7 @@ fun AyahScreen(
                         itemsIndexed(state.ayahs) { index, ayah ->
                             VerseCell(
                                 ayah = ayah,
+                                isBookmarked = state.bookmarkedAyahs.contains(ayah.aya),
                                 onLongPress = { longPressedAyah = ayah }
                             )
                         }
@@ -178,6 +183,7 @@ fun AyahScreen(
 @Composable
 private fun VerseCell(
     ayah: AyahData,
+    isBookmarked: Boolean,
     onLongPress: () -> Unit
 ) {
     Column(modifier = Modifier
@@ -221,12 +227,26 @@ private fun VerseCell(
             modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
             verticalAlignment = Alignment.Top
         ) {
-            Text(
-                text = "${ayah.aya}",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.width(36.dp).padding(top = 4.dp)
-            )
+            Column(
+                modifier = Modifier.width(36.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "${ayah.aya}",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+                if (isBookmarked) {
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Icon(
+                        imageVector = Icons.Filled.Favorite,
+                        contentDescription = "Bookmarked",
+                        tint = Color(0xFFE91E63),
+                        modifier = Modifier.size(16.dp)
+                    )
+                }
+            }
             Text(
                 text = ayah.text,
                 style = MaterialTheme.typography.bodyLarge.copy(
