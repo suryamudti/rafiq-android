@@ -30,6 +30,12 @@ jobs:
       - name: Build Release APK & Bundle
         run: ./gradlew assembleRelease bundleRelease
 
+      - name: Extract Version Name
+        id: get_version
+        run: |
+          VERSION_NAME=$(sed -n 's/.*versionName = "\(.*\)".*/\1/p' app/build.gradle.kts | tr -d '[:space:]')
+          echo "version=$VERSION_NAME" >> $GITHUB_OUTPUT
+
       - name: Gather Build Artifacts
         run: |
           mkdir -p app/build/outputs/release
@@ -52,12 +58,12 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: v${{ steps.get_version.outputs.version }}.${{ github.run_number }}
+          name: Release v${{ steps.get_version.outputs.version }}.${{ github.run_number }}
           files: |
             app/build/outputs/release/*-signed.apk
             app/build/outputs/release/*.aab
-          draft: true
+          draft: false
           prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-
