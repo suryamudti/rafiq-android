@@ -1,0 +1,17 @@
+[
+  {"id": 1, "name_en": "Abdul Basit Abdul Samad (Murattal)", "name_ar": "عبد الباسط عبد الصمد", "style": "Murattal", "country": "Egypt", "identifier": "ar.abdulbasitmurattal"},
+  {"id": 2, "name_en": "Abdul Rahman Al-Sudais", "name_ar": "عبد الرحمن السديس", "style": "Mujawwad", "country": "Saudi Arabia", "identifier": "ar.abdurrahmaansudais"},
+  {"id": 3, "name_en": "Abu Bakr Al-Shatri", "name_ar": "أبو بكر الشاطري", "style": "Murattal", "country": "Saudi Arabia", "identifier": "ar.shaatree"},
+  {"id": 4, "name_en": "Ahmed Al-Ajmi", "name_ar": "أحمد العجمي", "style": "Murattal", "country": "Kuwait", "identifier": "ar.ahmedajamy"},
+  {"id": 5, "name_en": "Ali Al-Hudhaifi", "name_ar": "علي الحذيفي", "style": "Mujawwad", "country": "Saudi Arabia", "identifier": "ar.hudhaify"},
+  {"id": 6, "name_en": "Bandar Baleela", "name_ar": "بندر بليلة", "style": "Mujawwad", "country": "Saudi Arabia", "identifier": "ar.abdulbasitmurattal"},
+  {"id": 7, "name_en": "Khalid Al-Jalil", "name_ar": "خالد الجليل", "style": "Murattal", "country": "Saudi Arabia", "identifier": "ar.ahmedajamy"},
+  {"id": 8, "name_en": "Maher Al-Muaiqly", "name_ar": "ماهر المعيقلي", "style": "Mujawwad", "country": "Saudi Arabia", "identifier": "ar.mahermuaiqly"},
+  {"id": 9, "name_en": "Mishari Rashid Al-Afasy", "name_ar": "مشاري راشد العفاسي", "style": "Murattal", "country": "Kuwait", "identifier": "ar.alafasy"},
+  {"id": 10, "name_en": "Muhammad Al-Minshawi", "name_ar": "محمد المنشاوي", "style": "Murattal", "country": "Egypt", "identifier": "ar.minshawi"},
+  {"id": 11, "name_en": "Muhammad Jibril", "name_ar": "محمد جبريل", "style": "Mujawwad", "country": "Egypt", "identifier": "ar.muhammadjibreel"},
+  {"id": 12, "name_en": "Saad Al-Ghamdi", "name_ar": "سعد الغامدي", "style": "Murattal", "country": "Saudi Arabia", "identifier": "ar.saadalghamdi"},
+  {"id": 13, "name_en": "Salah Al-Budair", "name_ar": "صلاح البدير", "style": "Mujawwad", "country": "Saudi Arabia", "identifier": "ar.salahalbudair"},
+  {"id": 14, "name_en": "Saud Al-Shuraim", "name_ar": "سعود الشريم", "style": "Mujawwad", "country": "Saudi Arabia", "identifier": "ar.saoodshuraym"},
+  {"id": 15, "name_en": "Yasser Al-Dosari", "name_ar": "ياسر الدوسري", "style": "Mujawwad", "country": "Saudi Arabia", "identifier": "ar.alafasy"}
+]

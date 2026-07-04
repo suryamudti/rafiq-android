@@ -1,0 +1,164 @@
+[
+  {
+    "hijri_month": 1,
+    "hijri_day": 1,
+    "title_en": "Islamic New Year",
+    "title_id": "Tahun Baru Islam",
+    "description_en": "First day of Muharram, marking the beginning of the Islamic lunar calendar year.",
+    "description_id": "Hari pertama Muharram, menandai awal tahun kalender Islam.",
+    "event_type": "holiday"
+  },
+  {
+    "hijri_month": 1,
+    "hijri_day": 10,
+    "title_en": "Day of Ashura",
+    "title_id": "Hari Asyura",
+    "description_en": "Recommended fasting day. Commemorates the salvation of Musa (AS) from Pharaoh and the martyrdom of Husayn ibn Ali.",
+    "description_id": "Hari puasa yang dianjurkan. Memperingati penyelamatan Musa AS dari Firaun dan syahidnya Husain bin Ali.",
+    "event_type": "observance"
+  },
+  {
+    "hijri_month": 3,
+    "hijri_day": 12,
+    "title_en": "Mawlid al-Nabi",
+    "title_id": "Maulid Nabi",
+    "description_en": "Birth of the Prophet Muhammad (PBUH), celebrated by Muslims worldwide.",
+    "description_id": "Kelahiran Nabi Muhammad SAW, dirayakan oleh umat Islam di seluruh dunia.",
+    "event_type": "holiday"
+  },
+  {
+    "hijri_month": 7,
+    "hijri_day": 27,
+    "title_en": "Isra' Mi'raj",
+    "title_id": "Isra' Mi'raj",
+    "description_en": "The Night Journey and Ascension of the Prophet Muhammad (PBUH) to the heavens.",
+    "description_id": "Perjalanan malam dan kenaikan Nabi Muhammad SAW ke langit.",
+    "event_type": "observance"
+  },
+  {
+    "hijri_month": 8,
+    "hijri_day": 15,
+    "title_en": "Nisfu Sha'aban",
+    "title_id": "Nisfu Sya'ban",
+    "description_en": "The night of forgiveness. Recommended to increase worship and supplication.",
+    "description_id": "Malam pengampunan. Dianjurkan untuk meningkatkan ibadah dan doa.",
+    "event_type": "observance"
+  },
+  {
+    "hijri_month": 9,
+    "hijri_day": 1,
+    "title_en": "First Day of Ramadan",
+    "title_id": "Hari Pertama Ramadan",
+    "description_en": "Beginning of the holy month of fasting from dawn until sunset.",
+    "description_id": "Awal bulan suci puasa dari fajar hingga terbenam matahari.",
+    "event_type": "holiday"
+  },
+  {
+    "hijri_month": 9,
+    "hijri_day": 10,
+    "title_en": "Battle of Badr Anniversary",
+    "title_id": "Peringatan Perang Badar",
+    "description_en": "Commemorates the victory of the Muslims in the Battle of Badr.",
+    "description_id": "Memperingati kemenangan umat Islam dalam Perang Badar.",
+    "event_type": "observance"
+  },
+  {
+    "hijri_month": 9,
+    "hijri_day": 17,
+    "title_en": "Nuzul al-Qur'an",
+    "title_id": "Nuzulul Qur'an",
+    "description_en": "The revelation of the first verses of the Qur'an to Prophet Muhammad (PBUH).",
+    "description_id": "Turunnya ayat-ayat pertama Al-Qur'an kepada Nabi Muhammad SAW.",
+    "event_type": "observance"
+  },
+  {
+    "hijri_month": 9,
+    "hijri_day": 21,
+    "title_en": "Laylat al-Qadr (Odd Night)",
+    "title_id": "Lailatul Qadar (Malam Ganjil)",
+    "description_en": "The Night of Power, better than a thousand months. One of the last ten odd nights of Ramadan.",
+    "description_id": "Malam kemuliaan, lebih baik dari seribu bulan. Salah satu malam ganjil sepuluh terakhir Ramadan.",
+    "event_type": "observance"
+  },
+  {
+    "hijri_month": 9,
+    "hijri_day": 27,
+    "title_en": "Laylat al-Qadr (27th Night)",
+    "title_id": "Lailatul Qadar (Malam ke-27)",
+    "description_en": "The most probable night for Laylat al-Qadr, when the Qur'an was revealed.",
+    "description_id": "Malam yang paling mungkin untuk Lailatul Qadar, saat Al-Qur'an diturunkan.",
+    "event_type": "observance"
+  },
+  {
+    "hijri_month": 10,
+    "hijri_day": 1,
+    "title_en": "Eid al-Fitr",
+    "title_id": "Idul Fitri",
+    "description_en": "Festival of Breaking the Fast, marking the end of Ramadan. A day of celebration, prayers, and charity.",
+    "description_id": "Hari Raya Idul Fitri, menandai berakhirnya Ramadan. Hari perayaan, shalat, dan sedekah.",
+    "event_type": "holiday"
+  },
+  {
+    "hijri_month": 10,
+    "hijri_day": 2,
+    "title_en": "Eid al-Fitr (Day 2)",
+    "title_id": "Idul Fitri (Hari ke-2)",
+    "description_en": "Second day of Eid al-Fitr celebrations.",
+    "description_id": "Hari kedua perayaan Idul Fitri.",
+    "event_type": "holiday"
+  },
+  {
+    "hijri_month": 12,
+    "hijri_day": 8,
+    "title_en": "Yawm al-Tarwiyah",
+    "title_id": "Hari Tarwiyah",
+    "description_en": "Eighth day of Dhul Hijjah. Pilgrims begin their Hajj rituals.",
+    "description_id": "Hari kedelapan Dzulhijjah. Jemaah haji memulai ritual haji.",
+    "event_type": "observance"
+  },
+  {
+    "hijri_month": 12,
+    "hijri_day": 9,
+    "title_en": "Day of Arafah",
+    "title_id": "Hari Arafah",
+    "description_en": "The most important day of Hajj. Recommended fasting for non-pilgrims.",
+    "description_id": "Hari terpenting dalam haji. Puasa dianjurkan bagi yang tidak berhaji.",
+    "event_type": "observance"
+  },
+  {
+    "hijri_month": 12,
+    "hijri_day": 10,
+    "title_en": "Eid al-Adha",
+    "title_id": "Idul Adha",
+    "description_en": "Festival of Sacrifice, commemorating Ibrahim's (AS) willingness to sacrifice his son.",
+    "description_id": "Hari Raya Kurban, memperingati ketaatan Ibrahim AS.",
+    "event_type": "holiday"
+  },
+  {
+    "hijri_month": 12,
+    "hijri_day": 11,
+    "title_en": "Eid al-Adha (Day 2)",
+    "title_id": "Idul Adha (Hari ke-2)",
+    "description_en": "Second day of Tashriq, continuing Eid celebrations.",
+    "description_id": "Hari kedua Tasyrik, melanjutkan perayaan Idul Adha.",
+    "event_type": "holiday"
+  },
+  {
+    "hijri_month": 12,
+    "hijri_day": 12,
+    "title_en": "Eid al-Adha (Day 3)",
+    "title_id": "Idul Adha (Hari ke-3)",
+    "description_en": "Third day of Tashriq, continuing Eid celebrations.",
+    "description_id": "Hari ketiga Tasyrik, melanjutkan perayaan Idul Adha.",
+    "event_type": "holiday"
+  },
+  {
+    "hijri_month": 12,
+    "hijri_day": 13,
+    "title_en": "Eid al-Adha (Day 4)",
+    "title_id": "Idul Adha (Hari ke-4)",
+    "description_en": "Final day of Tashriq, last day of Eid al-Adha.",
+    "description_id": "Hari terakhir Tasyrik, hari terakhir Idul Adha.",
+    "event_type": "holiday"
+  }
+]

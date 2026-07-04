@@ -1,0 +1,92 @@
+{
+    "data": [
+        {
+            "id": 1,
+            "dzikir_playlist_category_id": 1,
+            "name": "Subhanallah",
+            "arabic": "سُبْحَانَ اللّهُ",
+            "pronunciation": "Subhanallah",
+            "translation": "Holy God almighty",
+            "audio": null,
+            "counter_limit": "99",
+            "status": 1,
+            "created_at": "2019-01-13 09:27:02",
+            "updated_at": null,
+            "audio_base_url": "http://backend.zipedia.id/public/uploads/dzikir-playlist",
+            "dzikir_playlist_category": {
+                "id": 1,
+                "name": "Primary",
+                "description": null,
+                "status": 1,
+                "created_at": "2019-01-20 12:03:04",
+                "updated_at": null
+            }
+        },
+        {
+            "id": 2,
+            "dzikir_playlist_category_id": 1,
+            "name": "Alhamdulillah",
+            "arabic": "ٱلْـحَـمْـدُ للهِ",
+            "pronunciation": "Alhamdulillah",
+            "translation": "Thank God",
+            "audio": null,
+            "counter_limit": "33",
+            "status": 1,
+            "created_at": "2019-01-13 09:32:02",
+            "updated_at": null,
+            "audio_base_url": "http://backend.zipedia.id/public/uploads/dzikir-playlist",
+            "dzikir_playlist_category": {
+                "id": 1,
+                "name": "Primary",
+                "description": null,
+                "status": 1,
+                "created_at": "2019-01-20 12:03:04",
+                "updated_at": null
+            }
+        },
+        {
+            "id": 3,
+            "dzikir_playlist_category_id": 1,
+            "name": "Allahu Akbar",
+            "arabic": "اَللّهُ اَكْبَرُ",
+            "pronunciation": "Allahu Akbar",
+            "translation": "God Almighty",
+            "audio": null,
+            "counter_limit": "99",
+            "status": 1,
+            "created_at": "2019-01-20 12:03:02",
+            "updated_at": null,
+            "audio_base_url": "http://backend.zipedia.id/public/uploads/dzikir-playlist",
+            "dzikir_playlist_category": {
+                "id": 1,
+                "name": "Primary",
+                "description": null,
+                "status": 1,
+                "created_at": "2019-01-20 12:03:04",
+                "updated_at": null
+            }
+        },
+        {
+            "id": 4,
+            "dzikir_playlist_category_id": 1,
+            "name": "La Ilaha Illallah",
+            "arabic": "لاَ إِلَهَ إِلاَّ اللهُ",
+            "pronunciation": "La Ilaha Illallah",
+            "translation": "There is no god except Allah",
+            "audio": null,
+            "counter_limit": "99",
+            "status": 1,
+            "created_at": "2019-01-20 12:03:02",
+            "updated_at": null,
+            "audio_base_url": "http://backend.zipedia.id/public/uploads/dzikir-playlist",
+            "dzikir_playlist_category": {
+                "id": 1,
+                "name": "Primary",
+                "description": null,
+                "status": 1,
+                "created_at": "2019-01-20 12:03:04",
+                "updated_at": null
+            }
+        }
+    ]
+}

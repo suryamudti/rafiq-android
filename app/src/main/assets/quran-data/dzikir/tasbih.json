@@ -1,0 +1,68 @@
+{
+  "data": [
+    {
+      "id": 1,
+      "arabic": "سُبْحَانَ اللّهُ",
+      "transliteration": "Subhanallah",
+      "meaning_en": "Glory be to Allah",
+      "meaning_id": "Maha Suci Allah",
+      "default_count": 33
+    },
+    {
+      "id": 2,
+      "arabic": "ٱلْحَمْدُ لِلَّهِ",
+      "transliteration": "Alhamdulillah",
+      "meaning_en": "All praise is due to Allah",
+      "meaning_id": "Segala puji bagi Allah",
+      "default_count": 33
+    },
+    {
+      "id": 3,
+      "arabic": "اللَّهُ أَكْبَرُ",
+      "transliteration": "Allahu Akbar",
+      "meaning_en": "Allah is the Greatest",
+      "meaning_id": "Allah Maha Besar",
+      "default_count": 34
+    },
+    {
+      "id": 4,
+      "arabic": "لَا إِلَهَ إِلَّا اللَّهُ",
+      "transliteration": "La Ilaha Illallah",
+      "meaning_en": "There is no god but Allah",
+      "meaning_id": "Tiada Tuhan selain Allah",
+      "default_count": 33
+    },
+    {
+      "id": 5,
+      "arabic": "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ",
+      "transliteration": "Subhanallah wa bihamdihi",
+      "meaning_en": "Glory be to Allah and His praise",
+      "meaning_id": "Maha Suci Allah dan dengan memuji-Nya",
+      "default_count": 33
+    },
+    {
+      "id": 6,
+      "arabic": "سُبْحَانَ اللَّهِ الْعَظِيمِ",
+      "transliteration": "Subhanallahil Adzim",
+      "meaning_en": "Glory be to Allah, the Almighty",
+      "meaning_id": "Maha Suci Allah yang Maha Agung",
+      "default_count": 33
+    },
+    {
+      "id": 7,
+      "arabic": "أَسْتَغْفِرُ اللَّهَ",
+      "transliteration": "Astaghfirullah",
+      "meaning_en": "I seek forgiveness from Allah",
+      "meaning_id": "Aku memohon ampun kepada Allah",
+      "default_count": 33
+    },
+    {
+      "id": 8,
+      "arabic": "لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ",
+      "transliteration": "La hawla wa la quwwata illa billah",
+      "meaning_en": "There is no power nor strength except with Allah",
+      "meaning_id": "Tiada daya dan kekuatan kecuali dengan Allah",
+      "default_count": 33
+    }
+  ]
+}
