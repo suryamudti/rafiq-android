@@ -6,6 +6,7 @@ import com.smiledev.rafiq.data.local.BookmarkDao
 import com.smiledev.rafiq.data.local.BookmarkEntity
 import com.smiledev.rafiq.data.models.AyahData
 import com.smiledev.rafiq.data.models.Surah
+import com.smiledev.rafiq.data.preferences.PreferencesManager
 import com.smiledev.rafiq.data.repository.QuranRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -23,13 +24,15 @@ data class QuranUiState(
     val currentSurah: Surah? = null,
     val isLoading: Boolean = false,
     val error: String? = null,
-    val bookmarkedAyahs: Set<Int> = emptySet()
+    val bookmarkedAyahs: Set<Int> = emptySet(),
+    val translationLanguage: String = "system"
 )
 
 @HiltViewModel
 class QuranViewModel @Inject constructor(
     private val quranRepository: QuranRepository,
-    private val bookmarkDao: BookmarkDao
+    private val bookmarkDao: BookmarkDao,
+    private val preferencesManager: PreferencesManager
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(QuranUiState())
@@ -39,6 +42,11 @@ class QuranViewModel @Inject constructor(
 
     init {
         loadSurahs()
+        viewModelScope.launch(Dispatchers.IO) {
+            preferencesManager.translationLanguage.collect { lang ->
+                _uiState.value = _uiState.value.copy(translationLanguage = lang)
+            }
+        }
     }
 
     fun loadSurahs() {

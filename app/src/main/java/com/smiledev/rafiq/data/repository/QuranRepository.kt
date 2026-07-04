@@ -26,8 +26,8 @@ class QuranRepository @Inject constructor(
     private val databaseCopier: DatabaseCopier
 ) {
     private var quranDb: SQLiteDatabase? = null
-    private var translationDb: SQLiteDatabase? = null
-    private var currentTranslationDbName: String? = null
+    private var translationIdDb: SQLiteDatabase? = null
+    private var translationEnDb: SQLiteDatabase? = null
     private var metadataCache: Map<String, VerseMetadata>? = null
 
     fun getChapters(localeCode: String = "en"): List<Surah> {
@@ -72,13 +72,17 @@ class QuranRepository @Inject constructor(
         cursor.close()
 
         val metadata = getMetadataMap()
-        val translationMap = getTranslationForSura(suraNumber, localeCode)
+        val translationMapId = getTranslationForSura(suraNumber, "id")
+        val translationMapEn = getTranslationForSura(suraNumber, "en")
 
         val enrichedList = rawList.map { ayah ->
             val key = "${ayah.sura}:${ayah.aya}"
             val meta = metadata[key]
+            val resolvedTranslation = if (localeCode == "id") translationMapId[ayah.aya] else translationMapEn[ayah.aya]
             ayah.copy(
-                translation = translationMap[ayah.aya],
+                translation = resolvedTranslation,
+                translationId = translationMapId[ayah.aya],
+                translationEn = translationMapEn[ayah.aya],
                 page = meta?.page ?: 0,
                 juz = meta?.juz ?: 0,
                 sajda = meta?.sajda ?: false,
@@ -142,16 +146,21 @@ class QuranRepository @Inject constructor(
     }
 
     private fun getTranslationDatabase(localeCode: String): SQLiteDatabase? {
-        val fileKey = if (localeCode == "id") "translations/id.indonesian.db" else "translations/en.sahih.db"
+        val isId = localeCode == "id"
+        val cachedDb = if (isId) translationIdDb else translationEnDb
+        if (cachedDb?.isOpen == true) return cachedDb
+
+        val fileKey = if (isId) "translations/id.indonesian.db" else "translations/en.sahih.db"
         val flatName = fileKey.replace('/', '_')
-        if (translationDb?.isOpen == true && currentTranslationDbName == flatName) return translationDb!!
-        translationDb?.close()
         databaseCopier.copyDatabaseIfNeeded(fileKey)
         val path = context.getDatabasePath(flatName).absolutePath
         return try {
             val db = SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.OPEN_READONLY)
-            translationDb = db
-            currentTranslationDbName = flatName
+            if (isId) {
+                translationIdDb = db
+            } else {
+                translationEnDb = db
+            }
             db
         } catch (_: Exception) {
             null

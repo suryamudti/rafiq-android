@@ -164,6 +164,7 @@ fun AyahScreen(
                         itemsIndexed(state.ayahs) { index, ayah ->
                             VerseCell(
                                 ayah = ayah,
+                                translationLanguage = state.translationLanguage,
                                 onLongPress = { longPressedAyah = ayah }
                             )
                         }
@@ -178,6 +179,7 @@ fun AyahScreen(
 @Composable
 private fun VerseCell(
     ayah: AyahData,
+    translationLanguage: String,
     onLongPress: () -> Unit
 ) {
     Column(modifier = Modifier
@@ -239,14 +241,91 @@ private fun VerseCell(
             )
         }
 
-        if (!ayah.translation.isNullOrBlank()) {
-            Text(
-                text = "${ayah.aya}. ${ayah.translation}",
-                fontSize = 15.sp,
-                fontWeight = FontWeight.Medium,
-                lineHeight = 24.sp,
-                modifier = Modifier.fillMaxWidth().padding(top = 6.dp)
-            )
+        val resolvedLang = if (translationLanguage == "system") {
+            if (java.util.Locale.getDefault().language == "in" || java.util.Locale.getDefault().language == "id") "id" else "en"
+        } else {
+            translationLanguage
+        }
+
+        when (resolvedLang) {
+            "id" -> {
+                if (!ayah.translationId.isNullOrBlank()) {
+                    Text(
+                        text = "${ayah.aya}. ${ayah.translationId}",
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Medium,
+                        lineHeight = 24.sp,
+                        modifier = Modifier.fillMaxWidth().padding(top = 6.dp)
+                    )
+                }
+            }
+            "en" -> {
+                if (!ayah.translationEn.isNullOrBlank()) {
+                    Text(
+                        text = "${ayah.aya}. ${ayah.translationEn}",
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Medium,
+                        lineHeight = 24.sp,
+                        modifier = Modifier.fillMaxWidth().padding(top = 6.dp)
+                    )
+                }
+            }
+            "both" -> {
+                Column(
+                    modifier = Modifier.fillMaxWidth().padding(top = 6.dp),
+                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    if (!ayah.translationId.isNullOrBlank()) {
+                        Row(
+                            verticalAlignment = Alignment.Top,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(
+                                text = "ID",
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier
+                                    .background(MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(4.dp))
+                                    .padding(horizontal = 4.dp, vertical = 2.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = ayah.translationId,
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.Medium,
+                                lineHeight = 24.sp,
+                                modifier = Modifier.weight(1f)
+                            )
+                        }
+                    }
+                    if (!ayah.translationEn.isNullOrBlank()) {
+                        Row(
+                            verticalAlignment = Alignment.Top,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(
+                                text = "EN",
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.secondary,
+                                modifier = Modifier
+                                    .background(MaterialTheme.colorScheme.secondaryContainer, RoundedCornerShape(4.dp))
+                                    .padding(horizontal = 4.dp, vertical = 2.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = ayah.translationEn,
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Normal,
+                                lineHeight = 22.sp,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.weight(1f)
+                            )
+                        }
+                    }
+                }
+            }
         }
 
         HorizontalDivider(

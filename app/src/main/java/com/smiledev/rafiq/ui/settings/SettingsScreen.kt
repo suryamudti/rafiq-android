@@ -56,15 +56,27 @@ fun SettingsScreen(
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(bottom = 12.dp)
             )
-            ThemeOption("system", "System default", state.themeMode, viewModel::setThemeMode)
-            ThemeOption("light", "Light", state.themeMode, viewModel::setThemeMode)
-            ThemeOption("dark", "Dark", state.themeMode, viewModel::setThemeMode)
+            RadioButtonOption("system", "System default", state.themeMode, viewModel::setThemeMode)
+            RadioButtonOption("light", "Light", state.themeMode, viewModel::setThemeMode)
+            RadioButtonOption("dark", "Dark", state.themeMode, viewModel::setThemeMode)
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Text(
+                text = "Quran Translation",
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(bottom = 12.dp)
+            )
+            RadioButtonOption("system", "System default", state.translationLanguage, viewModel::setTranslationLanguage)
+            RadioButtonOption("id", "Bahasa Indonesia", state.translationLanguage, viewModel::setTranslationLanguage)
+            RadioButtonOption("en", "English", state.translationLanguage, viewModel::setTranslationLanguage)
+            RadioButtonOption("both", "Both (Bahasa & English)", state.translationLanguage, viewModel::setTranslationLanguage)
         }
     }
 }
 
 @Composable
-private fun ThemeOption(
+private fun RadioButtonOption(
     value: String,
     label: String,
     current: String,
