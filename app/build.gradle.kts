@@ -14,8 +14,9 @@ android {
         applicationId = "com.smiledev.rafiq"
         minSdk = 23
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+        val baseVersionName = "1.0"
+        versionCode = if (project.hasProperty("versionCode")) project.property("versionCode").toString().toInt() else 1
+        versionName = if (project.hasProperty("versionName")) project.property("versionName").toString() else baseVersionName
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 

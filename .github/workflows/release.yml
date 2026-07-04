@@ -27,14 +27,14 @@ jobs:
       - name: Grant Execute Permission to Gradlew
         run: chmod +x gradlew
 
-      - name: Build Release APK & Bundle
-        run: ./gradlew assembleRelease bundleRelease
-
       - name: Extract Version Name
         id: get_version
         run: |
-          VERSION_NAME=$(sed -n 's/.*versionName = "\(.*\)".*/\1/p' app/build.gradle.kts | tr -d '[:space:]')
+          VERSION_NAME=$(sed -n 's/.*baseVersionName = "\(.*\)".*/\1/p' app/build.gradle.kts | tr -d '[:space:]')
           echo "version=$VERSION_NAME" >> $GITHUB_OUTPUT
+
+      - name: Build Release APK & Bundle
+        run: ./gradlew assembleRelease bundleRelease -PversionCode=${{ github.run_number }} -PversionName=${{ steps.get_version.outputs.version }}.${{ github.run_number }}
 
       - name: Gather Build Artifacts
         run: |
