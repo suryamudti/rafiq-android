@@ -2,10 +2,27 @@
 
 ## Build & Run
 
+### With Android Studio (Windows)
 ```powershell
 $env:JAVA_HOME = "C:\Program Files\Android\Android Studio\jbr"
 .\gradlew assembleDebug
 adb -s emulator-5554 install -r app\build\outputs\apk\debug\app-debug.apk
+```
+
+### Without Android Studio (Linux/macOS)
+```bash
+# One-time setup:
+chmod +x setup-android-env.sh && ./setup-android-env.sh --emulator
+
+# Then source env and build:
+source ~/Android/Sdk/rafiq-env.sh
+./gradlew assembleDebug
+
+# Start emulator:
+emulator -avd Medium_Phone_API_35 -no-snapshot
+
+# Install APK:
+adb install -r app/build/outputs/apk/debug/app-debug.apk
 ```
 
 Emulator: `Medium_Phone_API_35`. No lint or typecheck commands currently set up.
