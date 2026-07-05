@@ -1,9 +1,5 @@
 package com.smiledev.rafiq.ui.tasbih
 
-import android.os.Build
-import android.os.VibrationEffect
-import android.os.Vibrator
-import android.os.VibratorManager
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,23 +16,21 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TasbihScreen(
     onBack: () -> Unit,
+    viewModel: TasbihViewModel = hiltViewModel(),
     modifier: Modifier = Modifier
 ) {
-    var count by remember { mutableIntStateOf(0) }
-    val context = LocalContext.current
+    val state by viewModel.uiState.collectAsState()
 
     Scaffold(
         topBar = {
@@ -62,10 +56,7 @@ fun TasbihScreen(
             Card(
                 modifier = Modifier
                     .size(200.dp)
-                    .clickable {
-                        count++
-                        vibrate(context)
-                    },
+                    .clickable { viewModel.increment() },
                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
             ) {
                 Column(
@@ -74,7 +65,7 @@ fun TasbihScreen(
                     verticalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = "$count",
+                        text = "${state.count}",
                         style = MaterialTheme.typography.displayLarge
                     )
                     Text(
@@ -85,27 +76,11 @@ fun TasbihScreen(
                 }
             }
             Button(
-                onClick = { count = 0 },
+                onClick = { viewModel.reset() },
                 modifier = Modifier.padding(top = 24.dp)
             ) {
                 Text("Reset")
             }
         }
-    }
-}
-
-private fun vibrate(context: android.content.Context) {
-    val vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-        val manager = context.getSystemService(android.content.Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
-        manager.defaultVibrator
-    } else {
-        @Suppress("DEPRECATION")
-        context.getSystemService(android.content.Context.VIBRATOR_SERVICE) as Vibrator
-    }
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        vibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE))
-    } else {
-        @Suppress("DEPRECATION")
-        vibrator.vibrate(50)
     }
 }

@@ -16,30 +16,27 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import kotlin.math.*
-
-private const val KAABA_LAT = 21.4225
-private const val KAABA_LON = 39.8262
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QiblaScreen(
     onBack: () -> Unit,
+    viewModel: QiblaViewModel = hiltViewModel(),
     modifier: Modifier = Modifier
 ) {
-    val userLat = -6.2088
-    val userLon = 106.8456
-    val bearing = calculateBearing(userLat, userLon, KAABA_LAT, KAABA_LON)
-    val distanceKm = calculateDistance(userLat, userLon, KAABA_LAT, KAABA_LON)
+    val state by viewModel.uiState.collectAsState()
 
     Scaffold(
         topBar = {
@@ -69,7 +66,7 @@ fun QiblaScreen(
             )
 
             Text(
-                text = "$bearing° from North",
+                text = "${state.bearing}° from North",
                 fontSize = 16.sp,
                 color = Color(0xFF009688),
                 fontWeight = FontWeight.Medium
@@ -77,12 +74,12 @@ fun QiblaScreen(
 
             Spacer(Modifier.height(16.dp))
 
-            QiblaCompass(bearing = bearing.toFloat())
+            QiblaCompass(bearing = state.bearing.toFloat())
 
             Spacer(Modifier.height(16.dp))
 
             Text(
-                text = "Distance to Mecca: $distanceKm km",
+                text = "Distance to Mecca: ${state.distanceKm} km",
                 fontSize = 14.sp,
                 color = Color.Gray
             )
@@ -138,11 +135,6 @@ private fun QiblaCompass(bearing: Float) {
                 strokeWidth = 6.dp.toPx()
             )
 
-            val arrowTip = Offset(
-                center.x + arrowLength * sin(arrowAngle).toFloat(),
-                center.y - arrowLength * cos(arrowAngle).toFloat()
-            )
-
             drawCircle(color = Color(0xFFFF9800), radius = 8.dp.toPx(), center = center)
         }
 
@@ -178,27 +170,4 @@ private fun QiblaCompass(bearing: Float) {
             modifier = Modifier.padding(end = 260.dp)
         )
     }
-}
-
-private fun calculateBearing(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Int {
-    val phi1 = lat1 * PI / 180
-    val phi2 = lat2 * PI / 180
-    val deltaLambda = (lon2 - lon1) * PI / 180
-
-    val y = sin(deltaLambda) * cos(phi2)
-    val x = cos(phi1) * sin(phi2) - sin(phi1) * cos(phi2) * cos(deltaLambda)
-
-    val bearing = atan2(y, x) * 180 / PI
-    return ((bearing + 360) % 360).roundToInt()
-}
-
-private fun calculateDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Int {
-    val r = 6371.0
-    val dLat = (lat2 - lat1) * PI / 180
-    val dLon = (lon2 - lon1) * PI / 180
-    val a = sin(dLat / 2) * sin(dLat / 2) +
-            cos(lat1 * PI / 180) * cos(lat2 * PI / 180) *
-            sin(dLon / 2) * sin(dLon / 2)
-    val c = 2 * atan2(sqrt(a), sqrt(1 - a))
-    return (r * c).roundToInt()
 }

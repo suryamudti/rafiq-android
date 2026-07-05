@@ -16,5 +16,7 @@ import kotlinx.serialization.Serializable
 @Serializable data object ZakatCalculator : NavKey
 @Serializable data object AsmaulHusna : NavKey
 @Serializable data object Tasbih : NavKey
+@Serializable data object BookmarkList : NavKey
+@Serializable data object PrayerLog : NavKey
 
 @Serializable data object Settings : NavKey

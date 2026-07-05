@@ -21,6 +21,8 @@ import com.smiledev.rafiq.ui.recitation.RecitationScreen
 import com.smiledev.rafiq.ui.zakat.ZakatCalculatorScreen
 import com.smiledev.rafiq.ui.asmaulhusna.AsmaulHusnaScreen
 import com.smiledev.rafiq.ui.tasbih.TasbihScreen
+import com.smiledev.rafiq.ui.bookmarks.BookmarkListFullScreen
+import com.smiledev.rafiq.ui.prayerlog.PrayerLogScreen
 
 import com.smiledev.rafiq.ui.settings.SettingsScreen
 
@@ -30,7 +32,7 @@ fun MainNavigation() {
 
   NavDisplay(
     backStack = backStack,
-    onBack = { backStack.removeLastOrNull() },
+    onBack = { if (backStack.size > 1) backStack.removeLastOrNull() },
     entryProvider =
       entryProvider {
         entry<Dashboard> {
@@ -121,7 +123,21 @@ fun MainNavigation() {
             modifier = Modifier.safeDrawingPadding()
           )
         }
-
+        entry<BookmarkList> {
+          BookmarkListFullScreen(
+            onBack = { backStack.removeLastOrNull() },
+            onBookmarkClick = { sura, name, aya ->
+              backStack.add(Ayah(suraNumber = sura, suraName = name, scrollToAya = aya))
+            },
+            modifier = Modifier.safeDrawingPadding()
+          )
+        }
+        entry<PrayerLog> {
+          PrayerLogScreen(
+            onBack = { backStack.removeLastOrNull() },
+            modifier = Modifier.safeDrawingPadding()
+          )
+        }
 
         entry<Settings> {
           SettingsScreen(

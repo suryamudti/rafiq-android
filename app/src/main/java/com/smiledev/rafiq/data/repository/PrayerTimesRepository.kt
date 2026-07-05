@@ -9,7 +9,7 @@ import javax.inject.Singleton
 class PrayerTimesRepository @Inject constructor(
     private val aladhanApi: AladhanApi
 ) {
-    suspend fun fetchPrayerTimes(lat: Double, lon: Double, date: String): PrayerTimesResponse {
-        return aladhanApi.fetchPrayerTimes(lat, lon, date)
+    suspend fun fetchPrayerTimes(lat: Double, lon: Double, date: String, method: Int = 20): PrayerTimesResponse {
+        return aladhanApi.fetchPrayerTimes(lat, lon, date, method)
     }
 }
