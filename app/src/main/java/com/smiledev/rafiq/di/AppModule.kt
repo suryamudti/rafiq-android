@@ -18,6 +18,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -76,6 +77,7 @@ object AppModule {
 
     @Provides
     @Singleton
+    @Named("aladhan")
     fun provideAladhanRetrofit(
         client: OkHttpClient,
         gson: GsonConverterFactory
@@ -89,6 +91,7 @@ object AppModule {
 
     @Provides
     @Singleton
+    @Named("metalprice")
     fun provideMetalPriceRetrofit(
         client: OkHttpClient,
         gson: GsonConverterFactory
@@ -102,13 +105,13 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideAladhanApiService(aladhanRetrofit: Retrofit): AladhanApiService {
+    fun provideAladhanApiService(@Named("aladhan") aladhanRetrofit: Retrofit): AladhanApiService {
         return aladhanRetrofit.create(AladhanApiService::class.java)
     }
 
     @Provides
     @Singleton
-    fun provideMetalPriceApiService(metalPriceRetrofit: Retrofit): MetalPriceApiService {
+    fun provideMetalPriceApiService(@Named("metalprice") metalPriceRetrofit: Retrofit): MetalPriceApiService {
         return metalPriceRetrofit.create(MetalPriceApiService::class.java)
     }
 }
