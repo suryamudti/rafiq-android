@@ -1,7 +1,5 @@
 package com.smiledev.rafiq.data.remote
 
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -40,22 +38,15 @@ interface AladhanApiService {
 }
 
 @Singleton
-class AladhanApi @Inject constructor() {
+class AladhanApi @Inject constructor(
     private val service: AladhanApiService
-
-    init {
-        val retrofit = Retrofit.Builder()
-            .baseUrl("https://api.aladhan.com/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-        service = retrofit.create(AladhanApiService::class.java)
-    }
-
+) {
     suspend fun fetchPrayerTimes(
         latitude: Double,
         longitude: Double,
-        date: String
+        date: String,
+        method: Int = 20
     ): PrayerTimesResponse {
-        return service.getTimings(date, latitude, longitude)
+        return service.getTimings(date, latitude, longitude, method)
     }
 }

@@ -51,6 +51,8 @@ import com.smiledev.rafiq.Recitation
 import com.smiledev.rafiq.Settings
 import com.smiledev.rafiq.Tasbih
 import com.smiledev.rafiq.ZakatCalculator
+import com.smiledev.rafiq.BookmarkList
+import com.smiledev.rafiq.PrayerLog
 
 private data class FeatureItem(
     val label: String,
@@ -70,6 +72,8 @@ private val features = listOf(
     FeatureItem("Zakat", ZakatCalculator, Icons.Filled.ShoppingCart, Color(0xFFFF9800)),
     FeatureItem("99 Names", AsmaulHusna, Icons.Filled.Star, Color(0xFF3F51B5)),
     FeatureItem("Tasbih", Tasbih, Icons.Filled.Refresh, Color(0xFF009688)),
+    FeatureItem("Bookmarks", BookmarkList, Icons.Filled.Favorite, Color(0xFFE91E63)),
+    FeatureItem("Prayer Log", PrayerLog, Icons.Filled.Notifications, Color(0xFF795548)),
 )
 
 @Composable

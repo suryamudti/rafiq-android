@@ -2,12 +2,14 @@ package com.smiledev.rafiq.ui.prayertimes
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.smiledev.rafiq.data.preferences.PreferencesManager
 import com.smiledev.rafiq.data.repository.PrayerTimesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -29,12 +31,16 @@ data class PrayerTimesUiState(
     val currentPrayerTime: String = "",
     val countdown: String = "",
     val isLoading: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
+    val latitude: Double = -6.2088,
+    val longitude: Double = 106.8456,
+    val calculationMethod: Int = 20
 )
 
 @HiltViewModel
 class PrayerTimesViewModel @Inject constructor(
-    private val prayerTimesRepository: PrayerTimesRepository
+    private val prayerTimesRepository: PrayerTimesRepository,
+    private val preferencesManager: PreferencesManager
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(PrayerTimesUiState())
@@ -44,22 +50,36 @@ class PrayerTimesViewModel @Inject constructor(
     private val timeFormat = SimpleDateFormat("HH:mm", Locale.US)
     private val displayDateFormat = SimpleDateFormat("EEEE, MMMM d, yyyy", Locale.US)
 
-    private val prayerNames = listOf(
-        "Imsak", "Fajr (Subuh)", "Sunrise", "Dhuha",
-        "Dzuhur", "Asr", "Maghrib", "Isya"
-    )
-
-    private val defaultLat = -6.2088 // Jakarta
-    private val defaultLon = 106.8456
-
-    init { loadPrayerTimes() }
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            combine(
+                preferencesManager.latitude,
+                preferencesManager.longitude,
+                preferencesManager.prayerCalculationMethod
+            ) { latStr, lonStr, method ->
+                val lat = latStr.toDoubleOrNull() ?: -6.2088
+                val lon = lonStr.toDoubleOrNull() ?: 106.8456
+                val calcMethod = if (method == 2) 20 else method // Map ISNA(2)→Karachi(20) default
+                _uiState.value = _uiState.value.copy(
+                    latitude = lat,
+                    longitude = lon,
+                    calculationMethod = calcMethod
+                )
+            }.collect { }
+            loadPrayerTimes()
+        }
+    }
 
     fun loadPrayerTimes() {
+        val state = _uiState.value
         viewModelScope.launch(Dispatchers.IO) {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             try {
                 val date = _uiState.value.currentDate
-                val response = prayerTimesRepository.fetchPrayerTimes(defaultLat, defaultLon, dateFormat.format(date))
+                val response = prayerTimesRepository.fetchPrayerTimes(
+                    state.latitude, state.longitude,
+                    dateFormat.format(date), state.calculationMethod
+                )
                 if (response.code == 200) {
                     val t = response.data.timings
                     val times = listOf(
