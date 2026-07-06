@@ -1,5 +1,10 @@
 package com.smiledev.rafiq.ui.qibla
 
+import android.content.Context
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -16,12 +21,18 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -37,6 +48,32 @@ fun QiblaScreen(
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
+    var deviceAzimuth by remember { mutableStateOf(0f) }
+
+    DisposableEffect(Unit) {
+        val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        val rotationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR)
+        val listener = object : SensorEventListener {
+            override fun onSensorChanged(event: SensorEvent) {
+                if (event.sensor.type == Sensor.TYPE_ROTATION_VECTOR) {
+                    val rotationMatrix = FloatArray(9)
+                    SensorManager.getRotationMatrixFromVector(rotationMatrix, event.values)
+                    val orientation = FloatArray(3)
+                    SensorManager.getOrientation(rotationMatrix, orientation)
+                    val azimuthRad = orientation[0]
+                    deviceAzimuth = ((Math.toDegrees(azimuthRad.toDouble()).toFloat() + 360) % 360)
+                }
+            }
+            override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
+        }
+        if (rotationSensor != null) {
+            sensorManager.registerListener(listener, rotationSensor, SensorManager.SENSOR_DELAY_UI)
+        }
+        onDispose {
+            sensorManager.unregisterListener(listener)
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -74,7 +111,7 @@ fun QiblaScreen(
 
             Spacer(Modifier.height(16.dp))
 
-            QiblaCompass(bearing = state.bearing.toFloat())
+            QiblaCompass(bearing = state.bearing.toFloat(), azimuth = deviceAzimuth)
 
             Spacer(Modifier.height(16.dp))
 
@@ -98,9 +135,13 @@ fun QiblaScreen(
 }
 
 @Composable
-private fun QiblaCompass(bearing: Float) {
+private fun QiblaCompass(bearing: Float, azimuth: Float) {
     Box(
-        modifier = Modifier.size(300.dp),
+        modifier = Modifier
+            .size(300.dp)
+            .graphicsLayer {
+                rotationZ = -azimuth
+            },
         contentAlignment = Alignment.Center
     ) {
         Canvas(modifier = Modifier.size(280.dp)) {

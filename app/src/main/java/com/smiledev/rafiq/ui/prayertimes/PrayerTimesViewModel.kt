@@ -65,8 +65,9 @@ class PrayerTimesViewModel @Inject constructor(
                     longitude = lon,
                     calculationMethod = calcMethod
                 )
-            }.collect { }
-            loadPrayerTimes()
+            }.collect {
+                loadPrayerTimes()
+            }
         }
     }
 
