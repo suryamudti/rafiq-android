@@ -162,7 +162,8 @@ class QuranRepository @Inject constructor(
                 translationEnDb = db
             }
             db
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            android.util.Log.e("QuranRepository", "Error opening translation database: $path", e)
             null
         }
     }

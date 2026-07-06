@@ -12,12 +12,16 @@ class DatabaseCopier @Inject constructor(private val context: Context) {
     fun copyDatabaseIfNeeded(dbName: String) {
         val flatName = dbName.replace('/', '_')
         val dbFile = context.getDatabasePath(flatName)
-        if (!dbFile.exists()) {
-            dbFile.parentFile?.mkdirs()
-            context.assets.open("quran-data/$dbName").use { input ->
-                FileOutputStream(dbFile).use { output ->
-                    input.copyTo(output)
+        if (!dbFile.exists() || dbFile.length() == 0L) {
+            try {
+                dbFile.parentFile?.mkdirs()
+                context.assets.open("quran-data/$dbName").use { input ->
+                    FileOutputStream(dbFile).use { output ->
+                        input.copyTo(output)
+                    }
                 }
+            } catch (e: Exception) {
+                android.util.Log.e("DatabaseCopier", "Failed to copy database asset: $dbName", e)
             }
         }
     }
