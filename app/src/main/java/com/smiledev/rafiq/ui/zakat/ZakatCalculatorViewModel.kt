@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.smiledev.rafiq.data.repository.MetalPriceRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -36,6 +37,8 @@ class ZakatCalculatorViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
+    var ioDispatcher: CoroutineDispatcher = Dispatchers.IO
+
     private val _uiState = MutableStateFlow(
         ZakatUiState(
             goldWeight = savedStateHandle.get<String>("goldWeight") ?: "",
@@ -57,7 +60,7 @@ class ZakatCalculatorViewModel @Inject constructor(
 
     fun calculate() {
         val s = _uiState.value
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(ioDispatcher) {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             try {
                 val goldW = s.goldWeight.toDoubleOrNull() ?: 0.0

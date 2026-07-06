@@ -44,7 +44,9 @@ class ZakatCalculatorViewModelTest {
             set("selectedCurrency", "USD")
         }
 
-        val viewModel = ZakatCalculatorViewModel(metalPriceRepository, savedStateHandle)
+        val viewModel = ZakatCalculatorViewModel(metalPriceRepository, savedStateHandle).apply {
+            ioDispatcher = testDispatcher
+        }
         viewModel.calculate()
         advanceUntilIdle()
 
@@ -71,7 +73,9 @@ class ZakatCalculatorViewModelTest {
             set("selectedCurrency", "USD")
         }
 
-        val viewModel = ZakatCalculatorViewModel(metalPriceRepository, savedStateHandle)
+        val viewModel = ZakatCalculatorViewModel(metalPriceRepository, savedStateHandle).apply {
+            ioDispatcher = testDispatcher
+        }
         viewModel.calculate()
         advanceUntilIdle()
 
@@ -96,7 +100,9 @@ class ZakatCalculatorViewModelTest {
             set("selectedCurrency", "IDR")
         }
 
-        val viewModel = ZakatCalculatorViewModel(metalPriceRepository, savedStateHandle)
+        val viewModel = ZakatCalculatorViewModel(metalPriceRepository, savedStateHandle).apply {
+            ioDispatcher = testDispatcher
+        }
         viewModel.calculate()
         advanceUntilIdle()
 
