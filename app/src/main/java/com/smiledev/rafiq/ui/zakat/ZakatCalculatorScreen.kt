@@ -2,6 +2,7 @@ package com.smiledev.rafiq.ui.zakat
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -56,6 +57,15 @@ fun ZakatCalculatorScreen(
             )
         }
     ) { padding ->
+        val currencySymbol = if (state.selectedCurrency == "IDR") "Rp" else "$"
+        fun formatVal(value: Double): String {
+            return if (state.selectedCurrency == "IDR") {
+                "Rp%,.2f".format(value)
+            } else {
+                "$%,.2f".format(value)
+            }
+        }
+
         Column(
             modifier = modifier
                 .fillMaxSize()
@@ -66,8 +76,26 @@ fun ZakatCalculatorScreen(
             Text(
                 text = "Calculate Your Zakat",
                 style = MaterialTheme.typography.headlineSmall,
-                modifier = Modifier.padding(bottom = 16.dp)
+                modifier = Modifier.padding(bottom = 8.dp)
             )
+
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
+                horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(8.dp)
+            ) {
+                listOf("USD", "IDR").forEach { curr ->
+                    val isSelected = state.selectedCurrency == curr
+                    if (isSelected) {
+                        Button(onClick = { viewModel.updateCurrency(curr) }) {
+                            Text(curr)
+                        }
+                    } else {
+                        androidx.compose.material3.OutlinedButton(onClick = { viewModel.updateCurrency(curr) }) {
+                            Text(curr)
+                        }
+                    }
+                }
+            }
 
             OutlinedTextField(
                 value = state.goldWeight,
@@ -88,7 +116,7 @@ fun ZakatCalculatorScreen(
             OutlinedTextField(
                 value = state.cashAmount,
                 onValueChange = { viewModel.updateCash(it) },
-                label = { Text("Cash & Savings (USD)") },
+                label = { Text("Cash & Savings (${state.selectedCurrency})") },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.fillMaxWidth()
             )
@@ -123,17 +151,17 @@ fun ZakatCalculatorScreen(
                             HorizontalDivider()
                             Spacer(Modifier.height(8.dp))
                             if (r.goldZakat > 0) {
-                                Text("Gold Zakat: $${"%.2f".format(r.goldZakat)}")
+                                Text("Gold Zakat: ${formatVal(r.goldZakat)}")
                             } else {
                                 Text("Gold: Below nisab (85g)")
                             }
                             if (r.silverZakat > 0) {
-                                Text("Silver Zakat: $${"%.2f".format(r.silverZakat)}")
+                                Text("Silver Zakat: ${formatVal(r.silverZakat)}")
                             } else {
                                 Text("Silver: Below nisab (595g)")
                             }
                             if (r.cashZakat > 0) {
-                                Text("Cash Zakat: $${"%.2f".format(r.cashZakat)}")
+                                Text("Cash Zakat: ${formatVal(r.cashZakat)}")
                             } else {
                                 Text("Cash: Below nisab threshold")
                             }
@@ -141,14 +169,14 @@ fun ZakatCalculatorScreen(
                             HorizontalDivider()
                             Spacer(Modifier.height(8.dp))
                             Text(
-                                text = "Total Zakat Due: $${"%.2f".format(r.totalZakat)}",
+                                text = "Total Zakat Due: ${formatVal(r.totalZakat)}",
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color(0xFF009688)
                             )
                             if (r.goldPricePerGram > 0) {
                                 Text(
-                                    text = "Gold price: $${"%.2f".format(r.goldPricePerGram)}/g | Silver: $${"%.2f".format(r.silverPricePerGram)}/g",
+                                    text = "Gold price: ${formatVal(r.goldPricePerGram)}/g | Silver: ${formatVal(r.silverPricePerGram)}/g",
                                     fontSize = 11.sp,
                                     color = Color.Gray
                                 )
