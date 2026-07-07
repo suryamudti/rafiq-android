@@ -9,6 +9,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.BufferedReader
+import java.io.File
 import java.io.InputStreamReader
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -149,8 +150,8 @@ class QuranRepository @Inject constructor(
     private fun getQuranDatabase(): SQLiteDatabase {
         if (quranDb?.isOpen == true) return quranDb!!
         databaseCopier.copyDatabaseIfNeeded("quran-uthmani.db")
-        val path = context.getDatabasePath("quran-uthmani.db").absolutePath
-        quranDb = SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.OPEN_READONLY)
+        val dbFile = File(context.filesDir, "databases/quran-uthmani.db")
+        quranDb = SQLiteDatabase.openDatabase(dbFile.absolutePath, null, SQLiteDatabase.OPEN_READONLY)
         return quranDb!!
     }
 
@@ -161,7 +162,7 @@ class QuranRepository @Inject constructor(
 
         val fileKey = if (isId) "translations/id.indonesian.db" else "translations/en.sahih.db"
         val flatName = fileKey.replace('/', '_')
-        val dbFile = context.getDatabasePath(flatName)
+        val dbFile = File(context.filesDir, "databases/$flatName")
 
         if (!databaseCopier.copyAndVerifyTranslationDb(fileKey)) {
             android.util.Log.w("QuranRepository", "Retrying copy for $fileKey after failed verification")
