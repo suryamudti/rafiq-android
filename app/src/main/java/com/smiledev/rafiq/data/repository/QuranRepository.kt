@@ -175,6 +175,7 @@ class QuranRepository @Inject constructor(
         return try {
             val db = SQLiteDatabase.openDatabase(dbFile.absolutePath, null, SQLiteDatabase.OPEN_READONLY)
             if (isId) translationIdDb = db else translationEnDb = db
+            android.util.Log.i("QuranRepository", "Opened translation DB: $fileKey")
             db
         } catch (e: Exception) {
             android.util.Log.e("QuranRepository", "Error opening translation database: ${dbFile.absolutePath}", e)

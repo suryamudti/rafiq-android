@@ -267,25 +267,44 @@ private fun VerseCell(
             translationLanguage
         }
 
+        val hasId = !ayah.translationId.isNullOrBlank()
+        val hasEn = !ayah.translationEn.isNullOrBlank()
+
         when (resolvedLang) {
             "id" -> {
-                if (!ayah.translationId.isNullOrBlank()) {
+                val text = if (hasId) ayah.translationId else if (hasEn) ayah.translationEn else null
+                if (text != null) {
                     Text(
-                        text = "${ayah.aya}. ${ayah.translationId}",
+                        text = "${ayah.aya}. $text",
                         fontSize = 15.sp,
                         fontWeight = FontWeight.Medium,
                         lineHeight = 24.sp,
                         modifier = Modifier.fillMaxWidth().padding(top = 6.dp)
                     )
+                } else {
+                    Text(
+                        text = "[Translation unavailable]",
+                        fontSize = 14.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
+                        modifier = Modifier.fillMaxWidth().padding(top = 6.dp)
+                    )
                 }
             }
             "en" -> {
-                if (!ayah.translationEn.isNullOrBlank()) {
+                val text = if (hasEn) ayah.translationEn else if (hasId) ayah.translationId else null
+                if (text != null) {
                     Text(
-                        text = "${ayah.aya}. ${ayah.translationEn}",
+                        text = "${ayah.aya}. $text",
                         fontSize = 15.sp,
                         fontWeight = FontWeight.Medium,
                         lineHeight = 24.sp,
+                        modifier = Modifier.fillMaxWidth().padding(top = 6.dp)
+                    )
+                } else {
+                    Text(
+                        text = "[Translation unavailable]",
+                        fontSize = 14.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
                         modifier = Modifier.fillMaxWidth().padding(top = 6.dp)
                     )
                 }
@@ -295,7 +314,7 @@ private fun VerseCell(
                     modifier = Modifier.fillMaxWidth().padding(top = 6.dp),
                     verticalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
-                    if (!ayah.translationId.isNullOrBlank()) {
+                    if (hasId) {
                         Row(
                             verticalAlignment = Alignment.Top,
                             modifier = Modifier.fillMaxWidth()
@@ -319,7 +338,7 @@ private fun VerseCell(
                             )
                         }
                     }
-                    if (!ayah.translationEn.isNullOrBlank()) {
+                    if (hasEn) {
                         Row(
                             verticalAlignment = Alignment.Top,
                             modifier = Modifier.fillMaxWidth()
@@ -343,6 +362,14 @@ private fun VerseCell(
                                 modifier = Modifier.weight(1f)
                             )
                         }
+                    }
+                    if (!hasId && !hasEn) {
+                        Text(
+                            text = "[Translation unavailable]",
+                            fontSize = 14.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
+                            modifier = Modifier.fillMaxWidth()
+                        )
                     }
                 }
             }
