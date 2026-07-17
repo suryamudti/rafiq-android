@@ -9,6 +9,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.BufferedReader
+import java.io.File
 import java.io.InputStreamReader
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -72,8 +73,8 @@ class QuranRepository @Inject constructor(
         cursor.close()
 
         val metadata = getMetadataMap()
-        val translationMapId = getTranslationForSura(suraNumber, "id")
-        val translationMapEn = getTranslationForSura(suraNumber, "en")
+        val translationMapId = getTranslationForSuraSafe(suraNumber, "id")
+        val translationMapEn = getTranslationForSuraSafe(suraNumber, "en")
 
         val enrichedList = rawList.map { ayah ->
             val key = "${ayah.sura}:${ayah.aya}"
@@ -137,11 +138,20 @@ class QuranRepository @Inject constructor(
         return map
     }
 
+    private fun getTranslationForSuraSafe(suraNumber: Int, localeCode: String): Map<Int, String> {
+        return try {
+            getTranslationForSura(suraNumber, localeCode)
+        } catch (e: Exception) {
+            android.util.Log.e("QuranRepository", "Failed to load $localeCode translation for sura $suraNumber", e)
+            emptyMap()
+        }
+    }
+
     private fun getQuranDatabase(): SQLiteDatabase {
         if (quranDb?.isOpen == true) return quranDb!!
         databaseCopier.copyDatabaseIfNeeded("quran-uthmani.db")
-        val path = context.getDatabasePath("quran-uthmani.db").absolutePath
-        quranDb = SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.OPEN_READONLY)
+        val dbFile = File(context.filesDir, "databases/quran-uthmani.db")
+        quranDb = SQLiteDatabase.openDatabase(dbFile.absolutePath, null, SQLiteDatabase.OPEN_READONLY)
         return quranDb!!
     }
 
@@ -152,18 +162,25 @@ class QuranRepository @Inject constructor(
 
         val fileKey = if (isId) "translations/id.indonesian.db" else "translations/en.sahih.db"
         val flatName = fileKey.replace('/', '_')
-        databaseCopier.copyDatabaseIfNeeded(fileKey)
-        val path = context.getDatabasePath(flatName).absolutePath
-        return try {
-            val db = SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.OPEN_READONLY)
-            if (isId) {
-                translationIdDb = db
-            } else {
-                translationEnDb = db
+        val dbFile = File(context.filesDir, "databases/$flatName")
+
+        if (!databaseCopier.copyAndVerifyTranslationDb(fileKey)) {
+            android.util.Log.w("QuranRepository", "Retrying copy for $fileKey after failed verification")
+            dbFile.delete()
+            if (!databaseCopier.copyAndVerifyTranslationDb(fileKey)) {
+                android.util.Log.e("QuranRepository", "Failed to copy and verify translation database: $fileKey")
+                return null
             }
+        }
+
+        return try {
+            val db = SQLiteDatabase.openDatabase(dbFile.absolutePath, null, SQLiteDatabase.OPEN_READONLY)
+            if (isId) translationIdDb = db else translationEnDb = db
+            android.util.Log.i("QuranRepository", "Opened translation DB: $fileKey")
             db
         } catch (e: Exception) {
-            android.util.Log.e("QuranRepository", "Error opening translation database: $path", e)
+            android.util.Log.e("QuranRepository", "Error opening translation database: ${dbFile.absolutePath}", e)
+            dbFile.delete()
             null
         }
     }
