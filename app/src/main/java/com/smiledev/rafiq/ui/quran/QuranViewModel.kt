@@ -25,7 +25,9 @@ data class QuranUiState(
     val isLoading: Boolean = false,
     val error: String? = null,
     val bookmarkedAyahs: Set<Int> = emptySet(),
-    val translationLanguage: String = "system"
+    val translationLanguage: String = "system",
+    val ayahFontSize: Int = 22,
+    val translationFontSize: Int = 15
 )
 
 @HiltViewModel
@@ -45,6 +47,16 @@ class QuranViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             preferencesManager.translationLanguage.collect { lang ->
                 _uiState.value = _uiState.value.copy(translationLanguage = lang)
+            }
+        }
+        viewModelScope.launch(Dispatchers.IO) {
+            preferencesManager.ayahFontSize.collect { size ->
+                _uiState.value = _uiState.value.copy(ayahFontSize = size)
+            }
+        }
+        viewModelScope.launch(Dispatchers.IO) {
+            preferencesManager.translationFontSize.collect { size ->
+                _uiState.value = _uiState.value.copy(translationFontSize = size)
             }
         }
     }

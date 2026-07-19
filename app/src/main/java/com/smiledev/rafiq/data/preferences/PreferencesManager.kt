@@ -27,6 +27,8 @@ class PreferencesManager @Inject constructor(
         val LAST_SELECTED_RECITER = intPreferencesKey("last_selected_reciter")
         val PRAYER_NOTIFICATIONS_ENABLED = booleanPreferencesKey("prayer_notifications_enabled")
         val TRANSLATION_LANGUAGE = stringPreferencesKey("translation_language")
+        val AYAH_FONT_SIZE = intPreferencesKey("ayah_font_size")
+        val TRANSLATION_FONT_SIZE = intPreferencesKey("translation_font_size")
     }
 
     val themeMode: Flow<String> = context.dataStore.data.map { prefs ->
@@ -61,6 +63,14 @@ class PreferencesManager @Inject constructor(
         prefs[TRANSLATION_LANGUAGE] ?: "system"
     }
 
+    val ayahFontSize: Flow<Int> = context.dataStore.data.map { prefs ->
+        prefs[AYAH_FONT_SIZE] ?: 22
+    }
+
+    val translationFontSize: Flow<Int> = context.dataStore.data.map { prefs ->
+        prefs[TRANSLATION_FONT_SIZE] ?: 15
+    }
+
     suspend fun setThemeMode(mode: String) {
         context.dataStore.edit { prefs -> prefs[THEME_MODE] = mode }
     }
@@ -91,5 +101,13 @@ class PreferencesManager @Inject constructor(
 
     suspend fun setTranslationLanguage(lang: String) {
         context.dataStore.edit { prefs -> prefs[TRANSLATION_LANGUAGE] = lang }
+    }
+
+    suspend fun setAyahFontSize(size: Int) {
+        context.dataStore.edit { prefs -> prefs[AYAH_FONT_SIZE] = size }
+    }
+
+    suspend fun setTranslationFontSize(size: Int) {
+        context.dataStore.edit { prefs -> prefs[TRANSLATION_FONT_SIZE] = size }
     }
 }
