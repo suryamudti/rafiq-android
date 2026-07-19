@@ -13,7 +13,9 @@ import javax.inject.Inject
 
 data class SettingsUiState(
     val themeMode: String = "system",
-    val translationLanguage: String = "system"
+    val translationLanguage: String = "system",
+    val ayahFontSize: Int = 22,
+    val translationFontSize: Int = 15
 )
 
 @HiltViewModel
@@ -35,6 +37,16 @@ class SettingsViewModel @Inject constructor(
                 _uiState.value = _uiState.value.copy(translationLanguage = lang)
             }
         }
+        viewModelScope.launch(Dispatchers.IO) {
+            preferencesManager.ayahFontSize.collect { size ->
+                _uiState.value = _uiState.value.copy(ayahFontSize = size)
+            }
+        }
+        viewModelScope.launch(Dispatchers.IO) {
+            preferencesManager.translationFontSize.collect { size ->
+                _uiState.value = _uiState.value.copy(translationFontSize = size)
+            }
+        }
     }
 
     fun setThemeMode(mode: String) {
@@ -46,6 +58,18 @@ class SettingsViewModel @Inject constructor(
     fun setTranslationLanguage(lang: String) {
         viewModelScope.launch(Dispatchers.IO) {
             preferencesManager.setTranslationLanguage(lang)
+        }
+    }
+
+    fun setAyahFontSize(size: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            preferencesManager.setAyahFontSize(size)
+        }
+    }
+
+    fun setTranslationFontSize(size: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            preferencesManager.setTranslationFontSize(size)
         }
     }
 }

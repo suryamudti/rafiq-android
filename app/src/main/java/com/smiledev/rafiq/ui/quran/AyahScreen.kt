@@ -170,7 +170,9 @@ fun AyahScreen(
                                 ayah = ayah,
                                 translationLanguage = state.translationLanguage,
                                 isBookmarked = state.bookmarkedAyahs.contains(ayah.aya),
-                                onLongPress = { longPressedAyah = ayah }
+                                onLongPress = { longPressedAyah = ayah },
+                                ayahFontSize = state.ayahFontSize,
+                                translationFontSize = state.translationFontSize
                             )
                         }
                     }
@@ -186,7 +188,9 @@ private fun VerseCell(
     ayah: AyahData,
     translationLanguage: String,
     isBookmarked: Boolean,
-    onLongPress: () -> Unit
+    onLongPress: () -> Unit,
+    ayahFontSize: Int = 22,
+    translationFontSize: Int = 15
 ) {
     Column(modifier = Modifier
         .fillMaxWidth()
@@ -205,7 +209,7 @@ private fun VerseCell(
             Text(
                 text = "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ",
                 fontFamily = arabicFont,
-                fontSize = 22.sp,
+                fontSize = ayahFontSize.sp,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp)
             )
@@ -252,10 +256,10 @@ private fun VerseCell(
             Text(
                 text = ayah.text,
                 style = MaterialTheme.typography.bodyLarge.copy(
-                    fontSize = 22.sp,
+                    fontSize = ayahFontSize.sp,
                     fontFamily = arabicFont,
                     textDirection = TextDirection.Rtl,
-                    lineHeight = 44.sp
+                    lineHeight = (ayahFontSize * 2).sp
                 ),
                 modifier = Modifier.weight(1f).padding(start = 8.dp)
             )
@@ -276,9 +280,9 @@ private fun VerseCell(
                 if (text != null) {
                     Text(
                         text = "${ayah.aya}. $text",
-                        fontSize = 15.sp,
+                        fontSize = translationFontSize.sp,
                         fontWeight = FontWeight.Medium,
-                        lineHeight = 24.sp,
+                        lineHeight = (translationFontSize * 1.6).sp,
                         modifier = Modifier.fillMaxWidth().padding(top = 6.dp)
                     )
                 } else {
@@ -295,9 +299,9 @@ private fun VerseCell(
                 if (text != null) {
                     Text(
                         text = "${ayah.aya}. $text",
-                        fontSize = 15.sp,
+                        fontSize = translationFontSize.sp,
                         fontWeight = FontWeight.Medium,
-                        lineHeight = 24.sp,
+                        lineHeight = (translationFontSize * 1.6).sp,
                         modifier = Modifier.fillMaxWidth().padding(top = 6.dp)
                     )
                 } else {
@@ -331,9 +335,9 @@ private fun VerseCell(
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
                                 text = ayah.translationId,
-                                fontSize = 15.sp,
+                                fontSize = translationFontSize.sp,
                                 fontWeight = FontWeight.Medium,
-                                lineHeight = 24.sp,
+                                lineHeight = (translationFontSize * 1.6).sp,
                                 modifier = Modifier.weight(1f)
                             )
                         }
@@ -355,9 +359,9 @@ private fun VerseCell(
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
                                 text = ayah.translationEn,
-                                fontSize = 14.sp,
+                                fontSize = translationFontSize.sp,
                                 fontWeight = FontWeight.Normal,
-                                lineHeight = 22.sp,
+                                lineHeight = (translationFontSize * 1.6).sp,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 modifier = Modifier.weight(1f)
                             )
