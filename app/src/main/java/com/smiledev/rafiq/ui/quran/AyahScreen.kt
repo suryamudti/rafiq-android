@@ -334,7 +334,7 @@ private fun VerseCell(
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
-                                text = ayah.translationId,
+                                text = ayah.translationId!!,
                                 fontSize = translationFontSize.sp,
                                 fontWeight = FontWeight.Medium,
                                 lineHeight = (translationFontSize * 1.6).sp,
@@ -358,7 +358,7 @@ private fun VerseCell(
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
-                                text = ayah.translationEn,
+                                text = ayah.translationEn!!,
                                 fontSize = translationFontSize.sp,
                                 fontWeight = FontWeight.Normal,
                                 lineHeight = (translationFontSize * 1.6).sp,
