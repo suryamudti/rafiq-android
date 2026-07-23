@@ -27,9 +27,9 @@ Go to the [Releases](https://github.com/smiledev/rafiq-android/releases) section
 | :---: | :---: | :---: | :---: |
 | <img src="figure/dashboard.png" width="220"/> | <img src="figure/prayertimes.png" width="220"/> | <img src="figure/quran.png" width="220"/> | <img src="figure/qibla.png" width="220"/> |
 
-| Zakat Calculator | 
-| :---: | 
-| <img src="figure/zakat.png" width="220"/> ||
+| Zakat Calculator | 99 Names of Allah | Tasbih Counter | Nearby Mosques |
+| :---: | :---: | :---: | :---: |
+| <img src="figure/zakat.png" width="220"/> | <img src="figure/asmaulhusna.png" width="220"/> | <img src="figure/tasbih.png" width="220"/> | <img src="figure/mosques.png" width="220"/> |
 
 ---
 
@@ -193,4 +193,5 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and limitations under the License.
 ```
+
 
