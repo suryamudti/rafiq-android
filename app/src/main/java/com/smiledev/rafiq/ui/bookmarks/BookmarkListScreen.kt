@@ -19,13 +19,22 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.smiledev.rafiq.R
 
 @Composable
 fun BookmarkListTabContent(
@@ -35,14 +44,20 @@ fun BookmarkListTabContent(
 ) {
     val state by viewModel.uiState.collectAsState()
 
-    Box(modifier = modifier.fillMaxSize()) {
+    var isRefreshing by remember { mutableStateOf(false) }
+    LaunchedEffect(state.isLoading) { if (!state.isLoading) isRefreshing = false }
+    PullToRefreshBox(
+        isRefreshing = isRefreshing,
+        onRefresh = { isRefreshing = true; viewModel.refresh() },
+        modifier = modifier.fillMaxSize()
+    ) {
         when {
-            state.isLoading -> {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            state.isLoading && !isRefreshing -> {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center).semantics { contentDescription = "Loading" })
             }
             state.bookmarks.isEmpty() -> {
                 Text(
-                    text = "No bookmarks yet",
+                    text = stringResource(R.string.no_bookmarks_yet),
                     modifier = Modifier.align(Alignment.Center).padding(32.dp),
                     color = Color.Gray
                 )
@@ -77,7 +92,7 @@ fun BookmarkListTabContent(
                                     )
                                 }
                                 IconButton(onClick = { viewModel.delete(bookmark.sura, bookmark.aya) }) {
-                                    Icon(Icons.Filled.Delete, contentDescription = "Delete")
+                                    Icon(Icons.Filled.Delete, contentDescription = stringResource(R.string.delete))
                                 }
                             }
                         }

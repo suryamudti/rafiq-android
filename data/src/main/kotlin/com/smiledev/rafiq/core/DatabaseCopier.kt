@@ -72,13 +72,4 @@ class DatabaseCopier @Inject constructor(private val context: Context) {
         }
     }
 
-    fun copyAllQuranDatabases() {
-        val databases = listOf(
-            "quran-uthmani.db",
-            "translations.db",
-            "translations/en.sahih.db",
-            "translations/id.indonesian.db"
-        )
-        databases.forEach { copyDatabaseIfNeeded(it) }
-    }
 }

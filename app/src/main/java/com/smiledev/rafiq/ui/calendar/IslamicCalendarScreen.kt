@@ -35,12 +35,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.smiledev.rafiq.data.models.IslamicEvent
+import com.smiledev.rafiq.R
+import com.smiledev.rafiq.core.displayMessage
+import com.smiledev.rafiq.domain.model.IslamicEvent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,9 +60,9 @@ fun IslamicCalendarScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Islamic Calendar") },
+                title = { Text(stringResource(R.string.islamic_calendar)) },
                 navigationIcon = {
-                    Text("Back", modifier = Modifier.clickable(onClick = onBack).padding(16.dp))
+                    Text(stringResource(R.string.back), modifier = Modifier.clickable(onClick = onBack).padding(16.dp))
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surface
@@ -67,11 +72,11 @@ fun IslamicCalendarScreen(
     ) { padding ->
         when {
             state.isLoading -> {
-                CircularProgressIndicator(modifier = Modifier.fillMaxSize().padding(padding))
+                CircularProgressIndicator(modifier = Modifier.fillMaxSize().padding(padding).semantics { contentDescription = "Loading" })
             }
             state.error != null -> {
                 Text(
-                    text = "Error: ${state.error}",
+                    text = state.error?.displayMessage ?: "",
                     modifier = Modifier.fillMaxSize().padding(padding).padding(16.dp),
                     color = MaterialTheme.colorScheme.error
                 )
@@ -89,7 +94,7 @@ fun IslamicCalendarScreen(
                                     Text(text = "\uD83D\uDCC5", fontSize = 16.sp)
                                     Spacer(Modifier.width(8.dp))
                                     Text(
-                                        text = "Today's Events",
+                                        text = stringResource(R.string.todays_events),
                                         fontWeight = FontWeight.Bold,
                                         color = Color(0xFF00695C)
                                     )
@@ -125,7 +130,7 @@ fun IslamicCalendarScreen(
 
                     if (state.events.isEmpty()) {
                         Text(
-                            text = "No events for this month",
+                            text = stringResource(R.string.no_events_this_month),
                             modifier = Modifier.fillMaxSize().padding(16.dp),
                             color = Color.Gray
                         )

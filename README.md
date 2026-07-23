@@ -1,10 +1,13 @@
 # Rafiq - Islamic Lifestyle App
 
+[![PR Check](https://github.com/smiledev/rafiq-android/actions/workflows/pr-check.yml/badge.svg)](https://github.com/smiledev/rafiq-android/actions/workflows/pr-check.yml)
+[![Release](https://github.com/smiledev/rafiq-android/actions/workflows/release.yml/badge.svg)](https://github.com/smiledev/rafiq-android/actions/workflows/release.yml)
+
 A native Android rebuild of the Flutter Rafiq app, built with Kotlin, Jetpack Compose, and modern Android architecture.
 
 ## Tech Stack
 
-- **Kotlin** 2.0.21 + **Jetpack Compose** (Material3)
+- **Kotlin** 2.0.0 + **Jetpack Compose** (Material3)
 - **MVVM** architecture with **Hilt** DI (2.56.2)
 - **Room** (2.6.1) for local databases (bookmarks, prayer logs)
 - **Navigation3** for type-safe navigation

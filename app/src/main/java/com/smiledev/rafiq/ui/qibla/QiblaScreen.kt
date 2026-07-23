@@ -35,9 +35,11 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.smiledev.rafiq.R
 import kotlin.math.*
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -78,9 +80,9 @@ fun QiblaScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Qibla Compass") },
+                title = { Text(stringResource(R.string.qibla_compass)) },
                 navigationIcon = {
-                    Text("Back", modifier = Modifier.clickable(onClick = onBack).padding(16.dp))
+                    Text(stringResource(R.string.back), modifier = Modifier.clickable(onClick = onBack).padding(16.dp))
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surface
@@ -97,13 +99,13 @@ fun QiblaScreen(
             Spacer(Modifier.height(8.dp))
 
             Text(
-                text = "Qibla Direction",
+                text = stringResource(R.string.qibla_direction),
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold
             )
 
             Text(
-                text = "${state.bearing}° from North",
+                text = stringResource(R.string.bearing_from_north, state.bearing.toInt()),
                 fontSize = 16.sp,
                 color = Color(0xFF009688),
                 fontWeight = FontWeight.Medium
@@ -116,7 +118,7 @@ fun QiblaScreen(
             Spacer(Modifier.height(16.dp))
 
             Text(
-                text = "Distance to Mecca: ${state.distanceKm} km",
+                text = stringResource(R.string.distance_to_mecca, state.distanceKm.toInt()),
                 fontSize = 14.sp,
                 color = Color.Gray
             )
@@ -124,7 +126,7 @@ fun QiblaScreen(
             Spacer(Modifier.height(16.dp))
 
             Text(
-                text = "Move your phone in a figure-8 pattern\nto calibrate the compass",
+                text = stringResource(R.string.calibrate_compass),
                 fontSize = 12.sp,
                 color = Color.Gray,
                 textAlign = TextAlign.Center,
@@ -180,7 +182,7 @@ private fun QiblaCompass(bearing: Float, azimuth: Float) {
         }
 
         Text(
-            text = "N",
+            text = stringResource(R.string.north),
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
             color = Color(0xFF757575),
@@ -188,7 +190,7 @@ private fun QiblaCompass(bearing: Float, azimuth: Float) {
         )
 
         Text(
-            text = "S",
+            text = stringResource(R.string.south),
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
             color = Color(0xFF757575),
@@ -196,7 +198,7 @@ private fun QiblaCompass(bearing: Float, azimuth: Float) {
         )
 
         Text(
-            text = "E",
+            text = stringResource(R.string.east),
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
             color = Color(0xFF757575),
@@ -204,7 +206,7 @@ private fun QiblaCompass(bearing: Float, azimuth: Float) {
         )
 
         Text(
-            text = "W",
+            text = stringResource(R.string.west),
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
             color = Color(0xFF757575),

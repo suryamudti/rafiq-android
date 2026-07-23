@@ -1,44 +1,55 @@
 package com.smiledev.rafiq.ui.asmaulhusna
 
+import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.smiledev.rafiq.data.models.AsmaulHusna
-import com.smiledev.rafiq.data.repository.AsmaulHusnaRepository
+import com.smiledev.rafiq.core.AppError
+import com.smiledev.rafiq.core.DefaultDispatcherProvider
+import com.smiledev.rafiq.core.DispatcherProvider
+import com.smiledev.rafiq.core.currentLocaleCode
+import com.smiledev.rafiq.core.Result
+import com.smiledev.rafiq.domain.model.AsmaulHusna
+import com.smiledev.rafiq.domain.repository.AsmaulHusnaRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
+import javax.inject.Inject
+
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import java.util.Locale
-import javax.inject.Inject
 
+
+@Immutable
 data class AsmaulHusnaUiState(
     val names: List<AsmaulHusna> = emptyList(),
     val searchQuery: String = "",
     val isLoading: Boolean = false,
-    val error: String? = null
+    val error: AppError? = null
 )
 
 @HiltViewModel
 class AsmaulHusnaViewModel @Inject constructor(
-    private val repository: AsmaulHusnaRepository
+    private val repository: AsmaulHusnaRepository,
+    private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AsmaulHusnaUiState())
     val uiState: StateFlow<AsmaulHusnaUiState> = _uiState
 
-    val localeCode = if (Locale.getDefault().language == "id") "id" else "en"
+    val localeCode = currentLocaleCode()
 
     init { load() }
 
     private fun load() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatcherProvider.io) {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
-            try {
-                val names = repository.getNames()
-                _uiState.value = _uiState.value.copy(names = names, isLoading = false)
-            } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(isLoading = false, error = e.message)
+            val result = repository.getNames()
+            when (result) {
+                is Result.Success -> {
+                    _uiState.value = _uiState.value.copy(names = result.data, isLoading = false)
+                }
+                is Result.Error -> {
+                    _uiState.value = _uiState.value.copy(isLoading = false, error = result.error)
+                }
             }
         }
     }

@@ -1,5 +1,6 @@
 package com.smiledev.rafiq.ui.tasbih
 
+import androidx.compose.runtime.Immutable
 import android.content.Context
 import android.os.Build
 import android.os.VibrationEffect
@@ -12,6 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
+@Immutable
 data class TasbihUiState(
     val count: Int = 0
 )

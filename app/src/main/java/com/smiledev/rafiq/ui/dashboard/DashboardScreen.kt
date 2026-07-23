@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
@@ -47,6 +48,7 @@ import com.smiledev.rafiq.PrayerTimes
 import com.smiledev.rafiq.Prophets
 import com.smiledev.rafiq.Qibla
 import com.smiledev.rafiq.Quran
+import com.smiledev.rafiq.R
 import com.smiledev.rafiq.Recitation
 import com.smiledev.rafiq.Settings
 import com.smiledev.rafiq.Tasbih
@@ -55,25 +57,25 @@ import com.smiledev.rafiq.BookmarkList
 import com.smiledev.rafiq.PrayerLog
 
 private data class FeatureItem(
-    val label: String,
+    val labelResId: Int,
     val navKey: NavKey,
     val icon: ImageVector,
     val color: Color
 )
 
 private val features = listOf(
-    FeatureItem("Quran", Quran(), Icons.AutoMirrored.Filled.List, Color(0xFF3F51B5)),
-    FeatureItem("Prayer Times", PrayerTimes, Icons.Filled.Notifications, Color(0xFF009688)),
-    FeatureItem("Qibla", Qibla, Icons.Filled.LocationOn, Color(0xFFFFC107)),
-    FeatureItem("Mosques", Mosques, Icons.Filled.Place, Color(0xFF4CAF50)),
-    FeatureItem("Prophets", Prophets, Icons.Filled.Person, Color(0xFF795548)),
-    FeatureItem("Recitations", Recitation, Icons.Filled.PlayArrow, Color(0xFF2196F3)),
-    FeatureItem("Calendar", IslamicCalendar, Icons.Filled.DateRange, Color(0xFF009688)),
-    FeatureItem("Zakat", ZakatCalculator, Icons.Filled.ShoppingCart, Color(0xFFFF9800)),
-    FeatureItem("99 Names", AsmaulHusna, Icons.Filled.Star, Color(0xFF3F51B5)),
-    FeatureItem("Tasbih", Tasbih, Icons.Filled.Refresh, Color(0xFF009688)),
-    FeatureItem("Bookmarks", BookmarkList, Icons.Filled.Favorite, Color(0xFFE91E63)),
-    FeatureItem("Prayer Log", PrayerLog, Icons.Filled.Notifications, Color(0xFF795548)),
+    FeatureItem(R.string.quran, Quran(), Icons.AutoMirrored.Filled.List, Color(0xFF3F51B5)),
+    FeatureItem(R.string.prayer_times, PrayerTimes, Icons.Filled.Notifications, Color(0xFF009688)),
+    FeatureItem(R.string.qibla, Qibla, Icons.Filled.LocationOn, Color(0xFFFFC107)),
+    FeatureItem(R.string.mosques, Mosques, Icons.Filled.Place, Color(0xFF4CAF50)),
+    FeatureItem(R.string.prophets, Prophets, Icons.Filled.Person, Color(0xFF795548)),
+    FeatureItem(R.string.recitations, Recitation, Icons.Filled.PlayArrow, Color(0xFF2196F3)),
+    FeatureItem(R.string.calendar, IslamicCalendar, Icons.Filled.DateRange, Color(0xFF009688)),
+    FeatureItem(R.string.zakat, ZakatCalculator, Icons.Filled.ShoppingCart, Color(0xFFFF9800)),
+    FeatureItem(R.string.asmaul_husna, AsmaulHusna, Icons.Filled.Star, Color(0xFF3F51B5)),
+    FeatureItem(R.string.tasbih, Tasbih, Icons.Filled.Refresh, Color(0xFF009688)),
+    FeatureItem(R.string.bookmarks, BookmarkList, Icons.Filled.Favorite, Color(0xFFE91E63)),
+    FeatureItem(R.string.prayer_log, PrayerLog, Icons.Filled.Notifications, Color(0xFF795548)),
 )
 
 @Composable
@@ -87,21 +89,21 @@ fun DashboardScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Rafiq App",
+                text = stringResource(R.string.app_name),
                 style = MaterialTheme.typography.headlineLarge,
                 modifier = Modifier.weight(1f)
             )
             IconButton(onClick = { onNavigate(Settings) }) {
                 Icon(
                     imageVector = Icons.Filled.Face,
-                    contentDescription = "Settings",
+                    contentDescription = stringResource(R.string.settings),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }
-        Text(
-            text = "Your Islamic companion",
-            style = MaterialTheme.typography.bodyLarge,
+            Text(
+                text = stringResource(R.string.your_islamic_companion),
+                style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(bottom = 24.dp)
         )
@@ -112,7 +114,7 @@ fun DashboardScreen(
         ) {
             items(features) { feature ->
                 FeatureCard(
-                    label = feature.label,
+                    labelResId = feature.labelResId,
                     icon = feature.icon,
                     color = feature.color,
                     onClick = { onNavigate(feature.navKey) }
@@ -124,7 +126,7 @@ fun DashboardScreen(
 
 @Composable
 private fun FeatureCard(
-    label: String,
+    labelResId: Int,
     icon: ImageVector,
     color: Color,
     onClick: () -> Unit,
@@ -144,12 +146,12 @@ private fun FeatureCard(
         ) {
             Icon(
                 imageVector = icon,
-                contentDescription = label,
+                contentDescription = stringResource(labelResId),
                 tint = color,
                 modifier = Modifier.size(40.dp)
             )
             Text(
-                text = label,
+                text = stringResource(labelResId),
                 style = MaterialTheme.typography.titleMedium,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(top = 8.dp)

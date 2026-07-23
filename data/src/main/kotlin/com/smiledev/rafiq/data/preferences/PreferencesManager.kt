@@ -80,15 +80,18 @@ class PreferencesManager @Inject constructor(
     }
 
     suspend fun setLatitude(lat: String) {
+        if (!lat.matches(Regex("^-?\\d{1,3}\\.\\d+$"))) return
         context.dataStore.edit { prefs -> prefs[LATITUDE] = lat }
     }
 
     suspend fun setLongitude(lng: String) {
+        if (!lng.matches(Regex("^-?\\d{1,3}\\.\\d+$"))) return
         context.dataStore.edit { prefs -> prefs[LONGITUDE] = lng }
     }
 
     suspend fun setCityName(name: String) {
-        context.dataStore.edit { prefs -> prefs[CITY_NAME] = name }
+        val sanitized = name.trim().filter { it.code in 32..126 }
+        context.dataStore.edit { prefs -> prefs[CITY_NAME] = sanitized }
     }
 
     suspend fun setLastSelectedReciter(reciterId: Int) {

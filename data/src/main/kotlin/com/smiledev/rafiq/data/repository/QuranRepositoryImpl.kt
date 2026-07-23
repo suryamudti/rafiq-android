@@ -2,9 +2,15 @@ package com.smiledev.rafiq.data.repository
 
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
+import com.smiledev.rafiq.core.AppError
 import com.smiledev.rafiq.core.DatabaseCopier
+import com.smiledev.rafiq.core.Result
+import com.smiledev.rafiq.data.asSuccess
 import com.smiledev.rafiq.data.models.AyahData
-import com.smiledev.rafiq.data.models.Surah
+import com.smiledev.rafiq.data.toDomain
+import com.smiledev.rafiq.domain.model.Ayah
+import com.smiledev.rafiq.domain.model.Surah
+import com.smiledev.rafiq.domain.repository.QuranRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import org.json.JSONArray
 import org.json.JSONObject
@@ -22,82 +28,91 @@ data class VerseMetadata(
 )
 
 @Singleton
-class QuranRepository @Inject constructor(
+class QuranRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context,
     private val databaseCopier: DatabaseCopier
-) {
+) : QuranRepository {
     private var quranDb: SQLiteDatabase? = null
     private var translationIdDb: SQLiteDatabase? = null
     private var translationEnDb: SQLiteDatabase? = null
     private var metadataCache: Map<String, VerseMetadata>? = null
 
-    fun getChapters(localeCode: String = "en"): List<Surah> {
-        val json = readAssetJson("quran-data/chapters/chapters.$localeCode.json")
-        val chaptersArray = json.getJSONArray("chapters")
-        val list = mutableListOf<Surah>()
-        for (i in 0 until chaptersArray.length()) {
-            val c = chaptersArray.getJSONObject(i)
-            list.add(
-                Surah(
-                    id = c.getInt("id"),
-                    chapterNumber = c.getInt("chapter_number"),
-                    nameArabic = c.getString("name_arabic"),
-                    nameSimple = c.getString("name_simple"),
-                    translatedName = c.getJSONObject("translated_name").getString("name"),
-                    versesCount = c.getInt("verses_count"),
-                    revelationPlace = c.getString("revelation_place")
+    override fun getChapters(localeCode: String): Result<List<Surah>, AppError> {
+        return try {
+            val json = readAssetJson("quran-data/chapters/chapters.$localeCode.json")
+            val chaptersArray = json.getJSONArray("chapters")
+            val list = mutableListOf<Surah>()
+            for (i in 0 until chaptersArray.length()) {
+                val c = chaptersArray.getJSONObject(i)
+                list.add(
+                    Surah(
+                        id = c.getInt("id"),
+                        chapterNumber = c.getInt("chapter_number"),
+                        nameArabic = c.getString("name_arabic"),
+                        nameSimple = c.getString("name_simple"),
+                        translatedName = c.getJSONObject("translated_name").getString("name"),
+                        versesCount = c.getInt("verses_count"),
+                        revelationPlace = c.getString("revelation_place")
+                    )
                 )
-            )
+            }
+            list.asSuccess()
+        } catch (e: Exception) {
+            Result.Error(AppError.Database("Failed to load chapters", e))
         }
-        return list
     }
 
-    fun getAyahsWithTranslation(suraNumber: Int, localeCode: String = "en"): List<AyahData> {
-        val db = getQuranDatabase()
-        val cursor = db.rawQuery(
-            "SELECT sura, aya, text, bismillah FROM quran WHERE sura = ? ORDER BY CAST(aya AS INTEGER) ASC",
-            arrayOf(suraNumber.toString())
-        )
-        val rawList = mutableListOf<AyahData>()
-        while (cursor.moveToNext()) {
-            val bismillahStr = if (cursor.isNull(3)) null else cursor.getString(3)
-            rawList.add(
-                AyahData(
-                    sura = cursor.getString(0).toIntOrNull() ?: 0,
-                    aya = cursor.getString(1).toIntOrNull() ?: 0,
-                    text = cursor.getString(2),
-                    bismillah = if (bismillahStr.isNullOrEmpty()) null else bismillahStr
+    override fun getAyahsWithTranslation(suraNumber: Int, localeCode: String): Result<List<Ayah>, AppError> {
+        return try {
+            val db = getQuranDatabase()
+            val cursor = db.rawQuery(
+                "SELECT sura, aya, text, bismillah FROM quran WHERE sura = ? ORDER BY CAST(aya AS INTEGER) ASC",
+                arrayOf(suraNumber.toString())
+            )
+            val rawList = mutableListOf<AyahData>()
+            while (cursor.moveToNext()) {
+                val bismillahStr = if (cursor.isNull(3)) null else cursor.getString(3)
+                rawList.add(
+                    AyahData(
+                        sura = cursor.getString(0).toIntOrNull() ?: 0,
+                        aya = cursor.getString(1).toIntOrNull() ?: 0,
+                        text = cursor.getString(2),
+                        bismillah = if (bismillahStr.isNullOrEmpty()) null else bismillahStr
+                    )
                 )
-            )
-        }
-        cursor.close()
+            }
+            cursor.close()
 
-        val metadata = getMetadataMap()
-        val translationMapId = getTranslationForSuraSafe(suraNumber, "id")
-        val translationMapEn = getTranslationForSuraSafe(suraNumber, "en")
+            val metadata = getMetadataMap()
+            val translationMapId = getTranslationForSuraSafe(suraNumber, "id")
+            val translationMapEn = getTranslationForSuraSafe(suraNumber, "en")
 
-        val enrichedList = rawList.map { ayah ->
-            val key = "${ayah.sura}:${ayah.aya}"
-            val meta = metadata[key]
-            val resolvedTranslation = if (localeCode == "id") translationMapId[ayah.aya] else translationMapEn[ayah.aya]
-            ayah.copy(
-                translation = resolvedTranslation,
-                translationId = translationMapId[ayah.aya],
-                translationEn = translationMapEn[ayah.aya],
-                page = meta?.page ?: 0,
-                juz = meta?.juz ?: 0,
-                sajda = meta?.sajda ?: false,
-                sajdaType = meta?.sajdaType
-            )
-        }
+            val enrichedList = rawList.map { ayah ->
+                val key = "${ayah.sura}:${ayah.aya}"
+                val meta = metadata[key]
+                val resolvedTranslation = if (localeCode == "id") translationMapId[ayah.aya] else translationMapEn[ayah.aya]
+                ayah.copy(
+                    translation = resolvedTranslation,
+                    translationId = translationMapId[ayah.aya],
+                    translationEn = translationMapEn[ayah.aya],
+                    page = meta?.page ?: 0,
+                    juz = meta?.juz ?: 0,
+                    sajda = meta?.sajda ?: false,
+                    sajdaType = meta?.sajdaType
+                )
+            }
 
-        return enrichedList.mapIndexed { index, ayah ->
-            val prevJuz = if (index > 0) enrichedList[index - 1].juz else ayah.juz
-            val prevPage = if (index > 0) enrichedList[index - 1].page else ayah.page
-            ayah.copy(
-                isFirstAyaOfJuz = (ayah.juz != 0 && ayah.juz != prevJuz),
-                isFirstAyaOfPage = (ayah.page != 0 && ayah.page != prevPage)
-            )
+            val result = enrichedList.mapIndexed { index, ayah ->
+                val prevJuz = if (index > 0) enrichedList[index - 1].juz else ayah.juz
+                val prevPage = if (index > 0) enrichedList[index - 1].page else ayah.page
+                ayah.copy(
+                    isFirstAyaOfJuz = (ayah.juz != 0 && ayah.juz != prevJuz),
+                    isFirstAyaOfPage = (ayah.page != 0 && ayah.page != prevPage)
+                ).toDomain()
+            }
+            result.asSuccess()
+        } catch (e: Exception) {
+            Result.Error(AppError.Database("Failed to load ayahs", e))
         }
     }
 
@@ -127,8 +142,8 @@ class QuranRepository @Inject constructor(
     private fun getTranslationForSura(suraNumber: Int, localeCode: String): Map<Int, String> {
         val db = getTranslationDatabase(localeCode) ?: return emptyMap()
         val cursor = db.rawQuery(
-            "SELECT ayah, text FROM verses WHERE sura = $suraNumber",
-            null
+            "SELECT ayah, text FROM verses WHERE sura = ?",
+            arrayOf(suraNumber.toString())
         )
         val map = mutableMapOf<Int, String>()
         while (cursor.moveToNext()) {

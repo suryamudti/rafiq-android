@@ -23,16 +23,21 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.smiledev.rafiq.R
+import com.smiledev.rafiq.core.displayMessage
+import androidx.compose.ui.res.stringResource
 
 private val arabicFont = FontFamily(Font(R.font.me_quran))
 
@@ -50,9 +55,9 @@ fun AsmaulHusnaScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("99 Names of Allah") },
+                title = { Text(stringResource(R.string.asmaul_husna_title)) },
                 navigationIcon = {
-                    Text("Back", modifier = Modifier.clickable(onClick = onBack).padding(16.dp))
+                    Text(stringResource(R.string.back), modifier = Modifier.clickable(onClick = onBack).padding(16.dp))
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surface
@@ -62,11 +67,11 @@ fun AsmaulHusnaScreen(
     ) { padding ->
         when {
             state.isLoading -> {
-                CircularProgressIndicator(modifier = Modifier.fillMaxSize().padding(padding))
+                CircularProgressIndicator(modifier = Modifier.fillMaxSize().padding(padding).semantics { contentDescription = "Loading" })
             }
             state.error != null -> {
                 Text(
-                    text = "Error: ${state.error}",
+                    text = state.error?.displayMessage ?: "",
                     modifier = Modifier.fillMaxSize().padding(padding).padding(16.dp),
                     color = MaterialTheme.colorScheme.error
                 )
@@ -81,7 +86,7 @@ fun AsmaulHusnaScreen(
                         TextField(
                             value = state.searchQuery,
                             onValueChange = { viewModel.search(it) },
-                            placeholder = { Text("Search names...") },
+                            placeholder = { Text(stringResource(R.string.search_names)) },
                             singleLine = true,
                             modifier = Modifier.fillMaxWidth().padding(12.dp),
                             shape = RoundedCornerShape(12.dp),

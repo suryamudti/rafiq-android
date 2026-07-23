@@ -20,8 +20,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.smiledev.rafiq.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -35,9 +37,9 @@ fun TasbihScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Tasbih Counter") },
+                title = { Text(stringResource(R.string.tasbih_counter)) },
                 navigationIcon = {
-                    Text("Back", modifier = Modifier.clickable(onClick = onBack).padding(16.dp))
+                    Text(stringResource(R.string.back), modifier = Modifier.clickable(onClick = onBack).padding(16.dp))
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surface
@@ -79,7 +81,7 @@ fun TasbihScreen(
                 onClick = { viewModel.reset() },
                 modifier = Modifier.padding(top = 24.dp)
             ) {
-                Text("Reset")
+                Text(stringResource(R.string.reset))
             }
         }
     }

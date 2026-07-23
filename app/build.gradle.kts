@@ -22,8 +22,15 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+        }
+        create("staging") {
+            initWith(getByName("release"))
+            matchingFallbacks += listOf("release")
+            applicationIdSuffix = ".staging"
+            versionNameSuffix = "-staging"
         }
     }
     compileOptions {
@@ -41,6 +48,8 @@ android {
     packaging {
       resources {
         excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        excludes += "/META-INF/LICENSE.md"
+        excludes += "/META-INF/NOTICE.md"
       }
     }
 }
@@ -104,6 +113,10 @@ dependencies {
   androidTestImplementation(libs.androidx.test.ext.junit)
   androidTestImplementation(libs.androidx.test.runner)
   androidTestImplementation(libs.androidx.test.espresso.core)
+  androidTestImplementation("io.mockk:mockk-android:1.13.11") {
+    exclude(group = "org.junit.jupiter")
+  }
+  androidTestImplementation(libs.kotlinx.coroutines.test)
 
   // Navigation
   implementation(libs.androidx.navigation3.ui)

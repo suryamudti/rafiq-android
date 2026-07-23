@@ -48,6 +48,10 @@ dependencies {
     // Gson
     implementation(libs.gson)
 
-    // Coroutines
-    implementation(libs.kotlinx.coroutines.test)
+    // Test
+    testImplementation(libs.junit)
+    testImplementation("io.mockk:mockk:1.13.11")
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.androidx.test.core)
+    testImplementation("org.robolectric:robolectric:4.13")
 }

@@ -1,10 +1,12 @@
 package com.smiledev.rafiq.ui.qibla
 
+import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.smiledev.rafiq.core.DefaultDispatcherProvider
+import com.smiledev.rafiq.core.DispatcherProvider
 import com.smiledev.rafiq.data.preferences.PreferencesManager
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
@@ -15,6 +17,7 @@ import javax.inject.Inject
 private const val KAABA_LAT = 21.4225
 private const val KAABA_LON = 39.8262
 
+@Immutable
 data class QiblaUiState(
     val bearing: Int = 0,
     val distanceKm: Int = 0,
@@ -25,14 +28,15 @@ data class QiblaUiState(
 
 @HiltViewModel
 class QiblaViewModel @Inject constructor(
-    private val preferencesManager: PreferencesManager
+    private val preferencesManager: PreferencesManager,
+    private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(QiblaUiState())
     val uiState: StateFlow<QiblaUiState> = _uiState
 
     init {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatcherProvider.io) {
             val latStr = preferencesManager.latitude.first()
             val lonStr = preferencesManager.longitude.first()
             val lat = latStr.toDoubleOrNull() ?: -6.2088

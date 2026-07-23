@@ -1,3 +1,120 @@
 <resources>
     <string name="app_name">Rafiq App</string>
+    <!-- Navigation -->
+    <string name="back">Back</string>
+    <string name="settings">Settings</string>
+    <!-- Dashboard -->
+    <string name="your_islamic_companion">Your Islamic companion</string>
+    <string name="quran">Quran</string>
+    <string name="prayer_times">Prayer Times</string>
+    <string name="qibla">Qibla</string>
+    <string name="mosques">Mosques</string>
+    <string name="prophets">Prophets</string>
+    <string name="recitations">Recitations</string>
+    <string name="calendar">Calendar</string>
+    <string name="zakat">Zakat</string>
+    <string name="asmaul_husna">99 Names</string>
+    <string name="tasbih">Tasbih</string>
+    <string name="bookmarks">Bookmarks</string>
+    <string name="prayer_log">Prayer Log</string>
+    <!-- Quran -->
+    <string name="select_surah">Select Surah</string>
+    <string name="search_chapters">Search chapters…</string>
+    <string name="no_chapters_found">No chapters matched your search</string>
+    <string name="loading">Loading…</string>
+    <string name="no_ayahs_loaded">No ayahs loaded</string>
+    <string name="bookmark_ayah_bookmarked">Bookmark this ayah (bookmarked)</string>
+    <string name="bookmark_ayah">Bookmark this ayah</string>
+    <!-- Prayer Times -->
+    <string name="next_prayer">Next: %s</string>
+    <string name="hijri_date">Hijri: %s</string>
+    <!-- Qibla -->
+    <string name="qibla_compass">Qibla Compass</string>
+    <string name="qibla_direction">Qibla Direction</string>
+    <string name="bearing_from_north">%d° from North</string>
+    <string name="distance_to_mecca">Distance to Mecca: %d km</string>
+    <string name="calibrate_compass">Move your phone in a figure-8 pattern to calibrate the compass</string>
+    <string name="north">N</string>
+    <string name="south">S</string>
+    <string name="east">E</string>
+    <string name="west">W</string>
+    <!-- Mosques -->
+    <string name="nearby_mosques">Nearby Mosques</string>
+    <string name="grant_location_permission">Grant Location Permission</string>
+    <string name="your_location">Your Location</string>
+    <string name="tap_for_details">Tap for details</string>
+    <string name="fallback_location">Fallback location</string>
+    <!-- Prophets -->
+    <string name="prophets_title">25 Prophets</string>
+    <string name="search_prophets">Search prophets</string>
+    <string name="no_prophets_match">No prophets match \"%s\"</string>
+    <!-- Recitation -->
+    <string name="audio_recitations">Audio Recitations</string>
+    <string name="select_reciter">Select a Reciter</string>
+    <string name="select_surah_recitation">Select Surah</string>
+    <string name="now_playing">Now Playing</string>
+    <string name="play">Play</string>
+    <string name="pause">Pause</string>
+    <string name="stop">Stop</string>
+    <!-- Calendar -->
+    <string name="islamic_calendar">Islamic Calendar</string>
+    <string name="todays_events">Today\'s Events</string>
+    <string name="no_events_this_month">No events for this month</string>
+    <!-- Zakat -->
+    <string name="zakat_calculator">Zakat Calculator</string>
+    <string name="calculate">Calculate</string>
+    <string name="reset">Reset</string>
+    <string name="gold">Gold</string>
+    <string name="silver">Silver</string>
+    <string name="cash">Cash</string>
+    <string name="total_zakat">Total Zakat</string>
+    <string name="grams">grams</string>
+    <string name="nisab">Nisab: %s</string>
+    <string name="you_are_obligated">You are obligated to pay zakat</string>
+    <string name="you_are_not_obligated">You are not obligated to pay zakat</string>
+    <!-- Asmaul Husna -->
+    <string name="asmaul_husna_title">99 Names of Allah</string>
+    <string name="search_names">Search names…</string>
+    <!-- Tasbih -->
+    <string name="tasbih_counter">Tasbih Counter</string>
+    <string name="count">Count</string>
+    <string name="subhanallah">Subhanallah</string>
+    <string name="alhamdulillah">Alhamdulillah</string>
+    <string name="allahu_akbar">Allahu Akbar</string>
+    <!-- Bookmarks -->
+    <string name="no_bookmarks_yet">No bookmarks yet</string>
+    <string name="delete">Delete</string>
+    <!-- Prayer Log -->
+    <string name="prayer_log_title">Prayer Log</string>
+    <string name="today">Today: %s</string>
+    <string name="fajr_subuh">Fajr (Subuh)</string>
+    <string name="dhuhr">Dzuhur</string>
+    <string name="asr">Asr</string>
+    <string name="maghrib">Maghrib</string>
+    <string name="isha">Isya</string>
+    <!-- Settings -->
+    <string name="theme">Theme</string>
+    <string name="system_default">System default</string>
+    <string name="light">Light</string>
+    <string name="dark">Dark</string>
+    <string name="quran_translation">Quran Translation</string>
+    <string name="bahasa_indonesia">Bahasa Indonesia</string>
+    <string name="english">English</string>
+    <string name="both_bahasa_english">Both (Bahasa &amp; English)</string>
+    <string name="ayah_font_size">Ayah Font Size: %dsp</string>
+    <string name="translation_font_size">Translation Font Size: %dsp</string>
+    <!-- Bookmark Details -->
+    <string name="bookmark_sura_aya">%s %d:%d</string>
+    <!-- Quran tabs -->
+    <string name="surahs">Surahs</string>
+    <string name="verses_count">%d verses</string>
+    <!-- Tasbih -->
+    <string name="tap_to_count">Tap to count</string>
+    <!-- Zakat -->
+    <string name="gold_weight">Gold Weight (grams)</string>
+    <string name="silver_weight">Silver Weight (grams)</string>
+    <string name="cash_amount">Cash Amount</string>
+    <string name="currency">Currency</string>
+    <string name="zakat_due">Zakat Due: %s</string>
+    <string name="zakat_not_due">Zakat Not Due</string>
 </resources>

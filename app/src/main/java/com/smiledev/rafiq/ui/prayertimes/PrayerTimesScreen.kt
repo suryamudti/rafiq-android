@@ -26,16 +26,26 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.smiledev.rafiq.R
+import com.smiledev.rafiq.core.displayMessage
 import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -50,9 +60,9 @@ fun PrayerTimesScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Prayer Times") },
+                title = { Text(stringResource(R.string.prayer_times)) },
                 navigationIcon = {
-                    Text("Back", modifier = Modifier.clickable(onClick = onBack).padding(16.dp))
+                    Text(stringResource(R.string.back), modifier = Modifier.clickable(onClick = onBack).padding(16.dp))
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surface
@@ -60,23 +70,28 @@ fun PrayerTimesScreen(
             )
         }
     ) { padding ->
-        when {
-            state.isLoading -> {
-                CircularProgressIndicator(modifier = Modifier.fillMaxSize().padding(padding))
-            }
-            state.error != null -> {
-                Text(
-                    text = "Error: ${state.error}",
-                    modifier = Modifier.fillMaxSize().padding(16.dp),
-                    color = MaterialTheme.colorScheme.error
-                )
-            }
-            else -> {
-                LazyColumn(
-                    modifier = modifier
-                        .fillMaxSize()
-                        .padding(padding)
-                ) {
+        var isRefreshing by remember { mutableStateOf(false) }
+        LaunchedEffect(state.isLoading) { if (!state.isLoading) isRefreshing = false }
+        PullToRefreshBox(
+            isRefreshing = isRefreshing,
+            onRefresh = { isRefreshing = true; viewModel.refresh() },
+            modifier = Modifier.fillMaxSize().padding(padding)
+        ) {
+            when {
+                state.isLoading && !isRefreshing -> {
+                    CircularProgressIndicator(modifier = Modifier.fillMaxSize().semantics { contentDescription = "Loading" })
+                }
+                state.error != null -> {
+                    Text(
+                        text = state.error?.displayMessage ?: "",
+                        modifier = Modifier.fillMaxSize().padding(16.dp),
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
+                else -> {
+                    LazyColumn(
+                        modifier = modifier.fillMaxSize()
+                    ) {
                     item {
                         Card(
                             modifier = Modifier.fillMaxWidth().padding(12.dp),
@@ -104,7 +119,7 @@ fun PrayerTimesScreen(
                                     )
                                     Spacer(Modifier.height(8.dp))
                                     Text(
-                                        text = "Next: ${state.countdown}",
+                                        text = stringResource(R.string.next_prayer, state.countdown),
                                         fontSize = 20.sp,
                                         color = Color.Gray
                                     )
@@ -179,4 +194,5 @@ fun PrayerTimesScreen(
             }
         }
     }
+}
 }

@@ -18,19 +18,26 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.smiledev.rafiq.R
 
 private val prayerNames = listOf(
-    "fajr" to "Fajr (Subuh)",
-    "dhuhr" to "Dzuhur",
-    "asr" to "Asr",
-    "maghrib" to "Maghrib",
-    "isha" to "Isya"
+    "fajr" to R.string.fajr_subuh,
+    "dhuhr" to R.string.dhuhr,
+    "asr" to R.string.asr,
+    "maghrib" to R.string.maghrib,
+    "isha" to R.string.isha
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -45,9 +52,9 @@ fun PrayerLogScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Prayer Log") },
+                title = { Text(stringResource(R.string.prayer_log_title)) },
                 navigationIcon = {
-                    Text("Back", modifier = Modifier.clickable(onClick = onBack).padding(16.dp))
+                    Text(stringResource(R.string.back), modifier = Modifier.clickable(onClick = onBack).padding(16.dp))
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surface
@@ -55,38 +62,45 @@ fun PrayerLogScreen(
             )
         }
     ) { padding ->
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(16.dp)
+        var isRefreshing by remember { mutableStateOf(false) }
+        LaunchedEffect(state.isLoading) { if (!state.isLoading) isRefreshing = false }
+        PullToRefreshBox(
+            isRefreshing = isRefreshing,
+            onRefresh = { isRefreshing = true; viewModel.refresh() },
+            modifier = modifier.fillMaxSize().padding(padding)
         ) {
-            Text(
-                text = "Today: ${state.todayDate}",
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
-
-            Card(
-                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
             ) {
-                Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
-                    prayerNames.forEach { (key, label) ->
-                        val isChecked = when (key) {
-                            "fajr" -> state.todayLog?.fajr ?: false
-                            "dhuhr" -> state.todayLog?.dhuhr ?: false
-                            "asr" -> state.todayLog?.asr ?: false
-                            "maghrib" -> state.todayLog?.maghrib ?: false
-                            "isha" -> state.todayLog?.isha ?: false
-                            else -> false
-                        }
-                        PrayerToggleRow(
-                            label = label,
-                            checked = isChecked,
-                            onCheckedChange = { viewModel.togglePrayer(key, it) }
-                        )
-                        if (key != prayerNames.last().first) {
-                            Spacer(Modifier.height(8.dp))
+                Text(
+                    text = stringResource(R.string.today, state.todayDate),
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+
+                Card(
+                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                ) {
+                    Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+                        prayerNames.forEach { (key, labelResId) ->
+                            val isChecked = when (key) {
+                                "fajr" -> state.todayLog?.fajr ?: false
+                                "dhuhr" -> state.todayLog?.dhuhr ?: false
+                                "asr" -> state.todayLog?.asr ?: false
+                                "maghrib" -> state.todayLog?.maghrib ?: false
+                                "isha" -> state.todayLog?.isha ?: false
+                                else -> false
+                            }
+                            PrayerToggleRow(
+                                labelResId = labelResId,
+                                checked = isChecked,
+                                onCheckedChange = { viewModel.togglePrayer(key, it) }
+                            )
+                            if (key != prayerNames.last().first) {
+                                Spacer(Modifier.height(8.dp))
+                            }
                         }
                     }
                 }
@@ -97,7 +111,7 @@ fun PrayerLogScreen(
 
 @Composable
 private fun PrayerToggleRow(
-    label: String,
+    labelResId: Int,
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit
 ) {
@@ -106,7 +120,7 @@ private fun PrayerToggleRow(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = label,
+            text = stringResource(labelResId),
             style = MaterialTheme.typography.bodyLarge,
             modifier = Modifier.weight(1f)
         )

@@ -1,29 +1,61 @@
-name: Pull Request Check
+name: PR Check
 
 on:
   pull_request:
-    branches:
-      - main
-      - master
+    branches: [main, master]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
 
 jobs:
-  test:
-    name: Run Unit Tests
+  lint:
+    name: Lint
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout Source Code
-        uses: actions/checkout@v4
-
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: '17'
           cache: 'gradle'
+      - run: chmod +x gradlew
+      - run: ./gradlew lintDebug
 
-      - name: Grant Execute Permission to Gradlew
-        run: chmod +x gradlew
+  test:
+    name: Unit Tests
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+          cache: 'gradle'
+      - run: chmod +x gradlew
+      - run: ./gradlew testDebug
 
-      - name: Run Unit Tests
-        run: ./gradlew testDebug
+  build:
+    name: Build Debug APK
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+          cache: 'gradle'
+      - run: chmod +x gradlew
+      - run: >
+          ./gradlew assembleDebug
+          -PversionCode=${{ github.event.pull_request.number }}
+          -PversionName="1.0-pr.${{ github.event.pull_request.number }}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rafiq-app-pr-${{ github.event.pull_request.number }}-debug
+          path: app/build/outputs/apk/debug/*.apk
+          retention-days: 7

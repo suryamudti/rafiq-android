@@ -24,8 +24,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import com.smiledev.rafiq.R
 import androidx.hilt.navigation.compose.hiltViewModel
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
@@ -82,8 +84,8 @@ fun MosquesScreen(
             val marker = Marker(this).apply {
                 position = GeoPoint(lat, lon)
                 setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-                title = if (state.userLocation != null) "Your Location" else "Fallback location"
-                snippet = "Tap for details"
+                title = if (state.userLocation != null) context.getString(R.string.your_location) else context.getString(R.string.fallback_location)
+                snippet = context.getString(R.string.tap_for_details)
             }
             overlays.add(marker)
 
@@ -107,9 +109,9 @@ fun MosquesScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Nearby Mosques") },
+                title = { Text(stringResource(R.string.nearby_mosques)) },
                 navigationIcon = {
-                    Text("Back", modifier = Modifier.clickable(onClick = onBack).padding(16.dp))
+                    Text(stringResource(R.string.back), modifier = Modifier.clickable(onClick = onBack).padding(16.dp))
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surface
@@ -128,7 +130,7 @@ fun MosquesScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Button(onClick = { permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION) }) {
-                        Text("Grant Location Permission")
+                        Text(stringResource(R.string.grant_location_permission))
                     }
                 }
             }

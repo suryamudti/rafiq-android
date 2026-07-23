@@ -21,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,10 +29,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.smiledev.rafiq.R
+import com.smiledev.rafiq.core.displayMessage
 import com.smiledev.rafiq.ui.bookmarks.BookmarkListTabContent
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -45,15 +52,15 @@ fun QuranScreen(
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.uiState.collectAsState()
-    val tabs = listOf("Surahs", "Bookmarks")
+    val tabs = listOf("Surahs", stringResource(R.string.bookmarks))
     var selectedTabIndex by remember(initialTab) { mutableStateOf(initialTab) }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Quran") },
+                title = { Text(stringResource(R.string.quran)) },
                 navigationIcon = {
-                    Text("Back", modifier = Modifier.clickable(onClick = onBack).padding(16.dp))
+                    Text(stringResource(R.string.back), modifier = Modifier.clickable(onClick = onBack).padding(16.dp))
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surface
@@ -75,66 +82,74 @@ fun QuranScreen(
             Box(modifier = Modifier.fillMaxSize().weight(1f)) {
                 when (selectedTabIndex) {
                     0 -> {
-                        when {
-                            state.isLoading -> {
-                                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-                            }
-                            state.error != null -> {
-                                Text(
-                                    text = "Error: ${state.error}",
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(16.dp),
-                                    color = MaterialTheme.colorScheme.error
-                                )
-                            }
-                            else -> {
-                                LazyColumn(
-                                    modifier = modifier.fillMaxSize()
-                                ) {
-                                    itemsIndexed(state.surahs) { index, surah ->
-                                        Card(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .padding(horizontal = 16.dp, vertical = 4.dp)
-                                                .clickable { onSurahClick(surah.chapterNumber, surah.nameSimple) },
-                                            elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
-                                        ) {
-                                            Row(
+                        var isRefreshing by remember { mutableStateOf(false) }
+                        LaunchedEffect(state.isLoading) { if (!state.isLoading) isRefreshing = false }
+                        PullToRefreshBox(
+                            isRefreshing = isRefreshing,
+                            onRefresh = { isRefreshing = true; viewModel.refresh() },
+                            modifier = Modifier.fillMaxSize()
+                        ) {
+                            when {
+                                state.isLoading && !isRefreshing -> {
+                                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center).semantics { contentDescription = "Loading" })
+                                }
+                                state.error != null -> {
+                                    Text(
+                                        text = state.error?.displayMessage ?: "",
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .padding(16.dp),
+                                        color = MaterialTheme.colorScheme.error
+                                    )
+                                }
+                                else -> {
+                                    LazyColumn(
+                                        modifier = modifier.fillMaxSize()
+                                    ) {
+                                        itemsIndexed(state.surahs) { index, surah ->
+                                            Card(
                                                 modifier = Modifier
                                                     .fillMaxWidth()
-                                                    .padding(16.dp),
-                                                verticalAlignment = Alignment.CenterVertically
+                                                    .padding(horizontal = 16.dp, vertical = 4.dp)
+                                                    .clickable { onSurahClick(surah.chapterNumber, surah.nameSimple) },
+                                                elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
                                             ) {
-                                                Text(
-                                                    text = "${surah.chapterNumber}.",
-                                                    style = MaterialTheme.typography.bodyLarge,
-                                                    fontWeight = FontWeight.Bold,
-                                                    modifier = Modifier.padding(end = 12.dp)
-                                                )
-                                                Column(modifier = Modifier.weight(1f)) {
+                                                Row(
+                                                    modifier = Modifier
+                                                        .fillMaxWidth()
+                                                        .padding(16.dp),
+                                                    verticalAlignment = Alignment.CenterVertically
+                                                ) {
                                                     Text(
-                                                        text = surah.nameSimple,
+                                                        text = "${surah.chapterNumber}.",
                                                         style = MaterialTheme.typography.bodyLarge,
-                                                        fontWeight = FontWeight.Medium
+                                                        fontWeight = FontWeight.Bold,
+                                                        modifier = Modifier.padding(end = 12.dp)
                                                     )
-                                                    Text(
-                                                        text = surah.translatedName,
-                                                        style = MaterialTheme.typography.bodySmall,
-                                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                                    )
-                                                }
-                                                Column(horizontalAlignment = Alignment.End) {
-                                                    Text(
-                                                        text = surah.nameArabic,
-                                                        style = MaterialTheme.typography.titleMedium,
-                                                        textAlign = TextAlign.End
-                                                    )
-                                                    Text(
-                                                        text = "${surah.versesCount} verses",
-                                                        style = MaterialTheme.typography.bodySmall,
-                                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                                    )
+                                                    Column(modifier = Modifier.weight(1f)) {
+                                                        Text(
+                                                            text = surah.nameSimple,
+                                                            style = MaterialTheme.typography.bodyLarge,
+                                                            fontWeight = FontWeight.Medium
+                                                        )
+                                                        Text(
+                                                            text = surah.translatedName,
+                                                            style = MaterialTheme.typography.bodySmall,
+                                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                        )
+                                                    }
+                                                    Column(horizontalAlignment = Alignment.End) {
+                                                        Text(
+                                                            text = surah.nameArabic,
+                                                            style = MaterialTheme.typography.titleMedium,
+                                                            textAlign = TextAlign.End
+                                                        )
+                                                        Text(
+                                                            text = "${surah.versesCount} verses",
+                                                            style = MaterialTheme.typography.bodySmall,
+                                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                        )
+                                                    }
                                                 }
                                             }
                                         }
@@ -146,7 +161,7 @@ fun QuranScreen(
                     1 -> {
                         BookmarkListTabContent(
                             onBookmarkClick = onBookmarkClick,
-                            modifier = modifier
+                            modifier = Modifier
                         )
                     }
                 }

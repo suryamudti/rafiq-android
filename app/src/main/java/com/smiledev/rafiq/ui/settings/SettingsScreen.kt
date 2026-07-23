@@ -22,9 +22,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.smiledev.rafiq.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,9 +40,9 @@ fun SettingsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Settings") },
+                title = { Text(stringResource(R.string.settings)) },
                 navigationIcon = {
-                    Text("Back", modifier = Modifier.clickable(onClick = onBack).padding(16.dp))
+                    Text(stringResource(R.string.back), modifier = Modifier.clickable(onClick = onBack).padding(16.dp))
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surface
@@ -55,30 +57,30 @@ fun SettingsScreen(
                 .padding(16.dp)
         ) {
             Text(
-                text = "Theme",
+                text = stringResource(R.string.theme),
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(bottom = 12.dp)
             )
-            RadioButtonOption("system", "System default", state.themeMode, viewModel::setThemeMode)
-            RadioButtonOption("light", "Light", state.themeMode, viewModel::setThemeMode)
-            RadioButtonOption("dark", "Dark", state.themeMode, viewModel::setThemeMode)
+            RadioButtonOption("system", R.string.system_default, state.themeMode, viewModel::setThemeMode)
+            RadioButtonOption("light", R.string.light, state.themeMode, viewModel::setThemeMode)
+            RadioButtonOption("dark", R.string.dark, state.themeMode, viewModel::setThemeMode)
 
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(
-                text = "Quran Translation",
+                text = stringResource(R.string.quran_translation),
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(bottom = 12.dp)
             )
-            RadioButtonOption("system", "System default", state.translationLanguage, viewModel::setTranslationLanguage)
-            RadioButtonOption("id", "Bahasa Indonesia", state.translationLanguage, viewModel::setTranslationLanguage)
-            RadioButtonOption("en", "English", state.translationLanguage, viewModel::setTranslationLanguage)
-            RadioButtonOption("both", "Both (Bahasa & English)", state.translationLanguage, viewModel::setTranslationLanguage)
+            RadioButtonOption("system", R.string.system_default, state.translationLanguage, viewModel::setTranslationLanguage)
+            RadioButtonOption("id", R.string.bahasa_indonesia, state.translationLanguage, viewModel::setTranslationLanguage)
+            RadioButtonOption("en", R.string.english, state.translationLanguage, viewModel::setTranslationLanguage)
+            RadioButtonOption("both", R.string.both_bahasa_english, state.translationLanguage, viewModel::setTranslationLanguage)
 
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(
-                text = "Ayah Font Size: ${state.ayahFontSize}sp",
+                text = stringResource(R.string.ayah_font_size, state.ayahFontSize),
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(bottom = 4.dp)
             )
@@ -100,7 +102,7 @@ fun SettingsScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "Translation Font Size: ${state.translationFontSize}sp",
+                text = stringResource(R.string.translation_font_size, state.translationFontSize),
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(bottom = 4.dp)
             )
@@ -125,7 +127,7 @@ fun SettingsScreen(
 @Composable
 private fun RadioButtonOption(
     value: String,
-    label: String,
+    labelResId: Int,
     current: String,
     onSelect: (String) -> Unit
 ) {
@@ -141,7 +143,7 @@ private fun RadioButtonOption(
             onClick = { onSelect(value) }
         )
         Text(
-            text = label,
+            text = stringResource(labelResId),
             style = MaterialTheme.typography.bodyLarge,
             modifier = Modifier.padding(start = 12.dp)
         )
