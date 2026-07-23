@@ -1,6 +1,7 @@
 package com.smiledev.rafiq
 
 import android.app.Application
+import android.os.Build
 import com.smiledev.rafiq.service.PrayerNotificationWorker
 import dagger.hilt.android.HiltAndroidApp
 import org.osmdroid.config.Configuration
@@ -14,7 +15,9 @@ class RafiqApp : Application() {
             osmdroidBasePath = cacheDir
             osmdroidTileCache = cacheDir.resolve("tiles")
         }
-        PrayerNotificationWorker.createNotificationChannel(this)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            PrayerNotificationWorker.createNotificationChannel(this)
+        }
         PrayerNotificationWorker.schedule(this)
     }
 }

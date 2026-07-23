@@ -60,6 +60,9 @@ fun MosquesScreen(
         }
     }
 
+    val yourLocationLabel = stringResource(R.string.your_location)
+    val fallbackLocationLabel = stringResource(R.string.fallback_location)
+    val tapForDetailsLabel = stringResource(R.string.tap_for_details)
     val mapView = remember(state.userLocation) {
         Configuration.getInstance().apply {
             userAgentValue = context.packageName
@@ -84,8 +87,8 @@ fun MosquesScreen(
             val marker = Marker(this).apply {
                 position = GeoPoint(lat, lon)
                 setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-                title = if (state.userLocation != null) context.getString(R.string.your_location) else context.getString(R.string.fallback_location)
-                snippet = context.getString(R.string.tap_for_details)
+                title = if (state.userLocation != null) yourLocationLabel else fallbackLocationLabel
+                snippet = tapForDetailsLabel
             }
             overlays.add(marker)
 

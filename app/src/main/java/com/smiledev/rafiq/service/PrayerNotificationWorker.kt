@@ -1,6 +1,7 @@
 package com.smiledev.rafiq.service
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -9,6 +10,7 @@ import android.content.pm.PackageManager
 import android.media.AudioAttributes
 import android.net.Uri
 import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
@@ -45,6 +47,7 @@ class PrayerNotificationWorker(
             )
         }
 
+        @RequiresApi(Build.VERSION_CODES.O)
         fun createNotificationChannel(context: Context) {
             val channel = NotificationChannel(
                 CHANNEL_ID,
@@ -69,8 +72,11 @@ class PrayerNotificationWorker(
         }
     }
 
+    @SuppressLint("NewApi")
     override fun doWork(): Result {
-        createNotificationChannel(applicationContext)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            createNotificationChannel(applicationContext)
+        }
 
         val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.US)
         val today = dateFormat.format(Date())

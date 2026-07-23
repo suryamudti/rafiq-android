@@ -104,7 +104,7 @@
     <string name="ayah_font_size">Ukuran Huruf Ayat: %dsp</string>
     <string name="translation_font_size">Ukuran Huruf Terjemahan: %dsp</string>
     <!-- Bookmark Details -->
-    <string name="bookmark_sura_aya">%s %d:%d</string>
+    <string name="bookmark_sura_aya">%1$s %2$d:%3$d</string>
     <!-- Quran tabs -->
     <string name="surahs">Surat</string>
     <string name="verses_count">%d ayat</string>

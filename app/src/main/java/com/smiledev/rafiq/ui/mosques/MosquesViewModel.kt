@@ -1,5 +1,6 @@
 package com.smiledev.rafiq.ui.mosques
 
+import android.annotation.SuppressLint
 import androidx.compose.runtime.Immutable
 import android.content.Context
 import android.content.pm.PackageManager
@@ -55,6 +56,7 @@ class MosquesViewModel @Inject constructor(
         }
     }
 
+    @SuppressLint("MissingPermission")
     private fun fetchLocation() {
         viewModelScope.launch(dispatcherProvider.io) {
             _uiState.value = _uiState.value.copy(isLoading = true)
