@@ -1,5 +1,7 @@
 package com.smiledev.rafiq.ui.mosques
 
+import android.annotation.SuppressLint
+import androidx.compose.runtime.Immutable
 import android.content.Context
 import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat
@@ -7,10 +9,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.Tasks
+import com.smiledev.rafiq.core.DefaultDispatcherProvider
+import com.smiledev.rafiq.core.DispatcherProvider
 import com.smiledev.rafiq.data.preferences.PreferencesManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
@@ -18,6 +21,7 @@ import kotlinx.coroutines.launch
 import org.osmdroid.util.GeoPoint
 import javax.inject.Inject
 
+@Immutable
 data class MosquesUiState(
     val userLocation: GeoPoint? = null,
     val locationGranted: Boolean = false,
@@ -28,7 +32,8 @@ data class MosquesUiState(
 @HiltViewModel
 class MosquesViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val preferencesManager: PreferencesManager
+    private val preferencesManager: PreferencesManager,
+    private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MosquesUiState())
@@ -51,8 +56,9 @@ class MosquesViewModel @Inject constructor(
         }
     }
 
+    @SuppressLint("MissingPermission")
     private fun fetchLocation() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatcherProvider.io) {
             _uiState.value = _uiState.value.copy(isLoading = true)
             try {
                 val fusedClient = LocationServices.getFusedLocationProviderClient(context)

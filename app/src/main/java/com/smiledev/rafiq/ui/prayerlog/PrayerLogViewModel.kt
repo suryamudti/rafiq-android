@@ -1,11 +1,15 @@
 package com.smiledev.rafiq.ui.prayerlog
 
+import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.smiledev.rafiq.data.local.PrayerLogDao
-import com.smiledev.rafiq.data.local.PrayerLogEntity
+import com.smiledev.rafiq.core.DefaultDispatcherProvider
+import com.smiledev.rafiq.core.DispatcherProvider
+import com.smiledev.rafiq.core.Result
+import com.smiledev.rafiq.domain.repository.PrayerLogDay
+import com.smiledev.rafiq.domain.repository.PrayerLogRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
+
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -14,16 +18,18 @@ import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
 
+@Immutable
 data class PrayerLogUiState(
-    val logs: List<PrayerLogEntity> = emptyList(),
+    val logs: List<PrayerLogDay> = emptyList(),
     val todayDate: String = "",
-    val todayLog: PrayerLogEntity? = null,
+    val todayLog: PrayerLogDay? = null,
     val isLoading: Boolean = false
 )
 
 @HiltViewModel
 class PrayerLogViewModel @Inject constructor(
-    private val prayerLogDao: PrayerLogDao
+    private val prayerLogRepository: PrayerLogRepository,
+    private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(PrayerLogUiState())
@@ -40,7 +46,7 @@ class PrayerLogViewModel @Inject constructor(
     private fun observeLogs() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
-            prayerLogDao.getAllLogs().collect { logs ->
+            prayerLogRepository.observeAll().collect { logs ->
                 val today = _uiState.value.todayDate
                 val todayLog = logs.find { it.date == today }
                 _uiState.value = _uiState.value.copy(
@@ -52,10 +58,12 @@ class PrayerLogViewModel @Inject constructor(
         }
     }
 
+    fun refresh() { observeLogs() }
+
     fun togglePrayer(prayer: String, value: Boolean) {
         val date = _uiState.value.todayDate
-        val current = _uiState.value.todayLog ?: PrayerLogEntity(date = date)
-        viewModelScope.launch(Dispatchers.IO) {
+        val current = _uiState.value.todayLog ?: PrayerLogDay(date = date)
+        viewModelScope.launch(dispatcherProvider.io) {
             val updated = when (prayer) {
                 "fajr" -> current.copy(fajr = value)
                 "dhuhr" -> current.copy(dhuhr = value)
@@ -64,7 +72,7 @@ class PrayerLogViewModel @Inject constructor(
                 "isha" -> current.copy(isha = value)
                 else -> current
             }
-            prayerLogDao.upsert(updated)
+            prayerLogRepository.upsert(updated)
         }
     }
 }

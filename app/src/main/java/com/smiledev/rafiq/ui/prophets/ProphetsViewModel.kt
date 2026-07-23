@@ -1,44 +1,54 @@
 package com.smiledev.rafiq.ui.prophets
 
+import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.smiledev.rafiq.data.models.ProphetStory
-import com.smiledev.rafiq.data.repository.ProphetRepository
+import com.smiledev.rafiq.core.AppError
+import com.smiledev.rafiq.core.DefaultDispatcherProvider
+import com.smiledev.rafiq.core.DispatcherProvider
+import com.smiledev.rafiq.core.Result
+import com.smiledev.rafiq.domain.model.ProphetStory
+import com.smiledev.rafiq.domain.repository.ProphetRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
+
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import java.util.Locale
+import com.smiledev.rafiq.core.currentLocaleCode
 import javax.inject.Inject
 
+@Immutable
 data class ProphetsUiState(
     val prophets: List<ProphetStory> = emptyList(),
     val searchQuery: String = "",
     val isLoading: Boolean = false,
-    val error: String? = null
+    val error: AppError? = null
 )
 
 @HiltViewModel
 class ProphetsViewModel @Inject constructor(
-    private val prophetRepository: ProphetRepository
+    private val prophetRepository: ProphetRepository,
+    private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ProphetsUiState())
     val uiState: StateFlow<ProphetsUiState> = _uiState
 
-    val localeCode = if (Locale.getDefault().language == "id") "id" else "en"
+    val localeCode = currentLocaleCode()
 
     init { loadProphets() }
 
     fun loadProphets() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatcherProvider.io) {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
-            try {
-                val prophets = prophetRepository.getProphets()
-                _uiState.value = _uiState.value.copy(prophets = prophets, isLoading = false)
-            } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(isLoading = false, error = e.message)
+            val result = prophetRepository.getProphets()
+            when (result) {
+                is Result.Success -> {
+                    _uiState.value = _uiState.value.copy(prophets = result.data, isLoading = false)
+                }
+                is Result.Error -> {
+                    _uiState.value = _uiState.value.copy(isLoading = false, error = result.error)
+                }
             }
         }
     }

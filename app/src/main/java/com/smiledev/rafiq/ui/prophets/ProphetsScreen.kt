@@ -33,6 +33,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.smiledev.rafiq.R
+import com.smiledev.rafiq.core.displayMessage
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 
 private val arabicFont = FontFamily(Font(R.font.me_quran))
@@ -51,9 +53,9 @@ fun ProphetsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("25 Prophets") },
+                title = { Text(stringResource(R.string.prophets_title)) },
                 navigationIcon = {
-                    Text("Back", modifier = Modifier.clickable(onClick = onBack).padding(16.dp))
+                    Text(stringResource(R.string.back), modifier = Modifier.clickable(onClick = onBack).padding(16.dp))
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surface
@@ -68,7 +70,7 @@ fun ProphetsScreen(
                         TextField(
                             value = state.searchQuery,
                             onValueChange = { viewModel.search(it) },
-                            placeholder = { Text("Search prophets") },
+                            placeholder = { Text(stringResource(R.string.search_prophets)) },
                             singleLine = true,
                             modifier = Modifier.fillMaxWidth().padding(12.dp),
                             shape = RoundedCornerShape(12.dp),
@@ -79,7 +81,7 @@ fun ProphetsScreen(
                         )
                         if (filtered.isEmpty() && state.searchQuery.isNotEmpty()) {
                             Text(
-                                text = "No prophets match \"${state.searchQuery}\"",
+                                text = stringResource(R.string.no_prophets_match, state.searchQuery),
                                 modifier = Modifier.fillMaxWidth().padding(32.dp),
                                 color = Color.Gray
                             )
@@ -131,7 +133,7 @@ fun ProphetsScreen(
                     }
                 }
                 else -> Text(
-                    text = "Error: ${state.error}",
+                    text = state.error?.displayMessage ?: "",
                     color = MaterialTheme.colorScheme.error,
                     modifier = Modifier.fillMaxSize().padding(16.dp)
                 )

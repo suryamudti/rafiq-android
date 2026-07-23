@@ -18,6 +18,9 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -27,13 +30,15 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.smiledev.rafiq.R
+import com.smiledev.rafiq.core.displayMessage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,9 +52,9 @@ fun ZakatCalculatorScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Zakat Calculator") },
+                title = { Text(stringResource(R.string.zakat_calculator)) },
                 navigationIcon = {
-                    Text("Back", modifier = Modifier.clickable(onClick = onBack).padding(16.dp))
+                    Text(stringResource(R.string.back), modifier = Modifier.clickable(onClick = onBack).padding(16.dp))
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surface
@@ -133,8 +138,8 @@ fun ZakatCalculatorScreen(
             Spacer(Modifier.height(16.dp))
 
             when {
-                state.isLoading -> CircularProgressIndicator()
-                state.error != null -> Text("Error: ${state.error}", color = MaterialTheme.colorScheme.error)
+                state.isLoading -> CircularProgressIndicator(modifier = Modifier.semantics { contentDescription = "Loading" })
+                state.error != null -> Text(state.error!!.displayMessage, color = MaterialTheme.colorScheme.error)
                 else -> {
                     val r = state.result
                     Card(

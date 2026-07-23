@@ -22,8 +22,15 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+        }
+        create("staging") {
+            initWith(getByName("release"))
+            matchingFallbacks += listOf("release")
+            applicationIdSuffix = ".staging"
+            versionNameSuffix = "-staging"
         }
     }
     compileOptions {
@@ -41,6 +48,8 @@ android {
     packaging {
       resources {
         excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        excludes += "/META-INF/LICENSE.md"
+        excludes += "/META-INF/NOTICE.md"
       }
     }
 }
@@ -57,9 +66,9 @@ kapt {
 
 configurations.all {
     resolutionStrategy {
-        force("org.jetbrains.kotlin:kotlin-stdlib:2.0.21")
-        force("org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.0.21")
-        force("org.jetbrains.kotlin:kotlin-stdlib-jdk7:2.0.21")
+        force("org.jetbrains.kotlin:kotlin-stdlib:2.0.0")
+        force("org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.0.0")
+        force("org.jetbrains.kotlin:kotlin-stdlib-jdk7:2.0.0")
     }
 }
 
@@ -67,6 +76,11 @@ dependencies {
   val composeBom = platform(libs.androidx.compose.bom)
   implementation(composeBom)
   androidTestImplementation(composeBom)
+
+  // Internal modules
+  implementation(project(":core"))
+  implementation(project(":domain"))
+  implementation(project(":data"))
 
   // Core Android dependencies
   implementation(libs.androidx.core.ktx)
@@ -99,6 +113,10 @@ dependencies {
   androidTestImplementation(libs.androidx.test.ext.junit)
   androidTestImplementation(libs.androidx.test.runner)
   androidTestImplementation(libs.androidx.test.espresso.core)
+  androidTestImplementation("io.mockk:mockk-android:1.13.11") {
+    exclude(group = "org.junit.jupiter")
+  }
+  androidTestImplementation(libs.kotlinx.coroutines.test)
 
   // Navigation
   implementation(libs.androidx.navigation3.ui)
@@ -110,24 +128,11 @@ dependencies {
   kapt(libs.hilt.compiler)
   implementation(libs.hilt.navigation.compose)
 
-  // Room
-  implementation(libs.room.runtime)
-  implementation(libs.room.ktx)
-  kapt(libs.room.compiler)
-
   // WorkManager
   implementation(libs.work.runtime.ktx)
 
   // OsmDroid
   implementation(libs.osmdroid.android)
-
-  // Retrofit
-  implementation(libs.retrofit)
-  implementation(libs.converter.gson)
-
-  // OkHttp
-  implementation(libs.okhttp)
-  implementation(libs.okhttp.logging.interceptor)
 
   // Media3 ExoPlayer
   implementation(libs.media3.exoplayer)
@@ -136,9 +141,10 @@ dependencies {
   // Google Play Services
   implementation(libs.play.services.location)
 
-  // Gson
+  // DI needs direct access to OkHttp/Retrofit/Gson for AppModule providers
+  implementation(libs.okhttp)
+  implementation(libs.okhttp.logging.interceptor)
+  implementation(libs.retrofit)
+  implementation(libs.converter.gson)
   implementation(libs.gson)
-
-  // DataStore Preferences
-  implementation(libs.datastore.preferences)
 }

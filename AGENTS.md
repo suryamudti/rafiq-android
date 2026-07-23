@@ -21,11 +21,12 @@ Emulator: `Medium_Phone_API_35`. No lint or typecheck commands currently set up.
 
 - **Navigation3** — type-safe nav via `@Serializable data object/class` NavKey tokens in `NavigationKeys.kt`. All 15 routes use `entryProvider { entry<Key> { ... } }` pattern in `Navigation.kt`.
 - **Hilt (KAPT)** — NOT KSP. Uses `kapt` plugin with `correctErrorTypes=true`. The warning "Kapt currently doesn't support language version 2.0+. Falling back to 1.9." is harmless.
-- **Kotlin 2.0.21** pinned because Hilt 2.56.2 embedded `kotlin-metadata-jvm` maxes at 2.0.0.
+- **Kotlin 2.0.0** — Downgraded from 2.0.21 because Room 2.6.1's embedded `kotlinx-metadata-jvm` only supports up to metadata 2.0.0, while Kotlin 2.0.10+ produces metadata 2.1.0. Upgraded Room to 2.8.4 to resolve.
 - **AGP 8.9.2** — Hilt 2.56.2 requires AGP 8.x, NOT 9.x.
 - **Material Icons: core only** — `material-icons-core`, never use extended set. Available: `DateRange`, `Face`, `Favorite`, `List` (AutoMirrored), `LocationOn`, `Notifications`, `Person`, `Place`, `PlayArrow`, `Refresh`, `ShoppingCart`, `Star`.
 - **DataStore** — all user prefs via `PreferencesManager`, NOT SharedPreferences.
-- **Room** — singleton `getInstance()` pattern, `fallbackToDestructiveMigration()`.
+- **Room** — singleton `getInstance()` pattern, `fallbackToDestructiveMigration()`. Use `api(libs.room.runtime)` in `:data` module (not `implementation`) so `:app` can see `RoomDatabase` supertype transitively.
+- **Cross-module smart casts** — Properties from other modules are treated as open API. Smart casts from nullable don't work. Use `!!` or local `val` explicitly.
 
 ## Asset Loading Gotchas
 
@@ -57,15 +58,12 @@ Configuration.getInstance().apply {
 }
 ```
 
-## File Structure
+## File Structure (Multi-module)
 
-- `data/models/` — data classes (DTOs)
-- `data/repository/` — reads from assets or APIs
-- `ui/<feature>/` — Screen.kt + ViewModel.kt per feature
-- `theme/` — Material3 colors/theme
-- `di/AppModule.kt` — all Hilt `@Provides` bindings
-- `core/DatabaseCopier.kt` — copies assets DBs to device
-- `service/` — Media3 foreground service, WorkManager worker
+- `:core` — `Result.kt`, `AppError.kt`, `DispatcherProvider`, `retryIO`, `LocaleUtil`, `DatabaseCopier`
+- `:domain` — Repository interfaces, use cases, domain models (Surah, Ayah, PrayerTimings, etc.)
+- `:data` — Repository Impl classes, Room DBs/DAOs, Retrofit APIs, DataStore PreferencesManager
+- `:app` — DI (`di/AppModule.kt`), UI (`ui/<feature>/Screen.kt` + `ViewModel.kt`), `theme/`, `service/`, `Navigation.kt`
 - `thoughts/` — plan docs, NOT source code
 
 ## Key Constraints
@@ -77,3 +75,5 @@ Configuration.getInstance().apply {
 - `Icons.Filled.Delete` is available in `material-icons-core` only if imported explicitly.
 - `PrayerLogScreen` uses `Switch` for toggling each of the 5 daily prayers; `BookmarkListScreen` uses `Favorite` icon for the dashboard card.
 - Theme palette (`Color.kt`) uses Islamic-inspired colors: Teal500, Gold700, DeepBlue, WarmBrown, Cream/Sand backgrounds. On Android 12+, dynamic color takes priority.
+- Room `room-runtime` MUST be `api` (not `implementation`) in library modules (`:data`) because `:app` accesses types (like `BookmarkDatabase`) whose supertype `RoomDatabase` must be transitively visible.
+- Cross-module smart casts from nullable don't work. When accessing nullable `String?` properties from another module, use `!!` (if guarded) or `?:` / local `val` instead of relying on smart-cast via `if` checks.

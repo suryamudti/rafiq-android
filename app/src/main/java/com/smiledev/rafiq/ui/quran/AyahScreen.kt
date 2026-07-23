@@ -43,16 +43,21 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.smiledev.rafiq.R
-import com.smiledev.rafiq.data.models.AyahData
+import com.smiledev.rafiq.core.currentLocaleCode
+import com.smiledev.rafiq.core.displayMessage
+import com.smiledev.rafiq.domain.model.Ayah
 
 private val arabicFont = FontFamily(Font(R.font.me_quran))
 
@@ -67,7 +72,7 @@ fun AyahScreen(
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.uiState.collectAsState()
-    var longPressedAyah by remember { mutableStateOf<AyahData?>(null) }
+    var longPressedAyah by remember { mutableStateOf<Ayah?>(null) }
 
     val listState = rememberLazyListState()
     var hasScrolled by remember(suraNumber, scrollToAya) { mutableStateOf(false) }
@@ -136,11 +141,11 @@ fun AyahScreen(
         Box(modifier = Modifier.fillMaxSize().padding(padding)) {
             when {
                 state.isLoading -> {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center).semantics { contentDescription = "Loading" })
                 }
                 state.error != null -> {
                     Text(
-                        text = "Error: ${state.error}",
+                        text = state.error?.displayMessage ?: "",
                         modifier = Modifier.fillMaxSize().padding(16.dp),
                         color = MaterialTheme.colorScheme.error
                     )
@@ -185,7 +190,7 @@ fun AyahScreen(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun VerseCell(
-    ayah: AyahData,
+    ayah: Ayah,
     translationLanguage: String,
     isBookmarked: Boolean,
     onLongPress: () -> Unit,
@@ -247,7 +252,7 @@ private fun VerseCell(
                     Spacer(modifier = Modifier.height(4.dp))
                     Icon(
                         imageVector = Icons.Filled.Favorite,
-                        contentDescription = "Bookmarked",
+                        contentDescription = stringResource(R.string.bookmark_ayah_bookmarked),
                         tint = Color(0xFFE91E63),
                         modifier = Modifier.size(16.dp)
                     )
@@ -266,7 +271,7 @@ private fun VerseCell(
         }
 
         val resolvedLang = if (translationLanguage == "system") {
-            if (java.util.Locale.getDefault().language == "in" || java.util.Locale.getDefault().language == "id") "id" else "en"
+            currentLocaleCode()
         } else {
             translationLanguage
         }
@@ -334,7 +339,7 @@ private fun VerseCell(
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
-                                text = ayah.translationId,
+                                text = ayah.translationId!!,
                                 fontSize = translationFontSize.sp,
                                 fontWeight = FontWeight.Medium,
                                 lineHeight = (translationFontSize * 1.6).sp,
@@ -358,7 +363,7 @@ private fun VerseCell(
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
-                                text = ayah.translationEn,
+                                text = ayah.translationEn!!,
                                 fontSize = translationFontSize.sp,
                                 fontWeight = FontWeight.Normal,
                                 lineHeight = (translationFontSize * 1.6).sp,
@@ -387,7 +392,7 @@ private fun VerseCell(
 }
 
 @Composable
-private fun BadgesRow(ayah: AyahData) {
+private fun BadgesRow(ayah: Ayah) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Center
