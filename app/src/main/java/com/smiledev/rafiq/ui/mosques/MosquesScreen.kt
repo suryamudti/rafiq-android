@@ -6,9 +6,11 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -20,7 +22,9 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -28,6 +32,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.smiledev.rafiq.R
+import com.smiledev.rafiq.core.displayMessage
 import androidx.hilt.navigation.compose.hiltViewModel
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
@@ -61,21 +66,19 @@ fun MosquesScreen(
     }
 
     val yourLocationLabel = stringResource(R.string.your_location)
-    val fallbackLocationLabel = stringResource(R.string.fallback_location)
     val tapForDetailsLabel = stringResource(R.string.tap_for_details)
-    val mapView = remember(state.userLocation) {
+
+    val mapView = remember {
         Configuration.getInstance().apply {
             userAgentValue = context.packageName
             osmdroidBasePath = context.cacheDir
             osmdroidTileCache = context.cacheDir.resolve("tiles")
         }
-        val lat = state.userLocation?.latitude ?: -6.2088
-        val lon = state.userLocation?.longitude ?: 106.8456
         MapView(context).apply {
             setTileSource(TileSourceFactory.MAPNIK)
             setMultiTouchControls(true)
-            controller.setZoom(12.0)
-            controller.setCenter(GeoPoint(lat, lon))
+            controller.setZoom(14.0)
+            controller.setCenter(GeoPoint(-6.2088, 106.8456))
 
             val compass = CompassOverlay(context, this)
             compass.enableCompass()
@@ -83,14 +86,6 @@ fun MosquesScreen(
 
             val scaleBar = ScaleBarOverlay(this)
             overlays.add(scaleBar)
-
-            val marker = Marker(this).apply {
-                position = GeoPoint(lat, lon)
-                setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-                title = if (state.userLocation != null) yourLocationLabel else fallbackLocationLabel
-                snippet = tapForDetailsLabel
-            }
-            overlays.add(marker)
 
             setOnTouchListener { _, event ->
                 if (event.action == MotionEvent.ACTION_UP) {
@@ -100,6 +95,41 @@ fun MosquesScreen(
                 }
                 false
             }
+        }
+    }
+
+    var userMarker by remember { mutableStateOf<Marker?>(null) }
+
+    LaunchedEffect(state.userLocation) {
+        state.userLocation?.let { loc ->
+            mapView.controller.animateTo(loc)
+            userMarker?.let { mapView.overlays.remove(it) }
+            val marker = Marker(mapView).apply {
+                position = loc
+                setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                title = yourLocationLabel
+                snippet = tapForDetailsLabel
+            }
+            mapView.overlays.add(marker)
+            userMarker = marker
+        }
+    }
+
+    LaunchedEffect(state.mosques) {
+        val toRemove = mapView.overlays.filterIsInstance<Marker>().filter { it != userMarker }
+        toRemove.forEach { mapView.overlays.remove(it) }
+        state.mosques.forEach { mosque ->
+            val marker = Marker(mapView).apply {
+                position = GeoPoint(mosque.latitude, mosque.longitude)
+                setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                title = mosque.name
+                snippet = tapForDetailsLabel
+                setOnMarkerClickListener { m, _ ->
+                    if (m.isInfoWindowOpen) m.closeInfoWindow() else m.showInfoWindow()
+                    true
+                }
+            }
+            mapView.overlays.add(marker)
         }
     }
 
@@ -123,17 +153,33 @@ fun MosquesScreen(
         }
     ) { padding ->
         Box(modifier = Modifier.fillMaxSize().padding(padding)) {
-            AndroidView(
-                factory = { mapView },
-                modifier = Modifier.fillMaxSize()
-            )
-            if (state.showPermissionDenied) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Button(onClick = { permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION) }) {
-                        Text(stringResource(R.string.grant_location_permission))
+            Column(modifier = Modifier.fillMaxSize()) {
+                if (state.error != null) {
+                    Text(
+                        text = state.error?.displayMessage ?: "",
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
+                Box(modifier = Modifier.weight(1f)) {
+                    AndroidView(
+                        factory = { mapView },
+                        modifier = Modifier.fillMaxSize()
+                    )
+                    if (state.isLoading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.align(Alignment.Center)
+                        )
+                    }
+                    if (state.showPermissionDenied) {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Button(onClick = { permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION) }) {
+                                Text(stringResource(R.string.grant_location_permission))
+                            }
+                        }
                     }
                 }
             }

@@ -11,10 +11,13 @@ import com.smiledev.rafiq.data.local.PrayerLogDao
 import com.smiledev.rafiq.data.preferences.PreferencesManager
 import com.smiledev.rafiq.data.remote.AladhanApiService
 import com.smiledev.rafiq.data.remote.MetalPriceApiService
+import com.smiledev.rafiq.data.remote.OverpassApi
+import com.smiledev.rafiq.data.remote.OverpassApiService
 import com.smiledev.rafiq.data.repository.AsmaulHusnaRepositoryImpl
 import com.smiledev.rafiq.data.repository.BookmarkRepositoryImpl
 import com.smiledev.rafiq.data.repository.IslamicCalendarRepositoryImpl
 import com.smiledev.rafiq.data.repository.MetalPriceRepositoryImpl
+import com.smiledev.rafiq.data.repository.MosqueRepositoryImpl
 import com.smiledev.rafiq.data.repository.PrayerLogRepositoryImpl
 import com.smiledev.rafiq.data.repository.PrayerTimesRepositoryImpl
 import com.smiledev.rafiq.data.repository.ProphetRepositoryImpl
@@ -24,6 +27,7 @@ import com.smiledev.rafiq.domain.repository.AsmaulHusnaRepository
 import com.smiledev.rafiq.domain.repository.BookmarkRepository
 import com.smiledev.rafiq.domain.repository.IslamicCalendarRepository
 import com.smiledev.rafiq.domain.repository.MetalPriceRepository
+import com.smiledev.rafiq.domain.repository.MosqueRepository
 import com.smiledev.rafiq.domain.repository.PrayerLogRepository
 import com.smiledev.rafiq.domain.repository.PrayerTimesRepository
 import com.smiledev.rafiq.domain.repository.ProphetRepository
@@ -64,6 +68,7 @@ abstract class RepositoryModule {
     @Binds @Singleton abstract fun bindReciterRepository(impl: ReciterRepositoryImpl): ReciterRepository
     @Binds @Singleton abstract fun bindBookmarkRepository(impl: BookmarkRepositoryImpl): BookmarkRepository
     @Binds @Singleton abstract fun bindPrayerLogRepository(impl: PrayerLogRepositoryImpl): PrayerLogRepository
+    @Binds @Singleton abstract fun bindMosqueRepository(impl: MosqueRepositoryImpl): MosqueRepository
 }
 
 @Module
@@ -166,6 +171,29 @@ object AppModule {
     fun provideMetalPriceApiService(@Named("metalprice") metalPriceRetrofit: Retrofit): MetalPriceApiService {
         return metalPriceRetrofit.create(MetalPriceApiService::class.java)
     }
+
+    @Provides
+    @Singleton
+    @Named("overpass")
+    fun provideOverpassRetrofit(
+        client: OkHttpClient,
+        gson: GsonConverterFactory
+    ): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl("https://overpass-api.de/api/")
+            .client(client)
+            .addConverterFactory(gson)
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideOverpassApiService(@Named("overpass") overpassRetrofit: Retrofit): OverpassApiService {
+        return overpassRetrofit.create(OverpassApiService::class.java)
+    }
+
+    @Provides @Singleton
+    fun provideOverpassApi(service: OverpassApiService): OverpassApi = OverpassApi(service)
 
     @Provides @Singleton
     fun provideGetSurahsUseCase(repo: QuranRepository): GetSurahsUseCase = GetSurahsUseCase(repo)
