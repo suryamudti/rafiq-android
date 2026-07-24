@@ -142,7 +142,7 @@ class QuranRepositoryImpl @Inject constructor(
     private fun getTranslationForSura(suraNumber: Int, localeCode: String): Map<Int, String> {
         val db = getTranslationDatabase(localeCode) ?: return emptyMap()
         val cursor = db.rawQuery(
-            "SELECT ayah, text FROM verses WHERE sura = ?",
+            "SELECT ayah, text FROM verses WHERE CAST(sura AS INTEGER) = ?",
             arrayOf(suraNumber.toString())
         )
         val map = mutableMapOf<Int, String>()
