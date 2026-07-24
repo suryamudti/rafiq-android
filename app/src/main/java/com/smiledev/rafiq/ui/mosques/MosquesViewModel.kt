@@ -9,9 +9,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.Tasks
+import com.smiledev.rafiq.core.AppError
 import com.smiledev.rafiq.core.DefaultDispatcherProvider
 import com.smiledev.rafiq.core.DispatcherProvider
+import com.smiledev.rafiq.core.Result
 import com.smiledev.rafiq.data.preferences.PreferencesManager
+import com.smiledev.rafiq.domain.model.Mosque
+import com.smiledev.rafiq.domain.repository.MosqueRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,13 +30,16 @@ data class MosquesUiState(
     val userLocation: GeoPoint? = null,
     val locationGranted: Boolean = false,
     val showPermissionDenied: Boolean = false,
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val mosques: List<Mosque> = emptyList(),
+    val error: AppError? = null
 )
 
 @HiltViewModel
 class MosquesViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val preferencesManager: PreferencesManager,
+    private val mosqueRepository: MosqueRepository,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider
 ) : ViewModel() {
 
@@ -53,6 +60,7 @@ class MosquesViewModel @Inject constructor(
             fetchLocation()
         } else {
             _uiState.value = _uiState.value.copy(showPermissionDenied = true)
+            loadMosques(-6.2088, 106.8456)
         }
     }
 
@@ -68,6 +76,7 @@ class MosquesViewModel @Inject constructor(
                         userLocation = GeoPoint(location.latitude, location.longitude),
                         isLoading = false
                     )
+                    loadMosques(location.latitude, location.longitude)
                 } else {
                     fallbackToPreferences()
                 }
@@ -86,5 +95,26 @@ class MosquesViewModel @Inject constructor(
             userLocation = GeoPoint(lat, lon),
             isLoading = false
         )
+        loadMosques(lat, lon)
+    }
+
+    private fun loadMosques(lat: Double, lon: Double) {
+        viewModelScope.launch(dispatcherProvider.io) {
+            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+            when (val result = mosqueRepository.getNearbyMosques(lat, lon)) {
+                is Result.Success -> {
+                    _uiState.value = _uiState.value.copy(
+                        mosques = result.data,
+                        isLoading = false
+                    )
+                }
+                is Result.Error -> {
+                    _uiState.value = _uiState.value.copy(
+                        error = result.error,
+                        isLoading = false
+                    )
+                }
+            }
+        }
     }
 }
