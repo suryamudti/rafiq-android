@@ -96,40 +96,40 @@ rafiq-android/
 
 ```mermaid
 graph TD
-    subgraph UI Layer [:app]
-        ComposeScreens[Jetpack Compose Screens]
-        ViewModels[Hilt ViewModels]
-        ComposeScreens -->|Observe UI State| ViewModels
-        ViewModels -->|Emit Intent / User Events| ComposeScreens
+    subgraph UI ["UI Layer (:app)"]
+        UI_Screen["Jetpack Compose Screens"]
+        UI_VM["Hilt ViewModels"]
+        UI_Screen -->|"Observe UI State"| UI_VM
+        UI_VM -->|"Emit Intent / User Events"| UI_Screen
     end
 
-    subgraph Domain Layer [:domain]
-        UseCases[Use Cases]
-        DomainModels[Domain Models]
-        RepoInterfaces[Repository Interfaces]
-        ViewModels -->|Executes| UseCases
-        UseCases -->|Invokes| RepoInterfaces
+    subgraph Domain ["Domain Layer (:domain)"]
+        Domain_UC["Use Cases"]
+        Domain_Model["Domain Models"]
+        Domain_Repo["Repository Interfaces"]
+        UI_VM -->|"Executes"| Domain_UC
+        Domain_UC -->|"Invokes"| Domain_Repo
     end
 
-    subgraph Data Layer [:data]
-        RepoImpl[Repository Implementations]
-        RoomDB[Room Local Databases]
-        RetrofitAPI[Retrofit Remote APIs]
-        DataStore[DataStore Preferences]
-        
-        RepoInterfaces <|.. RepoImpl
-        RepoImpl --> RoomDB
-        RepoImpl --> RetrofitAPI
-        RepoImpl --> DataStore
+    subgraph Data ["Data Layer (:data)"]
+        Data_RepoImpl["Repository Implementations"]
+        Data_Room["Room Local Databases"]
+        Data_Retrofit["Retrofit Remote APIs"]
+        Data_Store["DataStore Preferences"]
+
+        Domain_Repo -.->|"implements"| Data_RepoImpl
+        Data_RepoImpl --> Data_Room
+        Data_RepoImpl --> Data_Retrofit
+        Data_RepoImpl --> Data_Store
     end
 
-    subgraph Core Layer [:core]
-        CoreUtils[Result<T>, AppError, DispatcherProvider]
+    subgraph Core ["Core Layer (:core)"]
+        Core_Utils["Result&lt;T&gt;, AppError, DispatcherProvider"]
     end
 
-    UI Layer --> Core Layer
-    Domain Layer --> Core Layer
-    Data Layer --> Core Layer
+    UI --> Core
+    Domain --> Core
+    Data --> Core
 ```
 
 ### Architecture Highlights
