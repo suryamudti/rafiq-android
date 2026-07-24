@@ -96,6 +96,8 @@ rafiq-android/
 
 ```mermaid
 graph TD
+```mermaid
+graph TD
     subgraph UI ["UI Layer (:app)"]
         UI_Screen["Jetpack Compose Screens"]
         UI_VM["Hilt ViewModels"]
