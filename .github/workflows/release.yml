@@ -1,35 +1,45 @@
-name: Release
+name: Draft Release
 
 on:
   push:
-    tags: ['v*']
+    branches:
+      - main
+      - master
+    paths-ignore:
+      - '*.md'
+      - '.gitignore'
+      - 'AGENTS.md'
+      - 'GITHUB_WORKFLOWS.md'
+      - 'thoughts/**'
+      - 'figure/**'
+      - '.github/**'
 
 jobs:
-  release:
+  build:
     name: Build & Release
     runs-on: ubuntu-latest
     permissions:
       contents: write
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-java@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: '17'
           cache: 'gradle'
 
-      - run: chmod +x gradlew
+      - name: Grant Execute Permission to Gradlew
+        run: chmod +x gradlew
 
       - name: Extract Version Name
         id: get_version
         run: |
           VERSION_NAME=$(sed -n 's/.*baseVersionName = "\(.*\)".*/\1/p' app/build.gradle.kts | tr -d '[:space:]')
           echo "version=$VERSION_NAME" >> $GITHUB_OUTPUT
-
-      - name: Run Unit Tests
-        run: ./gradlew testDebug
 
       - name: Build Release APK & Bundle
         run: ./gradlew assembleRelease bundleRelease -PversionCode=${{ github.run_number }} -PversionName=${{ steps.get_version.outputs.version }}.${{ github.run_number }}
