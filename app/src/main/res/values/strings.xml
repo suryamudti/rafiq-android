@@ -103,6 +103,15 @@
     <string name="both_bahasa_english">Both (Bahasa &amp; English)</string>
     <string name="ayah_font_size">Ayah Font Size: %dsp</string>
     <string name="translation_font_size">Translation Font Size: %dsp</string>
+    <!-- Dashboard Greetings -->
+    <string name="greeting_morning">Good morning</string>
+    <string name="greeting_afternoon">Good afternoon</string>
+    <string name="greeting_evening">Good evening</string>
+    <string name="greeting_night">Good night</string>
+    <string name="greeting_assalamualaikum">السلام عليكم</string>
+    <!-- Settings -->
+    <string name="more_features">More Features</string>
+    <string name="retry">Retry</string>
     <!-- Bookmark Details -->
     <string name="bookmark_sura_aya">%1$s %2$d:%3$d</string>
     <!-- Quran tabs -->

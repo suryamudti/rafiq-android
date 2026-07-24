@@ -103,6 +103,15 @@
     <string name="both_bahasa_english">Keduanya (Bahasa &amp; English)</string>
     <string name="ayah_font_size">Ukuran Huruf Ayat: %dsp</string>
     <string name="translation_font_size">Ukuran Huruf Terjemahan: %dsp</string>
+    <!-- Dashboard Greetings -->
+    <string name="greeting_morning">Selamat pagi</string>
+    <string name="greeting_afternoon">Selamat siang</string>
+    <string name="greeting_evening">Selamat sore</string>
+    <string name="greeting_night">Selamat malam</string>
+    <string name="greeting_assalamualaikum">السلام عليكم</string>
+    <!-- Settings -->
+    <string name="more_features">Fitur Lainnya</string>
+    <string name="retry">Coba lagi</string>
     <!-- Bookmark Details -->
     <string name="bookmark_sura_aya">%1$s %2$d:%3$d</string>
     <!-- Quran tabs -->

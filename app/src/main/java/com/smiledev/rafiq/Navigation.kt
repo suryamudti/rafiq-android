@@ -142,6 +142,7 @@ fun MainNavigation() {
         entry<Settings> {
           SettingsScreen(
             onBack = { backStack.removeLastOrNull() },
+            onNavigate = { navKey -> backStack.add(navKey) },
             modifier = Modifier.safeDrawingPadding()
           )
         }
