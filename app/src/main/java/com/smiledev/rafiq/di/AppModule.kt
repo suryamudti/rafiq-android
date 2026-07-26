@@ -10,6 +10,7 @@ import com.smiledev.rafiq.data.local.PrayerLogDatabase
 import com.smiledev.rafiq.data.local.PrayerLogDao
 import com.smiledev.rafiq.data.preferences.PreferencesManager
 import com.smiledev.rafiq.data.remote.AladhanApiService
+import com.smiledev.rafiq.data.remote.EQuranApiService
 import com.smiledev.rafiq.data.remote.IslamicAppApiService
 import com.smiledev.rafiq.data.remote.MetalPriceApiService
 import com.smiledev.rafiq.data.remote.OverpassApi
@@ -191,6 +192,26 @@ object AppModule {
     @Singleton
     fun provideIslamicAppApiService(@Named("islamicapp") retrofit: Retrofit): IslamicAppApiService {
         return retrofit.create(IslamicAppApiService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    @Named("equran")
+    fun provideEQuranRetrofit(
+        client: OkHttpClient,
+        gson: GsonConverterFactory
+    ): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl("https://equran.id/")
+            .client(client)
+            .addConverterFactory(gson)
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideEQuranApiService(@Named("equran") retrofit: Retrofit): EQuranApiService {
+        return retrofit.create(EQuranApiService::class.java)
     }
 
     @Provides
