@@ -10,6 +10,7 @@ import com.smiledev.rafiq.data.local.PrayerLogDatabase
 import com.smiledev.rafiq.data.local.PrayerLogDao
 import com.smiledev.rafiq.data.preferences.PreferencesManager
 import com.smiledev.rafiq.data.remote.AladhanApiService
+import com.smiledev.rafiq.data.remote.IslamicAppApiService
 import com.smiledev.rafiq.data.remote.MetalPriceApiService
 import com.smiledev.rafiq.data.remote.OverpassApi
 import com.smiledev.rafiq.data.remote.OverpassApiService
@@ -170,6 +171,26 @@ object AppModule {
     @Singleton
     fun provideMetalPriceApiService(@Named("metalprice") metalPriceRetrofit: Retrofit): MetalPriceApiService {
         return metalPriceRetrofit.create(MetalPriceApiService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    @Named("islamicapp")
+    fun provideIslamicAppRetrofit(
+        client: OkHttpClient,
+        gson: GsonConverterFactory
+    ): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl("https://api.islamic.app/")
+            .client(client)
+            .addConverterFactory(gson)
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideIslamicAppApiService(@Named("islamicapp") retrofit: Retrofit): IslamicAppApiService {
+        return retrofit.create(IslamicAppApiService::class.java)
     }
 
     @Provides
