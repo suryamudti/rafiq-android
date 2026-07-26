@@ -13,6 +13,7 @@ class AudioPlayerController @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
     private var player: ExoPlayer? = null
+    private var completionListener: (() -> Unit)? = null
 
     val isPlaying: Boolean get() = player?.isPlaying ?: false
     val currentPosition: Long get() = player?.currentPosition ?: 0L
@@ -31,6 +32,27 @@ class AudioPlayerController @Inject constructor(
         }
     }
 
+    fun playAyah(url: String, onComplete: () -> Unit) {
+        completionListener = onComplete
+        if (player == null) {
+            player = ExoPlayer.Builder(context).build()
+        }
+        player?.apply {
+            stop()
+            clearMediaItems()
+            setMediaItem(MediaItem.fromUri(url))
+            prepare()
+            play()
+            addListener(object : Player.Listener {
+                override fun onPlaybackStateChanged(playbackState: Int) {
+                    if (playbackState == Player.STATE_ENDED) {
+                        completionListener?.invoke()
+                    }
+                }
+            })
+        }
+    }
+
     fun toggle() {
         val p = player ?: return
         if (p.isPlaying) p.pause() else p.play()
@@ -38,10 +60,12 @@ class AudioPlayerController @Inject constructor(
 
     fun stop() {
         player?.stop()
+        completionListener = null
     }
 
     fun release() {
         player?.release()
         player = null
+        completionListener = null
     }
 }

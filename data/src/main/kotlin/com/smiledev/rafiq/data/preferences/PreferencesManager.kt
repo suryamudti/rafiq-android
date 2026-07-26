@@ -29,6 +29,8 @@ class PreferencesManager @Inject constructor(
         val TRANSLATION_LANGUAGE = stringPreferencesKey("translation_language")
         val AYAH_FONT_SIZE = intPreferencesKey("ayah_font_size")
         val TRANSLATION_FONT_SIZE = intPreferencesKey("translation_font_size")
+        val LAST_READ_SURA = intPreferencesKey("last_read_sura")
+        val LAST_READ_AYA = intPreferencesKey("last_read_aya")
     }
 
     val themeMode: Flow<String> = context.dataStore.data.map { prefs ->
@@ -69,6 +71,14 @@ class PreferencesManager @Inject constructor(
 
     val translationFontSize: Flow<Int> = context.dataStore.data.map { prefs ->
         prefs[TRANSLATION_FONT_SIZE] ?: 15
+    }
+
+    val lastReadSura: Flow<Int> = context.dataStore.data.map { prefs ->
+        prefs[LAST_READ_SURA] ?: 0
+    }
+
+    val lastReadAya: Flow<Int> = context.dataStore.data.map { prefs ->
+        prefs[LAST_READ_AYA] ?: 0
     }
 
     suspend fun setThemeMode(mode: String) {
@@ -112,5 +122,12 @@ class PreferencesManager @Inject constructor(
 
     suspend fun setTranslationFontSize(size: Int) {
         context.dataStore.edit { prefs -> prefs[TRANSLATION_FONT_SIZE] = size }
+    }
+
+    suspend fun setLastReadPosition(sura: Int, aya: Int) {
+        context.dataStore.edit { prefs ->
+            prefs[LAST_READ_SURA] = sura
+            prefs[LAST_READ_AYA] = aya
+        }
     }
 }

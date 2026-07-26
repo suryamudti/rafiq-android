@@ -1,5 +1,10 @@
 package com.smiledev.rafiq.ui.quran
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.Intent
+import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -17,32 +22,41 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material3.AlertDialog
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.Font
@@ -58,6 +72,9 @@ import com.smiledev.rafiq.R
 import com.smiledev.rafiq.core.currentLocaleCode
 import com.smiledev.rafiq.core.displayMessage
 import com.smiledev.rafiq.domain.model.Ayah
+import com.smiledev.rafiq.ui.quran.AyahViewModel
+import com.smiledev.rafiq.ui.quran.NavMarker
+import kotlinx.coroutines.launch
 
 private val arabicFont = FontFamily(Font(R.font.me_quran))
 
@@ -68,36 +85,67 @@ fun AyahScreen(
     suraName: String,
     scrollToAya: Int = 0,
     onBack: () -> Unit,
-    viewModel: QuranViewModel = hiltViewModel(),
+    viewModel: AyahViewModel = hiltViewModel(),
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.uiState.collectAsState()
-    var longPressedAyah by remember { mutableStateOf<Ayah?>(null) }
-
     val listState = rememberLazyListState()
     var hasScrolled by remember(suraNumber, scrollToAya) { mutableStateOf(false) }
+    var actionAyah by remember { mutableStateOf<Ayah?>(null) }
+    var showSearch by remember { mutableStateOf(false) }
+    var showJumpSheet by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
 
     LaunchedEffect(suraNumber) {
         viewModel.loadAyahs(suraNumber)
     }
 
     LaunchedEffect(state.isLoading, state.ayahs, scrollToAya) {
-        if (!state.isLoading && state.ayahs.isNotEmpty() && scrollToAya > 0 && !hasScrolled) {
-            val ayahIndex = state.ayahs.indexOfFirst { it.aya == scrollToAya }
-            if (ayahIndex != -1) {
-                val targetIndex = if (state.currentSurah != null) ayahIndex + 1 else ayahIndex
-                listState.scrollToItem(targetIndex)
-                hasScrolled = true
+        if (!state.isLoading && state.ayahs.isNotEmpty() && !hasScrolled) {
+            val targetAyah = if (scrollToAya > 0) scrollToAya else viewModel.getLastReadAyahForSura(suraNumber)
+            if (targetAyah > 0) {
+                val ayahIndex = state.ayahs.indexOfFirst { it.aya == targetAyah }
+                if (ayahIndex != -1) {
+                    val targetIndex = if (state.currentSurah != null) ayahIndex + 1 else ayahIndex
+                    listState.scrollToItem(targetIndex)
+                    hasScrolled = true
+                }
             }
         }
     }
 
-    longPressedAyah?.let { ayah ->
+    LaunchedEffect(listState.firstVisibleItemIndex) {
+        if (!state.isLoading && state.ayahs.isNotEmpty() && hasScrolled) {
+            val offset = if (state.currentSurah != null) 1 else 0
+            val ayahIndex = listState.firstVisibleItemIndex - offset
+            if (ayahIndex in state.ayahs.indices) {
+                kotlinx.coroutines.delay(2000)
+                val ayah = state.ayahs[ayahIndex]
+                viewModel.saveLastReadPosition(suraNumber, ayah.aya)
+            }
+        }
+    }
+
+    val context = LocalContext.current
+    val sheetState = rememberModalBottomSheetState()
+
+    actionAyah?.let { ayah ->
         val isBookmarked = state.bookmarkedAyahs.contains(ayah.aya)
-        AlertDialog(
-            onDismissRequest = { longPressedAyah = null },
-            title = { Text("$suraNumber:${ayah.aya} - $suraName") },
-            text = {
+        val translationText = viewModel.getTranslationText(ayah, state.translationLanguage)
+
+        ModalBottomSheet(
+            onDismissRequest = { actionAyah = null },
+            sheetState = sheetState
+        ) {
+            Column(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)
+            ) {
+                Text(
+                    text = "$suraNumber:${ayah.aya} - $suraName",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
                 Text(
                     text = ayah.text,
                     style = MaterialTheme.typography.bodyLarge.copy(
@@ -106,25 +154,92 @@ fun AyahScreen(
                         textDirection = TextDirection.Rtl
                     ),
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
                 )
-            },
-            confirmButton = {
-                TextButton(onClick = {
-                    viewModel.toggleBookmark(suraNumber, ayah.aya, suraName)
-                    longPressedAyah = null
-                }) {
+                if (translationText != null) {
+                    Text(
+                        text = translationText,
+                        fontSize = 15.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp)
+                    )
+                }
+
+                TextButton(
+                    onClick = {
+                        copyToClipboard(context, "Ayah Text", ayah.text)
+                        actionAyah = null
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Copy Text")
+                }
+                TextButton(
+                    onClick = {
+                        if (translationText != null) {
+                            copyToClipboard(context, "Ayah Translation", translationText)
+                        }
+                        actionAyah = null
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = translationText != null
+                ) {
+                    Text("Copy Translation")
+                }
+                TextButton(
+                    onClick = {
+                        shareAyah(context, suraNumber, ayah.aya, ayah.text, translationText)
+                        actionAyah = null
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Share")
+                }
+                TextButton(
+                    onClick = {
+                        viewModel.toggleBookmark(suraNumber, ayah.aya, suraName)
+                        actionAyah = null
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
                     Text(if (isBookmarked) "Remove Bookmark" else "Add Bookmark")
                 }
-            },
-            dismissButton = {
-                TextButton(onClick = { longPressedAyah = null }) {
-                    Text("Cancel")
+                TextButton(
+                    onClick = { actionAyah = null },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Close", color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
-        )
+        }
     }
 
+    if (showJumpSheet) {
+        ModalBottomSheet(
+            onDismissRequest = { showJumpSheet = false },
+            sheetState = rememberModalBottomSheetState()
+        ) {
+            LazyColumn {
+                items(viewModel.getNavMarkers()) { marker: NavMarker ->
+                    TextButton(
+                        onClick = {
+                            val offset = if (state.currentSurah != null) 1 else 0
+                            val index = state.ayahs.indexOfFirst { it.aya == marker.ayahNumber }
+                            if (index != -1) {
+                                scope.launch { listState.scrollToItem(index + offset) }
+                            }
+                            showJumpSheet = false
+                        },
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+                    ) {
+                        Text("${marker.label} — Ayah ${marker.ayahNumber}")
+                    }
+                }
+            }
+        }
+    }
+
+    Box(modifier = Modifier.fillMaxSize()) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -132,10 +247,33 @@ fun AyahScreen(
                 navigationIcon = {
                     Text("Back", modifier = Modifier.clickable(onClick = onBack).padding(16.dp))
                 },
+                actions = {
+                    IconButton(onClick = { showSearch = !showSearch }) {
+                        Icon(Icons.Filled.Search, contentDescription = "Search")
+                    }
+                    TextButton(onClick = { showJumpSheet = !showJumpSheet }) {
+                        Text("Jump", fontSize = 13.sp)
+                    }
+                    TextButton(onClick = { viewModel.toggleMemorizationMode() }) {
+                        Text(
+                            if (state.memorizationMode) "Memorizing" else "Memorize",
+                            fontSize = 13.sp
+                        )
+                    }
+                },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surface
                 )
             )
+            if (showSearch) {
+                OutlinedTextField(
+                    value = state.searchQuery,
+                    onValueChange = { viewModel.setSearchQuery(it) },
+                    placeholder = { Text("Search this surah...") },
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+                    singleLine = true
+                )
+            }
         }
     ) { padding ->
         Box(modifier = Modifier.fillMaxSize().padding(padding)) {
@@ -151,31 +289,48 @@ fun AyahScreen(
                     )
                 }
                 else -> {
-                    LazyColumn(
-                        state = listState,
-                        modifier = modifier.fillMaxSize()
-                    ) {
-                        state.currentSurah?.let { surah ->
-                            item {
-                                Text(
-                                    text = surah.nameArabic,
-                                    style = MaterialTheme.typography.headlineMedium,
-                                    fontFamily = arabicFont,
-                                    fontWeight = FontWeight.Bold,
-                                    textAlign = TextAlign.Center,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(16.dp)
-                                )
-                                HorizontalDivider()
+                    val displayAyahs = viewModel.getFilteredAyahs()
+                    if (displayAyahs.isEmpty() && state.searchQuery.isNotBlank()) {
+                        Text(
+                            text = "No results found",
+                            modifier = Modifier.fillMaxWidth().padding(32.dp),
+                            textAlign = TextAlign.Center,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    } else {
+                        LazyColumn(
+                            state = listState,
+                            modifier = modifier.fillMaxSize()
+                        ) {
+                            state.currentSurah?.let { surah ->
+                                item {
+                                    Text(
+                                        text = surah.nameArabic,
+                                        style = MaterialTheme.typography.headlineMedium,
+                                        fontFamily = arabicFont,
+                                        fontWeight = FontWeight.Bold,
+                                        textAlign = TextAlign.Center,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(16.dp)
+                                    )
+                                    HorizontalDivider()
+                                }
                             }
-                        }
-                        itemsIndexed(state.ayahs) { index, ayah ->
+                            itemsIndexed(displayAyahs) { index, ayah ->
                             VerseCell(
                                 ayah = ayah,
                                 translationLanguage = state.translationLanguage,
                                 isBookmarked = state.bookmarkedAyahs.contains(ayah.aya),
-                                onLongPress = { longPressedAyah = ayah },
+                                onLongPress = { actionAyah = ayah },
+                                memorizationMode = state.memorizationMode,
+                                memorizationRevealedAyah = state.memorizationRevealedAyah,
+                                onRevealTranslation = { viewModel.revealTranslation(it) },
+                                isPlayingAyah = state.currentPlayingAyah == ayah.aya && state.isPlaying,
+                                onToggleAudio = { viewModel.toggleAyahAudio(ayah.aya) },
+                                tafsirText = state.tafsirCache["${state.suraNumber}:${ayah.aya}"],
+                                tafsirLoading = state.tafsirLoadingAyah == ayah.aya,
+                                onLoadTafsir = { viewModel.loadTafsir(ayah.aya) },
                                 ayahFontSize = state.ayahFontSize,
                                 translationFontSize = state.translationFontSize
                             )
@@ -184,6 +339,26 @@ fun AyahScreen(
                 }
             }
         }
+    }
+
+        if (state.memorizationMode) {
+            Surface(
+                modifier = Modifier.align(Alignment.BottomCenter).fillMaxWidth(),
+                tonalElevation = 4.dp
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text("Memorization Mode", fontSize = 14.sp, fontWeight = FontWeight.Medium)
+                    TextButton(onClick = { viewModel.toggleMemorizationMode() }) {
+                        Text("Exit", color = MaterialTheme.colorScheme.error)
+                    }
+                }
+            }
+        }
+    }
     }
 }
 
@@ -194,11 +369,23 @@ private fun VerseCell(
     translationLanguage: String,
     isBookmarked: Boolean,
     onLongPress: () -> Unit,
+    memorizationMode: Boolean = false,
+    memorizationRevealedAyah: Int? = null,
+    onRevealTranslation: ((Int) -> Unit)? = null,
+    isPlayingAyah: Boolean = false,
+    onToggleAudio: (() -> Unit)? = null,
+    tafsirText: String? = null,
+    tafsirLoading: Boolean = false,
+    onLoadTafsir: (() -> Unit)? = null,
     ayahFontSize: Int = 22,
     translationFontSize: Int = 15
 ) {
     Column(modifier = Modifier
         .fillMaxWidth()
+        .then(
+            if (isPlayingAyah) Modifier.background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f))
+            else Modifier
+        )
         .combinedClickable(
             onClick = {},
             onLongClick = onLongPress
@@ -257,6 +444,17 @@ private fun VerseCell(
                         modifier = Modifier.size(16.dp)
                     )
                 }
+                IconButton(
+                    onClick = { onToggleAudio?.invoke() },
+                    modifier = Modifier.size(28.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.PlayArrow,
+                        contentDescription = if (isPlayingAyah) "Playing" else "Play",
+                        tint = if (isPlayingAyah) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.size(18.dp)
+                    )
+                }
             }
             Text(
                 text = ayah.text,
@@ -270,116 +468,181 @@ private fun VerseCell(
             )
         }
 
-        val resolvedLang = if (translationLanguage == "system") {
-            currentLocaleCode()
+        if (memorizationMode && memorizationRevealedAyah != ayah.aya) {
+            TextButton(
+                onClick = { onRevealTranslation?.invoke(ayah.aya) },
+                modifier = Modifier.fillMaxWidth().padding(top = 6.dp)
+            ) {
+                Text(
+                    text = "Tap to reveal translation",
+                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f)
+                )
+            }
         } else {
-            translationLanguage
-        }
-
-        val hasId = !ayah.translationId.isNullOrBlank()
-        val hasEn = !ayah.translationEn.isNullOrBlank()
-
-        when (resolvedLang) {
-            "id" -> {
-                val text = if (hasId) ayah.translationId else if (hasEn) ayah.translationEn else null
-                if (text != null) {
-                    Text(
-                        text = "${ayah.aya}. $text",
-                        fontSize = translationFontSize.sp,
-                        fontWeight = FontWeight.Medium,
-                        lineHeight = (translationFontSize * 1.6).sp,
-                        modifier = Modifier.fillMaxWidth().padding(top = 6.dp)
-                    )
-                } else {
-                    Text(
-                        text = "[Translation unavailable]",
-                        fontSize = 14.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
-                        modifier = Modifier.fillMaxWidth().padding(top = 6.dp)
-                    )
-                }
+            val resolvedLang = if (translationLanguage == "system") {
+                currentLocaleCode()
+            } else {
+                translationLanguage
             }
-            "en" -> {
-                val text = if (hasEn) ayah.translationEn else if (hasId) ayah.translationId else null
-                if (text != null) {
-                    Text(
-                        text = "${ayah.aya}. $text",
-                        fontSize = translationFontSize.sp,
-                        fontWeight = FontWeight.Medium,
-                        lineHeight = (translationFontSize * 1.6).sp,
-                        modifier = Modifier.fillMaxWidth().padding(top = 6.dp)
-                    )
-                } else {
-                    Text(
-                        text = "[Translation unavailable]",
-                        fontSize = 14.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
-                        modifier = Modifier.fillMaxWidth().padding(top = 6.dp)
-                    )
-                }
-            }
-            "both" -> {
-                Column(
-                    modifier = Modifier.fillMaxWidth().padding(top = 6.dp),
-                    verticalArrangement = Arrangement.spacedBy(6.dp)
-                ) {
-                    if (hasId) {
-                        Row(
-                            verticalAlignment = Alignment.Top,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Text(
-                                text = "ID",
-                                fontSize = 11.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier
-                                    .background(MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(4.dp))
-                                    .padding(horizontal = 4.dp, vertical = 2.dp)
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(
-                                text = ayah.translationId!!,
-                                fontSize = translationFontSize.sp,
-                                fontWeight = FontWeight.Medium,
-                                lineHeight = (translationFontSize * 1.6).sp,
-                                modifier = Modifier.weight(1f)
-                            )
-                        }
-                    }
-                    if (hasEn) {
-                        Row(
-                            verticalAlignment = Alignment.Top,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Text(
-                                text = "EN",
-                                fontSize = 11.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.secondary,
-                                modifier = Modifier
-                                    .background(MaterialTheme.colorScheme.secondaryContainer, RoundedCornerShape(4.dp))
-                                    .padding(horizontal = 4.dp, vertical = 2.dp)
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(
-                                text = ayah.translationEn!!,
-                                fontSize = translationFontSize.sp,
-                                fontWeight = FontWeight.Normal,
-                                lineHeight = (translationFontSize * 1.6).sp,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                modifier = Modifier.weight(1f)
-                            )
-                        }
-                    }
-                    if (!hasId && !hasEn) {
+
+            val hasId = !ayah.translationId.isNullOrBlank()
+            val hasEn = !ayah.translationEn.isNullOrBlank()
+
+            when (resolvedLang) {
+                "id" -> {
+                    val text = if (hasId) ayah.translationId else if (hasEn) ayah.translationEn else null
+                    if (text != null) {
+                        Text(
+                            text = "${ayah.aya}. $text",
+                            fontSize = translationFontSize.sp,
+                            fontWeight = FontWeight.Medium,
+                            lineHeight = (translationFontSize * 1.6).sp,
+                            modifier = if (memorizationRevealedAyah == ayah.aya) {
+                                Modifier.fillMaxWidth().padding(top = 6.dp)
+                                    .background(Color(0xFFFFF3E0), RoundedCornerShape(8.dp)).padding(8.dp)
+                            } else {
+                                Modifier.fillMaxWidth().padding(top = 6.dp)
+                            }
+                        )
+                    } else {
                         Text(
                             text = "[Translation unavailable]",
                             fontSize = 14.sp,
                             color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier.fillMaxWidth().padding(top = 6.dp)
                         )
                     }
+                }
+                "en" -> {
+                    val text = if (hasEn) ayah.translationEn else if (hasId) ayah.translationId else null
+                    if (text != null) {
+                        Text(
+                            text = "${ayah.aya}. $text",
+                            fontSize = translationFontSize.sp,
+                            fontWeight = FontWeight.Medium,
+                            lineHeight = (translationFontSize * 1.6).sp,
+                            modifier = if (memorizationRevealedAyah == ayah.aya) {
+                                Modifier.fillMaxWidth().padding(top = 6.dp)
+                                    .background(Color(0xFFFFF3E0), RoundedCornerShape(8.dp)).padding(8.dp)
+                            } else {
+                                Modifier.fillMaxWidth().padding(top = 6.dp)
+                            }
+                        )
+                    } else {
+                        Text(
+                            text = "[Translation unavailable]",
+                            fontSize = 14.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
+                            modifier = Modifier.fillMaxWidth().padding(top = 6.dp)
+                        )
+                    }
+                }
+                "both" -> {
+                    Column(
+                        modifier = if (memorizationRevealedAyah == ayah.aya) {
+                            Modifier.fillMaxWidth().padding(top = 6.dp)
+                                .background(Color(0xFFFFF3E0), RoundedCornerShape(8.dp)).padding(8.dp)
+                        } else {
+                            Modifier.fillMaxWidth().padding(top = 6.dp)
+                        },
+                        verticalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        if (hasId) {
+                            Row(
+                                verticalAlignment = Alignment.Top,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Text(
+                                    text = "ID",
+                                    fontSize = 11.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier
+                                        .background(MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(4.dp))
+                                        .padding(horizontal = 4.dp, vertical = 2.dp)
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = ayah.translationId!!,
+                                    fontSize = translationFontSize.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    lineHeight = (translationFontSize * 1.6).sp,
+                                    modifier = Modifier.weight(1f)
+                                )
+                            }
+                        }
+                        if (hasEn) {
+                            Row(
+                                verticalAlignment = Alignment.Top,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Text(
+                                    text = "EN",
+                                    fontSize = 11.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.secondary,
+                                    modifier = Modifier
+                                        .background(MaterialTheme.colorScheme.secondaryContainer, RoundedCornerShape(4.dp))
+                                        .padding(horizontal = 4.dp, vertical = 2.dp)
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = ayah.translationEn!!,
+                                    fontSize = translationFontSize.sp,
+                                    fontWeight = FontWeight.Normal,
+                                    lineHeight = (translationFontSize * 1.6).sp,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    modifier = Modifier.weight(1f)
+                                )
+                            }
+                        }
+                        if (!hasId && !hasEn) {
+                            Text(
+                                text = "[Translation unavailable]",
+                                fontSize = 14.sp,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
+        var showTafsir by remember { mutableStateOf(false) }
+        TextButton(
+            onClick = {
+                showTafsir = !showTafsir
+                if (showTafsir && tafsirText == null && !tafsirLoading) {
+                    onLoadTafsir?.invoke()
+                }
+            },
+            modifier = Modifier.fillMaxWidth().padding(top = 4.dp)
+        ) {
+            Text(
+                text = if (showTafsir) "Hide Tafsir" else "Show Tafsir",
+                fontSize = 13.sp,
+                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f)
+            )
+        }
+        if (showTafsir) {
+            when {
+                tafsirLoading -> {
+                    Text(
+                        text = "Loading tafsir...",
+                        fontSize = 14.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
+                        modifier = Modifier.fillMaxWidth().padding(top = 4.dp)
+                    )
+                }
+                tafsirText != null -> {
+                    Text(
+                        text = tafsirText!!,
+                        fontSize = 14.sp,
+                        lineHeight = 22.sp,
+                        modifier = Modifier.fillMaxWidth().padding(top = 4.dp)
+                    )
                 }
             }
         }
@@ -432,4 +695,28 @@ private fun BadgeChip(label: String, bgColor: Color, textColor: Color) {
             color = textColor
         )
     }
+}
+
+private fun copyToClipboard(context: Context, label: String, text: String) {
+    val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+    val clip = ClipData.newPlainText(label, text)
+    clipboard.setPrimaryClip(clip)
+    Toast.makeText(context, "Copied", Toast.LENGTH_SHORT).show()
+}
+
+private fun shareAyah(context: Context, suraNumber: Int, ayaNumber: Int, arabicText: String, translation: String?) {
+    val text = buildString {
+        appendLine(arabicText)
+        if (!translation.isNullOrBlank()) {
+            appendLine()
+            append(translation)
+        }
+        appendLine()
+        append("$suraNumber:$ayaNumber — Quran via Rafiq")
+    }
+    val intent = Intent(Intent.ACTION_SEND).apply {
+        type = "text/plain"
+        putExtra(Intent.EXTRA_TEXT, text)
+    }
+    context.startActivity(Intent.createChooser(intent, "Share Ayah"))
 }
