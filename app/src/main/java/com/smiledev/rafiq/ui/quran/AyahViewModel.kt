@@ -14,6 +14,7 @@ import com.smiledev.rafiq.domain.repository.BookmarkRepository
 import com.smiledev.rafiq.domain.repository.QuranRepository
 import android.text.Html
 import com.smiledev.rafiq.data.preferences.PreferencesManager
+import com.smiledev.rafiq.data.remote.EQuranApiService
 import com.smiledev.rafiq.data.remote.IslamicAppApiService
 import com.smiledev.rafiq.service.AudioPlayerController
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -54,6 +55,7 @@ class AyahViewModel @Inject constructor(
     private val preferencesManager: PreferencesManager,
     private val audioPlayer: AudioPlayerController,
     private val islamicAppApi: IslamicAppApiService,
+    private val equranApi: EQuranApiService,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider
 ) : ViewModel() {
 
@@ -64,6 +66,7 @@ class AyahViewModel @Inject constructor(
     private var cachedSurahs: List<Surah> = emptyList()
     private var lastReadSura: Int = 0
     private var lastReadAya: Int = 0
+    private var tafsirSuraLoaded: Int = -1
 
     init {
         loadSurahs()
@@ -212,19 +215,51 @@ class AyahViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(memorizationRevealedAyah = null)
     }
 
+    private fun shouldUseIndonesianTafsir(): Boolean {
+        val lang = _uiState.value.translationLanguage
+        return lang == "id" || (lang == "system" && currentLocaleCode() == "id")
+    }
+
     fun loadTafsir(ayahNumber: Int) {
-        val key = "${_uiState.value.suraNumber}:$ayahNumber"
+        val suraNumber = _uiState.value.suraNumber
+        val key = "$suraNumber:$ayahNumber"
         if (_uiState.value.tafsirCache.containsKey(key)) return
         _uiState.value = _uiState.value.copy(tafsirLoadingAyah = ayahNumber)
         viewModelScope.launch(dispatcherProvider.io) {
             try {
-                val response = islamicAppApi.getVerseWithTafsir(_uiState.value.suraNumber, ayahNumber)
-                val tafsirText = response.data.verse.tafsirs?.firstOrNull()?.text ?: "Tafsir not available"
-                val plainText = Html.fromHtml(tafsirText, Html.FROM_HTML_MODE_COMPACT).toString()
-                _uiState.value = _uiState.value.copy(
-                    tafsirCache = _uiState.value.tafsirCache + (key to plainText),
-                    tafsirLoadingAyah = null
-                )
+                if (shouldUseIndonesianTafsir() && suraNumber != tafsirSuraLoaded) {
+                    val resp = equranApi.getTafsir(suraNumber)
+                    val entries = resp.data.tafsir
+                    val newCache = mutableMapOf<String, String>()
+                    for (entry in entries) {
+                        val k = "$suraNumber:${entry.ayat}"
+                        newCache[k] = entry.teks
+                    }
+                    tafsirSuraLoaded = suraNumber
+                    _uiState.value = _uiState.value.copy(
+                        tafsirCache = _uiState.value.tafsirCache + newCache,
+                        tafsirLoadingAyah = null
+                    )
+                } else if (!shouldUseIndonesianTafsir()) {
+                    val response = islamicAppApi.getVerseWithTafsir(suraNumber, ayahNumber, "en-tafisr-ibn-kathir")
+                    val tafsirs = response.data.verse.tafsirs
+                    val tafsirText = if (tafsirs != null) {
+                        val match = tafsirs.find { it.language_name.lowercase() == "english" }
+                        (match ?: tafsirs.firstOrNull())?.text
+                    } else null
+                    val plainText = if (tafsirText != null) {
+                        Html.fromHtml(tafsirText, Html.FROM_HTML_MODE_COMPACT).toString()
+                    } else "Tafsir not available"
+                    _uiState.value = _uiState.value.copy(
+                        tafsirCache = _uiState.value.tafsirCache + (key to plainText),
+                        tafsirLoadingAyah = null
+                    )
+                } else {
+                    _uiState.value = _uiState.value.copy(
+                        tafsirCache = _uiState.value.tafsirCache + (key to "Tafsir not available"),
+                        tafsirLoadingAyah = null
+                    )
+                }
             } catch (_: Exception) {
                 _uiState.value = _uiState.value.copy(
                     tafsirCache = _uiState.value.tafsirCache + (key to "Failed to load tafsir"),
