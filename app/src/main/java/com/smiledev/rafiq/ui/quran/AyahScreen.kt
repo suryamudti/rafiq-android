@@ -39,6 +39,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -94,6 +95,7 @@ fun AyahScreen(
     var actionAyah by remember { mutableStateOf<Ayah?>(null) }
     var showSearch by remember { mutableStateOf(false) }
     var showJumpSheet by remember { mutableStateOf(false) }
+    var showFontSizeSheet by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(suraNumber) {
@@ -214,6 +216,70 @@ fun AyahScreen(
         }
     }
 
+    if (showFontSizeSheet) {
+        ModalBottomSheet(
+            onDismissRequest = { showFontSizeSheet = false },
+            sheetState = rememberModalBottomSheetState()
+        ) {
+            Column(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.font_size),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+                Text(
+                    text = stringResource(R.string.ayah_font_size, state.ayahFontSize),
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("12", fontSize = 12.sp, fontWeight = FontWeight.Light)
+                    Slider(
+                        value = state.ayahFontSize.toFloat(),
+                        onValueChange = { viewModel.setAyahFontSize(it.toInt()) },
+                        valueRange = 12f..40f,
+                        steps = 27,
+                        modifier = Modifier.weight(1f).padding(horizontal = 8.dp)
+                    )
+                    Text("40", fontSize = 12.sp, fontWeight = FontWeight.Light)
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = stringResource(R.string.translation_font_size, state.translationFontSize),
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("10", fontSize = 12.sp, fontWeight = FontWeight.Light)
+                    Slider(
+                        value = state.translationFontSize.toFloat(),
+                        onValueChange = { viewModel.setTranslationFontSize(it.toInt()) },
+                        valueRange = 10f..30f,
+                        steps = 19,
+                        modifier = Modifier.weight(1f).padding(horizontal = 8.dp)
+                    )
+                    Text("30", fontSize = 12.sp, fontWeight = FontWeight.Light)
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+                TextButton(
+                    onClick = { showFontSizeSheet = false },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Close", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+            }
+        }
+    }
+
     if (showJumpSheet) {
         ModalBottomSheet(
             onDismissRequest = { showJumpSheet = false },
@@ -253,6 +319,9 @@ fun AyahScreen(
                     }
                     TextButton(onClick = { showJumpSheet = !showJumpSheet }) {
                         Text("Jump", fontSize = 13.sp)
+                    }
+                    TextButton(onClick = { showFontSizeSheet = !showFontSizeSheet }) {
+                        Text("Font", fontSize = 13.sp)
                     }
                     TextButton(onClick = { viewModel.toggleMemorizationMode() }) {
                         Text(

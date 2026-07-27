@@ -101,6 +101,7 @@
     <string name="bahasa_indonesia">Bahasa Indonesia</string>
     <string name="english">English</string>
     <string name="both_bahasa_english">Keduanya (Bahasa &amp; English)</string>
+    <string name="font_size">Ukuran Huruf</string>
     <string name="ayah_font_size">Ukuran Huruf Ayat: %dsp</string>
     <string name="translation_font_size">Ukuran Huruf Terjemahan: %dsp</string>
     <!-- Dashboard Greetings -->

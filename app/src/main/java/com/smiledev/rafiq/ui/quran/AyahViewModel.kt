@@ -269,6 +269,18 @@ class AyahViewModel @Inject constructor(
         }
     }
 
+    fun setAyahFontSize(size: Int) {
+        viewModelScope.launch(dispatcherProvider.io) {
+            preferencesManager.setAyahFontSize(size)
+        }
+    }
+
+    fun setTranslationFontSize(size: Int) {
+        viewModelScope.launch(dispatcherProvider.io) {
+            preferencesManager.setTranslationFontSize(size)
+        }
+    }
+
     fun getNavMarkers(): List<NavMarker> {
         val markers = mutableListOf<NavMarker>()
         for (ayah in _uiState.value.ayahs) {
