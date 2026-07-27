@@ -101,6 +101,7 @@
     <string name="bahasa_indonesia">Bahasa Indonesia</string>
     <string name="english">English</string>
     <string name="both_bahasa_english">Both (Bahasa &amp; English)</string>
+    <string name="font_size">Font Size</string>
     <string name="ayah_font_size">Ayah Font Size: %dsp</string>
     <string name="translation_font_size">Translation Font Size: %dsp</string>
     <!-- Dashboard Greetings -->

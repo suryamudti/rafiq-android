@@ -18,9 +18,7 @@ import javax.inject.Inject
 @Immutable
 data class SettingsUiState(
     val themeMode: String = "system",
-    val translationLanguage: String = "system",
-    val ayahFontSize: Int = 22,
-    val translationFontSize: Int = 15
+    val translationLanguage: String = "system"
 )
 
 @HiltViewModel
@@ -36,15 +34,11 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch(dispatcherProvider.io) {
             combine(
                 preferencesManager.themeMode,
-                preferencesManager.translationLanguage,
-                preferencesManager.ayahFontSize,
-                preferencesManager.translationFontSize
-            ) { theme, lang, ayahSize, transSize ->
+                preferencesManager.translationLanguage
+            ) { theme, lang ->
                 _uiState.value = _uiState.value.copy(
                     themeMode = theme,
-                    translationLanguage = lang,
-                    ayahFontSize = ayahSize,
-                    translationFontSize = transSize
+                    translationLanguage = lang
                 )
             }.collect()
         }
@@ -59,18 +53,6 @@ class SettingsViewModel @Inject constructor(
     fun setTranslationLanguage(lang: String) {
         viewModelScope.launch(dispatcherProvider.io) {
             preferencesManager.setTranslationLanguage(lang)
-        }
-    }
-
-    fun setAyahFontSize(size: Int) {
-        viewModelScope.launch(dispatcherProvider.io) {
-            preferencesManager.setAyahFontSize(size)
-        }
-    }
-
-    fun setTranslationFontSize(size: Int) {
-        viewModelScope.launch(dispatcherProvider.io) {
-            preferencesManager.setTranslationFontSize(size)
         }
     }
 }
