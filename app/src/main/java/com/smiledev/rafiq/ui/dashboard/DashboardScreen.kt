@@ -205,6 +205,18 @@ fun DashboardScreen(
             }
             Spacer(Modifier.height(12.dp))
         }
+
+        Spacer(Modifier.height(24.dp))
+
+        Text(
+            text = "v${state.appVersion}",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 8.dp),
+            textAlign = TextAlign.Center
+        )
     }
 }
 
