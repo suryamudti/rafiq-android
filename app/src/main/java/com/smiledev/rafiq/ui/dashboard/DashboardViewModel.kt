@@ -1,5 +1,6 @@
 package com.smiledev.rafiq.ui.dashboard
 
+import android.content.Context
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,6 +12,7 @@ import com.smiledev.rafiq.data.preferences.PreferencesManager
 import com.smiledev.rafiq.domain.model.PrayerTimeEntry
 import com.smiledev.rafiq.domain.repository.PrayerTimesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -31,6 +33,7 @@ data class DashboardUiState(
     val nextPrayerTime: String = "",
     val countdown: String = "",
     val greeting: String = "",
+    val appVersion: String = "",
     val latitude: Double = -6.2088,
     val longitude: Double = 106.8456,
     val calculationMethod: Int = 20
@@ -40,6 +43,7 @@ data class DashboardUiState(
 class DashboardViewModel @Inject constructor(
     private val prayerTimesRepository: PrayerTimesRepository,
     private val preferencesManager: PreferencesManager,
+    @ApplicationContext private val context: Context,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider
 ) : ViewModel() {
 
@@ -49,7 +53,10 @@ class DashboardViewModel @Inject constructor(
     private val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.US)
 
     init {
-        _uiState.value = _uiState.value.copy(greeting = computeGreeting())
+        val versionName = runCatching {
+            context.packageManager.getPackageInfo(context.packageName, 0).versionName ?: ""
+        }.getOrDefault("")
+        _uiState.value = _uiState.value.copy(greeting = computeGreeting(), appVersion = versionName)
         viewModelScope.launch(dispatcherProvider.io) {
             combine(
                 preferencesManager.latitude,
