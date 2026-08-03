@@ -28,9 +28,14 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -96,6 +101,7 @@ fun AyahScreen(
     var showSearch by remember { mutableStateOf(false) }
     var showJumpSheet by remember { mutableStateOf(false) }
     var showFontSizeSheet by remember { mutableStateOf(false) }
+    var showOverflowMenu by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(suraNumber) {
@@ -317,17 +323,38 @@ fun AyahScreen(
                     IconButton(onClick = { showSearch = !showSearch }) {
                         Icon(Icons.Filled.Search, contentDescription = "Search")
                     }
-                    TextButton(onClick = { showJumpSheet = !showJumpSheet }) {
-                        Text("Jump", fontSize = 13.sp)
-                    }
-                    TextButton(onClick = { showFontSizeSheet = !showFontSizeSheet }) {
-                        Text("Font", fontSize = 13.sp)
-                    }
-                    TextButton(onClick = { viewModel.toggleMemorizationMode() }) {
-                        Text(
-                            if (state.memorizationMode) "Memorizing" else "Memorize",
-                            fontSize = 13.sp
-                        )
+                    Box {
+                        IconButton(onClick = { showOverflowMenu = true }) {
+                            Icon(Icons.Filled.MoreVert, contentDescription = "More options")
+                        }
+                        DropdownMenu(
+                            expanded = showOverflowMenu,
+                            onDismissRequest = { showOverflowMenu = false }
+                        ) {
+                            DropdownMenuItem(
+                                text = { Text("Jump") },
+                                onClick = {
+                                    showOverflowMenu = false
+                                    showJumpSheet = true
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Font") },
+                                onClick = {
+                                    showOverflowMenu = false
+                                    showFontSizeSheet = true
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = {
+                                    Text(if (state.memorizationMode) "Exit Memorization" else "Memorize")
+                                },
+                                onClick = {
+                                    showOverflowMenu = false
+                                    viewModel.toggleMemorizationMode()
+                                }
+                            )
+                        }
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -680,20 +707,25 @@ private fun VerseCell(
         }
 
         var showTafsir by remember { mutableStateOf(false) }
-        TextButton(
-            onClick = {
-                showTafsir = !showTafsir
-                if (showTafsir && tafsirText == null && !tafsirLoading) {
-                    onLoadTafsir?.invoke()
-                }
-            },
-            modifier = Modifier.fillMaxWidth().padding(top = 4.dp)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.End
         ) {
-            Text(
-                text = if (showTafsir) "Hide Tafsir" else "Show Tafsir",
-                fontSize = 13.sp,
-                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f)
-            )
+            IconButton(
+                onClick = {
+                    showTafsir = !showTafsir
+                    if (showTafsir && tafsirText == null && !tafsirLoading) {
+                        onLoadTafsir?.invoke()
+                    }
+                },
+                modifier = Modifier.size(32.dp)
+            ) {
+                Icon(
+                    imageVector = if (showTafsir) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
+                    contentDescription = if (showTafsir) "Hide Tafsir" else "Show Tafsir",
+                    tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f)
+                )
+            }
         }
         if (showTafsir) {
             when {
