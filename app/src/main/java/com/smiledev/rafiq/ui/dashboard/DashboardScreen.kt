@@ -29,23 +29,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Face
-import androidx.compose.material.icons.automirrored.filled.List
-import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.Place
-import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.navigation3.runtime.NavKey
 import com.smiledev.rafiq.IslamicCalendar
 import com.smiledev.rafiq.Mosques
@@ -62,18 +52,18 @@ import com.smiledev.rafiq.core.displayMessage
 private data class FeatureItem(
     val labelResId: Int,
     val navKey: NavKey,
-    val icon: ImageVector,
+    val iconResId: Int,
     val color: Color
 )
 
 private val features = listOf(
-    FeatureItem(R.string.quran, Quran(), Icons.AutoMirrored.Filled.List, Color(0xFF3F51B5)),
-    FeatureItem(R.string.qibla, Qibla, Icons.Filled.LocationOn, Color(0xFFFFC107)),
-    FeatureItem(R.string.mosques, Mosques, Icons.Filled.Place, Color(0xFF4CAF50)),
-    FeatureItem(R.string.recitations, Recitation, Icons.Filled.PlayArrow, Color(0xFF2196F3)),
-    FeatureItem(R.string.calendar, IslamicCalendar, Icons.Filled.DateRange, Color(0xFF009688)),
-    FeatureItem(R.string.zakat, ZakatCalculator, Icons.Filled.ShoppingCart, Color(0xFFFF9800)),
-    FeatureItem(R.string.tasbih, Tasbih, Icons.Filled.Refresh, Color(0xFF009688)),
+    FeatureItem(R.string.quran, Quran(), R.drawable.ic_quran, Color(0xFF3F51B5)),
+    FeatureItem(R.string.qibla, Qibla, R.drawable.ic_qibla, Color(0xFFFFC107)),
+    FeatureItem(R.string.mosques, Mosques, R.drawable.ic_mosque, Color(0xFF4CAF50)),
+    FeatureItem(R.string.recitations, Recitation, R.drawable.ic_play, Color(0xFF2196F3)),
+    FeatureItem(R.string.calendar, IslamicCalendar, R.drawable.ic_calendar, Color(0xFF009688)),
+    FeatureItem(R.string.zakat, ZakatCalculator, R.drawable.ic_zakat, Color(0xFFFF9800)),
+    FeatureItem(R.string.tasbih, Tasbih, R.drawable.ic_tasbih, Color(0xFF009688)),
 )
 
 @Composable
@@ -107,7 +97,7 @@ fun DashboardScreen(
             }
             IconButton(onClick = { onNavigate(Settings) }) {
                 Icon(
-                    imageVector = Icons.Filled.Face,
+                    painter = painterResource(R.drawable.ic_settings),
                     contentDescription = stringResource(R.string.settings),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -193,7 +183,7 @@ fun DashboardScreen(
                 rowItems.forEach { feature ->
                     FeatureCard(
                         labelResId = feature.labelResId,
-                        icon = feature.icon,
+                        iconResId = feature.iconResId,
                         color = feature.color,
                         onClick = { onNavigate(feature.navKey) },
                         modifier = Modifier.weight(1f)
@@ -223,7 +213,7 @@ fun DashboardScreen(
 @Composable
 private fun FeatureCard(
     labelResId: Int,
-    icon: ImageVector,
+    iconResId: Int,
     color: Color,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -241,7 +231,7 @@ private fun FeatureCard(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Icon(
-                imageVector = icon,
+                painter = painterResource(iconResId),
                 contentDescription = stringResource(labelResId),
                 tint = color,
                 modifier = Modifier.size(40.dp)

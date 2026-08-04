@@ -1,0 +1,20 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Back coin -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillType="evenOdd"
+        android:pathData="M15,3c-4.4,0 -8,3.6 -8,8s3.6,8 8,8 8,-3.6 8,-8 -3.6,-8 -8,-8zM15,6c-2.8,0 -5,2.2 -5,5s2.2,5 5,5 5,-2.2 5,-5 -2.2,-5 -5,-5z" />
+    <!-- Front coin with crescent -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillType="evenOdd"
+        android:pathData="M6,5c-3.9,0 -7,3.1 -7,7s3.1,7 7,7 7,-3.1 7,-7 -3.1,-7 -7,-7zM6,7c-2.8,0 -5,2.2 -5,5s2.2,5 5,5 5,-2.2 5,-5 -2.2,-5 -5,-5z" />
+    <!-- Crescent mark on front coin -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M4.7,10.5c-0.7,0.2 -1.2,0.8 -1.2,1.6 0,0.9 0.7,1.6 1.6,1.6 0.2,0 0.4,0 0.6,-0.1 -0.2,-0.2 -0.3,-0.4 -0.3,-0.7 0,-0.6 0.4,-1 1,-1.1 -0.3,-0.9 -1.2,-1.4 -1.7,-1.3z" />
+</vector>

@@ -1,0 +1,30 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Central dome -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M12,2.5c-3.3,0 -6,2.7 -6,6v1.5h12V8.5c0,-3.3 -2.7,-6 -6,-6z" />
+    <!-- Left minaret -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M6,3h2v13.5H6zM6.5,2.5L7,1.5l0.5,1z" />
+    <!-- Right minaret -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M16,3h2v13.5h-2zM16.5,2.5l0.5,-1 0.5,1z" />
+    <!-- Base -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M3,16.5h18v5H3z" />
+    <!-- Door -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M10,17h4v4.5h-4z" />
+    <!-- Crescent on top -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M12,0.8c-0.9,0 -1.7,0.7 -1.8,1.6 0.5,-0.2 1,-0.3 1.5,-0.3 1.4,0 2.6,0.8 3.1,2 -0.3,-0.3 -0.7,-0.5 -1.2,-0.5 -1,0 -1.9,0.8 -1.9,1.9 0,0.2 0,0.4 0.1,0.6C11,5 9.9,4.2 9.9,3 9.9,1.8 10.8,0.9 12,0.8z" />
+</vector>
