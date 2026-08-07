@@ -48,5 +48,62 @@ class LoadTaskTest(unittest.TestCase):
         self.assertTrue(any("type" in e for e in errors))
 
 
+from harness import (
+    KB_CONTEXT_PATH,
+    create_worktree,
+    find_opencode_bin,
+    inject_kb,
+    remove_worktree,
+    run_agent,
+    run_cmd,
+)
+
+
+class WorktreeTest(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.name = "test-wt"
+        cls.wt = create_worktree(cls.name, "a78852fc00dbc1bbd9ecc9ce9b513cbf8da522a5")
+
+    @classmethod
+    def tearDownClass(cls):
+        remove_worktree(cls.name, cls.wt)
+
+    def test_create_worktree_checks_out_commit(self):
+        self.assertTrue((self.wt / "AGENTS.md").exists())
+        rc, out, _ = run_cmd(["git", "rev-parse", "--short", "HEAD"], self.wt, 30)
+        self.assertEqual(rc, 0)
+        self.assertTrue(out.strip())
+
+    def test_inject_kb_appends_to_agents(self):
+        if not KB_CONTEXT_PATH.exists():
+            self.skipTest("kb_context.md not generated yet")
+        inject_kb(self.wt)
+        text = (self.wt / "AGENTS.md").read_text(encoding="utf-8")
+        self.assertIn("## kb/architecture.md", text)
+
+
+class AgentRunTest(unittest.TestCase):
+    def test_run_agent_uses_binary_and_captures_transcript(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            wt = Path(tmp)
+            fake = wt / "fake_opencode.py"
+            fake.write_text(
+                "import sys\nprint('AGENT-OUTPUT')\nprint('stderr-here', file=sys.stderr)\n",
+                encoding="utf-8",
+            )
+            rc, transcript = run_agent(
+                wt, "prompt-text", 30, sys.executable + " " + str(fake)
+            )
+        self.assertEqual(rc, 0)
+        self.assertIn("AGENT-OUTPUT", transcript)
+        self.assertIn("stderr-here", transcript)
+
+    def test_find_opencode_bin_raises_when_missing(self):
+        with mock.patch.dict(os.environ, {}, clear=True):
+            with self.assertRaises(FileNotFoundError):
+                find_opencode_bin()
+
+
 if __name__ == "__main__":
     unittest.main()
