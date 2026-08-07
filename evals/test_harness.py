@@ -163,5 +163,45 @@ class GradingTest(unittest.TestCase):
         self.assertEqual(result["score"], 7)
 
 
+import json as _json
+
+from harness import RESULTS_DIR, run_variant, write_result
+
+
+class OrchestrationTest(unittest.TestCase):
+    def test_write_result_roundtrip(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            results = Path(tmp)
+            result = {"task_id": "rf-zz", "variant": "baseline", "exit_code": 0}
+            path = write_result("rf-zz", "baseline", result, results)
+            self.assertTrue(path.exists())
+            data = _json.loads(path.read_text(encoding="utf-8"))
+            self.assertEqual(data["task_id"], "rf-zz")
+            self.assertEqual(data["variant"], "baseline")
+
+    def test_run_variant_with_fake_agent(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            wt = Path(tmp)
+            fake = wt / "fake_agent.py"
+            fake.write_text("print('done')\n", encoding="utf-8")
+            task = Task(
+                id="rf-smoke", title="t", type="retrieval",
+                base_commit="a78852fc00dbc1bbd9ecc9ce9b513cbf8da522a5",
+                prompt="Summarize the repo.",
+                checks=[{"kind": "transcript_mentions", "files": ["AGENTS.md"]}],
+            )
+            result = run_variant(
+                task, "baseline",
+                opencode_bin=sys.executable + " " + str(fake),
+                timeout_min=1, no_judge=True, keep_worktrees=False,
+                results_dir=Path(tmp) / "res", inject_kb=False,
+            )
+        self.assertEqual(result["task_id"], "rf-smoke")
+        self.assertEqual(result["variant"], "baseline")
+        self.assertIn("checks", result)
+        self.assertIn("transcript", result)
+        self.assertFalse(result["timed_out"])
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -230,3 +230,121 @@ def judge_llm(task: Task, transcript: str, agent_diff: str, opencode_bin: str) -
         return {"score": 0, "reason": "malformed judge JSON"}
     finally:
         Path(prompt_file).unlink(missing_ok=True)
+
+
+def write_result(task_id: str, variant: str, result: dict, results_dir: Path) -> Path:
+    d = results_dir / task_id
+    d.mkdir(parents=True, exist_ok=True)
+    path = d / f"{variant}.json"
+    path.write_text(json.dumps(result, indent=2, ensure_ascii=False), encoding="utf-8")
+    return path
+
+
+def run_variant(
+    task: Task,
+    variant: str,
+    opencode_bin: str,
+    timeout_min: int,
+    no_judge: bool,
+    keep_worktrees: bool,
+    results_dir: Path,
+    inject_kb: bool,
+) -> dict:
+    name = f"{task.id}-{variant}"
+    worktree = create_worktree(name, task.base_commit)
+    try:
+        if inject_kb:
+            inject_kb(worktree)
+        rc, transcript = run_agent(worktree, task.prompt, timeout_min * 60, opencode_bin)
+        agent_diff = capture_diff(worktree)
+        checks = run_checks(task, worktree, transcript)
+        overlap = diff_overlap(agent_diff, gold_diff(task)) if task.gold_commit else 0.0
+        judge = (
+            {"skipped": True}
+            if no_judge
+            else judge_llm(task, transcript, agent_diff, opencode_bin)
+        )
+        result = {
+            "task_id": task.id,
+            "variant": variant,
+            "exit_code": rc,
+            "timed_out": rc == -1,
+            "checks": checks,
+            "diff_overlap": overlap,
+            "judge": judge,
+            "transcript": transcript,
+            "diff": agent_diff,
+        }
+        write_result(task.id, variant, result, results_dir)
+        return result
+    finally:
+        if not keep_worktrees:
+            remove_worktree(name, worktree)
+
+
+def list_tasks() -> None:
+    for p in sorted(TASKS_DIR.glob("*.json")):
+        task = load_task(p)
+        print(f"{task.id}: [{task.type}] {task.title} (base={task.base_commit[:8]})")
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(prog="harness", description="Rafiq agent eval harness")
+    sub = parser.add_subparsers(dest="command", required=True)
+
+    run_p = sub.add_parser("run", help="run one or more eval tasks")
+    run_p.add_argument("--task", help="task id or filename; omit to run all tasks in evals/tasks/")
+    run_p.add_argument("--variants", choices=["baseline", "kb", "both"], default="both")
+    run_p.add_argument("--rerun", action="store_true", help="rerun completed variants")
+    run_p.add_argument("--no-judge", action="store_true", help="skip LLM judge")
+    run_p.add_argument("--keep-worktrees", action="store_true")
+    run_p.add_argument("--timeout-min", type=int, default=30)
+    run_p.add_argument("--opencode-bin", help="opencode CLI binary (default: OPENCODE_BIN or PATH)")
+    run_p.add_argument("--results-dir", type=Path, default=RESULTS_DIR)
+
+    sub.add_parser("list", help="list eval tasks")
+
+    args = parser.parse_args()
+
+    if args.command == "list":
+        list_tasks()
+        return
+
+    opencode_bin = args.opencode_bin or find_opencode_bin()
+    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+
+    if args.task:
+        path = Path(args.task)
+        if not path.exists():
+            path = TASKS_DIR / f"{args.task}.json"
+        tasks = [load_task(path)] if path.exists() else []
+        if not tasks:
+            print(f"task not found: {args.task}", file=sys.stderr)
+            sys.exit(1)
+    else:
+        tasks = [load_task(p) for p in sorted(TASKS_DIR.glob("*.json"))]
+
+    for task in tasks:
+        errors = validate_task(task, REPO_DIR)
+        if errors:
+            print(f"SKIP {task.id}: {errors}", file=sys.stderr)
+            continue
+        variants = ["baseline", "kb"] if args.variants == "both" else [args.variants]
+        for variant in variants:
+            result_path = args.results_dir / task.id / f"{variant}.json"
+            if result_path.exists() and not args.rerun:
+                print(f"SKIP {task.id}/{variant} (exists; use --rerun)")
+                continue
+            print(f"RUN {task.id}/{variant} ...", flush=True)
+            result = run_variant(
+                task, variant, opencode_bin, args.timeout_min, args.no_judge,
+                args.keep_worktrees, args.results_dir, inject_kb=(variant == "kb"),
+            )
+            print(
+                f"DONE {task.id}/{variant} exit={result['exit_code']} "
+                f"overlap={result['diff_overlap']:.2f} checks={result['checks']}"
+            )
+
+
+if __name__ == "__main__":
+    main()
