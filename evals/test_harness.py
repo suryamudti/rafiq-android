@@ -194,7 +194,7 @@ class OrchestrationTest(unittest.TestCase):
                 task, "baseline",
                 opencode_bin=sys.executable + " " + str(fake),
                 timeout_min=1, no_judge=True, keep_worktrees=False,
-                results_dir=Path(tmp) / "res", inject_kb=False,
+                results_dir=Path(tmp) / "res", use_kb=False,
             )
         self.assertEqual(result["task_id"], "rf-smoke")
         self.assertEqual(result["variant"], "baseline")

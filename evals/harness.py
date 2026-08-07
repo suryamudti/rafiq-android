@@ -248,12 +248,12 @@ def run_variant(
     no_judge: bool,
     keep_worktrees: bool,
     results_dir: Path,
-    inject_kb: bool,
+    use_kb: bool,
 ) -> dict:
     name = f"{task.id}-{variant}"
     worktree = create_worktree(name, task.base_commit)
     try:
-        if inject_kb:
+        if use_kb:
             inject_kb(worktree)
         rc, transcript = run_agent(worktree, task.prompt, timeout_min * 60, opencode_bin)
         agent_diff = capture_diff(worktree)
@@ -338,7 +338,7 @@ def main() -> None:
             print(f"RUN {task.id}/{variant} ...", flush=True)
             result = run_variant(
                 task, variant, opencode_bin, args.timeout_min, args.no_judge,
-                args.keep_worktrees, args.results_dir, inject_kb=(variant == "kb"),
+                args.keep_worktrees, args.results_dir, use_kb=(variant == "kb"),
             )
             print(
                 f"DONE {task.id}/{variant} exit={result['exit_code']} "
