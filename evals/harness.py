@@ -288,6 +288,24 @@ def list_tasks() -> None:
         print(f"{task.id}: [{task.type}] {task.title} (base={task.base_commit[:8]})")
 
 
+def _resolve_task_arg(args_task: str) -> list[Task]:
+    path = Path(args_task)
+    if not path.exists():
+        path = TASKS_DIR / f"{args_task}.json"
+    tasks = [load_task(path)] if path.exists() else []
+    if not tasks:
+        match = next(
+            (
+                p
+                for p in sorted(TASKS_DIR.glob("*.json"))
+                if load_task(p).id == args_task or p.stem == args_task
+            ),
+            None,
+        )
+        tasks = [load_task(match)] if match else []
+    return tasks
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(prog="harness", description="Rafiq agent eval harness")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -314,10 +332,7 @@ def main() -> None:
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 
     if args.task:
-        path = Path(args.task)
-        if not path.exists():
-            path = TASKS_DIR / f"{args.task}.json"
-        tasks = [load_task(path)] if path.exists() else []
+        tasks = _resolve_task_arg(args.task)
         if not tasks:
             print(f"task not found: {args.task}", file=sys.stderr)
             sys.exit(1)

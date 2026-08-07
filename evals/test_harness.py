@@ -165,7 +165,7 @@ class GradingTest(unittest.TestCase):
 
 import json as _json
 
-from harness import RESULTS_DIR, run_variant, write_result
+from harness import RESULTS_DIR, _resolve_task_arg, run_variant, write_result
 
 
 class OrchestrationTest(unittest.TestCase):
@@ -178,6 +178,46 @@ class OrchestrationTest(unittest.TestCase):
             data = _json.loads(path.read_text(encoding="utf-8"))
             self.assertEqual(data["task_id"], "rf-zz")
             self.assertEqual(data["variant"], "baseline")
+
+    def test_resolve_task_arg_matches_by_id(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            seed = {
+                "id": "rf-001",
+                "title": "t",
+                "type": "retrieval",
+                "base_commit": "a78852fc00dbc1bbd9ecc9ce9b513cbf8da522a5",
+                "prompt": "p",
+            }
+            (Path(tmp) / "rf-001-fts3-translation-query.json").write_text(
+                _json.dumps(seed), encoding="utf-8"
+            )
+            with mock.patch("harness.TASKS_DIR", Path(tmp)):
+                tasks = _resolve_task_arg("rf-001")
+        self.assertEqual(len(tasks), 1)
+        self.assertEqual(tasks[0].id, "rf-001")
+
+    def test_resolve_task_arg_matches_by_stem(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            seed = {
+                "id": "rf-001",
+                "title": "t",
+                "type": "retrieval",
+                "base_commit": "a78852fc00dbc1bbd9ecc9ce9b513cbf8da522a5",
+                "prompt": "p",
+            }
+            (Path(tmp) / "rf-001-fts3-translation-query.json").write_text(
+                _json.dumps(seed), encoding="utf-8"
+            )
+            with mock.patch("harness.TASKS_DIR", Path(tmp)):
+                tasks = _resolve_task_arg("rf-001-fts3-translation-query")
+        self.assertEqual(len(tasks), 1)
+        self.assertEqual(tasks[0].id, "rf-001")
+
+    def test_resolve_task_arg_unknown_returns_empty(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            with mock.patch("harness.TASKS_DIR", Path(tmp)):
+                tasks = _resolve_task_arg("nope")
+        self.assertEqual(tasks, [])
 
     def test_run_variant_with_fake_agent(self):
         with tempfile.TemporaryDirectory() as tmp:
