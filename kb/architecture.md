@@ -4,9 +4,9 @@ Multi-module Gradle project (`settings.gradle.kts`). Four modules:
 
 | Module | Path | Responsibility |
 |---|---|---|
-| :core | core/src/main/kotlin/com/smiledev/rafiq/core/ | Result.kt, AppError.kt, DispatcherProvider.kt, retryIO.kt, LocaleUtil.kt, DatabaseCopier.kt |
+| :core | core/src/main/kotlin/com/smiledev/rafiq/core/ | Result.kt, AppError.kt, DispatcherProvider.kt, retryIO.kt, LocaleUtil.kt |
 | :domain | domain/src/main/kotlin/com/smiledev/rafiq/domain/ | Repository interfaces, use cases, domain models (Surah, Ayah, PrayerTimings, Mosque, ...) |
-| :data | data/src/main/kotlin/com/smiledev/rafiq/data/ | Repository Impls, Room DBs/DAOs, Retrofit APIs, PreferencesManager (DataStore) |
+| :data | data/src/main/kotlin/com/smiledev/rafiq/data/ | Repository Impls, Room DBs/DAOs, Retrofit APIs, PreferencesManager (DataStore). Note: DatabaseCopier.kt lives here too, but in package `com.smiledev.rafiq.core` (file `data/src/main/kotlin/com/smiledev/rafiq/core/DatabaseCopier.kt`). |
 | :app | app/src/main/java/com/smiledev/rafiq/ | DI (di/AppModule.kt), UI (ui/<feature>/Screen.kt + ViewModel.kt), theme/, service/, Navigation.kt |
 
 ## Navigation3 (type-safe, 16 routes)

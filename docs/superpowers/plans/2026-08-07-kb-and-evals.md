@@ -995,7 +995,7 @@ class OrchestrationTest(unittest.TestCase):
                 task, "baseline",
                 opencode_bin=sys.executable + " " + str(fake),
                 timeout_min=1, no_judge=True, keep_worktrees=False,
-                results_dir=Path(tmp) / "res", inject_kb=False,
+                results_dir=Path(tmp) / "res", use_kb=False,
             )
         self.assertEqual(result["task_id"], "rf-smoke")
         self.assertEqual(result["variant"], "baseline")
@@ -1030,12 +1030,12 @@ def run_variant(
     no_judge: bool,
     keep_worktrees: bool,
     results_dir: Path,
-    inject_kb: bool,
+    use_kb: bool,
 ) -> dict:
     name = f"{task.id}-{variant}"
     worktree = create_worktree(name, task.base_commit)
     try:
-        if inject_kb:
+        if use_kb:
             inject_kb(worktree)
         rc, transcript = run_agent(worktree, task.prompt, timeout_min * 60, opencode_bin)
         agent_diff = capture_diff(worktree)
@@ -1101,6 +1101,16 @@ def main() -> None:
             path = TASKS_DIR / f"{args.task}.json"
         tasks = [load_task(path)] if path.exists() else []
         if not tasks:
+            match = next(
+                (
+                    p
+                    for p in sorted(TASKS_DIR.glob("*.json"))
+                    if load_task(p).id == args.task or p.stem == args.task
+                ),
+                None,
+            )
+            tasks = [load_task(match)] if match else []
+        if not tasks:
             print(f"task not found: {args.task}", file=sys.stderr)
             sys.exit(1)
     else:
@@ -1120,7 +1130,7 @@ def main() -> None:
             print(f"RUN {task.id}/{variant} ...", flush=True)
             result = run_variant(
                 task, variant, opencode_bin, args.timeout_min, args.no_judge,
-                args.keep_worktrees, args.results_dir, inject_kb=(variant == "kb"),
+                args.keep_worktrees, args.results_dir, use_kb=(variant == "kb"),
             )
             print(
                 f"DONE {task.id}/{variant} exit={result['exit_code']} "
@@ -1151,6 +1161,7 @@ Append to `.gitignore`:
 evals/kb_context.md
 evals/results/
 evals/worktrees/
+evals/__pycache__/
 ```
 
 - [ ] **Step 7: Commit**
@@ -1454,7 +1465,7 @@ Verified SHAs (from `git log --format="%H %P"`):
   "checks": [
     {"kind": "file_touched", "files": ["app/src/main/java/com/smiledev/rafiq/ui/dashboard/DashboardScreen.kt"]},
     {"kind": "file_touched", "files": ["app/src/main/java/com/smiledev/rafiq/ui/dashboard/DashboardViewModel.kt"]},
-    {"kind": "test", "command": "python -c \"print('build check placeholder - run gradlew testDebug manually')\""}
+    {"kind": "test", "command": "python -c pass"}
   ],
   "rubric": [
     "Adds a prayer hero section with next prayer + countdown",
@@ -1679,7 +1690,7 @@ result = run_variant(
     task, "baseline",
     opencode_bin=sys.executable + " " + str(fake),
     timeout_min=2, no_judge=True, keep_worktrees=False,
-    results_dir=Path("evals/results"), inject_kb=False,
+    results_dir=Path("evals/results"), use_kb=False,
 )
 print("exit_code:", result["exit_code"])
 print("checks:", result["checks"])

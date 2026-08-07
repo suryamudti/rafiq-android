@@ -5,8 +5,9 @@
   to 1.9." is harmless.
 - **Kotlin 2.0.0, AGP 8.9.2, Hilt 2.56.2.** Hilt 2.56.2 requires AGP 8.x.
 - **Material icons: core only.** `material-icons-core` — NEVER add
-  `material-icons-extended`. Available: DateRange, Face, Favorite, List
-  (AutoMirrored), LocationOn, Notifications, Person, Place, PlayArrow, Refresh,
+  `material-icons-extended`. Icons in use include: DateRange, Face, Favorite,
+  List (AutoMirrored), LocationOn, Notifications, Person, Place, PlayArrow,
+  Refresh, Search, MoreVert, Delete, KeyboardArrowUp, KeyboardArrowDown,
   ShoppingCart, Star. `Icons.Filled.Delete` requires an explicit import.
 - **DataStore, not SharedPreferences.** All user prefs via `PreferencesManager`
   (`data/src/main/kotlin/com/smiledev/rafiq/data/preferences/PreferencesManager.kt`).

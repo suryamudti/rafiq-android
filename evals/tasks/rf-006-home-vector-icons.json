@@ -8,7 +8,7 @@
   "gold_files": [
     "app/src/main/java/com/smiledev/rafiq/ui/dashboard/DashboardScreen.kt",
     "app/src/main/res/drawable/ic_quran.xml",
-    "app/src/main/res/drawable/ic_prayer.xml"
+    "app/src/main/res/drawable/ic_qibla.xml"
   ],
   "checks": [
     {"kind": "file_touched", "files": ["app/src/main/java/com/smiledev/rafiq/ui/dashboard/DashboardScreen.kt"]},

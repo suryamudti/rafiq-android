@@ -5,8 +5,9 @@
 Assets live under `assets/` (e.g. `quran-data/`, `translations/`).
 Translation DB names contain `/` (e.g. `translations/en.sahih.db`).
 
-- `core/.../DatabaseCopier.kt` flattens `/` to `_` before calling
-  `getDatabasePath()` because Android rejects path separators in DB names.
+- `DatabaseCopier.kt` (in `:data`, package `com.smiledev.rafiq.core`) flattens
+  `/` to `_` before calling `getDatabasePath()` because Android rejects path
+  separators in DB names.
 - `copyDatabaseIfNeeded()` copies to `filesDir/databases/<flatName>`.
 - `copyAndVerifyTranslationDb()` verifies the file exists and is non-empty.
 
