@@ -1,0 +1,18 @@
+{
+  "id": "rf-002",
+  "title": "Explain Navigation3 route registration",
+  "type": "retrieval",
+  "base_commit": "7bda4570ea88731f05ebf31fdc3a42485a955de6",
+  "prompt": "Explain how navigation works in this app. Describe the role of NavigationKeys.kt and Navigation.kt, and list the exact steps needed to add a new screen to the app, including the two files that must change and the pattern each follows.",
+  "gold_files": ["app/src/main/java/com/smiledev/rafiq/NavigationKeys.kt", "app/src/main/java/com/smiledev/rafiq/Navigation.kt"],
+  "checks": [
+    {"kind": "transcript_mentions", "files": ["app/src/main/java/com/smiledev/rafiq/NavigationKeys.kt", "app/src/main/java/com/smiledev/rafiq/Navigation.kt"]}
+  ],
+  "rubric": [
+    "Mentions @Serializable NavKey tokens in NavigationKeys.kt",
+    "Mentions entryProvider { entry<Key> { ... } } in Navigation.kt",
+    "Describes backStack.add for forward nav and removeLastOrNull for back",
+    "Lists steps to register a new screen"
+  ],
+  "timeout_min": 15
+}

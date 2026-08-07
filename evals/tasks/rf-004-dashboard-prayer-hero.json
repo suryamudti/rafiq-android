@@ -1,0 +1,26 @@
+{
+  "id": "rf-004",
+  "title": "Revamp home dashboard with prayer hero widget",
+  "type": "coding",
+  "base_commit": "6e343758d7fc233f1d9587388af687fd42bd2052",
+  "gold_commit": "f5c89b700f8c3aeb7f6a468ad320c6cd93893f56",
+  "prompt": "Revamp the home dashboard screen: add a prayer hero widget that shows the next prayer time and a countdown, and lay out the feature entry cards in a condensed grid. Follow the existing MVVM + Jetpack Compose patterns in this codebase. Match the look and behavior of the actual feature that was merged (you may consult the repo's history for the intended behavior, but implement it fresh).",
+  "gold_files": [
+    "app/src/main/java/com/smiledev/rafiq/ui/dashboard/DashboardScreen.kt",
+    "app/src/main/java/com/smiledev/rafiq/ui/dashboard/DashboardViewModel.kt",
+    "app/src/main/java/com/smiledev/rafiq/Navigation.kt"
+  ],
+  "checks": [
+    {"kind": "file_touched", "files": ["app/src/main/java/com/smiledev/rafiq/ui/dashboard/DashboardScreen.kt"]},
+    {"kind": "file_touched", "files": ["app/src/main/java/com/smiledev/rafiq/ui/dashboard/DashboardViewModel.kt"]},
+    {"kind": "test", "command": "python -c pass"}
+  ],
+  "rubric": [
+    "Adds a prayer hero section with next prayer + countdown",
+    "Condenses the feature grid layout",
+    "Uses DashboardViewModel for state, not hardcoded UI data",
+    "No new third-party dependencies",
+    "Builds with gradlew"
+  ],
+  "timeout_min": 45
+}

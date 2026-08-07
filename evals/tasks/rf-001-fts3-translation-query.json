@@ -1,0 +1,19 @@
+{
+  "id": "rf-001",
+  "title": "Locate and explain the FTS3 translation query fix",
+  "type": "retrieval",
+  "base_commit": "a78852fc00dbc1bbd9ecc9ce9b513cbf8da522a5",
+  "gold_commit": "096b94d2191997e73938eb526152779cdc6659f3",
+  "prompt": "The Quran translations feature sometimes returns 0 rows on Android SQLite. Investigate the data layer, find the root cause in the translation query, explain why it happens, and show the exact fix that was applied in this repo's history.",
+  "gold_files": ["data/src/main/kotlin/com/smiledev/rafiq/data/repository/QuranRepositoryImpl.kt"],
+  "checks": [
+    {"kind": "transcript_mentions", "files": ["data/src/main/kotlin/com/smiledev/rafiq/data/repository/QuranRepositoryImpl.kt"]}
+  ],
+  "rubric": [
+    "Identifies getTranslationForSura in QuranRepositoryImpl",
+    "Explains the type-mismatch cause (verses.sura is TEXT)",
+    "Mentions CAST(sura AS INTEGER)",
+    "Explains why the fix is in the query, not the data"
+  ],
+  "timeout_min": 15
+}

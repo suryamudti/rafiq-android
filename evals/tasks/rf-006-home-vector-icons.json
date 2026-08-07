@@ -1,0 +1,24 @@
+{
+  "id": "rf-006",
+  "title": "Custom vector icons for home feature cards",
+  "type": "coding",
+  "base_commit": "7bda4570ea88731f05ebf31fdc3a42485a955de6",
+  "gold_commit": "ff926e766ba37a119fedd00d7eed7cf10f961f91",
+  "prompt": "Replace the home screen feature cards' icon usage with custom vector drawables. Create the vector drawable XML resources under res/drawable and reference them from DashboardScreen.kt instead of the current icon approach. Match the merged implementation in this repo's history (consult it for intent, implement fresh).",
+  "gold_files": [
+    "app/src/main/java/com/smiledev/rafiq/ui/dashboard/DashboardScreen.kt",
+    "app/src/main/res/drawable/ic_quran.xml",
+    "app/src/main/res/drawable/ic_qibla.xml"
+  ],
+  "checks": [
+    {"kind": "file_touched", "files": ["app/src/main/java/com/smiledev/rafiq/ui/dashboard/DashboardScreen.kt"]},
+    {"kind": "file_touched", "files": ["app/src/main/res/drawable/ic_quran.xml"]}
+  ],
+  "rubric": [
+    "Adds vector drawable XML files under res/drawable",
+    "DashboardScreen.kt references the new drawables",
+    "No material-icons-extended dependency added",
+    "Drawables use the theme color palette"
+  ],
+  "timeout_min": 45
+}

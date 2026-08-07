@@ -16,3 +16,8 @@ build/
 local.properties
 .kotlin/
 
+evals/kb_context.md
+evals/results/
+evals/worktrees/
+evals/__pycache__/
+
