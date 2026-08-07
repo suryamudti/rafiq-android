@@ -1,0 +1,19 @@
+{
+  "id": "rf-005",
+  "title": "Declutter Ayah screen app bar and tafsir toggle",
+  "type": "coding",
+  "base_commit": "db5c207a693740e179a94b300394ceeb60333673",
+  "gold_commit": "7bda4570ea88731f05ebf31fdc3a42485a955de6",
+  "prompt": "The Ayah screen's top app bar is cluttered and the tafsir toggle is awkward. Clean up the app bar: move secondary actions out of the top bar and make the tafsir toggle easier to use. Match the merged behavior in this repo's history (consult it for intent, implement fresh).",
+  "gold_files": ["app/src/main/java/com/smiledev/rafiq/ui/quran/AyahScreen.kt"],
+  "checks": [
+    {"kind": "file_touched", "files": ["app/src/main/java/com/smiledev/rafiq/ui/quran/AyahScreen.kt"]}
+  ],
+  "rubric": [
+    "App bar shows only the essential action(s)",
+    "Tafsir toggle is discoverable and usable",
+    "Changes stay within AyahScreen.kt",
+    "No new dependencies"
+  ],
+  "timeout_min": 45
+}

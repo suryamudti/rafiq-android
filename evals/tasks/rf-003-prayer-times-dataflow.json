@@ -1,0 +1,25 @@
+{
+  "id": "rf-003",
+  "title": "Trace prayer-times data flow",
+  "type": "retrieval",
+  "base_commit": "7bda4570ea88731f05ebf31fdc3a42485a955de6",
+  "prompt": "Trace the complete data flow for prayer times in this app, from the remote API call to the UI. Name each file involved (API service, repository, use case, ViewModel, Screen), describe the data shape, and identify the default coordinates and calculation method used.",
+  "gold_files": [
+    "data/src/main/kotlin/com/smiledev/rafiq/data/remote/AladhanApi.kt",
+    "data/src/main/kotlin/com/smiledev/rafiq/data/repository/PrayerTimesRepositoryImpl.kt",
+    "domain/src/main/kotlin/com/smiledev/rafiq/domain/usecase/GetPrayerTimesUseCase.kt",
+    "app/src/main/java/com/smiledev/rafiq/ui/prayertimes/PrayerTimesViewModel.kt",
+    "app/src/main/java/com/smiledev/rafiq/ui/prayertimes/PrayerTimesScreen.kt"
+  ],
+  "checks": [
+    {"kind": "transcript_mentions", "files": ["data/src/main/kotlin/com/smiledev/rafiq/data/remote/AladhanApi.kt"]},
+    {"kind": "transcript_mentions", "files": ["data/src/main/kotlin/com/smiledev/rafiq/data/repository/PrayerTimesRepositoryImpl.kt"]}
+  ],
+  "rubric": [
+    "Names Aladhan API v1/timings with method 20",
+    "Mentions default Jakarta coordinates (-6.2088, 106.8456)",
+    "Names GetPrayerTimesUseCase and PrayerTimesViewModel",
+    "Describes the timings fields (Fajr, Dhuhr, Asr, Maghrib, Isha, ...)"
+  ],
+  "timeout_min": 15
+}

@@ -1,0 +1,22 @@
+{
+  "id": "rf-007",
+  "title": "Show app version on home screen",
+  "type": "coding",
+  "base_commit": "e5fb148e014b9ea0737d80c7cb3c178139b36d22",
+  "gold_commit": "db5c207a693740e179a94b300394ceeb60333673",
+  "prompt": "Add a small text label showing the app version on the home screen, e.g. 'v1.0.0'. Expose the version through DashboardViewModel rather than hardcoding it in the composable, and match the merged implementation in this repo's history.",
+  "gold_files": [
+    "app/src/main/java/com/smiledev/rafiq/ui/dashboard/DashboardScreen.kt",
+    "app/src/main/java/com/smiledev/rafiq/ui/dashboard/DashboardViewModel.kt"
+  ],
+  "checks": [
+    {"kind": "file_touched", "files": ["app/src/main/java/com/smiledev/rafiq/ui/dashboard/DashboardScreen.kt"]},
+    {"kind": "file_touched", "files": ["app/src/main/java/com/smiledev/rafiq/ui/dashboard/DashboardViewModel.kt"]}
+  ],
+  "rubric": [
+    "Version string sourced via DashboardViewModel",
+    "Label rendered on the home screen",
+    "Uses existing version access pattern in the codebase"
+  ],
+  "timeout_min": 45
+}
