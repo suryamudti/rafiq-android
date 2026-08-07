@@ -105,5 +105,63 @@ class AgentRunTest(unittest.TestCase):
                 find_opencode_bin()
 
 
+from harness import diff_overlap, gold_diff, judge_llm, run_checks
+
+
+class GradingTest(unittest.TestCase):
+    def test_run_checks_file_touched(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            wt = Path(tmp)
+            (wt / "b.kt").write_text("new file", encoding="utf-8")
+            task = Task(
+                id="t", title="t", type="coding",
+                base_commit="a78852fc00dbc1bbd9ecc9ce9b513cbf8da522a5",
+                prompt="p",
+                checks=[
+                    {"kind": "file_touched", "files": ["b.kt"]},
+                    {"kind": "file_touched", "files": ["missing.kt"]},
+                    {"kind": "transcript_mentions", "files": ["data/x.kt"]},
+                ],
+            )
+            with mock.patch(
+                "harness._changed_paths", return_value={"b.kt", "data/x.kt"}
+            ):
+                results = run_checks(task, wt, transcript="the answer is data/x.kt")
+        self.assertTrue(results["file_touched:b.kt"])
+        self.assertFalse(results["file_touched:missing.kt"])
+        self.assertTrue(results["transcript_mentions:data/x.kt"])
+
+    def test_diff_overlap(self):
+        agent = "+line one\n+line two\n+other line\n context\n"
+        gold = "+line one\n+line two\n+line three\n"
+        self.assertAlmostEqual(diff_overlap(agent, gold), 2 / 3)
+
+    def test_diff_overlap_empty_gold(self):
+        self.assertEqual(diff_overlap("+x\n", ""), 0.0)
+
+    def test_gold_diff_returns_added_lines(self):
+        task = Task(
+            id="t", title="t", type="coding",
+            base_commit="a78852fc00dbc1bbd9ecc9ce9b513cbf8da522a5",
+            gold_commit="096b94d2191997e73938eb526152779cdc6659f3",
+            prompt="p",
+        )
+        d = gold_diff(task)
+        self.assertIn("CAST(sura AS INTEGER)", d)
+
+    def test_judge_llm_returns_dict(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            wt = Path(tmp)
+            fake = wt / "fake_judge.py"
+            fake.write_text(
+                "import json\nprint(json.dumps({'score': 7, 'reason': 'ok'}))\n",
+                encoding="utf-8",
+            )
+            task = Task(id="t", title="t", type="retrieval",
+                        base_commit="0" * 40, prompt="p", rubric=["r"])
+            result = judge_llm(task, "transcript", "diff", sys.executable + " " + str(fake))
+        self.assertEqual(result["score"], 7)
+
+
 if __name__ == "__main__":
     unittest.main()

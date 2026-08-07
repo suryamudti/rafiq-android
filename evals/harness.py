@@ -4,6 +4,7 @@ import os
 import re
 import subprocess
 import sys
+import tempfile
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -142,3 +143,90 @@ def capture_diff(worktree: Path) -> str:
     rc, diff, _ = run_cmd(["git", "diff"], worktree, 60)
     rc2, status, _ = run_cmd(["git", "status", "--porcelain"], worktree, 60)
     return (diff or "") + "\n" + (status or "")
+
+
+def _changed_paths(worktree: Path) -> set[str]:
+    rc, status, _ = run_cmd(["git", "status", "--porcelain"], worktree, 60)
+    paths = set()
+    for line in (status or "").splitlines():
+        parts = line.split(" ", 2)
+        if len(parts) >= 2:
+            paths.add(parts[-1].strip('"'))
+    rc, diff, _ = run_cmd(["git", "diff", "--name-only"], worktree, 60)
+    for line in (diff or "").splitlines():
+        if line.strip():
+            paths.add(line.strip())
+    return paths
+
+
+def run_checks(task: Task, worktree: Path, transcript: str) -> dict[str, bool]:
+    results = {}
+    changed = _changed_paths(worktree)
+    for check in task.checks:
+        kind = check["kind"]
+        if kind == "file_touched":
+            key = "file_touched:" + ",".join(check["files"])
+            results[key] = any(f in changed for f in check["files"])
+        elif kind == "transcript_mentions":
+            key = "transcript_mentions:" + ",".join(check["files"])
+            results[key] = any(f in transcript for f in check["files"])
+        elif kind == "test":
+            cmd = check["command"].split()
+            rc, _, _ = run_cmd(cmd, worktree, task.timeout_min * 60)
+            results["test:" + check["command"]] = rc == 0
+    return results
+
+
+def _added_lines(diff: str) -> set[str]:
+    lines = set()
+    for line in (diff or "").splitlines():
+        if line.startswith("+") and not line.startswith("+++"):
+            lines.add(line[1:].strip())
+    return lines
+
+
+def gold_diff(task: Task) -> str:
+    if not task.gold_commit:
+        return ""
+    rc, diff, err = run_cmd(
+        ["git", "diff", task.base_commit, task.gold_commit], REPO_DIR, 60
+    )
+    if rc != 0:
+        raise RuntimeError(f"gold diff failed: {err.strip()}")
+    return diff or ""
+
+
+def diff_overlap(agent_diff: str, gold: str) -> float:
+    agent_added = _added_lines(agent_diff)
+    gold_added = _added_lines(gold)
+    if not gold_added:
+        return 0.0
+    return len(agent_added & gold_added) / len(gold_added)
+
+
+def judge_llm(task: Task, transcript: str, agent_diff: str, opencode_bin: str) -> dict:
+    rubric = "\n".join(f"- {r}" for r in task.rubric) or "- correctness"
+    payload = (
+        "You are grading an AI agent's work on a coding task.\n"
+        f"Task prompt: {task.prompt}\n"
+        f"Rubric:\n{rubric}\n"
+        f"Transcript:\n{transcript[-8000:]}\n"
+        f"Diff:\n{agent_diff[-4000:]}\n"
+        'Reply with ONLY JSON: {"score": <int 0-10>, "reason": "<string>"}'
+    )
+    with tempfile.NamedTemporaryFile("w", suffix=".txt", delete=False, encoding="utf-8") as f:
+        f.write(payload)
+        prompt_file = f.name
+    try:
+        cmd = _opencode_cmd(opencode_bin, ["run", f'Grade the work in this file: {prompt_file}. {payload}'])
+        rc, out, err = run_cmd(cmd, EVALS_DIR, 300)
+        if rc != 0:
+            return {"score": 0, "reason": f"judge failed: {err.strip()}"}
+        m = re.search(r"\{.*\}", out, re.DOTALL)
+        if not m:
+            return {"score": 0, "reason": "no JSON in judge output"}
+        return json.loads(m.group(0))
+    except (json.JSONDecodeError, ValueError, TypeError):
+        return {"score": 0, "reason": "malformed judge JSON"}
+    finally:
+        Path(prompt_file).unlink(missing_ok=True)
