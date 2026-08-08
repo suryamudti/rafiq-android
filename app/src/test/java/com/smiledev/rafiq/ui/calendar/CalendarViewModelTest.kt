@@ -31,13 +31,22 @@ class CalendarViewModelTest {
         IslamicEvent(10, 1, "Eid al-Fitr", "Idul Fitri", "D", "D", "holiday")
     )
 
+    private val fastingEvents = listOf(
+        IslamicEvent(0, 0, "Monday Fasting (Sunnah)", "Puasa Senin (Sunnah)", "D", "D", "fasting", weekday = 1),
+        IslamicEvent(0, 0, "Thursday Fasting (Sunnah)", "Puasa Kamis (Sunnah)", "D", "D", "fasting", weekday = 4),
+        IslamicEvent(1, 0, "Recommended: Fast in Muharram", "Dianjurkan: Puasa di Bulan Muharram", "D", "D", "recommendation")
+    )
+
     private val monthNames = listOf(
         "Muharram", "Safar", "Rabi' al-Awwal", "Rabi' al-Thani",
         "Jumada al-Awwal", "Jumada al-Thani", "Rajab", "Sha'ban",
         "Ramadan", "Shawwal", "Dhul-Qi'dah", "Dhul-Hijjah"
     )
 
-    private fun stubRepository(todayEvents: List<IslamicEvent> = emptyList()) {
+    private fun stubRepository(
+        events: List<IslamicEvent> = this.events,
+        todayEvents: List<IslamicEvent> = emptyList()
+    ) {
         every { repository.getEvents() } returns Result.Success(events)
         every { repository.getTodayEvents() } returns Result.Success(todayEvents)
         every { repository.islamicMonthNames } returns monthNames
@@ -143,5 +152,43 @@ class CalendarViewModelTest {
         val grid = vm.uiState.value.grid
         val cell = grid.firstOrNull { it?.gregorianDay == 19 }
         assertEquals("Eid al-Fitr", cell?.events?.single()?.titleEn)
+    }
+
+    @Test
+    fun `weekly fasting events land on their weekdays`() = runTest(testDispatcher) {
+        stubRepository(events = fastingEvents)
+        val vm = CalendarViewModel(repository, todayProvider, testDispatcherProvider)
+        advanceUntilIdle()
+
+        val grid = vm.uiState.value.grid
+        // July 2025: 1st is Tuesday. Mondays = 7,14,21,28; Thursdays = 3,10,17,24,31
+        listOf(7, 14, 21, 28).forEach { day ->
+            val cell = grid.firstOrNull { it?.gregorianDay == day }
+            assertTrue("expected Monday Fasting on Jul $day", cell?.events?.any { it.titleEn == "Monday Fasting (Sunnah)" } == true)
+        }
+        listOf(3, 10, 17, 24, 31).forEach { day ->
+            val cell = grid.firstOrNull { it?.gregorianDay == day }
+            assertTrue("expected Thursday Fasting on Jul $day", cell?.events?.any { it.titleEn == "Thursday Fasting (Sunnah)" } == true)
+        }
+    }
+
+    @Test
+    fun `monthly recommendation appears when grid spans its hijri month`() = runTest(testDispatcher) {
+        stubRepository(events = fastingEvents)
+        val vm = CalendarViewModel(repository, todayProvider, testDispatcherProvider)
+        advanceUntilIdle()
+
+        // Today 2025-07-05 = Muharram 1447; the July 2025 grid spans Muharram and Safar.
+        assertTrue(vm.uiState.value.monthlyRecommendations.any { it.titleEn == "Recommended: Fast in Muharram" })
+    }
+
+    @Test
+    fun `recommendation events never appear as cell events`() = runTest(testDispatcher) {
+        stubRepository(events = fastingEvents)
+        val vm = CalendarViewModel(repository, todayProvider, testDispatcherProvider)
+        advanceUntilIdle()
+
+        val allEvents = vm.uiState.value.grid.filterNotNull().flatMap { it.events }
+        assertTrue(allEvents.none { it.eventType == "recommendation" })
     }
 }

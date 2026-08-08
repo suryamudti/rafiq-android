@@ -38,6 +38,7 @@ data class CalendarUiState(
     val displayedMonth: Int = Calendar.getInstance().get(Calendar.MONTH) + 1,
     val grid: List<CalendarDay?> = emptyList(),
     val selectedIndex: Int? = null,
+    val monthlyRecommendations: List<IslamicEvent> = emptyList(),
     val isLoading: Boolean = false,
     val error: AppError? = null
 )
@@ -67,11 +68,13 @@ class CalendarViewModel @Inject constructor(
             val eventsResult = repository.getEvents()
             val todayEvents = if (todayResult is Result.Success) todayResult.data else emptyList()
             val events = if (eventsResult is Result.Success) eventsResult.data else emptyList()
+            val grid = buildGrid(today.year, today.month, events, today)
             _uiState.value = _uiState.value.copy(
                 todayEvents = todayEvents,
                 displayedYear = today.year,
                 displayedMonth = today.month,
-                grid = buildGrid(today.year, today.month, events, today),
+                grid = grid,
+                monthlyRecommendations = monthlyRecommendations(events, grid),
                 isLoading = false,
                 error = when {
                     todayResult is Result.Error -> todayResult.error
@@ -125,7 +128,10 @@ class CalendarViewModel @Inject constructor(
             val s = _uiState.value
             val events = repository.getEvents().getOrNull() ?: emptyList()
             val today = todayProvider.today()
-            _uiState.value = s.copy(grid = buildGrid(s.displayedYear, s.displayedMonth, events, today))
+            _uiState.value = s.copy(
+                grid = buildGrid(s.displayedYear, s.displayedMonth, events, today),
+                monthlyRecommendations = monthlyRecommendations(events, buildGrid(s.displayedYear, s.displayedMonth, events, today))
+            )
         }
     }
 
@@ -143,10 +149,25 @@ class CalendarViewModel @Inject constructor(
             grid[leadingBlanks + day - 1] = CalendarDay(
                 gregorianDay = day,
                 hijriDate = hijri,
-                events = events.filter { it.hijriMonth == hijri.month && it.hijriDay == hijri.day },
+                events = events.filter { event ->
+                    val weekday = event.weekday
+                    when {
+                        weekday != null -> weekday == HijriDateConverter.weekdayOf(year, month, day)
+                        event.hijriDay == 0 -> false
+                        else -> event.hijriMonth == hijri.month && event.hijriDay == hijri.day
+                    }
+                },
                 isToday = today.year == year && today.month == month && today.day == day
             )
         }
         return grid
+    }
+
+    private fun monthlyRecommendations(
+        events: List<IslamicEvent>,
+        grid: List<CalendarDay?>
+    ): List<IslamicEvent> {
+        val hijriMonthsInGrid = grid.filterNotNull().map { it.hijriDate.month }.toSet()
+        return events.filter { it.hijriDay == 0 && it.hijriMonth in hijriMonthsInGrid }
     }
 }

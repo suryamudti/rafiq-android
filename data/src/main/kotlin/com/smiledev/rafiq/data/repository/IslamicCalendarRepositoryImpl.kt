@@ -80,8 +80,13 @@ class IslamicCalendarRepositoryImpl @Inject constructor(
                     val today = todayProvider.today()
                     val todayHijri = HijriDateConverter.gregorianToHijri(today.year, today.month, today.day)
                     Result.Success(
-                        result.data.filter {
-                            it.hijriMonth == todayHijri.month && it.hijriDay == todayHijri.day
+                        result.data.filter { event ->
+                            val weekday = event.weekday
+                            when {
+                                weekday != null -> weekday == HijriDateConverter.weekdayOf(today.year, today.month, today.day)
+                                event.hijriDay == 0 -> event.hijriMonth == todayHijri.month
+                                else -> event.hijriMonth == todayHijri.month && event.hijriDay == todayHijri.day
+                            }
                         }
                     )
                 }

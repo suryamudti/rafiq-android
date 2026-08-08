@@ -20,11 +20,11 @@ import java.io.ByteArrayInputStream
 class IslamicCalendarRepositoryImplTest {
 
     private val assetManager: AssetManager = mockk()
+    private val context: Context = mockk(relaxed = true)
     private lateinit var repo: IslamicCalendarRepositoryImpl
 
     @Before
     fun setUp() {
-        val context: Context = mockk(relaxed = true)
         every { context.assets } returns assetManager
         repo = IslamicCalendarRepositoryImpl(
             context,
@@ -112,5 +112,48 @@ class IslamicCalendarRepositoryImplTest {
             assertTrue(event.descriptionId.isNotBlank())
             assertTrue(event.eventType == "holiday" || event.eventType == "observance")
         }
+    }
+
+    @Test
+    fun `getTodayEvents matches weekly fasting event on a Monday`() {
+        val json = """
+            [
+              {"hijri_month": 0, "hijri_day": 0, "weekday": 1, "title_en": "Monday Fasting (Sunnah)", "title_id": "Puasa Senin (Sunnah)", "description_en": "D", "description_id": "D", "event_type": "fasting"},
+              {"hijri_month": 1, "hijri_day": 10, "title_en": "Day of Ashura", "title_id": "Hari Asyura", "description_en": "D", "description_id": "D", "event_type": "observance"}
+            ]
+        """.trimIndent()
+        every { assetManager.open("quran-data/islamic_events.json") } returns ByteArrayInputStream(json.toByteArray())
+        val mondayRepo = IslamicCalendarRepositoryImpl(
+            context,
+            todayProvider = TodayProvider { GregorianDate(2025, 7, 7) }
+        )
+
+        val result = mondayRepo.getTodayEvents()
+
+        assertTrue("Expected Success but got ${result}", result is Result.Success)
+        val events = (result as Result.Success).data
+        assertEquals(1, events.size)
+        assertEquals("Monday Fasting (Sunnah)", events.single().titleEn)
+    }
+
+    @Test
+    fun `getTodayEvents matches month-wide recommendation for today's hijri month`() {
+        val json = """
+            [
+              {"hijri_month": 8, "hijri_day": 0, "title_en": "Recommended: Fast in Sha'ban", "title_id": "Dianjurkan: Puasa di Bulan Sya'ban", "description_en": "D", "description_id": "D", "event_type": "recommendation"}
+            ]
+        """.trimIndent()
+        every { assetManager.open("quran-data/islamic_events.json") } returns ByteArrayInputStream(json.toByteArray())
+        val shaBanRepo = IslamicCalendarRepositoryImpl(
+            context,
+            todayProvider = TodayProvider { GregorianDate(2026, 1, 20) }
+        )
+
+        val result = shaBanRepo.getTodayEvents()
+
+        assertTrue("Expected Success but got ${result}", result is Result.Success)
+        val events = (result as Result.Success).data
+        assertEquals(1, events.size)
+        assertEquals("Recommended: Fast in Sha'ban", events.single().titleEn)
     }
 }
