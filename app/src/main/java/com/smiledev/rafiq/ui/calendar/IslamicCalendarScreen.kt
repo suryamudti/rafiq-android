@@ -54,6 +54,13 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
+internal fun eventColor(eventType: String): Color =
+    when (eventType) {
+        "holiday" -> Color(0xFFB8860B)
+        "fasting" -> Color(0xFF7B1FA2)
+        else -> Color(0xFF009688)
+    }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun IslamicCalendarScreen(
@@ -103,6 +110,11 @@ fun IslamicCalendarScreen(
                     }
                     HijriHeaderBanner(grid = state.grid, viewModel = viewModel, hijriSuffix = hijriSuffix)
                     MonthNavigator(state = state, viewModel = viewModel)
+                    if (state.monthlyRecommendations.isNotEmpty()) {
+                        state.monthlyRecommendations.forEach { rec ->
+                            RecommendationBanner(title = if (viewModel.localeCode == "id") rec.titleId else rec.titleEn)
+                        }
+                    }
                     WeekdayHeader(weekdays = weekdays)
                     CalendarGrid(
                         grid = state.grid,
@@ -317,9 +329,7 @@ private fun RowScope.DayCell(
                             .padding(horizontal = 1.dp)
                             .size(5.dp)
                             .clip(CircleShape)
-                            .background(
-                                if (event.eventType == "holiday") Color(0xFFB8860B) else Color(0xFF009688)
-                            )
+                            .background(eventColor(event.eventType))
                     )
                 }
             }
@@ -382,5 +392,22 @@ private fun DayDetailSheet(
             }
             Spacer(Modifier.height(24.dp))
         }
+    }
+}
+
+@Composable
+private fun RecommendationBanner(title: String) {
+    Card(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 4.dp),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFEDE7F6))
+    ) {
+        Text(
+            text = title,
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp),
+            color = Color(0xFF4A148C),
+            fontWeight = FontWeight.Medium,
+            fontSize = 13.sp
+        )
     }
 }
