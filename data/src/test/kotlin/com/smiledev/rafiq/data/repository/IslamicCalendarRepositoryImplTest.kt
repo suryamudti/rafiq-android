@@ -8,6 +8,7 @@ import com.smiledev.rafiq.domain.util.TodayProvider
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -71,5 +72,27 @@ class IslamicCalendarRepositoryImplTest {
         val result = repo.getTodayEvents()
 
         assertTrue("Expected Error but got ${result}", result is Result.Error)
+    }
+
+    @Test
+    fun `repository parses all 57 expanded events with valid fields`() {
+        val resource = javaClass.classLoader.getResourceAsStream("expanded_events.json")
+        assertNotNull("expanded_events.json test resource missing", resource)
+        every { assetManager.open("quran-data/islamic_events.json") } returns ByteArrayInputStream(resource!!.readBytes())
+
+        val result = repo.getEvents()
+
+        assertTrue("Expected Success but got ${result}", result is Result.Success)
+        val events = (result as Result.Success).data
+        assertEquals(57, events.size)
+        events.forEach { event ->
+            assertTrue("month out of range: ${event.hijriMonth}", event.hijriMonth in 1..12)
+            assertTrue("day out of range: ${event.hijriDay}", event.hijriDay in 1..30)
+            assertTrue(event.titleEn.isNotBlank())
+            assertTrue(event.titleId.isNotBlank())
+            assertTrue(event.descriptionEn.isNotBlank())
+            assertTrue(event.descriptionId.isNotBlank())
+            assertTrue(event.eventType == "holiday" || event.eventType == "observance")
+        }
     }
 }
