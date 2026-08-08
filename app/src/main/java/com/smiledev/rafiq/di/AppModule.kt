@@ -35,6 +35,8 @@ import com.smiledev.rafiq.domain.repository.PrayerTimesRepository
 import com.smiledev.rafiq.domain.repository.ProphetRepository
 import com.smiledev.rafiq.domain.repository.QuranRepository
 import com.smiledev.rafiq.domain.repository.ReciterRepository
+import com.smiledev.rafiq.domain.util.SystemTodayProvider
+import com.smiledev.rafiq.domain.util.TodayProvider
 import com.smiledev.rafiq.domain.usecase.CalculateQiblaUseCase
 import com.smiledev.rafiq.domain.usecase.CalculateZakatUseCase
 import com.smiledev.rafiq.domain.usecase.GetAyahsWithTranslationUseCase
@@ -86,6 +88,10 @@ object AppModule {
     @Provides
     @Singleton
     fun provideDispatcherProvider(): DispatcherProvider = DefaultDispatcherProvider
+
+    @Provides
+    @Singleton
+    fun provideTodayProvider(): TodayProvider = SystemTodayProvider
 
     @Provides
     @Singleton
