@@ -6,17 +6,20 @@ import com.smiledev.rafiq.core.Result
 import com.smiledev.rafiq.data.asSuccess
 import com.smiledev.rafiq.domain.model.IslamicEvent
 import com.smiledev.rafiq.domain.repository.IslamicCalendarRepository
+import com.smiledev.rafiq.domain.util.HijriDateConverter
+import com.smiledev.rafiq.domain.util.SystemTodayProvider
+import com.smiledev.rafiq.domain.util.TodayProvider
 import dagger.hilt.android.qualifiers.ApplicationContext
 import org.json.JSONArray
 import java.io.BufferedReader
 import java.io.InputStreamReader
-import java.util.Calendar
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class IslamicCalendarRepositoryImpl @Inject constructor(
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    private val todayProvider: TodayProvider = SystemTodayProvider
 ) : IslamicCalendarRepository {
     private var cache: List<IslamicEvent>? = null
 
@@ -41,13 +44,14 @@ class IslamicCalendarRepositoryImpl @Inject constructor(
                 val obj = json.getJSONObject(i)
                 list.add(
                     IslamicEvent(
-                        hijriMonth = obj.getInt("hijri_month"),
-                        hijriDay = obj.getInt("hijri_day"),
+                        hijriMonth = obj.optInt("hijri_month", 0),
+                        hijriDay = obj.optInt("hijri_day", 0),
                         titleEn = obj.getString("title_en"),
                         titleId = obj.getString("title_id"),
                         descriptionEn = obj.getString("description_en"),
                         descriptionId = obj.getString("description_id"),
-                        eventType = obj.getString("event_type")
+                        eventType = obj.getString("event_type"),
+                        weekday = if (obj.has("weekday")) obj.getInt("weekday") else null
                     )
                 )
             }
@@ -73,12 +77,18 @@ class IslamicCalendarRepositoryImpl @Inject constructor(
         return try {
             when (val result = getEvents()) {
                 is Result.Success -> {
-                    val cal = Calendar.getInstance()
-                    val todayMonth = cal.get(Calendar.MONTH) + 1
-                    val todayDay = cal.get(Calendar.DAY_OF_MONTH)
-                    val filtered = result.data.filter { it.hijriMonth == todayMonth && it.hijriDay == todayDay }
-                        .ifEmpty { result.data.filter { it.hijriMonth == 1 && it.hijriDay == 1 } }
-                    Result.Success(filtered)
+                    val today = todayProvider.today()
+                    val todayHijri = HijriDateConverter.gregorianToHijri(today.year, today.month, today.day)
+                    Result.Success(
+                        result.data.filter { event ->
+                            val weekday = event.weekday
+                            when {
+                                weekday != null -> weekday == HijriDateConverter.weekdayOf(today.year, today.month, today.day)
+                                event.hijriDay == 0 -> event.hijriMonth == todayHijri.month
+                                else -> event.hijriMonth == todayHijri.month && event.hijriDay == todayHijri.day
+                            }
+                        }
+                    )
                 }
                 is Result.Error -> result
             }

@@ -7,5 +7,6 @@ data class IslamicEvent(
     val titleId: String,
     val descriptionEn: String,
     val descriptionId: String,
-    val eventType: String
+    val eventType: String,
+    val weekday: Int? = null
 )

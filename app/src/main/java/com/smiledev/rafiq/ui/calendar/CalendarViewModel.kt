@@ -7,22 +7,38 @@ import com.smiledev.rafiq.core.AppError
 import com.smiledev.rafiq.core.DefaultDispatcherProvider
 import com.smiledev.rafiq.core.DispatcherProvider
 import com.smiledev.rafiq.core.Result
+import com.smiledev.rafiq.core.currentLocaleCode
+import com.smiledev.rafiq.core.getOrNull
+import com.smiledev.rafiq.domain.model.GregorianDate
+import com.smiledev.rafiq.domain.model.HijriDate
 import com.smiledev.rafiq.domain.model.IslamicEvent
 import com.smiledev.rafiq.domain.repository.IslamicCalendarRepository
+import com.smiledev.rafiq.domain.util.HijriDateConverter
+import com.smiledev.rafiq.domain.util.SystemTodayProvider
+import com.smiledev.rafiq.domain.util.TodayProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
-
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.util.Calendar
-import com.smiledev.rafiq.core.currentLocaleCode
 import javax.inject.Inject
 
 @Immutable
+data class CalendarDay(
+    val gregorianDay: Int,
+    val hijriDate: HijriDate,
+    val events: List<IslamicEvent>,
+    val isToday: Boolean
+)
+
+@Immutable
 data class CalendarUiState(
-    val events: List<IslamicEvent> = emptyList(),
     val todayEvents: List<IslamicEvent> = emptyList(),
-    val selectedMonth: Int = Calendar.getInstance().get(Calendar.MONTH) + 1,
+    val displayedYear: Int = Calendar.getInstance().get(Calendar.YEAR),
+    val displayedMonth: Int = Calendar.getInstance().get(Calendar.MONTH) + 1,
+    val grid: List<CalendarDay?> = emptyList(),
+    val selectedIndex: Int? = null,
+    val monthlyRecommendations: List<IslamicEvent> = emptyList(),
     val isLoading: Boolean = false,
     val error: AppError? = null
 )
@@ -30,6 +46,7 @@ data class CalendarUiState(
 @HiltViewModel
 class CalendarViewModel @Inject constructor(
     private val repository: IslamicCalendarRepository,
+    private val todayProvider: TodayProvider = SystemTodayProvider,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider
 ) : ViewModel() {
 
@@ -46,13 +63,18 @@ class CalendarViewModel @Inject constructor(
     private fun load() {
         viewModelScope.launch(dispatcherProvider.io) {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+            val today = todayProvider.today()
             val todayResult = repository.getTodayEvents()
-            val eventsResult = repository.getEventsForMonth(_uiState.value.selectedMonth)
+            val eventsResult = repository.getEvents()
             val todayEvents = if (todayResult is Result.Success) todayResult.data else emptyList()
             val events = if (eventsResult is Result.Success) eventsResult.data else emptyList()
+            val grid = buildGrid(today.year, today.month, events, today)
             _uiState.value = _uiState.value.copy(
-                events = events,
                 todayEvents = todayEvents,
+                displayedYear = today.year,
+                displayedMonth = today.month,
+                grid = grid,
+                monthlyRecommendations = monthlyRecommendations(events, grid),
                 isLoading = false,
                 error = when {
                     todayResult is Result.Error -> todayResult.error
@@ -63,22 +85,89 @@ class CalendarViewModel @Inject constructor(
         }
     }
 
-    fun selectMonth(month: Int) {
-        _uiState.value = _uiState.value.copy(selectedMonth = month)
-        viewModelScope.launch(dispatcherProvider.io) {
-            val result = repository.getEventsForMonth(month)
-            when (result) {
-                is Result.Success -> {
-                    _uiState.value = _uiState.value.copy(events = result.data, error = null)
-                }
-                is Result.Error -> {
-                    _uiState.value = _uiState.value.copy(error = result.error)
-                }
-            }
-        }
+    fun nextMonth() {
+        val s = _uiState.value
+        val newMonth = if (s.displayedMonth == 12) 1 else s.displayedMonth + 1
+        val newYear = if (s.displayedMonth == 12) s.displayedYear + 1 else s.displayedYear
+        _uiState.value = s.copy(displayedYear = newYear, displayedMonth = newMonth, selectedIndex = null)
+        refreshGrid()
+    }
+
+    fun previousMonth() {
+        val s = _uiState.value
+        val newMonth = if (s.displayedMonth == 1) 12 else s.displayedMonth - 1
+        val newYear = if (s.displayedMonth == 1) s.displayedYear - 1 else s.displayedYear
+        _uiState.value = s.copy(displayedYear = newYear, displayedMonth = newMonth, selectedIndex = null)
+        refreshGrid()
+    }
+
+    fun goToToday() {
+        val today = todayProvider.today()
+        _uiState.value = _uiState.value.copy(
+            displayedYear = today.year,
+            displayedMonth = today.month,
+            selectedIndex = null
+        )
+        refreshGrid()
+    }
+
+    fun onDayClick(index: Int) {
+        _uiState.value = _uiState.value.copy(selectedIndex = index)
+    }
+
+    fun dismissDaySheet() {
+        _uiState.value = _uiState.value.copy(selectedIndex = null)
     }
 
     fun getMonthName(month: Int, indonesian: Boolean = localeCode == "id"): String =
         if (indonesian) repository.islamicMonthNamesId.getOrElse(month - 1) { "" }
         else repository.islamicMonthNames.getOrElse(month - 1) { "" }
+
+    private fun refreshGrid() {
+        viewModelScope.launch(dispatcherProvider.io) {
+            val s = _uiState.value
+            val events = repository.getEvents().getOrNull() ?: emptyList()
+            val today = todayProvider.today()
+            _uiState.value = s.copy(
+                grid = buildGrid(s.displayedYear, s.displayedMonth, events, today),
+                monthlyRecommendations = monthlyRecommendations(events, buildGrid(s.displayedYear, s.displayedMonth, events, today))
+            )
+        }
+    }
+
+    private fun buildGrid(
+        year: Int,
+        month: Int,
+        events: List<IslamicEvent>,
+        today: GregorianDate
+    ): List<CalendarDay?> {
+        val daysInMonth = HijriDateConverter.daysInGregorianMonth(year, month)
+        val leadingBlanks = HijriDateConverter.weekdayOf(year, month, 1)
+        val grid = MutableList<CalendarDay?>(42) { null }
+        for (day in 1..daysInMonth) {
+            val hijri = HijriDateConverter.gregorianToHijri(year, month, day)
+            grid[leadingBlanks + day - 1] = CalendarDay(
+                gregorianDay = day,
+                hijriDate = hijri,
+                events = events.filter { event ->
+                    val weekday = event.weekday
+                    when {
+                        weekday != null -> weekday == HijriDateConverter.weekdayOf(year, month, day)
+                        event.hijriDay == 0 -> false
+                        else -> event.hijriMonth == hijri.month && event.hijriDay == hijri.day
+                    }
+                },
+                isToday = today.year == year && today.month == month && today.day == day
+            )
+        }
+        return grid
+    }
+
+    private fun monthlyRecommendations(
+        events: List<IslamicEvent>,
+        grid: List<CalendarDay?>
+    ): List<IslamicEvent> {
+        val hijriMonthsInGrid = grid.filterNotNull().map { it.hijriDate.month }.toSet()
+        return events.filter { it.hijriDay == 0 && it.hijriMonth in hijriMonthsInGrid }
+    }
 }

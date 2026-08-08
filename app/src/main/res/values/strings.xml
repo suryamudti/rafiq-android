@@ -60,6 +60,19 @@
     <string name="islamic_calendar">Islamic Calendar</string>
     <string name="todays_events">Today\'s Events</string>
     <string name="no_events_this_month">No events for this month</string>
+    <string name="today_button">Today</string>
+    <string name="hijri_header_prefix">We are in %1$s</string>
+    <string name="hijri_year_suffix">AH</string>
+    <string name="no_events_on_day">No events on this day</string>
+    <string-array name="weekdays_short">
+        <item>Sun</item>
+        <item>Mon</item>
+        <item>Tue</item>
+        <item>Wed</item>
+        <item>Thu</item>
+        <item>Fri</item>
+        <item>Sat</item>
+    </string-array>
     <!-- Zakat -->
     <string name="zakat_calculator">Zakat Calculator</string>
     <string name="calculate">Calculate</string>
