@@ -93,7 +93,7 @@ class IslamicCalendarRepositoryImplTest {
     }
 
     @Test
-    fun `repository parses all 57 expanded events with valid fields`() {
+    fun `repository parses all 75 expanded events with valid fields`() {
         val resource = javaClass.classLoader.getResourceAsStream("expanded_events.json")
         assertNotNull("expanded_events.json test resource missing", resource)
         every { assetManager.open("quran-data/islamic_events.json") } returns ByteArrayInputStream(resource!!.readBytes())
@@ -102,15 +102,16 @@ class IslamicCalendarRepositoryImplTest {
 
         assertTrue("Expected Success but got ${result}", result is Result.Success)
         val events = (result as Result.Success).data
-        assertEquals(57, events.size)
+        assertEquals(75, events.size)
         events.forEach { event ->
-            assertTrue("month out of range: ${event.hijriMonth}", event.hijriMonth in 1..12)
-            assertTrue("day out of range: ${event.hijriDay}", event.hijriDay in 1..30)
+            assertTrue("month out of range: ${event.hijriMonth}", event.hijriMonth in 0..12)
+            assertTrue("day out of range: ${event.hijriDay}", event.hijriDay in 0..30)
+            event.weekday?.let { assertTrue("weekday out of range: $it", it in 0..6) }
             assertTrue(event.titleEn.isNotBlank())
             assertTrue(event.titleId.isNotBlank())
             assertTrue(event.descriptionEn.isNotBlank())
             assertTrue(event.descriptionId.isNotBlank())
-            assertTrue(event.eventType == "holiday" || event.eventType == "observance")
+            assertTrue(event.eventType in setOf("holiday", "observance", "fasting", "recommendation"))
         }
     }
 

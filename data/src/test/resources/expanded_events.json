@@ -15,7 +15,7 @@
     "title_id": "Hari Asyura",
     "description_en": "Recommended fasting day. Commemorates the salvation of Musa (AS) from Pharaoh and the martyrdom of Husayn ibn Ali.",
     "description_id": "Hari puasa yang dianjurkan. Memperingati penyelamatan Musa AS dari Firaun dan syahidnya Husain bin Ali.",
-    "event_type": "observance"
+    "event_type": "fasting"
   },
   {
     "hijri_month": 1,
@@ -24,7 +24,7 @@
     "title_id": "Ayyamul Bidh (13)",
     "description_en": "The white days. Recommended to fast on the 13th of Muharram, the middle days of the month.",
     "description_id": "Hari-hari putih. Dianjurkan berpuasa pada tanggal 13 Muharram, hari pertengahan bulan.",
-    "event_type": "observance"
+    "event_type": "fasting"
   },
   {
     "hijri_month": 1,
@@ -33,7 +33,7 @@
     "title_id": "Ayyamul Bidh (14)",
     "description_en": "The white days. Recommended to fast on the 14th of Muharram, the middle days of the month.",
     "description_id": "Hari-hari putih. Dianjurkan berpuasa pada tanggal 14 Muharram, hari pertengahan bulan.",
-    "event_type": "observance"
+    "event_type": "fasting"
   },
   {
     "hijri_month": 1,
@@ -42,7 +42,7 @@
     "title_id": "Ayyamul Bidh (15)",
     "description_en": "The white days. Recommended to fast on the 15th of Muharram, the middle days of the month.",
     "description_id": "Hari-hari putih. Dianjurkan berpuasa pada tanggal 15 Muharram, hari pertengahan bulan.",
-    "event_type": "observance"
+    "event_type": "fasting"
   },
   {
     "hijri_month": 2,
@@ -51,7 +51,7 @@
     "title_id": "Ayyamul Bidh (13)",
     "description_en": "The white days. Recommended to fast on the 13th of Safar, the middle days of the month.",
     "description_id": "Hari-hari putih. Dianjurkan berpuasa pada tanggal 13 Safar, hari pertengahan bulan.",
-    "event_type": "observance"
+    "event_type": "fasting"
   },
   {
     "hijri_month": 2,
@@ -60,7 +60,7 @@
     "title_id": "Ayyamul Bidh (14)",
     "description_en": "The white days. Recommended to fast on the 14th of Safar, the middle days of the month.",
     "description_id": "Hari-hari putih. Dianjurkan berpuasa pada tanggal 14 Safar, hari pertengahan bulan.",
-    "event_type": "observance"
+    "event_type": "fasting"
   },
   {
     "hijri_month": 2,
@@ -69,7 +69,7 @@
     "title_id": "Ayyamul Bidh (15)",
     "description_en": "The white days. Recommended to fast on the 15th of Safar, the middle days of the month.",
     "description_id": "Hari-hari putih. Dianjurkan berpuasa pada tanggal 15 Safar, hari pertengahan bulan.",
-    "event_type": "observance"
+    "event_type": "fasting"
   },
   {
     "hijri_month": 3,
@@ -87,7 +87,7 @@
     "title_id": "Ayyamul Bidh (13)",
     "description_en": "The white days. Recommended to fast on the 13th of Rabi' al-Awwal, the middle days of the month.",
     "description_id": "Hari-hari putih. Dianjurkan berpuasa pada tanggal 13 Rabi'ul Awwal, hari pertengahan bulan.",
-    "event_type": "observance"
+    "event_type": "fasting"
   },
   {
     "hijri_month": 3,
@@ -96,7 +96,7 @@
     "title_id": "Ayyamul Bidh (14)",
     "description_en": "The white days. Recommended to fast on the 14th of Rabi' al-Awwal, the middle days of the month.",
     "description_id": "Hari-hari putih. Dianjurkan berpuasa pada tanggal 14 Rabi'ul Awwal, hari pertengahan bulan.",
-    "event_type": "observance"
+    "event_type": "fasting"
   },
   {
     "hijri_month": 3,
@@ -105,7 +105,7 @@
     "title_id": "Ayyamul Bidh (15)",
     "description_en": "The white days. Recommended to fast on the 15th of Rabi' al-Awwal, the middle days of the month.",
     "description_id": "Hari-hari putih. Dianjurkan berpuasa pada tanggal 15 Rabi'ul Awwal, hari pertengahan bulan.",
-    "event_type": "observance"
+    "event_type": "fasting"
   },
   {
     "hijri_month": 4,
@@ -114,7 +114,7 @@
     "title_id": "Ayyamul Bidh (13)",
     "description_en": "The white days. Recommended to fast on the 13th of Rabi' al-Thani, the middle days of the month.",
     "description_id": "Hari-hari putih. Dianjurkan berpuasa pada tanggal 13 Rabi'ul Tsani, hari pertengahan bulan.",
-    "event_type": "observance"
+    "event_type": "fasting"
   },
   {
     "hijri_month": 4,
@@ -123,7 +123,7 @@
     "title_id": "Ayyamul Bidh (14)",
     "description_en": "The white days. Recommended to fast on the 14th of Rabi' al-Thani, the middle days of the month.",
     "description_id": "Hari-hari putih. Dianjurkan berpuasa pada tanggal 14 Rabi'ul Tsani, hari pertengahan bulan.",
-    "event_type": "observance"
+    "event_type": "fasting"
   },
   {
     "hijri_month": 4,
@@ -132,7 +132,7 @@
     "title_id": "Ayyamul Bidh (15)",
     "description_en": "The white days. Recommended to fast on the 15th of Rabi' al-Thani, the middle days of the month.",
     "description_id": "Hari-hari putih. Dianjurkan berpuasa pada tanggal 15 Rabi'ul Tsani, hari pertengahan bulan.",
-    "event_type": "observance"
+    "event_type": "fasting"
   },
   {
     "hijri_month": 5,
@@ -141,7 +141,7 @@
     "title_id": "Ayyamul Bidh (13)",
     "description_en": "The white days. Recommended to fast on the 13th of Jumada al-Awwal, the middle days of the month.",
     "description_id": "Hari-hari putih. Dianjurkan berpuasa pada tanggal 13 Jumadil Awwal, hari pertengahan bulan.",
-    "event_type": "observance"
+    "event_type": "fasting"
   },
   {
     "hijri_month": 5,
@@ -150,7 +150,7 @@
     "title_id": "Ayyamul Bidh (14)",
     "description_en": "The white days. Recommended to fast on the 14th of Jumada al-Awwal, the middle days of the month.",
     "description_id": "Hari-hari putih. Dianjurkan berpuasa pada tanggal 14 Jumadil Awwal, hari pertengahan bulan.",
-    "event_type": "observance"
+    "event_type": "fasting"
   },
   {
     "hijri_month": 5,
@@ -159,7 +159,7 @@
     "title_id": "Ayyamul Bidh (15)",
     "description_en": "The white days. Recommended to fast on the 15th of Jumada al-Awwal, the middle days of the month.",
     "description_id": "Hari-hari putih. Dianjurkan berpuasa pada tanggal 15 Jumadil Awwal, hari pertengahan bulan.",
-    "event_type": "observance"
+    "event_type": "fasting"
   },
   {
     "hijri_month": 6,
@@ -168,7 +168,7 @@
     "title_id": "Ayyamul Bidh (13)",
     "description_en": "The white days. Recommended to fast on the 13th of Jumada al-Thani, the middle days of the month.",
     "description_id": "Hari-hari putih. Dianjurkan berpuasa pada tanggal 13 Jumadil Tsani, hari pertengahan bulan.",
-    "event_type": "observance"
+    "event_type": "fasting"
   },
   {
     "hijri_month": 6,
@@ -177,7 +177,7 @@
     "title_id": "Ayyamul Bidh (14)",
     "description_en": "The white days. Recommended to fast on the 14th of Jumada al-Thani, the middle days of the month.",
     "description_id": "Hari-hari putih. Dianjurkan berpuasa pada tanggal 14 Jumadil Tsani, hari pertengahan bulan.",
-    "event_type": "observance"
+    "event_type": "fasting"
   },
   {
     "hijri_month": 6,
@@ -186,7 +186,7 @@
     "title_id": "Ayyamul Bidh (15)",
     "description_en": "The white days. Recommended to fast on the 15th of Jumada al-Thani, the middle days of the month.",
     "description_id": "Hari-hari putih. Dianjurkan berpuasa pada tanggal 15 Jumadil Tsani, hari pertengahan bulan.",
-    "event_type": "observance"
+    "event_type": "fasting"
   },
   {
     "hijri_month": 7,
@@ -195,7 +195,7 @@
     "title_id": "Ayyamul Bidh (13)",
     "description_en": "The white days. Recommended to fast on the 13th of Rajab, the middle days of the month.",
     "description_id": "Hari-hari putih. Dianjurkan berpuasa pada tanggal 13 Rajab, hari pertengahan bulan.",
-    "event_type": "observance"
+    "event_type": "fasting"
   },
   {
     "hijri_month": 7,
@@ -204,7 +204,7 @@
     "title_id": "Ayyamul Bidh (14)",
     "description_en": "The white days. Recommended to fast on the 14th of Rajab, the middle days of the month.",
     "description_id": "Hari-hari putih. Dianjurkan berpuasa pada tanggal 14 Rajab, hari pertengahan bulan.",
-    "event_type": "observance"
+    "event_type": "fasting"
   },
   {
     "hijri_month": 7,
@@ -213,7 +213,7 @@
     "title_id": "Ayyamul Bidh (15)",
     "description_en": "The white days. Recommended to fast on the 15th of Rajab, the middle days of the month.",
     "description_id": "Hari-hari putih. Dianjurkan berpuasa pada tanggal 15 Rajab, hari pertengahan bulan.",
-    "event_type": "observance"
+    "event_type": "fasting"
   },
   {
     "hijri_month": 7,
@@ -231,7 +231,7 @@
     "title_id": "Ayyamul Bidh (13)",
     "description_en": "The white days. Recommended to fast on the 13th of Sha'aban, the middle days of the month.",
     "description_id": "Hari-hari putih. Dianjurkan berpuasa pada tanggal 13 Sya'ban, hari pertengahan bulan.",
-    "event_type": "observance"
+    "event_type": "fasting"
   },
   {
     "hijri_month": 8,
@@ -240,7 +240,7 @@
     "title_id": "Ayyamul Bidh (14)",
     "description_en": "The white days. Recommended to fast on the 14th of Sha'aban, the middle days of the month.",
     "description_id": "Hari-hari putih. Dianjurkan berpuasa pada tanggal 14 Sya'ban, hari pertengahan bulan.",
-    "event_type": "observance"
+    "event_type": "fasting"
   },
   {
     "hijri_month": 8,
@@ -258,7 +258,7 @@
     "title_id": "Ayyamul Bidh (15)",
     "description_en": "The white days. Recommended to fast on the 15th of Sha'aban, the middle days of the month.",
     "description_id": "Hari-hari putih. Dianjurkan berpuasa pada tanggal 15 Sya'ban, hari pertengahan bulan.",
-    "event_type": "observance"
+    "event_type": "fasting"
   },
   {
     "hijri_month": 9,
@@ -285,7 +285,7 @@
     "title_id": "Ayyamul Bidh (13)",
     "description_en": "The white days. Recommended to fast on the 13th of Ramadan, the middle days of the month.",
     "description_id": "Hari-hari putih. Dianjurkan berpuasa pada tanggal 13 Ramadan, hari pertengahan bulan.",
-    "event_type": "observance"
+    "event_type": "fasting"
   },
   {
     "hijri_month": 9,
@@ -294,7 +294,7 @@
     "title_id": "Ayyamul Bidh (14)",
     "description_en": "The white days. Recommended to fast on the 14th of Ramadan, the middle days of the month.",
     "description_id": "Hari-hari putih. Dianjurkan berpuasa pada tanggal 14 Ramadan, hari pertengahan bulan.",
-    "event_type": "observance"
+    "event_type": "fasting"
   },
   {
     "hijri_month": 9,
@@ -303,7 +303,7 @@
     "title_id": "Ayyamul Bidh (15)",
     "description_en": "The white days. Recommended to fast on the 15th of Ramadan, the middle days of the month.",
     "description_id": "Hari-hari putih. Dianjurkan berpuasa pada tanggal 15 Ramadan, hari pertengahan bulan.",
-    "event_type": "observance"
+    "event_type": "fasting"
   },
   {
     "hijri_month": 9,
@@ -384,7 +384,7 @@
     "title_id": "Ayyamul Bidh (13)",
     "description_en": "The white days. Recommended to fast on the 13th of Shawwal, the middle days of the month.",
     "description_id": "Hari-hari putih. Dianjurkan berpuasa pada tanggal 13 Syawwal, hari pertengahan bulan.",
-    "event_type": "observance"
+    "event_type": "fasting"
   },
   {
     "hijri_month": 10,
@@ -393,7 +393,7 @@
     "title_id": "Ayyamul Bidh (14)",
     "description_en": "The white days. Recommended to fast on the 14th of Shawwal, the middle days of the month.",
     "description_id": "Hari-hari putih. Dianjurkan berpuasa pada tanggal 14 Syawwal, hari pertengahan bulan.",
-    "event_type": "observance"
+    "event_type": "fasting"
   },
   {
     "hijri_month": 10,
@@ -402,7 +402,7 @@
     "title_id": "Ayyamul Bidh (15)",
     "description_en": "The white days. Recommended to fast on the 15th of Shawwal, the middle days of the month.",
     "description_id": "Hari-hari putih. Dianjurkan berpuasa pada tanggal 15 Syawwal, hari pertengahan bulan.",
-    "event_type": "observance"
+    "event_type": "fasting"
   },
   {
     "hijri_month": 11,
@@ -411,7 +411,7 @@
     "title_id": "Ayyamul Bidh (13)",
     "description_en": "The white days. Recommended to fast on the 13th of Dhul-Qi'dah, the middle days of the month.",
     "description_id": "Hari-hari putih. Dianjurkan berpuasa pada tanggal 13 Dzulqa'dah, hari pertengahan bulan.",
-    "event_type": "observance"
+    "event_type": "fasting"
   },
   {
     "hijri_month": 11,
@@ -420,7 +420,7 @@
     "title_id": "Ayyamul Bidh (14)",
     "description_en": "The white days. Recommended to fast on the 14th of Dhul-Qi'dah, the middle days of the month.",
     "description_id": "Hari-hari putih. Dianjurkan berpuasa pada tanggal 14 Dzulqa'dah, hari pertengahan bulan.",
-    "event_type": "observance"
+    "event_type": "fasting"
   },
   {
     "hijri_month": 11,
@@ -429,7 +429,7 @@
     "title_id": "Ayyamul Bidh (15)",
     "description_en": "The white days. Recommended to fast on the 15th of Dhul-Qi'dah, the middle days of the month.",
     "description_id": "Hari-hari putih. Dianjurkan berpuasa pada tanggal 15 Dzulqa'dah, hari pertengahan bulan.",
-    "event_type": "observance"
+    "event_type": "fasting"
   },
   {
     "hijri_month": 12,
@@ -438,7 +438,7 @@
     "title_id": "Hari Tarwiyah",
     "description_en": "Eighth day of Dhul Hijjah. Pilgrims begin their Hajj rituals.",
     "description_id": "Hari kedelapan Dzulhijjah. Jemaah haji memulai ritual haji.",
-    "event_type": "observance"
+    "event_type": "fasting"
   },
   {
     "hijri_month": 12,
@@ -447,7 +447,7 @@
     "title_id": "Hari Arafah",
     "description_en": "The most important day of Hajj. Recommended fasting for non-pilgrims.",
     "description_id": "Hari terpenting dalam haji. Puasa dianjurkan bagi yang tidak berhaji.",
-    "event_type": "observance"
+    "event_type": "fasting"
   },
   {
     "hijri_month": 12,
@@ -492,7 +492,7 @@
     "title_id": "Ayyamul Bidh (16)",
     "description_en": "The white days. Recommended to fast on the 16th of Dhul-Hijjah, the middle days of the month.",
     "description_id": "Hari-hari putih. Dianjurkan berpuasa pada tanggal 16 Dzulhijjah, hari pertengahan bulan.",
-    "event_type": "observance"
+    "event_type": "fasting"
   },
   {
     "hijri_month": 12,
@@ -501,7 +501,7 @@
     "title_id": "Ayyamul Bidh (14)",
     "description_en": "The white days. Recommended to fast on the 14th of Dhul-Hijjah, the middle days of the month.",
     "description_id": "Hari-hari putih. Dianjurkan berpuasa pada tanggal 14 Dzulhijjah, hari pertengahan bulan.",
-    "event_type": "observance"
+    "event_type": "fasting"
   },
   {
     "hijri_month": 12,
@@ -510,6 +510,170 @@
     "title_id": "Ayyamul Bidh (15)",
     "description_en": "The white days. Recommended to fast on the 15th of Dhul-Hijjah, the middle days of the month.",
     "description_id": "Hari-hari putih. Dianjurkan berpuasa pada tanggal 15 Dzulhijjah, hari pertengahan bulan.",
-    "event_type": "observance"
+    "event_type": "fasting"
+  },
+  {
+    "hijri_month": 0,
+    "hijri_day": 0,
+    "weekday": 1,
+    "title_en": "Monday Fasting (Sunnah)",
+    "title_id": "Puasa Senin (Sunnah)",
+    "description_en": "Recommended to fast every Monday, following the sunnah of the Prophet Muhammad (PBUH).",
+    "description_id": "Dianjurkan berpuasa setiap hari Senin, mengikuti sunnah Nabi Muhammad SAW.",
+    "event_type": "fasting"
+  },
+  {
+    "hijri_month": 0,
+    "hijri_day": 0,
+    "weekday": 4,
+    "title_en": "Thursday Fasting (Sunnah)",
+    "title_id": "Puasa Kamis (Sunnah)",
+    "description_en": "Recommended to fast every Thursday, following the sunnah of the Prophet Muhammad (PBUH).",
+    "description_id": "Dianjurkan berpuasa setiap hari Kamis, mengikuti sunnah Nabi Muhammad SAW.",
+    "event_type": "fasting"
+  },
+  {
+    "hijri_month": 1,
+    "hijri_day": 9,
+    "title_en": "Day of Tasu'a",
+    "title_id": "Hari Tasu'a",
+    "description_en": "Recommended to fast on the 9th of Muharram alongside the Day of Ashura the following day.",
+    "description_id": "Dianjurkan berpuasa pada tanggal 9 Muharram bersama Hari Asyura keesokan harinya.",
+    "event_type": "fasting"
+  },
+  {
+    "hijri_month": 10,
+    "hijri_day": 2,
+    "title_en": "Six Days of Shawwal (Day 2)",
+    "title_id": "Puasa 6 Hari Syawwal (Hari 2)",
+    "description_en": "Recommended to fast six days in the month of Shawwal; fasting them completes a full year of fasting.",
+    "description_id": "Dianjurkan berpuasa enam hari di bulan Syawwal; berpuasa enam hari ini menyempurnakan pahala puasa setahun penuh.",
+    "event_type": "fasting"
+  },
+  {
+    "hijri_month": 10,
+    "hijri_day": 3,
+    "title_en": "Six Days of Shawwal (Day 3)",
+    "title_id": "Puasa 6 Hari Syawwal (Hari 3)",
+    "description_en": "Recommended to fast six days in the month of Shawwal; fasting them completes a full year of fasting.",
+    "description_id": "Dianjurkan berpuasa enam hari di bulan Syawwal; berpuasa enam hari ini menyempurnakan pahala puasa setahun penuh.",
+    "event_type": "fasting"
+  },
+  {
+    "hijri_month": 10,
+    "hijri_day": 4,
+    "title_en": "Six Days of Shawwal (Day 4)",
+    "title_id": "Puasa 6 Hari Syawwal (Hari 4)",
+    "description_en": "Recommended to fast six days in the month of Shawwal; fasting them completes a full year of fasting.",
+    "description_id": "Dianjurkan berpuasa enam hari di bulan Syawwal; berpuasa enam hari ini menyempurnakan pahala puasa setahun penuh.",
+    "event_type": "fasting"
+  },
+  {
+    "hijri_month": 10,
+    "hijri_day": 5,
+    "title_en": "Six Days of Shawwal (Day 5)",
+    "title_id": "Puasa 6 Hari Syawwal (Hari 5)",
+    "description_en": "Recommended to fast six days in the month of Shawwal; fasting them completes a full year of fasting.",
+    "description_id": "Dianjurkan berpuasa enam hari di bulan Syawwal; berpuasa enam hari ini menyempurnakan pahala puasa setahun penuh.",
+    "event_type": "fasting"
+  },
+  {
+    "hijri_month": 10,
+    "hijri_day": 6,
+    "title_en": "Six Days of Shawwal (Day 6)",
+    "title_id": "Puasa 6 Hari Syawwal (Hari 6)",
+    "description_en": "Recommended to fast six days in the month of Shawwal; fasting them completes a full year of fasting.",
+    "description_id": "Dianjurkan berpuasa enam hari di bulan Syawwal; berpuasa enam hari ini menyempurnakan pahala puasa setahun penuh.",
+    "event_type": "fasting"
+  },
+  {
+    "hijri_month": 10,
+    "hijri_day": 7,
+    "title_en": "Six Days of Shawwal (Day 7)",
+    "title_id": "Puasa 6 Hari Syawwal (Hari 7)",
+    "description_en": "Recommended to fast six days in the month of Shawwal; fasting them completes a full year of fasting.",
+    "description_id": "Dianjurkan berpuasa enam hari di bulan Syawwal; berpuasa enam hari ini menyempurnakan pahala puasa setahun penuh.",
+    "event_type": "fasting"
+  },
+  {
+    "hijri_month": 12,
+    "hijri_day": 1,
+    "title_en": "Dhul-Hijjah Fasting (Day 1)",
+    "title_id": "Puasa Dzulhijjah (Hari 1)",
+    "description_en": "Recommended to fast in the first days of Dhul-Hijjah; good deeds are beloved to Allah in these ten days.",
+    "description_id": "Dianjurkan berpuasa pada awal bulan Dzulhijjah; amal saleh sangat dicintai Allah pada sepuluh hari ini.",
+    "event_type": "fasting"
+  },
+  {
+    "hijri_month": 12,
+    "hijri_day": 2,
+    "title_en": "Dhul-Hijjah Fasting (Day 2)",
+    "title_id": "Puasa Dzulhijjah (Hari 2)",
+    "description_en": "Recommended to fast in the first days of Dhul-Hijjah; good deeds are beloved to Allah in these ten days.",
+    "description_id": "Dianjurkan berpuasa pada awal bulan Dzulhijjah; amal saleh sangat dicintai Allah pada sepuluh hari ini.",
+    "event_type": "fasting"
+  },
+  {
+    "hijri_month": 12,
+    "hijri_day": 3,
+    "title_en": "Dhul-Hijjah Fasting (Day 3)",
+    "title_id": "Puasa Dzulhijjah (Hari 3)",
+    "description_en": "Recommended to fast in the first days of Dhul-Hijjah; good deeds are beloved to Allah in these ten days.",
+    "description_id": "Dianjurkan berpuasa pada awal bulan Dzulhijjah; amal saleh sangat dicintai Allah pada sepuluh hari ini.",
+    "event_type": "fasting"
+  },
+  {
+    "hijri_month": 12,
+    "hijri_day": 4,
+    "title_en": "Dhul-Hijjah Fasting (Day 4)",
+    "title_id": "Puasa Dzulhijjah (Hari 4)",
+    "description_en": "Recommended to fast in the first days of Dhul-Hijjah; good deeds are beloved to Allah in these ten days.",
+    "description_id": "Dianjurkan berpuasa pada awal bulan Dzulhijjah; amal saleh sangat dicintai Allah pada sepuluh hari ini.",
+    "event_type": "fasting"
+  },
+  {
+    "hijri_month": 12,
+    "hijri_day": 5,
+    "title_en": "Dhul-Hijjah Fasting (Day 5)",
+    "title_id": "Puasa Dzulhijjah (Hari 5)",
+    "description_en": "Recommended to fast in the first days of Dhul-Hijjah; good deeds are beloved to Allah in these ten days.",
+    "description_id": "Dianjurkan berpuasa pada awal bulan Dzulhijjah; amal saleh sangat dicintai Allah pada sepuluh hari ini.",
+    "event_type": "fasting"
+  },
+  {
+    "hijri_month": 12,
+    "hijri_day": 6,
+    "title_en": "Dhul-Hijjah Fasting (Day 6)",
+    "title_id": "Puasa Dzulhijjah (Hari 6)",
+    "description_en": "Recommended to fast in the first days of Dhul-Hijjah; good deeds are beloved to Allah in these ten days.",
+    "description_id": "Dianjurkan berpuasa pada awal bulan Dzulhijjah; amal saleh sangat dicintai Allah pada sepuluh hari ini.",
+    "event_type": "fasting"
+  },
+  {
+    "hijri_month": 12,
+    "hijri_day": 7,
+    "title_en": "Dhul-Hijjah Fasting (Day 7)",
+    "title_id": "Puasa Dzulhijjah (Hari 7)",
+    "description_en": "Recommended to fast in the first days of Dhul-Hijjah; good deeds are beloved to Allah in these ten days.",
+    "description_id": "Dianjurkan berpuasa pada awal bulan Dzulhijjah; amal saleh sangat dicintai Allah pada sepuluh hari ini.",
+    "event_type": "fasting"
+  },
+  {
+    "hijri_month": 1,
+    "hijri_day": 0,
+    "title_en": "Recommended: Fast in Muharram",
+    "title_id": "Dianjurkan: Puasa di Bulan Muharram",
+    "description_en": "The Prophet Muhammad (PBUH) said the best fast after Ramadan is in the month of Allah, Muharram. Fast as much as you are able.",
+    "description_id": "Nabi Muhammad SAW bersabda bahwa puasa terbaik setelah Ramadan adalah di bulan Allah, Muharram. Perbanyak puasa semampunya.",
+    "event_type": "recommendation"
+  },
+  {
+    "hijri_month": 8,
+    "hijri_day": 0,
+    "title_en": "Recommended: Fast in Sha'ban",
+    "title_id": "Dianjurkan: Puasa di Bulan Sya'ban",
+    "description_en": "The Prophet Muhammad (PBUH) used to fast most of Sha'ban in preparation for Ramadan.",
+    "description_id": "Nabi Muhammad SAW biasa memperbanyak puasa di bulan Sya'ban sebagai persiapan menyambut Ramadan.",
+    "event_type": "recommendation"
   }
 ]
