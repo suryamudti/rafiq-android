@@ -487,11 +487,11 @@
   },
   {
     "hijri_month": 12,
-    "hijri_day": 13,
-    "title_en": "Ayyam al-Bid (13th)",
-    "title_id": "Ayyamul Bidh (13)",
-    "description_en": "The white days. Recommended to fast on the 13th of Dhul-Hijjah, the middle days of the month.",
-    "description_id": "Hari-hari putih. Dianjurkan berpuasa pada tanggal 13 Dzulhijjah, hari pertengahan bulan.",
+    "hijri_day": 16,
+    "title_en": "Ayyam al-Bid (16th)",
+    "title_id": "Ayyamul Bidh (16)",
+    "description_en": "The white days. Recommended to fast on the 16th of Dhul-Hijjah, the middle days of the month.",
+    "description_id": "Hari-hari putih. Dianjurkan berpuasa pada tanggal 16 Dzulhijjah, hari pertengahan bulan.",
     "event_type": "observance"
   },
   {
