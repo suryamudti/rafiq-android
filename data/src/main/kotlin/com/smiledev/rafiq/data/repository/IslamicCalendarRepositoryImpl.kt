@@ -44,13 +44,14 @@ class IslamicCalendarRepositoryImpl @Inject constructor(
                 val obj = json.getJSONObject(i)
                 list.add(
                     IslamicEvent(
-                        hijriMonth = obj.getInt("hijri_month"),
-                        hijriDay = obj.getInt("hijri_day"),
+                        hijriMonth = obj.optInt("hijri_month", 0),
+                        hijriDay = obj.optInt("hijri_day", 0),
                         titleEn = obj.getString("title_en"),
                         titleId = obj.getString("title_id"),
                         descriptionEn = obj.getString("description_en"),
                         descriptionId = obj.getString("description_id"),
-                        eventType = obj.getString("event_type")
+                        eventType = obj.getString("event_type"),
+                        weekday = if (obj.has("weekday")) obj.getInt("weekday") else null
                     )
                 )
             }

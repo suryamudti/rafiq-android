@@ -75,6 +75,24 @@ class IslamicCalendarRepositoryImplTest {
     }
 
     @Test
+    fun `getEvents parses optional weekday field`() {
+        val json = """
+            [
+              {"hijri_month": 0, "hijri_day": 0, "weekday": 1, "title_en": "Monday Fasting (Sunnah)", "title_id": "Puasa Senin (Sunnah)", "description_en": "D", "description_id": "D", "event_type": "fasting"}
+            ]
+        """.trimIndent()
+        every { assetManager.open("quran-data/islamic_events.json") } returns ByteArrayInputStream(json.toByteArray())
+
+        val result = repo.getEvents()
+
+        assertTrue("Expected Success but got ${result}", result is Result.Success)
+        val event = (result as Result.Success).data.single()
+        assertEquals(1, event.weekday)
+        assertEquals(0, event.hijriMonth)
+        assertEquals(0, event.hijriDay)
+    }
+
+    @Test
     fun `repository parses all 57 expanded events with valid fields`() {
         val resource = javaClass.classLoader.getResourceAsStream("expanded_events.json")
         assertNotNull("expanded_events.json test resource missing", resource)
