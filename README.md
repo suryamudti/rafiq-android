@@ -38,17 +38,19 @@ Go to the [Releases](https://github.com/smiledev/rafiq-android/releases) section
 | Feature | Description |
 |---|---|
 | **🕌 Prayer Times** | Real-time prayer calculation via Aladhan API with date navigation and countdown timer. |
-| **📖 Quran & Recitations** | 114 Surahs with Arabic text, translations, sajdah markers, and audio stream (15 reciters via Media3). |
+| **📖 Quran & Tafsir** | 114 Surahs with Uthmani Arabic text, Indonesian/English translations, per-ayah tafsir, sajdah markers, and memorization mode. |
+| **🔊 Recitations** | Audio streaming of 15 reciters via Media3 ExoPlayer with background playback. |
 | **🧭 Qibla Compass** | Live compass bearing calculation pointing towards Mecca with distance display. |
 | **✨ 99 Names of Allah** | Complete list with Arabic typography, transliterations, meanings, and search functionality. |
 | **📅 Islamic Calendar** | Hijri dates, upcoming Islamic events, and detailed month selector. |
 | **📜 Prophet Stories** | Biographies and details of 25 Prophets of Islam with instant search. |
 | **💰 Zakat Calculator** | Real-time gold and silver spot prices conversion via Metals.live API with asset Nisab threshold logic. |
 | **📿 Tasbih Counter** | Digital zikr counter with haptic feedback and target goals. |
-| **🗺️ Nearby Mosques** | Offline-capable OpenStreetMap location view using OsmDroid. |
+| **🗺️ Nearby Mosques** | Location-aware OpenStreetMap view (OsmDroid) with nearby mosque discovery via the Overpass API. |
 | **🔖 Bookmarked Verses** | Bookmark favorite verses saved locally in Room database. |
 | **📊 Prayer Tracker** | Daily prayer log screen with toggle switches to track daily worship. |
 | **🔔 Notifications** | Background prayer alarm notifications scheduled via WorkManager. |
+| **⚙️ Settings** | Language preference (Bahasa Indonesia / English) and user preferences stored in DataStore. |
 
 ---
 
@@ -71,8 +73,10 @@ Go to the [Releases](https://github.com/smiledev/rafiq-android/releases) section
 - **[DataStore Preferences](https://developer.android.com/topic/libraries/architecture/datastore)**: Type-safe key-value data storage for user preferences.
 
 ### Network & Media
-- **[Retrofit2](https://github.com/square/retrofit) & Gson**: Type-safe REST client for fetching Prayer Times and Metal spot prices.
+- **[Retrofit2](https://github.com/square/retrofit) & Gson**: Type-safe REST clients for Prayer Times, Tafsir (EQuran/IslamicApp), Metal spot prices, and Overpass mosque queries.
+- **[OkHttp](https://square.github.io/okhttp/)**: HTTP client with logging interceptor.
 - **[Media3 ExoPlayer](https://developer.android.com/guide/topics/media/media3)**: Audio playback engine for streaming recitations.
+- **[Google Play Services Location](https://developers.google.com/android/reference/com/google/android/gms/location/package-summary)**: Fused location provider for nearby mosques.
 - **[OsmDroid](https://github.com/osmdroid/osmdroid)** (6.1.18): OpenStreetMap integration for locating nearby mosques.
 - **[WorkManager](https://developer.android.com/topic/libraries/architecture/workmanager)**: Deferrable background task management for notifications.
 
@@ -94,8 +98,6 @@ rafiq-android/
 
 ### Layer Architecture Overview
 
-```mermaid
-graph TD
 ```mermaid
 graph TD
     subgraph UI ["UI Layer (:app)"]
@@ -143,10 +145,13 @@ graph TD
 
 ## 🌐 Data Sources & APIs
 
-- **Quran Text & Translation**: Bundled SQLite database (`quran-uthmani.db` & `translations/*.db`) via `DatabaseCopier`.
+- **Quran Text & Translation**: Bundled SQLite databases (`quran-uthmani.db`, `translations/en.sahih.db`, `translations/id.indonesian.db`) via `DatabaseCopier`.
+- **Tafsir**: [EQuran.id API](https://equran.id/) (`api/v2/tafsir/{surah}`) for Indonesian tafsir and [IslamicApp API](https://api.islamic.app/) (`v1/verses/by_key/{sura}:{aya}`) for English tafsir (Ibn Kathir).
 - **Prayer Timings API**: [Aladhan REST API](https://aladhan.com/prayer-times-api) (`v1/timings/{date}`).
 - **Zakat Gold/Silver Spot Prices**: [Metals.live API](https://metals.live/) (`v1/spot/gold`, `v1/spot/silver`).
+- **Nearby Mosques**: [Overpass API](https://overpass-api.de/) (`https://overpass-api.de/api/`) with mosque names from OSM elements.
 - **Maps**: OpenStreetMap tile provider managed via `OsmDroid`.
+- **Static Content**: JSON assets for 99 Names, Islamic events, prophets, dzikir/tasbih, reciters, chapters, and juz metadata.
 
 ---
 
@@ -171,10 +176,17 @@ $env:JAVA_HOME = "C:\Program Files\Android\Android Studio\jbr"
 The compiled APK will be located at:
 `app/build/outputs/apk/debug/app-debug.apk`
 
-### Running Unit Tests
+Install on the emulator:
 
 ```powershell
-.\gradlew testDebug
+adb -s emulator-5554 install -r app\build\outputs\apk\debug\app-debug.apk
+```
+
+### Running Tests
+
+```powershell
+.\gradlew testDebug                 # unit tests (JVM)
+.\gradlew connectedDebugAndroidTest # instrumented tests (emulator required)
 ```
 
 ---
