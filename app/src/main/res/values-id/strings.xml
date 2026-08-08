@@ -60,6 +60,19 @@
     <string name="islamic_calendar">Kalender Islam</string>
     <string name="todays_events">Acara Hari Ini</string>
     <string name="no_events_this_month">Tidak ada acara bulan ini</string>
+    <string name="today_button">Hari Ini</string>
+    <string name="hijri_header_prefix">Kita berada di %1$s</string>
+    <string name="hijri_year_suffix">H</string>
+    <string name="no_events_on_day">Tidak ada acara pada hari ini</string>
+    <string-array name="weekdays_short">
+        <item>Min</item>
+        <item>Sen</item>
+        <item>Sel</item>
+        <item>Rab</item>
+        <item>Kam</item>
+        <item>Jum</item>
+        <item>Sab</item>
+    </string-array>
     <!-- Zakat -->
     <string name="zakat_calculator">Kalkulator Zakat</string>
     <string name="calculate">Hitung</string>
