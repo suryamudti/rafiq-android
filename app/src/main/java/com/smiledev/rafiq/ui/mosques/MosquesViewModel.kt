@@ -7,14 +7,14 @@ import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.tasks.Tasks
 import com.smiledev.rafiq.core.AppError
 import com.smiledev.rafiq.core.DefaultDispatcherProvider
 import com.smiledev.rafiq.core.DispatcherProvider
 import com.smiledev.rafiq.core.Result
 import com.smiledev.rafiq.data.preferences.PreferencesManager
 import com.smiledev.rafiq.domain.model.Mosque
+import com.smiledev.rafiq.domain.repository.GeoLocation
+import com.smiledev.rafiq.domain.repository.LocationProvider
 import com.smiledev.rafiq.domain.repository.MosqueRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -40,6 +40,7 @@ class MosquesViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val preferencesManager: PreferencesManager,
     private val mosqueRepository: MosqueRepository,
+    private val locationProvider: LocationProvider,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider
 ) : ViewModel() {
 
@@ -68,34 +69,25 @@ class MosquesViewModel @Inject constructor(
     private fun fetchLocation() {
         viewModelScope.launch(dispatcherProvider.io) {
             _uiState.value = _uiState.value.copy(isLoading = true)
-            try {
-                val fusedClient = LocationServices.getFusedLocationProviderClient(context)
-                val location = Tasks.await(fusedClient.lastLocation)
-                if (location != null) {
+            when (val result = locationProvider.getLastLocation()) {
+                is Result.Success -> {
+                    val geoPoint = GeoPoint(result.data.latitude, result.data.longitude)
                     _uiState.value = _uiState.value.copy(
-                        userLocation = GeoPoint(location.latitude, location.longitude),
+                        userLocation = geoPoint,
                         isLoading = false
                     )
-                    loadMosques(location.latitude, location.longitude)
-                } else {
-                    fallbackToPreferences()
+                    loadMosques(result.data.latitude, result.data.longitude)
                 }
-            } catch (_: Exception) {
-                fallbackToPreferences()
+                is Result.Error -> {
+                    _uiState.value = _uiState.value.copy(
+                        error = result.error,
+                        isLoading = false
+                    )
+                    // Fallback to default location
+                    loadMosques(-6.2088, 106.8456)
+                }
             }
         }
-    }
-
-    private suspend fun fallbackToPreferences() {
-        val latStr = preferencesManager.latitude.first()
-        val lonStr = preferencesManager.longitude.first()
-        val lat = latStr.toDoubleOrNull() ?: -6.2088
-        val lon = lonStr.toDoubleOrNull() ?: 106.8456
-        _uiState.value = _uiState.value.copy(
-            userLocation = GeoPoint(lat, lon),
-            isLoading = false
-        )
-        loadMosques(lat, lon)
     }
 
     private fun loadMosques(lat: Double, lon: Double) {

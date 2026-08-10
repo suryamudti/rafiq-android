@@ -48,6 +48,9 @@ dependencies {
     // Gson
     implementation(libs.gson)
 
+    // Google Play Services Location
+    implementation(libs.play.services.location)
+
     // Test
     testImplementation(libs.junit)
     testImplementation("io.mockk:mockk:1.13.11")

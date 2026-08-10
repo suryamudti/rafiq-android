@@ -18,6 +18,7 @@ import com.smiledev.rafiq.data.remote.OverpassApiService
 import com.smiledev.rafiq.data.repository.AsmaulHusnaRepositoryImpl
 import com.smiledev.rafiq.data.repository.BookmarkRepositoryImpl
 import com.smiledev.rafiq.data.repository.IslamicCalendarRepositoryImpl
+import com.smiledev.rafiq.data.repository.LocationProviderImpl
 import com.smiledev.rafiq.data.repository.MetalPriceRepositoryImpl
 import com.smiledev.rafiq.data.repository.MosqueRepositoryImpl
 import com.smiledev.rafiq.data.repository.PrayerLogRepositoryImpl
@@ -28,6 +29,7 @@ import com.smiledev.rafiq.data.repository.ReciterRepositoryImpl
 import com.smiledev.rafiq.domain.repository.AsmaulHusnaRepository
 import com.smiledev.rafiq.domain.repository.BookmarkRepository
 import com.smiledev.rafiq.domain.repository.IslamicCalendarRepository
+import com.smiledev.rafiq.domain.repository.LocationProvider
 import com.smiledev.rafiq.domain.repository.MetalPriceRepository
 import com.smiledev.rafiq.domain.repository.MosqueRepository
 import com.smiledev.rafiq.domain.repository.PrayerLogRepository
@@ -73,6 +75,7 @@ abstract class RepositoryModule {
     @Binds @Singleton abstract fun bindBookmarkRepository(impl: BookmarkRepositoryImpl): BookmarkRepository
     @Binds @Singleton abstract fun bindPrayerLogRepository(impl: PrayerLogRepositoryImpl): PrayerLogRepository
     @Binds @Singleton abstract fun bindMosqueRepository(impl: MosqueRepositoryImpl): MosqueRepository
+    @Binds @Singleton abstract fun bindLocationProvider(impl: LocationProviderImpl): LocationProvider
 }
 
 @Module
