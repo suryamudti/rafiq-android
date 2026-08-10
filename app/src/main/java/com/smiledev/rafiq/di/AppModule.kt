@@ -131,6 +131,12 @@ object AppModule {
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)
+            .addInterceptor { chain ->
+                val request = chain.request().newBuilder()
+                    .header("User-Agent", "RafiqApp/1.0 (Android Islamic App)")
+                    .build()
+                chain.proceed(request)
+            }
             .addInterceptor(HttpLoggingInterceptor().apply {
                 level = HttpLoggingInterceptor.Level.BASIC
             })
@@ -239,12 +245,48 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideOverpassApiService(@Named("overpass") overpassRetrofit: Retrofit): OverpassApiService {
-        return overpassRetrofit.create(OverpassApiService::class.java)
+    @Named("overpass-mirror")
+    fun provideOverpassMirrorRetrofit(
+        client: OkHttpClient,
+        gson: GsonConverterFactory
+    ): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl("https://overpass.kumi.systems/api/")
+            .client(client)
+            .addConverterFactory(gson)
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    @Named("overpass-mirror-2")
+    fun provideOverpassMirror2Retrofit(
+        client: OkHttpClient,
+        gson: GsonConverterFactory
+    ): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl("https://maps.mail.ru/osm/tools/overpass/api/")
+            .client(client)
+            .addConverterFactory(gson)
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideOverpassApiServices(
+        @Named("overpass") overpassRetrofit: Retrofit,
+        @Named("overpass-mirror") overpassMirrorRetrofit: Retrofit,
+        @Named("overpass-mirror-2") overpassMirror2Retrofit: Retrofit
+    ): List<@JvmSuppressWildcards OverpassApiService> {
+        return listOf(
+            overpassRetrofit.create(OverpassApiService::class.java),
+            overpassMirrorRetrofit.create(OverpassApiService::class.java),
+            overpassMirror2Retrofit.create(OverpassApiService::class.java)
+        )
     }
 
     @Provides @Singleton
-    fun provideOverpassApi(service: OverpassApiService): OverpassApi = OverpassApi(service)
+    fun provideOverpassApi(services: List<@JvmSuppressWildcards OverpassApiService>): OverpassApi = OverpassApi(services)
 
     @Provides @Singleton
     fun provideGetSurahsUseCase(repo: QuranRepository): GetSurahsUseCase = GetSurahsUseCase(repo)

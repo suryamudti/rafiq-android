@@ -22,7 +22,7 @@ class CalculateQiblaUseCase {
         return QiblaResult(bearing = bearing, distanceKm = distanceKm)
     }
 
-    private fun calculateBearing(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Int {
+    fun calculateBearing(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Int {
         val phi1 = lat1 * PI / 180
         val phi2 = lat2 * PI / 180
         val deltaLambda = (lon2 - lon1) * PI / 180
@@ -32,7 +32,7 @@ class CalculateQiblaUseCase {
         return ((bearing + 360) % 360).roundToInt()
     }
 
-    private fun calculateDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Int {
+    fun calculateDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Int {
         val r = 6371.0
         val dLat = (lat2 - lat1) * PI / 180
         val dLon = (lon2 - lon1) * PI / 180
