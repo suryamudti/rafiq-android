@@ -33,11 +33,21 @@
     <string name="qibla_direction">Arah Kiblat</string>
     <string name="bearing_from_north">%d° dari Utara</string>
     <string name="distance_to_mecca">Jarak ke Mekah: %d km</string>
+    <string name="distance_to_mecca_formatted">Jarak ke Mekah: %s km</string>
     <string name="calibrate_compass">Gerakkan ponsel dalam pola angka-8 untuk mengkalibrasi kompas</string>
     <string name="north">U</string>
     <string name="south">S</string>
     <string name="east">T</string>
     <string name="west">B</string>
+    <string name="qibla_heading">Arah: %d°</string>
+    <string name="qibla_bearing">Kiblat: %d°</string>
+    <string name="turn_left">Putar %d° ke kiri menghadap Kiblat</string>
+    <string name="turn_right">Putar %d° ke kanan menghadap Kiblat</string>
+    <string name="facing_qibla">Menghadap Kiblat</string>
+    <string name="kaaba_info">Ka\'bah (Mekah)</string>
+    <string name="kaaba_coords">Koordinat Ka\'bah: %1$s, %2$s</string>
+    <string name="your_coords">Lokasi Anda: %1$s, %2$s</string>
+    <string name="open_in_maps">Buka di Google Maps</string>
     <!-- Mosques -->
     <string name="nearby_mosques">Masjid Terdekat</string>
     <string name="grant_location_permission">Izinkan Akses Lokasi</string>

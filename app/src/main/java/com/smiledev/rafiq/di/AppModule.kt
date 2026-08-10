@@ -18,6 +18,7 @@ import com.smiledev.rafiq.data.remote.OverpassApiService
 import com.smiledev.rafiq.data.repository.AsmaulHusnaRepositoryImpl
 import com.smiledev.rafiq.data.repository.BookmarkRepositoryImpl
 import com.smiledev.rafiq.data.repository.IslamicCalendarRepositoryImpl
+import com.smiledev.rafiq.data.repository.LocationProviderImpl
 import com.smiledev.rafiq.data.repository.MetalPriceRepositoryImpl
 import com.smiledev.rafiq.data.repository.MosqueRepositoryImpl
 import com.smiledev.rafiq.data.repository.PrayerLogRepositoryImpl
@@ -28,6 +29,7 @@ import com.smiledev.rafiq.data.repository.ReciterRepositoryImpl
 import com.smiledev.rafiq.domain.repository.AsmaulHusnaRepository
 import com.smiledev.rafiq.domain.repository.BookmarkRepository
 import com.smiledev.rafiq.domain.repository.IslamicCalendarRepository
+import com.smiledev.rafiq.domain.repository.LocationProvider
 import com.smiledev.rafiq.domain.repository.MetalPriceRepository
 import com.smiledev.rafiq.domain.repository.MosqueRepository
 import com.smiledev.rafiq.domain.repository.PrayerLogRepository
@@ -73,6 +75,7 @@ abstract class RepositoryModule {
     @Binds @Singleton abstract fun bindBookmarkRepository(impl: BookmarkRepositoryImpl): BookmarkRepository
     @Binds @Singleton abstract fun bindPrayerLogRepository(impl: PrayerLogRepositoryImpl): PrayerLogRepository
     @Binds @Singleton abstract fun bindMosqueRepository(impl: MosqueRepositoryImpl): MosqueRepository
+    @Binds @Singleton abstract fun bindLocationProvider(impl: LocationProviderImpl): LocationProvider
 }
 
 @Module
@@ -128,6 +131,12 @@ object AppModule {
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)
+            .addInterceptor { chain ->
+                val request = chain.request().newBuilder()
+                    .header("User-Agent", "RafiqApp/1.0 (Android Islamic App)")
+                    .build()
+                chain.proceed(request)
+            }
             .addInterceptor(HttpLoggingInterceptor().apply {
                 level = HttpLoggingInterceptor.Level.BASIC
             })
@@ -236,12 +245,48 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideOverpassApiService(@Named("overpass") overpassRetrofit: Retrofit): OverpassApiService {
-        return overpassRetrofit.create(OverpassApiService::class.java)
+    @Named("overpass-mirror")
+    fun provideOverpassMirrorRetrofit(
+        client: OkHttpClient,
+        gson: GsonConverterFactory
+    ): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl("https://overpass.kumi.systems/api/")
+            .client(client)
+            .addConverterFactory(gson)
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    @Named("overpass-mirror-2")
+    fun provideOverpassMirror2Retrofit(
+        client: OkHttpClient,
+        gson: GsonConverterFactory
+    ): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl("https://maps.mail.ru/osm/tools/overpass/api/")
+            .client(client)
+            .addConverterFactory(gson)
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideOverpassApiServices(
+        @Named("overpass") overpassRetrofit: Retrofit,
+        @Named("overpass-mirror") overpassMirrorRetrofit: Retrofit,
+        @Named("overpass-mirror-2") overpassMirror2Retrofit: Retrofit
+    ): List<@JvmSuppressWildcards OverpassApiService> {
+        return listOf(
+            overpassRetrofit.create(OverpassApiService::class.java),
+            overpassMirrorRetrofit.create(OverpassApiService::class.java),
+            overpassMirror2Retrofit.create(OverpassApiService::class.java)
+        )
     }
 
     @Provides @Singleton
-    fun provideOverpassApi(service: OverpassApiService): OverpassApi = OverpassApi(service)
+    fun provideOverpassApi(services: List<@JvmSuppressWildcards OverpassApiService>): OverpassApi = OverpassApi(services)
 
     @Provides @Singleton
     fun provideGetSurahsUseCase(repo: QuranRepository): GetSurahsUseCase = GetSurahsUseCase(repo)

@@ -33,11 +33,21 @@
     <string name="qibla_direction">Qibla Direction</string>
     <string name="bearing_from_north">%d° from North</string>
     <string name="distance_to_mecca">Distance to Mecca: %d km</string>
+    <string name="distance_to_mecca_formatted">Distance to Mecca: %s km</string>
     <string name="calibrate_compass">Move your phone in a figure-8 pattern to calibrate the compass</string>
     <string name="north">N</string>
     <string name="south">S</string>
     <string name="east">E</string>
     <string name="west">W</string>
+    <string name="qibla_heading">Heading: %d°</string>
+    <string name="qibla_bearing">Qibla: %d°</string>
+    <string name="turn_left">Turn %d° left to face Qibla</string>
+    <string name="turn_right">Turn %d° right to face Qibla</string>
+    <string name="facing_qibla">Facing Qibla</string>
+    <string name="kaaba_info">Kaaba (Mecca)</string>
+    <string name="kaaba_coords">Kaaba coords: %1$s, %2$s</string>
+    <string name="your_coords">Your location: %1$s, %2$s</string>
+    <string name="open_in_maps">Open in Google Maps</string>
     <!-- Mosques -->
     <string name="nearby_mosques">Nearby Mosques</string>
     <string name="grant_location_permission">Grant Location Permission</string>
