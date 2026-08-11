@@ -48,6 +48,24 @@
     <string name="prophets_title">25 Prophets</string>
     <string name="search_prophets">Search prophets</string>
     <string name="no_prophets_match">No prophets match \"%s\"</string>
+    <string name="prophets_summary">Summary</string>
+    <string name="prophets_story">Story</string>
+    <string name="prophets_miracles">Miracles</string>
+    <string name="prophets_facts">Facts</string>
+    <string name="prophets_key_events">Key Events</string>
+    <string name="prophets_lessons">Lessons</string>
+    <string name="prophets_verse_references">Verse References</string>
+    <string name="prophets_era">Era</string>
+    <string name="prophets_people">People</string>
+    <string name="prophets_lifespan">Lifespan</string>
+    <string name="prophets_favorites">Favorites</string>
+    <string name="no_favorite_prophets">No favorite prophets yet</string>
+    <string name="prophet_not_found">Prophet not found</string>
+    <string name="prophets_share">Share</string>
+    <string name="prophets_previous">Previous</string>
+    <string name="prophets_next">Next</string>
+    <string name="prophets_story_font_size">Story Font Size: %dsp</string>
+    <string name="verse_ref">%1$s %2$d:%3$d</string>
     <!-- Recitation -->
     <string name="audio_recitations">Audio Recitations</string>
     <string name="select_reciter">Select a Reciter</string>

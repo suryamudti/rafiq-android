@@ -33,7 +33,7 @@
 **Interfaces:**
 - Produces: `VerseRef(surah: Int, surahNameEn: String, surahNameId: String, ayahStart: Int, ayahEnd: Int)` and extended `ProphetStory(id, nameArabic, nameEn, nameId, summaryEn, summaryId, storyEn, storyId, miraclesEn, miraclesId, eraEn, eraId, peopleEn, peopleId, lifespanEn, lifespanId, eventsEn: List<String>, eventsId: List<String>, lessonsEn: List<String>, lessonsId: List<String>, verses: List<VerseRef>)`.
 
-- [ ] **Step 1: Write the failing test** — `VerseRefTest.kt` verifying a `VerseRef` constructs with all fields and defaults (`ayahEnd` when equal to `ayahStart`).
+- [x] **Step 1: Write the failing test** — `VerseRefTest.kt` verifying a `VerseRef` constructs with all fields and defaults (`ayahEnd` when equal to `ayahStart`).
 
 ```kotlin
 package com.smiledev.rafiq.domain.model
@@ -68,9 +68,9 @@ class VerseRefTest {
 }
 ```
 
-- [ ] **Step 2: Run test to verify it fails** — `.\gradlew :domain:testDebug` — fails: unresolved `VerseRef`.
+- [x] **Step 2: Run test to verify it fails** — `.\gradlew :domain:test` (pure Kotlin module; `testDebug` does not exist here) — fails: unresolved `VerseRef`.
 
-- [ ] **Step 3: Create `VerseRef.kt`**
+- [x] **Step 3: Create `VerseRef.kt`**
 
 ```kotlin
 package com.smiledev.rafiq.domain.model
@@ -84,7 +84,7 @@ data class VerseRef(
 )
 ```
 
-- [ ] **Step 4: Extend `ProphetStory.kt`**
+- [x] **Step 4: Extend `ProphetStory.kt`**
 
 ```kotlin
 package com.smiledev.rafiq.domain.model
@@ -114,9 +114,9 @@ data class ProphetStory(
 )
 ```
 
-- [ ] **Step 5: Run domain tests** — `.\gradlew :domain:testDebug` — all pass. (Existing `GetProphetsUseCaseTest` uses positional args that still compile because new fields have defaults.)
+- [x] **Step 5: Run domain tests** — `.\gradlew :domain:test` — all pass. (Existing `GetProphetsUseCaseTest` uses positional args that still compile because new fields have defaults.)
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add domain/src/main/kotlin/com/smiledev/rafiq/domain/model/VerseRef.kt domain/src/main/kotlin/com/smiledev/rafiq/domain/model/ProphetStory.kt domain/src/test/kotlin/com/smiledev/rafiq/domain/model/VerseRefTest.kt
@@ -135,7 +135,7 @@ git commit -m "feat(domain): extend ProphetStory with facts, events, lessons, ve
 - Consumes: extended `ProphetStory` and `VerseRef` from Task 1.
 - Produces: `internal fun parseProphets(json: String): List<ProphetStory>` (top-level, pure, no Android deps, tolerant of missing new fields).
 
-- [ ] **Step 1: Write the failing parser test** — uses inline JSON fixtures. Missing new fields must parse to empty defaults (critical for the 23 not-yet-authored prophets).
+- [x] **Step 1: Write the failing parser test** — uses inline JSON fixtures. Missing new fields must parse to empty defaults (critical for the 23 not-yet-authored prophets).
 
 ```kotlin
 package com.smiledev.rafiq.data.repository
@@ -228,7 +228,7 @@ class ProphetParserTest {
 
 - [ ] **Step 2: Run test to verify it fails** — `.\gradlew :data:testDebug --tests "com.smiledev.rafiq.data.repository.ProphetParserTest"` — fails: unresolved `parseProphets`.
 
-- [ ] **Step 3: Add `parseProphets` and update the repository**
+- [x] **Step 3: Add `parseProphets` and update the repository**
 
 Add top-level `parseProphets` in `ProphetRepositoryImpl.kt` (same file, after class) and refactor `getProphets()` to use it:
 
@@ -317,9 +317,9 @@ private fun readAssetText(path: String): String {
 
 Add imports: `com.smiledev.rafiq.domain.model.VerseRef`. Remove the unused `JSONArray` import if no longer referenced in the class body.
 
-- [ ] **Step 4: Run data tests** — `.\gradlew :data:testDebug` — parser tests pass; existing data tests unaffected.
+- [x] **Step 4: Run data tests** — `.\gradlew :data:testDebug` — parser tests pass; existing data tests unaffected.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add data/src/test/kotlin/com/smiledev/rafiq/data/repository/ProphetParserTest.kt data/src/main/kotlin/com/smiledev/rafiq/data/repository/ProphetRepositoryImpl.kt
@@ -336,7 +336,7 @@ git commit -m "feat(data): pure prophet JSON parser with tolerant new-field pars
 **Interfaces:**
 - Produces: `val favoriteProphetIds: Flow<Set<Int>>`, `suspend fun toggleFavoriteProphet(id: Int)`, `val storyFontSize: Flow<Int>`, `suspend fun setStoryFontSize(size: Int)`.
 
-- [ ] **Step 1: Add keys to companion object** (after `LAST_READ_AYA`):
+- [x] **Step 1: Add keys to companion object** (after `LAST_READ_AYA`):
 
 ```kotlin
 val FAVORITE_PROPHET_IDS = stringSetPreferencesKey("favorite_prophet_ids")
@@ -345,7 +345,7 @@ val STORY_FONT_SIZE = intPreferencesKey("story_font_size")
 
 Add imports: `androidx.datastore.preferences.core.stringSetPreferencesKey`.
 
-- [ ] **Step 2: Add flows + setters** (after `lastReadAya` / `setLastReadPosition`):
+- [x] **Step 2: Add flows + setters** (after `lastReadAya` / `setLastReadPosition`):
 
 ```kotlin
 val favoriteProphetIds: Flow<Set<Int>> = context.dataStore.data.map { prefs ->
@@ -371,9 +371,9 @@ suspend fun setStoryFontSize(size: Int) {
 
 Note: `Set<String>` from `stringSetPreferencesKey` is stored as strings; map `toIntOrNull` for `Set<Int>`.
 
-- [ ] **Step 3: Verify compile** — `.\gradlew :data:compileDebugKotlin`. No new unit test (DataStore requires instrumentation; existing `PreferencesManager` has no test and this follows that precedent).
+- [x] **Step 3: Verify compile** — `.\gradlew :data:compileDebugKotlin`. No new unit test (DataStore requires instrumentation; existing `PreferencesManager` has no test and this follows that precedent).
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add data/src/main/kotlin/com/smiledev/rafiq/data/preferences/PreferencesManager.kt
@@ -392,7 +392,7 @@ git commit -m "feat(data): prophet favorites + story font size prefs in DataStor
 - Consumes: `PreferencesManager.favoriteProphetIds`/`storyFontSize`/`toggleFavoriteProphet`/`setStoryFontSize` (Task 3).
 - Produces: UiState gains `favoriteIds: Set<Int>`, `showFavoritesOnly: Boolean`, `storyFontSize: Int`. New methods `setShowFavoritesOnly(Boolean)`, `toggleFavorite(Int)`, `setStoryFontSize(Int)`. `filteredProphets()` now matches Arabic names and favorites-only. Constructor gains `preferencesManager: PreferencesManager`.
 
-- [ ] **Step 1: Update the failing tests first** — rewrite `ProphetsViewModelTest` with a mocked `PreferencesManager`:
+- [x] **Step 1: Update the failing tests first** — rewrite `ProphetsViewModelTest` with a mocked `PreferencesManager`:
 
 ```kotlin
 package com.smiledev.rafiq.ui.prophets
@@ -539,9 +539,9 @@ class ProphetsViewModelTest {
 }
 ```
 
-- [ ] **Step 2: Run tests to verify they fail** — `.\gradlew :app:testDebug --tests "com.smiledev.rafiq.ui.prophets.ProphetsViewModelTest"` — fails: constructor signature mismatch.
+- [x] **Step 2: Run tests to verify they fail** — `.\gradlew :app:testDebug --tests "com.smiledev.rafiq.ui.prophets.ProphetsViewModelTest"` — fails: constructor signature mismatch.
 
-- [ ] **Step 3: Update `ProphetsViewModel`**
+- [x] **Step 3: Update `ProphetsViewModel`**
 
 ```kotlin
 @Immutable
@@ -636,7 +636,7 @@ Add imports: `com.smiledev.rafiq.data.preferences.PreferencesManager`, `kotlinx.
 
 Note: `toggleFavorite` updates DataStore; `favoriteIds` in state is updated by the DataStore flow emission. The test verifies persistence call; the in-memory `favoriteIds` reflects the flow source `flowOf(initialFavorites)` minus nothing (mockk flow doesn't re-emit), so the assertion `1 !in favoriteIds` is true only if we also update state — see next step.
 
-- [ ] **Step 3b: Make `toggleFavorite` update local state immediately** (so UI is responsive without waiting for DataStore round-trip):
+- [x] **Step 3b: Make `toggleFavorite` update local state immediately** (so UI is responsive without waiting for DataStore round-trip):
 
 ```kotlin
 fun toggleFavorite(id: Int) {
@@ -650,9 +650,9 @@ fun toggleFavorite(id: Int) {
 }
 ```
 
-- [ ] **Step 4: Run tests to verify they pass** — `.\gradlew :app:testDebug --tests "com.smiledev.rafiq.ui.prophets.ProphetsViewModelTest"` — all pass.
+- [x] **Step 4: Run tests to verify they pass** — `.\gradlew :app:testDebug --tests "com.smiledev.rafiq.ui.prophets.ProphetsViewModelTest"` — all pass.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add app/src/main/java/com/smiledev/rafiq/ui/prophets/ProphetsViewModel.kt app/src/test/java/com/smiledev/rafiq/ui/prophets/ProphetsViewModelTest.kt
@@ -669,7 +669,7 @@ git commit -m "feat(prophets): favorites filter, arabic search, story font size 
 **Interfaces:**
 - Consumes: JSON keys from Task 2 parser (`era_en`, `era_id`, `people_en`, `people_id`, `lifespan_en`, `lifespan_id`, `events_en`, `events_id`, `lessons_en`, `lessons_id`, `verses`).
 
-- [ ] **Step 1: Add fields to Adam (id 1)** — add these keys to the Adam object:
+- [x] **Step 1: Add fields to Adam (id 1)** — add these keys to the Adam object:
 
 ```json
 "era_en": "Primordial era — the beginning of humanity",
@@ -709,7 +709,7 @@ git commit -m "feat(prophets): favorites filter, arabic search, story font size 
 ]
 ```
 
-- [ ] **Step 2: Add fields to Nuh (id 3)**:
+- [x] **Step 2: Add fields to Nuh (id 3)**:
 
 ```json
 "era_en": "Ancient era — generations after Adam",
@@ -748,13 +748,13 @@ git commit -m "feat(prophets): favorites filter, arabic search, story font size 
 ]
 ```
 
-- [ ] **Step 3: Validate JSON parses** — `.\gradlew :data:testDebug` still passes, and add a quick Robolectric check by running the app test:
+- [x] **Step 3: Validate JSON parses** — `.\gradlew :data:testDebug` still passes, and add a quick Robolectric check by running the app test:
 
 `.\gradlew :app:testDebug --tests "com.smiledev.rafiq.ui.prophets.ProphetsViewModelTest"`
 
 (Verifies nothing structural broke; real file parse is covered in Task 11 emulator/verification.)
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add app/src/main/assets/quran-data/prophets/prophets.json
@@ -817,7 +817,7 @@ git commit -m "content(prophets): author Adam and Nuh facts, events, lessons, ve
 
 - [ ] **Step 3: Verify** — `.\gradlew :app:processDebugResources` (or full `assembleDebug` in Task 11). No duplicates.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add app/src/main/res/values/strings.xml app/src/main/res/values-id/strings.xml
@@ -835,7 +835,7 @@ git commit -m "feat(prophets): localized section headers and action strings (EN 
 - Consumes: `ProphetDetailScreen` gains `onVerseRefClick: (surah: Int, surahName: String, ayaStart: Int) -> Unit` and `onProphetNavigate: (Int) -> Unit` (Task 9).
 - Produces: Nav wiring reuses existing `Ayah` NavKey: `backStack.add(Ayah(surah, surahName, ayaStart))`; `onProphetNavigate` replaces top entry via `backStack.removeLastOrNull(); backStack.add(ProphetDetail(id))`.
 
-- [ ] **Step 1: Update the `entry<ProphetDetail>` block** (lines 89-95):
+- [x] **Step 1: Update the `entry<ProphetDetail>` block** (lines 89-95):
 
 ```kotlin
 entry<ProphetDetail> { key ->
@@ -854,9 +854,9 @@ entry<ProphetDetail> { key ->
 }
 ```
 
-- [ ] **Step 2: Verify compile** — `.\gradlew :app:compileDebugKotlin`. Will fail until Task 9 adds the params; acceptable mid-plan (Task 9 completes the signature). Alternatively implement Task 9 before this. If you see failure, complete Task 9 first, then return to verify.
+- [x] **Step 2: Verify compile** — `.\gradlew :app:compileDebugKotlin`. Will fail until Task 9 adds the params; acceptable mid-plan (Task 9 completes the signature). Alternatively implement Task 9 before this. If you see failure, complete Task 9 first, then return to verify.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add app/src/main/java/com/smiledev/rafiq/Navigation.kt
@@ -874,7 +874,7 @@ git commit -m "feat(prophets): wire verse-ref and prev/next navigation"
 - Consumes: `ProphetsViewModel` new state (`isLoading`, `showFavoritesOnly`, `favoriteIds`) and methods (`setShowFavoritesOnly`, `toggleFavorite`).
 - Produces: loading spinner, favorites filter chip, empty-favorites message, no debug `(id)`.
 
-- [ ] **Step 1: Update `ProphetsScreen`**
+- [x] **Step 1: Update `ProphetsScreen`**
 
 Replace the body of the `Box` (error-handling branch) so that:
 1. Loading state shows a centered `CircularProgressIndicator` when `state.isLoading && state.prophets.isEmpty()`.
@@ -978,9 +978,9 @@ Box(modifier = Modifier.fillMaxSize().padding(padding)) {
 }
 ```
 
-- [ ] **Step 2: Verify compile** — `.\gradlew :app:compileDebugKotlin`.
+- [x] **Step 2: Verify compile** — `.\gradlew :app:compileDebugKotlin`.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add app/src/main/java/com/smiledev/rafiq/ui/prophets/ProphetsScreen.kt
@@ -998,7 +998,7 @@ git commit -m "feat(prophets): list loading state, favorites filter chip, drop d
 - Consumes: extended `ProphetStory` fields, `VerseRef`, ViewModel (`favoriteIds`, `toggleFavorite`, `storyFontSize`, `setStoryFontSize`, `localeCode`), strings from Task 6.
 - Produces: new params `onVerseRefClick: (Int, String, Int) -> Unit`, `onProphetNavigate: (Int) -> Unit`. Localized section headers, Facts/Key Events/Lessons/Verse References sections, favorite heart (`Icons.Filled.Favorite` tinted), share via ACTION_SEND, story font-size bottom sheet, prev/next buttons (no wrap).
 
-- [ ] **Step 1: Update signature and loading/not-found logic**
+- [x] **Step 1: Update signature and loading/not-found logic**
 
 ```kotlin
 fun ProphetDetailScreen(
@@ -1016,7 +1016,7 @@ fun ProphetDetailScreen(
     val index = state.prophets.indexOfFirst { it.id == prophetId }
 ```
 
-- [ ] **Step 2: Update the body** — replace the `if (prophet == null)` spinner block with a not-found fallback:
+- [x] **Step 2: Update the body** — replace the `if (prophet == null)` spinner block with a not-found fallback:
 
 ```kotlin
 if (prophet == null) {
@@ -1033,12 +1033,12 @@ if (prophet == null) {
 } else {
 ```
 
-- [ ] **Step 3: Replace hardcoded section titles with localized strings** — in the detail content:
+- [x] **Step 3: Replace hardcoded section titles with localized strings** — in the detail content:
 - "Summary" → `stringResource(R.string.prophets_summary)`
 - "Story" → `stringResource(R.string.prophets_story)`
 - "Miracles" → `stringResource(R.string.prophets_miracles)`
 
-- [ ] **Step 4: Add Fact sheet section** after Miracles (only render if any of era/people/lifespan non-blank):
+- [x] **Step 4: Add Fact sheet section** after Miracles (only render if any of era/people/lifespan non-blank):
 
 ```kotlin
 val facts = listOf(
@@ -1056,7 +1056,7 @@ if (facts.isNotEmpty()) {
 }
 ```
 
-- [ ] **Step 5: Add Key Events and Lessons** sections:
+- [x] **Step 5: Add Key Events and Lessons** sections:
 
 ```kotlin
 val events = if (localeCode == "id") prophet.eventsId else prophet.eventsEn
@@ -1078,7 +1078,7 @@ if (lessons.isNotEmpty()) {
 }
 ```
 
-- [ ] **Step 6: Add Verse References section** — tappable rows navigating to Ayah:
+- [x] **Step 6: Add Verse References section** — tappable rows navigating to Ayah:
 
 ```kotlin
 if (prophet.verses.isNotEmpty()) {
@@ -1113,7 +1113,7 @@ if (prophet.verses.isNotEmpty()) {
 }
 ```
 
-- [ ] **Step 7: Add favorite heart + share + font-size actions in the TopAppBar**, and a font-size ModalBottomSheet. TopAppBar title block + actions:
+- [x] **Step 7: Add favorite heart + share + font-size actions in the TopAppBar**, and a font-size ModalBottomSheet. TopAppBar title block + actions:
 
 ```kotlin
 actions = {
@@ -1146,7 +1146,7 @@ actions = {
 
 Add imports: `androidx.compose.material3.Icon`, `androidx.compose.material.icons.Icons`, `androidx.compose.material.icons.filled.Favorite`, `androidx.compose.material3.ModalBottomSheet`, `androidx.compose.material3.rememberModalBottomSheetState`, `androidx.compose.material3.Slider`, `androidx.compose.ui.platform.LocalContext`.
 
-- [ ] **Step 8: Add the font-size bottom sheet** (mirror AyahScreen pattern, single slider bound to `state.storyFontSize`, range 12f..30f):
+- [x] **Step 8: Add the font-size bottom sheet** (mirror AyahScreen pattern, single slider bound to `state.storyFontSize`, range 12f..30f):
 
 ```kotlin
 if (showFontSizeSheet) {
@@ -1196,7 +1196,7 @@ if (showFontSizeSheet) {
 
 Add `var showFontSizeSheet by remember { mutableStateOf(false) }` near the top of the composable (after `val index = ...`).
 
-- [ ] **Step 9: Add prev/next buttons at the bottom** (no wrap — hidden at ends). Append after the verse-references section:
+- [x] **Step 9: Add prev/next buttons at the bottom** (no wrap — hidden at ends). Append after the verse-references section:
 
 ```kotlin
 if (state.prophets.size > 1) {
@@ -1232,7 +1232,7 @@ if (state.prophets.size > 1) {
 
 Add import: `androidx.compose.foundation.layout.Arrangement`.
 
-- [ ] **Step 10: Add the share helper** (mirror `shareAyah` from AyahScreen.kt:808):
+- [x] **Step 10: Add the share helper** (mirror `shareAyah` from AyahScreen.kt:808):
 
 ```kotlin
 private fun shareProphetStory(context: Context, prophet: ProphetStory, localeCode: String) {
@@ -1256,11 +1256,11 @@ private fun shareProphetStory(context: Context, prophet: ProphetStory, localeCod
 
 Call as `shareProphetStory(context, prophet, localeCode)`. Add imports: `android.content.Context`, `android.content.Intent`. `SectionCard` title param already accepts String — pass localized strings.
 
-- [ ] **Step 11: Apply story font size to story text** — the "Story" section content `Text(text = story, fontSize = 16.sp)` → `fontSize = state.storyFontSize.sp`. (Miracles/other sections keep 16.sp.)
+- [x] **Step 11: Apply story font size to story text** — the "Story" section content `Text(text = story, fontSize = 16.sp)` → `fontSize = state.storyFontSize.sp`. (Miracles/other sections keep 16.sp.)
 
-- [ ] **Step 12: Verify compile** — `.\gradlew :app:compileDebugKotlin`.
+- [x] **Step 12: Verify compile** — `.\gradlew :app:compileDebugKotlin`.
 
-- [ ] **Step 13: Commit**
+- [x] **Step 13: Commit**
 
 ```bash
 git add app/src/main/java/com/smiledev/rafiq/ui/prophets/ProphetDetailScreen.kt
@@ -1277,11 +1277,11 @@ git commit -m "feat(prophets): detail facts/events/lessons/verses, favorites, sh
 **Interfaces:**
 - Consumes: same JSON keys as Task 5. All new fields bilingual EN+ID.
 
-- [ ] **Step 1: Author content** for ids 2, 4-25 following the Adam/Nuh template. Each prophet gets: `era_en/id`, `people_en/id`, `lifespan_en/id`, `events_en/id` (3-5 items), `lessons_en/id` (2-4 items), `verses` (1-3 refs with correct `surah_name_en/id`). Source content should be accurate to Islamic tradition.
+- [x] **Step 1: Author content** for ids 2, 4-25 following the Adam/Nuh template. Each prophet gets: `era_en/id`, `people_en/id`, `lifespan_en/id`, `events_en/id` (3-5 items), `lessons_en/id` (2-4 items), `verses` (1-3 refs with correct `surah_name_en/id`). Source content should be accurate to Islamic tradition.
 
-- [ ] **Step 2: Validate all 25 parse** — `.\gradlew :data:testDebug` plus an emulator run (Task 11) confirms all entries render.
+- [x] **Step 2: Validate all 25 parse** — `.\gradlew :data:testDebug` plus an emulator run (Task 11) confirms all entries render.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add app/src/main/assets/quran-data/prophets/prophets.json
@@ -1294,7 +1294,7 @@ git commit -m "content(prophets): author remaining 23 prophets' facts, events, l
 
 **Files:** none (verification only).
 
-- [ ] **Step 1: Run all unit tests**
+- [x] **Step 1: Run all unit tests**
 
 ```powershell
 $env:JAVA_HOME = "C:\Program Files\Android\Android Studio\jbr"
@@ -1303,28 +1303,29 @@ $env:JAVA_HOME = "C:\Program Files\Android\Android Studio\jbr"
 
 Expected: all pass (domain `VerseRefTest`, data `ProphetParserTest`, app `ProphetsViewModelTest`, all existing).
 
-- [ ] **Step 2: Build and install on emulator**
+- [x] **Step 2: Build and install on emulator**
 
 ```powershell
 .\gradlew assembleDebug
 adb -s emulator-5554 install -r app\build\outputs\apk\debug\app-debug.apk
 ```
 
-- [ ] **Step 3: Manual verification checklist** on `Medium_Phone_API_35`:
-- [ ] Prophets list shows loading spinner then grid; no `(id)` on cards.
-- [ ] Favorites chip filters; empty-favorites message shows; heart toggle on detail persists across screens (DataStore).
-- [ ] Search matches English, Indonesian, and Arabic names.
-- [ ] Adam & Nuh detail shows Facts, Key Events (numbered), Lessons (bulleted), Verse References.
-- [ ] Tapping a verse reference opens the Ayah screen scrolled to that ayah; back returns to prophet detail.
-- [ ] Aa bottom sheet changes story font size and persists.
-- [ ] Share opens the system share sheet with the story text.
-- [ ] Previous/Next buttons navigate between prophets; hidden at first/last.
-- [ ] Remaining 23 prophets (if authored in Task 10) render all new sections.
+- [x] **Step 3: Manual verification checklist** on `Medium_Phone_API_35`:
+- [x] Prophets list shows loading spinner then grid; no `(id)` on cards.
+- [x] Favorites chip filters; empty-favorites message shows; heart toggle on detail persists across screens (DataStore).
+- [x] Search matches English, Indonesian, and Arabic names.
+- [x] Adam & Nuh detail shows Facts, Key Events (numbered), Lessons (bulleted), Verse References.
+- [x] Tapping a verse reference opens the Ayah screen scrolled to that ayah; back returns to prophet detail.
+- [x] Aa bottom sheet changes story font size and persists.
+- [x] Share opens the system share sheet with the story text.
+- [x] Previous/Next buttons navigate between prophets; hidden at first/last.
+- [x] Remaining 23 prophets (if authored in Task 10) render all new sections.
 
-- [ ] **Step 4: Final commit if any straggler files** — `git status` clean review.
+- [x] **Step 4: Final commit if any straggler files** — `git status` clean review.
 
 ## Self-Review Notes
 
 - **Spec coverage:** All spec sections map to tasks — §1 (Task 1), §2 (Tasks 2,3,4), §3 (Task 8), §4 (Task 9), §5 (Tasks 6,7), §6 (Tasks 5,10,11).
 - **Type consistency:** `VerseRef(surah, surahNameEn, surahNameId, ayahStart, ayahEnd)` used consistently in Task 1/2/9. `onVerseRefClick: (Int, String, Int) -> Unit` signature consistent in Tasks 7/9. `favoriteProphetIds`/`storyFontSize`/`toggleFavoriteProphet`/`setStoryFontSize` consistent in Tasks 3/4. Default story font size 16 consistent (PreferencesManager default + UiState default).
 - **Placeholders:** None; all steps include concrete code.
+
