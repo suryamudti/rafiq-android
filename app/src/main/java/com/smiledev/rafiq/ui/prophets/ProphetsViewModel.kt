@@ -16,6 +16,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -49,42 +50,45 @@ class ProphetsViewModel @Inject constructor(
                 preferencesManager.favoriteProphetIds,
                 preferencesManager.storyFontSize
             ) { favIds, size ->
-                _uiState.value = _uiState.value.copy(
-                    favoriteIds = favIds,
-                    storyFontSize = size
-                )
+                _uiState.update {
+                    it.copy(
+                        favoriteIds = favIds,
+                        storyFontSize = size
+                    )
+                }
             }.collect { }
         }
     }
 
     fun loadProphets() {
         viewModelScope.launch(dispatcherProvider.io) {
-            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+            _uiState.update { it.copy(isLoading = true, error = null) }
             val result = prophetRepository.getProphets()
             when (result) {
                 is Result.Success -> {
-                    _uiState.value = _uiState.value.copy(prophets = result.data, isLoading = false)
+                    _uiState.update { it.copy(prophets = result.data, isLoading = false) }
                 }
                 is Result.Error -> {
-                    _uiState.value = _uiState.value.copy(isLoading = false, error = result.error)
+                    _uiState.update { it.copy(isLoading = false, error = result.error) }
                 }
             }
         }
     }
 
     fun search(query: String) {
-        _uiState.value = _uiState.value.copy(searchQuery = query)
+        _uiState.update { it.copy(searchQuery = query) }
     }
 
     fun setShowFavoritesOnly(show: Boolean) {
-        _uiState.value = _uiState.value.copy(showFavoritesOnly = show)
+        _uiState.update { it.copy(showFavoritesOnly = show) }
     }
 
     fun toggleFavorite(id: Int) {
-        val current = _uiState.value.favoriteIds
-        _uiState.value = _uiState.value.copy(
-            favoriteIds = if (id in current) current - id else current + id
-        )
+        val willAdd = id !in _uiState.value.favoriteIds
+        _uiState.update { state ->
+            val favs = if (willAdd) state.favoriteIds + id else state.favoriteIds - id
+            state.copy(favoriteIds = favs)
+        }
         viewModelScope.launch(dispatcherProvider.io) {
             preferencesManager.toggleFavoriteProphet(id)
         }
@@ -96,8 +100,7 @@ class ProphetsViewModel @Inject constructor(
         }
     }
 
-    fun filteredProphets(): List<ProphetStory> {
-        val state = _uiState.value
+    fun filterProphets(state: ProphetsUiState): List<ProphetStory> {
         val q = state.searchQuery.lowercase()
         return state.prophets.filter { p ->
             val favoriteOk = !state.showFavoritesOnly || p.id in state.favoriteIds

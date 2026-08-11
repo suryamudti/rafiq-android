@@ -51,7 +51,7 @@ fun ProphetsScreen(
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.uiState.collectAsState()
-    val filtered = viewModel.filteredProphets()
+    val filtered = viewModel.filterProphets(state)
 
     Scaffold(
         topBar = {

@@ -70,7 +70,7 @@ class ProphetsViewModelTest {
         val vm = newVm()
         advanceUntilIdle()
 
-        assertEquals(2, vm.filteredProphets().size)
+        assertEquals(2, vm.filterProphets(vm.uiState.value).size)
     }
 
     @Test
@@ -83,7 +83,7 @@ class ProphetsViewModelTest {
         advanceUntilIdle()
 
         vm.search("Noah")
-        assertEquals(1, vm.filteredProphets().size)
+        assertEquals(1, vm.filterProphets(vm.uiState.value).size)
     }
 
     @Test
@@ -96,8 +96,8 @@ class ProphetsViewModelTest {
         advanceUntilIdle()
 
         vm.search("نوح")
-        assertEquals(1, vm.filteredProphets().size)
-        assertEquals(2, vm.filteredProphets()[0].id)
+        assertEquals(1, vm.filterProphets(vm.uiState.value).size)
+        assertEquals(2, vm.filterProphets(vm.uiState.value)[0].id)
     }
 
     @Test
@@ -110,8 +110,8 @@ class ProphetsViewModelTest {
         advanceUntilIdle()
 
         vm.setShowFavoritesOnly(true)
-        assertEquals(1, vm.filteredProphets().size)
-        assertEquals(2, vm.filteredProphets()[0].id)
+        assertEquals(1, vm.filterProphets(vm.uiState.value).size)
+        assertEquals(2, vm.filterProphets(vm.uiState.value)[0].id)
     }
 
     @Test
