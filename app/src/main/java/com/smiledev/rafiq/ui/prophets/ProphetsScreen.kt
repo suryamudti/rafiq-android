@@ -1,8 +1,10 @@
 package com.smiledev.rafiq.ui.prophets
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -64,24 +67,48 @@ fun ProphetsScreen(
         }
     ) { padding ->
         Box(modifier = Modifier.fillMaxSize().padding(padding)) {
-            when (state.error) {
-                null -> {
+            when {
+                state.isLoading && state.prophets.isEmpty() -> {
+                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator()
+                    }
+                }
+                state.error != null -> Text(
+                    text = state.error?.displayMessage ?: "",
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.fillMaxSize().padding(16.dp)
+                )
+                else -> {
                     Column {
                         TextField(
                             value = state.searchQuery,
                             onValueChange = { viewModel.search(it) },
                             placeholder = { Text(stringResource(R.string.search_prophets)) },
                             singleLine = true,
-                            modifier = Modifier.fillMaxWidth().padding(12.dp),
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 4.dp),
                             shape = RoundedCornerShape(12.dp),
                             colors = TextFieldDefaults.colors(
                                 unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
                                 focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant
                             )
                         )
-                        if (filtered.isEmpty() && state.searchQuery.isNotEmpty()) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            FilterChip(
+                                selected = state.showFavoritesOnly,
+                                onClick = { viewModel.setShowFavoritesOnly(!state.showFavoritesOnly) },
+                                label = { Text(stringResource(R.string.prophets_favorites)) }
+                            )
+                        }
+                        if (filtered.isEmpty()) {
                             Text(
-                                text = stringResource(R.string.no_prophets_match, state.searchQuery),
+                                text = if (state.showFavoritesOnly) {
+                                    stringResource(R.string.no_favorite_prophets)
+                                } else {
+                                    stringResource(R.string.no_prophets_match, state.searchQuery)
+                                },
                                 modifier = Modifier.fillMaxWidth().padding(32.dp),
                                 color = Color.Gray
                             )
@@ -119,12 +146,6 @@ fun ProphetsScreen(
                                                 textAlign = TextAlign.Center,
                                                 maxLines = 1
                                             )
-                                            Text(
-                                                text = "(${prophet.id})",
-                                                fontSize = 11.sp,
-                                                color = Color.LightGray,
-                                                textAlign = TextAlign.Center
-                                            )
                                         }
                                     }
                                 }
@@ -132,11 +153,6 @@ fun ProphetsScreen(
                         }
                     }
                 }
-                else -> Text(
-                    text = state.error?.displayMessage ?: "",
-                    color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.fillMaxSize().padding(16.dp)
-                )
             }
         }
     }
