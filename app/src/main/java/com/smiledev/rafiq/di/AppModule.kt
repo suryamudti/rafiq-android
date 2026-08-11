@@ -265,7 +265,7 @@ object AppModule {
     fun provideGetRecitersUseCase(repo: ReciterRepository): GetRecitersUseCase = GetRecitersUseCase(repo)
 
     @Provides @Singleton
-    fun provideCalculateZakatUseCase(repo: MetalPriceRepository): CalculateZakatUseCase = CalculateZakatUseCase(repo)
+    fun provideCalculateZakatUseCase(): CalculateZakatUseCase = CalculateZakatUseCase()
 
     @Provides @Singleton
     fun provideCalculateQiblaUseCase(): CalculateQiblaUseCase = CalculateQiblaUseCase()
