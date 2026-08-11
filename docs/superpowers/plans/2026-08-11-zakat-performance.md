@@ -35,7 +35,7 @@
   - `class CalculateZakatUseCase` with `operator fun invoke(goldWeight: Double, silverWeight: Double, cashValue: Double, currency: String = "USD", prices: MetalPrices): ZakatResult`
   - `data class ZakatResult(goldZakat, silverZakat, cashZakat, totalZakat, goldPricePerGram, silverPricePerGram)` — now the canonical `ZakatResult` (the app module's duplicate is removed in Task 4).
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Create `domain/src/test/kotlin/com/smiledev/rafiq/domain/usecase/CalculateZakatUseCaseTest.kt`:
 
@@ -109,12 +109,12 @@ class CalculateZakatUseCaseTest {
 }
 ```
 
-- [ ] **Step 2: Run the test to verify it fails to compile**
+- [x] **Step 2: Run the test to verify it fails to compile**
 
 Run: `.\gradlew :domain:testDebug`
 Expected: FAIL — `CalculateZakatUseCase` cannot be invoked with 5 args / `MetalPrices` unresolved.
 
-- [ ] **Step 3: Create the model and rewrite the use case**
+- [x] **Step 3: Create the model and rewrite the use case**
 
 Create `domain/src/main/kotlin/com/smiledev/rafiq/domain/model/MetalPrices.kt`:
 
@@ -181,7 +181,7 @@ class CalculateZakatUseCase {
 
 Note: the `16000.0` exchange rate stays hardcoded (out of scope in the spec).
 
-- [ ] **Step 4: Update the DI provider so `:app` still compiles**
+- [x] **Step 4: Update the DI provider so `:app` still compiles**
 
 In `app/src/main/java/com/smiledev/rafiq/di/AppModule.kt`, change line ~313:
 
@@ -192,17 +192,17 @@ In `app/src/main/java/com/smiledev/rafiq/di/AppModule.kt`, change line ~313:
 
 (Remove the `repo: MetalPriceRepository` parameter.)
 
-- [ ] **Step 5: Run the domain tests**
+- [x] **Step 5: Run the domain tests**
 
 Run: `.\gradlew :domain:testDebug`
 Expected: PASS (6 tests).
 
-- [ ] **Step 6: Verify `:app` still compiles**
+- [x] **Step 6: Verify `:app` still compiles**
 
 Run: `.\gradlew :app:compileDebugKotlin`
 Expected: BUILD SUCCESSFUL (the ViewModel still calls the repository's per-metal methods, which still exist at this point).
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add domain/src/main/kotlin/com/smiledev/rafiq/domain/model/MetalPrices.kt domain/src/main/kotlin/com/smiledev/rafiq/domain/usecase/CalculateZakatUseCase.kt domain/src/test/kotlin/com/smiledev/rafiq/domain/usecase/CalculateZakatUseCaseTest.kt app/src/main/java/com/smiledev/rafiq/di/AppModule.kt
@@ -225,7 +225,7 @@ git commit -m "feat(domain): pure CalculateZakatUseCase with MetalPrices input"
   - `fun getCachedMetalPrices(): MetalPrices?`
   - The two per-metal methods are kept for now (removed in Task 4).
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Rewrite `data/src/test/kotlin/com/smiledev/rafiq/data/repository/MetalPriceRepositoryImplTest.kt`:
 
@@ -307,12 +307,12 @@ class MetalPriceRepositoryImplTest {
 }
 ```
 
-- [ ] **Step 2: Run the data tests to verify they fail**
+- [x] **Step 2: Run the data tests to verify they fail**
 
 Run: `.\gradlew :data:testDebug`
 Expected: FAIL — `fetchMetalPrices` / `getCachedMetalPrices` unresolved.
 
-- [ ] **Step 3: Extend the repository interface**
+- [x] **Step 3: Extend the repository interface**
 
 `domain/src/main/kotlin/com/smiledev/rafiq/domain/repository/MetalPriceRepository.kt`:
 
@@ -331,7 +331,7 @@ interface MetalPriceRepository {
 }
 ```
 
-- [ ] **Step 4: Implement parallel fetch + cache in the impl**
+- [x] **Step 4: Implement parallel fetch + cache in the impl**
 
 `data/src/main/kotlin/com/smiledev/rafiq/data/repository/MetalPriceRepositoryImpl.kt`:
 
@@ -397,12 +397,12 @@ class MetalPriceRepositoryImpl @Inject constructor(
 }
 ```
 
-- [ ] **Step 5: Run the data tests**
+- [x] **Step 5: Run the data tests**
 
 Run: `.\gradlew :data:testDebug`
 Expected: PASS (5 tests).
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add domain/src/main/kotlin/com/smiledev/rafiq/domain/repository/MetalPriceRepository.kt data/src/main/kotlin/com/smiledev/rafiq/data/repository/MetalPriceRepositoryImpl.kt data/src/test/kotlin/com/smiledev/rafiq/data/repository/MetalPriceRepositoryImplTest.kt
@@ -419,7 +419,7 @@ git commit -m "feat(data): parallel metal price fetch with in-memory cache"
 **Interfaces:**
 - Produces: `@Named("metalpriceClient") OkHttpClient` — 5s timeouts + User-Agent + BASIC logging.
 
-- [ ] **Step 1: Add the dedicated client**
+- [x] **Step 1: Add the dedicated client**
 
 In `app/src/main/java/com/smiledev/rafiq/di/AppModule.kt`, right after `provideOkHttpClient()` (ends line 144), add:
 
@@ -445,7 +445,7 @@ In `app/src/main/java/com/smiledev/rafiq/di/AppModule.kt`, right after `provideO
     }
 ```
 
-- [ ] **Step 2: Point the metals Retrofit at the dedicated client**
+- [x] **Step 2: Point the metals Retrofit at the dedicated client**
 
 Change `provideMetalPriceRetrofit` to:
 
@@ -467,12 +467,12 @@ Change `provideMetalPriceRetrofit` to:
 
 `@Named` is already imported in this file.
 
-- [ ] **Step 3: Compile-check `:app`**
+- [x] **Step 3: Compile-check `:app`**
 
 Run: `.\gradlew :app:compileDebugKotlin`
 Expected: BUILD SUCCESSFUL.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add app/src/main/java/com/smiledev/rafiq/di/AppModule.kt
@@ -494,7 +494,7 @@ git commit -m "perf(di): dedicated 5s-timeout OkHttpClient for metals API"
 - Consumes: `CalculateZakatUseCase` (Task 1), `MetalPrices`/`DefaultMetalPrices` (Task 1), `MetalPriceRepository.fetchMetalPrices()` + `getCachedMetalPrices()` (Task 2).
 - Produces: `ZakatUiState(goldWeight, silverWeight, cashAmount, selectedCurrency, result: ZakatResult, isUsingFallback: Boolean)`.
 
-- [ ] **Step 1: Write the failing ViewModel tests**
+- [x] **Step 1: Write the failing ViewModel tests**
 
 Rewrite `app/src/test/java/com/smiledev/rafiq/ui/zakat/ZakatCalculatorViewModelTest.kt`:
 
@@ -626,12 +626,12 @@ class ZakatCalculatorViewModelTest {
 }
 ```
 
-- [ ] **Step 2: Run the app tests to verify they fail**
+- [x] **Step 2: Run the app tests to verify they fail**
 
 Run: `.\gradlew :app:testDebug`
 Expected: FAIL — `ZakatCalculatorViewModel` constructor signature mismatch / duplicate `ZakatResult` ambiguity / missing `isUsingFallback`.
 
-- [ ] **Step 3: Rewrite the ViewModel**
+- [x] **Step 3: Rewrite the ViewModel**
 
 Rewrite `app/src/main/java/com/smiledev/rafiq/ui/zakat/ZakatCalculatorViewModel.kt`:
 
@@ -738,7 +738,7 @@ class ZakatCalculatorViewModel @Inject constructor(
 }
 ```
 
-- [ ] **Step 4: Remove the now-dead per-metal methods**
+- [x] **Step 4: Remove the now-dead per-metal methods**
 
 `domain/.../repository/MetalPriceRepository.kt` — delete `getGoldPricePerGram()` and `getSilverPricePerGram()`; the interface keeps only:
 
@@ -753,12 +753,12 @@ interface MetalPriceRepository {
 
 `data/src/test/kotlin/com/smiledev/rafiq/data/repository/MetalPriceRepositoryImplTest.kt` — delete the `getGoldPricePerGram returns converted price` and `getSilverPricePerGram returns converted price` tests.
 
-- [ ] **Step 5: Run the full unit test suite**
+- [x] **Step 5: Run the full unit test suite**
 
 Run: `.\gradlew testDebug`
 Expected: PASS (domain, data, app tests all green).
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add app/src/main/java/com/smiledev/rafiq/ui/zakat/ZakatCalculatorViewModel.kt app/src/test/java/com/smiledev/rafiq/ui/zakat/ZakatCalculatorViewModelTest.kt domain/src/main/kotlin/com/smiledev/rafiq/domain/repository/MetalPriceRepository.kt data/src/main/kotlin/com/smiledev/rafiq/data/repository/MetalPriceRepositoryImpl.kt data/src/test/kotlin/com/smiledev/rafiq/data/repository/MetalPriceRepositoryImplTest.kt
@@ -775,7 +775,7 @@ git commit -m "feat(zakat): instant result with background price refresh"
 **Interfaces:**
 - Consumes: `ZakatUiState.isUsingFallback` (Task 4).
 
-- [ ] **Step 1: Remove the spinner/error branch and add the fallback note**
+- [x] **Step 1: Remove the spinner/error branch and add the fallback note**
 
 In `app/src/main/java/com/smiledev/rafiq/ui/zakat/ZakatCalculatorScreen.kt`:
 
@@ -862,12 +862,12 @@ In `app/src/main/java/com/smiledev/rafiq/ui/zakat/ZakatCalculatorScreen.kt`:
             }
 ```
 
-- [ ] **Step 2: Build the app**
+- [x] **Step 2: Build the app**
 
 Run: `.\gradlew :app:compileDebugKotlin`
 Expected: BUILD SUCCESSFUL (removed imports are not referenced).
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add app/src/main/java/com/smiledev/rafiq/ui/zakat/ZakatCalculatorScreen.kt
@@ -878,17 +878,17 @@ git commit -m "feat(zakat): always render result, show fallback-price note"
 
 ### Task 6: Full verification
 
-- [ ] **Step 1: Run all unit tests**
+- [x] **Step 1: Run all unit tests**
 
 Run: `.\gradlew testDebug`
 Expected: PASS.
 
-- [ ] **Step 2: Build the debug APK**
+- [x] **Step 2: Build the debug APK**
 
 Run: `.\gradlew assembleDebug`
 Expected: BUILD SUCCESSFUL, APK at `app/build/outputs/apk/debug/app-debug.apk`.
 
-- [ ] **Step 3: Optional — smoke test on emulator**
+- [x] **Step 3: Optional — smoke test on emulator**
 
 ```powershell
 adb -s emulator-5554 install -r app\build\outputs\apk\debug\app-debug.apk
@@ -896,7 +896,7 @@ adb -s emulator-5554 install -r app\build\outputs\apk\debug\app-debug.apk
 
 Open Zakat calculator, tap Calculate Zakat: the result card should appear immediately (with the "Using last-known price — refreshing…" note on first run) and update in place when fresh prices arrive.
 
-- [ ] **Step 4: Update progress**
+- [x] **Step 4: Update progress**
 
 Check off every completed step in this plan file. Commit the plan file checkboxes if this plan was committed.
 
