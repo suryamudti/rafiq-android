@@ -19,7 +19,7 @@ Improve the Prophets feature across three angles: **content depth** (author new 
 Selected: **Vertical slice (tracer bullet)**.
 
 1. Define uniform JSON schema + extend domain model + repo parsing for all 25 prophets.
-2. Fully author content for **Adam** (id 1) and **Nuh** (id 2) — all new fields, bilingual.
+2. Fully author content for **Adam** (id 1) and **Nuh** (id 3) — all new fields, bilingual.
 3. Build all UI and features end-to-end, verified on emulator against the two slices.
 4. Then batch-author remaining 23 prophets' content.
 
