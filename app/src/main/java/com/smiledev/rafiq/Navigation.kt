@@ -90,6 +90,13 @@ fun MainNavigation() {
           ProphetDetailScreen(
             prophetId = key.prophetId,
             onBack = { backStack.removeLastOrNull() },
+            onVerseRefClick = { surah, surahName, ayaStart ->
+              backStack.add(Ayah(suraNumber = surah, suraName = surahName, scrollToAya = ayaStart))
+            },
+            onProphetNavigate = { id ->
+              backStack.removeLastOrNull()
+              backStack.add(ProphetDetail(id))
+            },
             modifier = Modifier.safeDrawingPadding()
           )
         }
