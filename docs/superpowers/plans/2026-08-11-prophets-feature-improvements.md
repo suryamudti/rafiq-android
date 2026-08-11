@@ -1277,11 +1277,11 @@ git commit -m "feat(prophets): detail facts/events/lessons/verses, favorites, sh
 **Interfaces:**
 - Consumes: same JSON keys as Task 5. All new fields bilingual EN+ID.
 
-- [x] **Step 1: Author content** for ids 2, 4-25 following the Adam/Nuh template. Each prophet gets: `era_en/id`, `people_en/id`, `lifespan_en/id`, `events_en/id` (3-5 items), `lessons_en/id` (2-4 items), `verses` (1-3 refs with correct `surah_name_en/id`). Source content should be accurate to Islamic tradition.
+- [ ] **Step 1: Author content** for ids 2, 4-25 following the Adam/Nuh template. Each prophet gets: `era_en/id`, `people_en/id`, `lifespan_en/id`, `events_en/id` (3-5 items), `lessons_en/id` (2-4 items), `verses` (1-3 refs with correct `surah_name_en/id`). Source content should be accurate to Islamic tradition.
 
-- [x] **Step 2: Validate all 25 parse** — `.\gradlew :data:testDebug` plus an emulator run (Task 11) confirms all entries render.
+- [ ] **Step 2: Validate all 25 parse** — `.\gradlew :data:testDebug` plus an emulator run (Task 11) confirms all entries render.
 
-- [x] **Step 3: Commit**
+- [ ] **Step 3: Commit**
 
 ```bash
 git add app/src/main/assets/quran-data/prophets/prophets.json
@@ -1322,6 +1322,10 @@ adb -s emulator-5554 install -r app\build\outputs\apk\debug\app-debug.apk
 - [x] Remaining 23 prophets (if authored in Task 10) render all new sections.
 
 - [x] **Step 4: Final commit if any straggler files** — `git status` clean review.
+
+**Bug fixed during Task 11:** the Prophets list intermittently showed "No prophets match" with 0 cards. Root cause: `filteredProphets()` read `_uiState.value` (non-snapshot) in composition while `state` came from `collectAsState()`, so a background state write could desync the two and leave an empty grid. Fixed by (a) deriving `filtered` from the snapshot-tracked `state` via a pure `filterProphets(state)` function and (b) making all state mutations atomic with `MutableStateFlow.update {}`. Also removed temporary debug logging and the scratch `ProphetRealFileRoundTripTest.kt`. Commits: `9d76ea2`.
+
+> **Outstanding:** Task 10 (author remaining 23 prophets) intentionally deferred — low priority, large bilingual content effort. All 25 prophets already render in the grid; only detail sections (Facts/Events/Lessons/Verse Refs) for ids 2, 4-25 will be empty until authored.
 
 ## Self-Review Notes
 
