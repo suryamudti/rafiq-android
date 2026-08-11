@@ -145,6 +145,26 @@ object AppModule {
 
     @Provides
     @Singleton
+    @Named("metalpriceClient")
+    fun provideMetalPriceOkHttpClient(): OkHttpClient {
+        return OkHttpClient.Builder()
+            .connectTimeout(5, TimeUnit.SECONDS)
+            .readTimeout(5, TimeUnit.SECONDS)
+            .writeTimeout(5, TimeUnit.SECONDS)
+            .addInterceptor { chain ->
+                val request = chain.request().newBuilder()
+                    .header("User-Agent", "RafiqApp/1.0 (Android Islamic App)")
+                    .build()
+                chain.proceed(request)
+            }
+            .addInterceptor(HttpLoggingInterceptor().apply {
+                level = HttpLoggingInterceptor.Level.BASIC
+            })
+            .build()
+    }
+
+    @Provides
+    @Singleton
     fun provideGsonConverterFactory(): GsonConverterFactory {
         return GsonConverterFactory.create()
     }
@@ -167,7 +187,7 @@ object AppModule {
     @Singleton
     @Named("metalprice")
     fun provideMetalPriceRetrofit(
-        client: OkHttpClient,
+        @Named("metalpriceClient") client: OkHttpClient,
         gson: GsonConverterFactory
     ): Retrofit {
         return Retrofit.Builder()
@@ -310,7 +330,7 @@ object AppModule {
     fun provideGetRecitersUseCase(repo: ReciterRepository): GetRecitersUseCase = GetRecitersUseCase(repo)
 
     @Provides @Singleton
-    fun provideCalculateZakatUseCase(repo: MetalPriceRepository): CalculateZakatUseCase = CalculateZakatUseCase(repo)
+    fun provideCalculateZakatUseCase(): CalculateZakatUseCase = CalculateZakatUseCase()
 
     @Provides @Singleton
     fun provideCalculateQiblaUseCase(): CalculateQiblaUseCase = CalculateQiblaUseCase()

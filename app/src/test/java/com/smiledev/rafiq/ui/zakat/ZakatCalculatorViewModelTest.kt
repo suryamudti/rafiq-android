@@ -3,8 +3,11 @@ package com.smiledev.rafiq.ui.zakat
 import androidx.lifecycle.SavedStateHandle
 import com.smiledev.rafiq.core.DispatcherProvider
 import com.smiledev.rafiq.core.Result
+import com.smiledev.rafiq.domain.model.MetalPrices
 import com.smiledev.rafiq.domain.repository.MetalPriceRepository
+import com.smiledev.rafiq.domain.usecase.CalculateZakatUseCase
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -26,46 +29,74 @@ class ZakatCalculatorViewModelTest {
         override val unconfined: CoroutineDispatcher get() = testDispatcher
     }
 
+    private fun createViewModel(): ZakatCalculatorViewModel {
+        return ZakatCalculatorViewModel(
+            CalculateZakatUseCase(),
+            metalPriceRepository,
+            testDispatcherProvider,
+            SavedStateHandle()
+        )
+    }
+
     @Test
-    fun `calculate in USD computes correct zakat when above nisab`() = runTest(testDispatcher) {
-        coEvery { metalPriceRepository.getGoldPricePerGram() } returns Result.Success(60.0)
-        coEvery { metalPriceRepository.getSilverPricePerGram() } returns Result.Success(0.70)
+    fun `calculate shows instant result from defaults then refreshes with fresh prices`() = runTest(testDispatcher) {
+        every { metalPriceRepository.getCachedMetalPrices() } returns null
+        coEvery { metalPriceRepository.fetchMetalPrices() } returns Result.Success(MetalPrices(60.0, 0.70))
 
-        val savedStateHandle = SavedStateHandle().apply {
-            set("goldWeight", "100.0") // above 85g nisab
-            set("silverWeight", "600.0") // above 595g nisab
-            set("cashAmount", "10000.0") // above USD cash nisab (85 * 60 = 5100)
-            set("selectedCurrency", "USD")
-        }
-
-        val viewModel = ZakatCalculatorViewModel(metalPriceRepository, testDispatcherProvider, savedStateHandle)
+        val viewModel = createViewModel()
+        viewModel.updateGold("100.0")
+        viewModel.updateSilver("600.0")
+        viewModel.updateCash("10000.0")
         viewModel.calculate()
+
+        // Instant: defaults 65.0 gold / 0.75 silver, fallback flag on
+        var state = viewModel.uiState.value
+        assertEquals(100.0 * 65.0 * 0.025, state.result.goldZakat, 0.01)
+        assertEquals(600.0 * 0.75 * 0.025, state.result.silverZakat, 0.01)
+        assertEquals(true, state.isUsingFallback)
+
         advanceUntilIdle()
 
-        val state = viewModel.uiState.value
-        // Gold: 100 * 60 * 0.025 = 150.0
+        // Refreshed: fetched 60.0 / 0.70, fallback flag cleared
+        state = viewModel.uiState.value
         assertEquals(150.0, state.result.goldZakat, 0.01)
-        // Silver: 600 * 0.70 * 0.025 = 10.5
         assertEquals(10.5, state.result.silverZakat, 0.01)
-        // Cash: 10000 * 0.025 = 250.0
         assertEquals(250.0, state.result.cashZakat, 0.01)
-        // Total: 150 + 10.5 + 250 = 410.5
         assertEquals(410.5, state.result.totalZakat, 0.01)
+        assertEquals(false, state.isUsingFallback)
+    }
+
+    @Test
+    fun `calculate uses cached prices instantly without fallback flag`() = runTest(testDispatcher) {
+        every { metalPriceRepository.getCachedMetalPrices() } returns MetalPrices(60.0, 0.70)
+        coEvery { metalPriceRepository.fetchMetalPrices() } returns Result.Success(MetalPrices(60.0, 0.70))
+
+        val viewModel = createViewModel()
+        viewModel.updateGold("100.0")
+        viewModel.updateSilver("600.0")
+        viewModel.updateCash("10000.0")
+        viewModel.calculate()
+
+        var state = viewModel.uiState.value
+        assertEquals(150.0, state.result.goldZakat, 0.01)
+        assertEquals(10.5, state.result.silverZakat, 0.01)
+        assertEquals(false, state.isUsingFallback)
+
+        advanceUntilIdle()
+        state = viewModel.uiState.value
+        assertEquals(410.5, state.result.totalZakat, 0.01)
+        assertEquals(false, state.isUsingFallback)
     }
 
     @Test
     fun `calculate in USD computes no zakat when below nisab`() = runTest(testDispatcher) {
-        coEvery { metalPriceRepository.getGoldPricePerGram() } returns Result.Success(60.0)
-        coEvery { metalPriceRepository.getSilverPricePerGram() } returns Result.Success(0.70)
+        every { metalPriceRepository.getCachedMetalPrices() } returns MetalPrices(60.0, 0.70)
+        coEvery { metalPriceRepository.fetchMetalPrices() } returns Result.Success(MetalPrices(60.0, 0.70))
 
-        val savedStateHandle = SavedStateHandle().apply {
-            set("goldWeight", "50.0") // below 85g
-            set("silverWeight", "500.0") // below 595g
-            set("cashAmount", "100.0") // below cash nisab (5100)
-            set("selectedCurrency", "USD")
-        }
-
-        val viewModel = ZakatCalculatorViewModel(metalPriceRepository, testDispatcherProvider, savedStateHandle)
+        val viewModel = createViewModel()
+        viewModel.updateGold("50.0")
+        viewModel.updateSilver("500.0")
+        viewModel.updateCash("100.0")
         viewModel.calculate()
         advanceUntilIdle()
 
@@ -78,27 +109,17 @@ class ZakatCalculatorViewModelTest {
 
     @Test
     fun `calculate in IDR correctly converts currency and applies conversion rate`() = runTest(testDispatcher) {
-        coEvery { metalPriceRepository.getGoldPricePerGram() } returns Result.Success(60.0) // USD
-        coEvery { metalPriceRepository.getSilverPricePerGram() } returns Result.Success(0.70) // USD
+        every { metalPriceRepository.getCachedMetalPrices() } returns MetalPrices(60.0, 0.70)
+        coEvery { metalPriceRepository.fetchMetalPrices() } returns Result.Success(MetalPrices(60.0, 0.70))
 
-        val savedStateHandle = SavedStateHandle().apply {
-            set("goldWeight", "0.0")
-            set("silverWeight", "0.0")
-            // Cash IDR: 100,000,000 IDR / 16,000 = 6,250 USD
-            // cash nisab: 85 * 60 = 5,100 USD. So 6,250 USD is above nisab.
-            set("cashAmount", "100000000.0")
-            set("selectedCurrency", "IDR")
-        }
-
-        val viewModel = ZakatCalculatorViewModel(metalPriceRepository, testDispatcherProvider, savedStateHandle)
-        viewModel.calculate()
+        val viewModel = createViewModel()
+        viewModel.updateCash("100000000.0")
+        viewModel.updateCurrency("IDR")
         advanceUntilIdle()
 
         val state = viewModel.uiState.value
-        // Cash Zakat: 100,000,000 IDR * 0.025 = 2,500,000 IDR
         assertEquals(2500000.0, state.result.cashZakat, 0.01)
         assertEquals(2500000.0, state.result.totalZakat, 0.01)
-        // Gold price: 60 USD * 16,000 = 960,000 IDR
         assertEquals(960000.0, state.result.goldPricePerGram, 0.01)
     }
 }
