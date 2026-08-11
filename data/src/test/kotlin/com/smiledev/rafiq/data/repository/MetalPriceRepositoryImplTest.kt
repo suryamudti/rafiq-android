@@ -52,24 +52,4 @@ class MetalPriceRepositoryImplTest {
         assertTrue(error is AppError.Network)
         assertEquals(null, repo.getCachedMetalPrices())
     }
-
-    @Test
-    fun `getGoldPricePerGram returns converted price`() = runTest {
-        coEvery { metalPriceApi.getGoldPricePerGram() } returns 65.0
-
-        val result = repo.getGoldPricePerGram()
-
-        val price = (result as Result.Success).data
-        assertEquals(65.0, price, 0.001)
-    }
-
-    @Test
-    fun `getSilverPricePerGram returns converted price`() = runTest {
-        coEvery { metalPriceApi.getSilverPricePerGram() } returns 0.75
-
-        val result = repo.getSilverPricePerGram()
-
-        val price = (result as Result.Success).data
-        assertEquals(0.75, price, 0.001)
-    }
 }

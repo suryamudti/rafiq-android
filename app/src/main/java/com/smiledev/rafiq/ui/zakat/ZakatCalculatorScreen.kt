@@ -15,12 +15,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -38,7 +35,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.smiledev.rafiq.R
-import com.smiledev.rafiq.core.displayMessage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -137,56 +133,58 @@ fun ZakatCalculatorScreen(
 
             Spacer(Modifier.height(16.dp))
 
-            when {
-                state.isLoading -> CircularProgressIndicator(modifier = Modifier.semantics { contentDescription = "Loading" })
-                state.error != null -> Text(state.error!!.displayMessage, color = MaterialTheme.colorScheme.error)
-                else -> {
-                    val r = state.result
-                    Card(
-                        modifier = Modifier.fillMaxWidth(),
-                        elevation = CardDefaults.cardElevation(2.dp)
-                    ) {
-                        Column(modifier = Modifier.padding(16.dp)) {
-                            Text(
-                                text = "Zakat Summary",
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold
-                            )
-                            Spacer(Modifier.height(8.dp))
-                            HorizontalDivider()
-                            Spacer(Modifier.height(8.dp))
-                            if (r.goldZakat > 0) {
-                                Text("Gold Zakat: ${formatVal(r.goldZakat)}")
-                            } else {
-                                Text("Gold: Below nisab (85g)")
-                            }
-                            if (r.silverZakat > 0) {
-                                Text("Silver Zakat: ${formatVal(r.silverZakat)}")
-                            } else {
-                                Text("Silver: Below nisab (595g)")
-                            }
-                            if (r.cashZakat > 0) {
-                                Text("Cash Zakat: ${formatVal(r.cashZakat)}")
-                            } else {
-                                Text("Cash: Below nisab threshold")
-                            }
-                            Spacer(Modifier.height(8.dp))
-                            HorizontalDivider()
-                            Spacer(Modifier.height(8.dp))
-                            Text(
-                                text = "Total Zakat Due: ${formatVal(r.totalZakat)}",
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color(0xFF009688)
-                            )
-                            if (r.goldPricePerGram > 0) {
-                                Text(
-                                    text = "Gold price: ${formatVal(r.goldPricePerGram)}/g | Silver: ${formatVal(r.silverPricePerGram)}/g",
-                                    fontSize = 11.sp,
-                                    color = Color.Gray
-                                )
-                            }
-                        }
+            if (state.isUsingFallback) {
+                Text(
+                    text = "Using last-known price — refreshing…",
+                    fontSize = 11.sp,
+                    color = Color.Gray,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+            }
+            val r = state.result
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                elevation = CardDefaults.cardElevation(2.dp)
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(
+                        text = "Zakat Summary",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    HorizontalDivider()
+                    Spacer(Modifier.height(8.dp))
+                    if (r.goldZakat > 0) {
+                        Text("Gold Zakat: ${formatVal(r.goldZakat)}")
+                    } else {
+                        Text("Gold: Below nisab (85g)")
+                    }
+                    if (r.silverZakat > 0) {
+                        Text("Silver Zakat: ${formatVal(r.silverZakat)}")
+                    } else {
+                        Text("Silver: Below nisab (595g)")
+                    }
+                    if (r.cashZakat > 0) {
+                        Text("Cash Zakat: ${formatVal(r.cashZakat)}")
+                    } else {
+                        Text("Cash: Below nisab threshold")
+                    }
+                    Spacer(Modifier.height(8.dp))
+                    HorizontalDivider()
+                    Spacer(Modifier.height(8.dp))
+                    Text(
+                        text = "Total Zakat Due: ${formatVal(r.totalZakat)}",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF009688)
+                    )
+                    if (r.goldPricePerGram > 0) {
+                        Text(
+                            text = "Gold price: ${formatVal(r.goldPricePerGram)}/g | Silver: ${formatVal(r.silverPricePerGram)}/g",
+                            fontSize = 11.sp,
+                            color = Color.Gray
+                        )
                     }
                 }
             }
