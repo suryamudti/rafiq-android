@@ -41,5 +41,41 @@ class TestNormalize(unittest.TestCase):
         self.assertLess(dice(a, b), 1.0)
 
 
+from matcher import match_sequences
+
+
+class TestMatcher(unittest.TestCase):
+    def _hj(self, arabics):
+        return [{'arabic': a} for a in arabics]
+
+    def test_monotonic_forward_window_matches_in_order(self):
+        # ID rows reference the same hadiths as HJ, in the same order
+        arabics = [
+            'حدثنا الحميدي قال حدثنا سفيان قال رسول الله إنما الأعمال بالنيات',
+            'حدثنا عبد الله بن يوسف قال أخبرنا مالك عن هشام قال رسول الله من كانت هجرته',
+            'حدثنا يحيى بن بكير قال حدثنا الليث قال رسول الله لا يؤمن أحدكم حتى يحب لأخيه',
+        ]
+        hj = self._hj(arabics)
+        id_rows = [
+            (1, 'shahih_bukhari', arabics[0] + ' وفي رواية أخرى', 'T'),
+            (2, 'shahih_bukhari', arabics[1] + ' يزيد', 'T'),
+            (3, 'shahih_bukhari', arabics[2], 'T'),
+        ]
+        matched, unmatched = match_sequences(id_rows, hj)
+        self.assertEqual(matched, [0, 1, 2])
+        self.assertEqual(unmatched, [])
+
+    def test_unmatched_rows_are_reported(self):
+        hj = self._hj(['حدثنا أحمد قال رسول الله إنما الأعمال بالنيات'])
+        id_rows = [
+            (1, 'shahih_bukhari', 'نص مختلف تماما لا يشبه أي حديث', 'T'),
+            (2, 'shahih_bukhari', 'حدثنا أحمد قال رسول الله إنما الأعمال بالنيات', 'T'),
+        ]
+        matched, unmatched = match_sequences(id_rows, hj)
+        self.assertEqual(matched, [None, 0])
+        self.assertEqual(unmatched, [(1, unmatched[0][1])])
+        self.assertLess(unmatched[0][1], 0.55)
+
+
 if __name__ == '__main__':
     unittest.main()
