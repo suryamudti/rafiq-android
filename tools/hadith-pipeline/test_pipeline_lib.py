@@ -78,5 +78,50 @@ class TestMatcher(unittest.TestCase):
         self.assertLess(unmatched[0][1], 0.55)
 
 
+from db_builder import build_books, build_hadiths
+
+
+class TestDbBuilder(unittest.TestCase):
+    def _hj_doc(self, chapters, hadiths):
+        return {'metadata': {'id': 1}, 'chapters': chapters, 'hadiths': hadiths}
+
+    def test_build_books_uses_position_numbering_and_stable_id(self):
+        doc = self._hj_doc(
+            chapters=[
+                {'id': 1, 'arabic': 'كتاب بدء الوحي', 'english': 'Revelation'},
+                {'id': 2, 'arabic': 'كتاب الإيمان', 'english': 'Belief'},
+            ],
+            hadiths=[],
+        )
+        books = build_books(doc)
+        self.assertEqual(books[0], ('bukhari.1', 'bukhari', 1, 'كتاب بدء الوحي', 'Revelation', ''))
+        self.assertEqual(books[1], ('bukhari.2', 'bukhari', 2, 'كتاب الإيمان', 'Belief', ''))
+
+    def test_in_book_number_renumbers_per_book(self):
+        # chapterId 1 gets 2 hadiths, chapterId 2 gets 1 hadith
+        hadiths = [
+            {'id': 1, 'chapterId': 1, 'arabic': 'A1', 'english': {'narrator': 'N1', 'text': 'T1'}},
+            {'id': 2, 'chapterId': 1, 'arabic': 'A2', 'english': {'narrator': 'N2', 'text': 'T2'}},
+            {'id': 3, 'chapterId': 2, 'arabic': 'A3', 'english': {'narrator': 'N3', 'text': 'T3'}},
+        ]
+        doc = self._hj_doc(chapters=[{'id': 1, 'arabic': 'X', 'english': 'Y'},
+                                     {'id': 2, 'arabic': 'Z', 'english': 'W'}], hadiths=hadiths)
+        rows = build_hadiths('bukhari', doc, [], [])
+        self.assertEqual([r[2] for r in rows], [1, 2, 1])  # in_book_number per book
+        self.assertEqual([r[1] for r in rows], ['bukhari.1', 'bukhari.1', 'bukhari.2'])
+        self.assertEqual(rows[0][4], 'N1')   # narrator_en
+        self.assertEqual(rows[0][5], 'A1')   # text_ar
+        self.assertEqual(rows[0][6], 'T1')   # text_en
+        self.assertEqual(rows[0][7], '')     # text_id unmatched
+
+    def test_text_id_filled_for_matched_rows(self):
+        hadiths = [{'id': 1, 'chapterId': 1, 'arabic': 'A1',
+                    'english': {'narrator': 'N', 'text': 'T'}}]
+        doc = self._hj_doc(chapters=[{'id': 1, 'arabic': 'X', 'english': 'Y'}], hadiths=hadiths)
+        id_rows = [(1, 'shahih_bukhari', 'A1', 'Terjemahan Indonesia')]
+        rows = build_hadiths('bukhari', doc, id_rows, [0])
+        self.assertEqual(rows[0][7], 'Terjemahan Indonesia')
+
+
 if __name__ == '__main__':
     unittest.main()
