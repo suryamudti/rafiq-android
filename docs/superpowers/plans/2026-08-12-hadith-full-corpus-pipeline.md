@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Replace the 4-hadith seed DB with the full Sahih al-Bukhari (7,277 hadiths / 97 books) and Sahih Muslim (7,459 hadiths / 57 books) corpus — Arabic + English from `hadith-json` v1.2.0, Indonesian via best-effort Arabic matn matching against `irsyadulibad/hadits-database` (~84% coverage, unmatched fall back to English).
+**Goal:** Replace the 4-hadith seed DB with the full Sahih al-Bukhari (7,276 hadiths / 97 books) and Sahih Muslim (7,458 hadiths / 57 books) corpus — Arabic + English from `hadith-json` v1.2.0 (2 hadiths with blank English are dropped), Indonesian via best-effort Arabic matn matching against `irsyadulibad/hadits-database` (~84% coverage, unmatched fall back to English).
 
 **Architecture:** A pure-Python pipeline under `tools/hadith-pipeline/` fetches two pinned datasets, normalizes Arabic, joins them with a monotonic matn-similarity matcher, and emits the committed asset `app/src/main/assets/quran-data/hadiths/hadith.db` with the exact schema already consumed by `HadithRepositoryImpl`. No Android code changes — the DB schema and ID→EN fallback already exist.
 
@@ -353,7 +353,7 @@ git commit -m "feat(pipeline): monotonic matn matcher for ID->AR join"
 - Consumes: `match_sequences` from `matcher`.
 - Produces:
   - `build_books(hj_doc: dict) -> list[tuple[str, str, int, str, str, str]]` — rows `(id, collection, number, name_ar, name_en, name_id='')`; `number` = 1-based position in `chapters[]`; `id = f"{collection}.{number}"`; `collection` from `'bukhari'`/`'muslim'` passed as arg.
-  - `build_hadiths(collection: str, hj_doc: dict, id_rows: list, matched: list) -> list[tuple[int, str, int, str, str, str, str, str]]` — rows `(id, book_id, in_book_number, '', narrator_en, text_ar, text_en, text_id)`; `in_book_number` computed per book (1-based within each book); `text_id` from matched ID row's `terjemah`, else `''`.
+  - `build_hadiths(collection: str, hj_doc: dict, id_rows: list, matched: list, id_offset: int = 0) -> list[tuple[int, str, int, str, str, str, str, str]]` — rows `(id, book_id, in_book_number, '', narrator_en, text_ar, text_en, text_id)`; `in_book_number` computed per book (1-based within each book); `id` starts at `id_offset + 1` (caller passes the running count across collections so ids are globally unique); **hadiths with blank `text_en` are dropped** (hadith-json v1.2.0 has 2, one per collection, verified); `text_id` from the id_row that matched this hadith (reverse-map `matched`, which is aligned to `id_rows`), else `''`.
   - `collection_of(doc) -> str` — maps hadith-json `metadata.id` (1→`bukhari`, 2→`muslim`).
 
 - [ ] **Step 1: Write the failing test** (append to `test_pipeline_lib.py`)
@@ -402,6 +402,40 @@ class TestDbBuilder(unittest.TestCase):
         id_rows = [(1, 'shahih_bukhari', 'A1', 'Terjemahan Indonesia')]
         rows = build_hadiths('bukhari', doc, id_rows, [0])
         self.assertEqual(rows[0][7], 'Terjemahan Indonesia')
+
+    def test_skips_hadiths_with_blank_text_en(self):
+        hadiths = [
+            {'id': 1, 'chapterId': 1, 'arabic': 'A1', 'english': {'narrator': 'N1', 'text': 'T1'}},
+            {'id': 2, 'chapterId': 1, 'arabic': 'A2', 'english': {'narrator': 'N2', 'text': '  '}},
+        ]
+        doc = self._hj_doc(chapters=[{'id': 1, 'arabic': 'X', 'english': 'Y'}], hadiths=hadiths)
+        rows = build_hadiths('bukhari', doc, [], [])
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0][5], 'A1')
+
+    def test_text_id_uses_reverse_mapping_from_id_row_space(self):
+        # matched[k] is aligned to id_rows, NOT hadiths: id row 0 matched HJ
+        # hadith index 2. The reverse map routes terjemah to the right hadith.
+        hadiths = [
+            {'id': 1, 'chapterId': 1, 'arabic': 'A1', 'english': {'narrator': 'N1', 'text': 'T1'}},
+            {'id': 2, 'chapterId': 1, 'arabic': 'A2', 'english': {'narrator': 'N2', 'text': 'T2'}},
+            {'id': 3, 'chapterId': 1, 'arabic': 'A3', 'english': {'narrator': 'N3', 'text': 'T3'}},
+        ]
+        doc = self._hj_doc(chapters=[{'id': 1, 'arabic': 'X', 'english': 'Y'}], hadiths=hadiths)
+        id_rows = [(1, 'shahih_bukhari', 'A3', 'Terjemahan A3')]
+        rows = build_hadiths('bukhari', doc, id_rows, [2])
+        self.assertEqual(rows[2][7], 'Terjemahan A3')
+        self.assertEqual(rows[0][7], '')
+        self.assertEqual(rows[1][7], '')
+
+    def test_id_offset_yields_globally_unique_ids(self):
+        hadiths = [{'id': 1, 'chapterId': 1, 'arabic': 'A',
+                    'english': {'narrator': 'N', 'text': 'T'}}]
+        doc = self._hj_doc(chapters=[{'id': 1, 'arabic': 'X', 'english': 'Y'}], hadiths=hadiths)
+        first = build_hadiths('bukhari', doc, [], [])
+        second = build_hadiths('muslim', doc, [], [], id_offset=len(first))
+        self.assertEqual(first[0][0], 1)
+        self.assertEqual(second[0][0], 2)
 ```
 
 - [ ] **Step 2: Run test to verify it fails**
@@ -436,21 +470,32 @@ def _book_positions(hj_doc):
     return {cid: f"{collection}.{pos}" for cid, pos in by_id.items()}
 
 
-def build_hadiths(collection, hj_doc, id_rows, matched):
+def build_hadiths(collection, hj_doc, id_rows, matched, id_offset=0):
     positions = _book_positions(hj_doc)
+    # matched is aligned to id_rows, NOT to hadiths:
+    #   matched[k] = HJ hadith index matched by id_row k (or None).
+    # Invert it so we can route a terjemah to the hadith that won.
+    hj_to_idrow = {}
+    for k, m in enumerate(matched):
+        if m is not None and m not in hj_to_idrow:
+            hj_to_idrow[m] = k
     per_book = {}
     rows = []
+    nid = id_offset
     for i, h in enumerate(hj_doc['hadiths']):
+        text_en = (h.get('english') or {}).get('text', '') or ''
+        if not text_en.strip():
+            continue  # hadith-json v1.2.0 has 2 blank-EN hadiths: drop them
         book_id = positions.get(h['chapterId'])
         per_book[book_id] = per_book.get(book_id, 0) + 1
         in_book = per_book[book_id]
         narrator_en = (h.get('english') or {}).get('narrator', '') or ''
-        text_en = (h.get('english') or {}).get('text', '') or ''
         text_id = ''
-        mi = matched[i] if i < len(matched) else None
-        if mi is not None and mi < len(id_rows):
-            text_id = id_rows[mi][3]
-        rows.append((i + 1, book_id, in_book, '', narrator_en,
+        k = hj_to_idrow.get(i)
+        if k is not None and k < len(id_rows):
+            text_id = id_rows[k][3]
+        nid += 1
+        rows.append((nid, book_id, in_book, '', narrator_en,
                      h.get('arabic', ''), text_en, text_id))
     return rows
 ```
@@ -555,7 +600,7 @@ HJ_BASE = 'https://raw.githubusercontent.com/AhmedBaset/hadith-json/v1.2.0/db/by
 ID_BASE = 'https://raw.githubusercontent.com/irsyadulibad/hadits-database/main/'
 
 EXPECTED_BOOKS = {'bukhari': 97, 'muslim': 57}
-EXPECTED_HADITHS = {'bukhari': 7277, 'muslim': 7459}
+EXPECTED_HADITHS = {'bukhari': 7276, 'muslim': 7458}  # 2 blank-EN rows dropped
 
 DB_SCHEMA = """
 CREATE TABLE books (
@@ -662,11 +707,11 @@ def validate(conn, expected_books, expected_hadiths):
     return problems
 
 
-def build(collection, cache_dir=None):
+def build(collection, cache_dir=None, id_offset=0):
     hj_doc, id_rows = load_collection(collection, cache_dir)
     matched, unmatched = match_sequences(id_rows, hj_doc['hadiths'])
     books = build_books(hj_doc, collection)
-    hadiths = build_hadiths(collection, hj_doc, id_rows, matched)
+    hadiths = build_hadiths(collection, hj_doc, id_rows, matched, id_offset)
     match_rate = round(100 * (len(id_rows) - len(unmatched)) / len(id_rows), 1)
     return collection, books, hadiths, match_rate, unmatched
 
@@ -681,7 +726,7 @@ def main():
     all_hadiths = []
     report = []
     for collection in ('bukhari', 'muslim'):
-        name, books, hadiths, rate, unmatched = build(collection, cache)
+        name, books, hadiths, rate, unmatched = build(collection, cache, len(all_hadiths))
         all_books.extend(books)
         all_hadiths.extend(hadiths)
         report.append('%s: %d books, %d hadiths, ID match %s%% (%d unmatched)'
@@ -747,7 +792,7 @@ Run:
 ```powershell
 $env:PYTHONIOENCODING="utf-8"; python -c "import sqlite3; c=sqlite3.connect('app/src/main/assets/quran-data/hadiths/hadith.db'); print('books', c.execute('select count(*) from books').fetchone()); print('hadiths', c.execute('select count(*) from hadiths').fetchone()); print('first:', c.execute('select book_id,in_book_number,substr(text_ar,1,30),substr(text_en,1,30),substr(text_id,1,40) from hadiths order by id limit 1').fetchone()); print('with_id', c.execute(\"select count(*) from hadiths where trim(text_id)!=''\").fetchone())"
 ```
-Expected: `books (154,)`, `hadiths (14736,)`, first row is Bukhari book 1 hadith 1 with Arabic + Muhsin Khan EN + Indonesian, `with_id` ≈ 10,368.
+Expected: `books (154,)`, `hadiths (14734,)`, first row is Bukhari book 1 hadith 1 with Arabic + Muhsin Khan EN + Indonesian, `with_id` ≈ 10,368.
 
 - [ ] **Step 3: Spot-check a matched and an unmatched hadith**
 
@@ -785,6 +830,8 @@ public domain. The Indonesian translations are MIT-licensed from irsyadulibad/ha
 
 ## Data notes
 
+- hadith-json v1.2.0 contains 2 hadiths with blank English text (Bukhari id 6857,
+  Muslim id 13569); the pipeline drops them, so counts are Bukhari 7,276 / Muslim 7,458.
 - Indonesian coverage is best-effort: ~84% of hadiths matched by normalized Arabic matn.
   Unmatched rows store `text_id = ''` and the app falls back to the English translation.
 - `narrator_ar` is always empty (no separate Arabic narrator in hadith-json).
@@ -793,7 +840,7 @@ public domain. The Indonesian translations are MIT-licensed from irsyadulibad/ha
 ## Validation gates (fail loudly)
 
 - Book counts: Bukhari 97, Muslim 57.
-- Hadith counts: Bukhari 7,277, Muslim 7,459 (sum 14,736).
+- Hadith counts: Bukhari 7,276, Muslim 7,458 (sum 14,734).
 - No blank `text_ar` / `text_en`.
 - `text_id` coverage is reported, never silently dropped.
 - No duplicate book ids, no orphaned hadith rows.
@@ -865,4 +912,4 @@ git status
 
 **Placeholder scan:** No TBD/TODO; every code block is complete and runnable.
 
-**Type consistency:** `parse_mysql_inserts`, `norm_ar`, `trim_isnad`, `trigset`, `dice` signatures match across Tasks 1-2-4. `match_sequences` returns `(list, list)` consumed identically in Task 2 tests, Task 3 `build_hadiths(matched)`, and Task 4 `build()`. `build_books`/`build_hadiths` column order matches `write_db` INSERTs and the DB schema. `validate()` param names match its call in `main()`.
+**Type consistency:** `parse_mysql_inserts`, `norm_ar`, `trim_isnad`, `trigset`, `dice` signatures match across Tasks 1-2-4. `match_sequences` returns `(list, list)`; `matched` is aligned to `id_rows` (values are HJ indices), so Task 3 `build_hadiths` inverts it (`hj_to_idrow`) — the original index-space bug is fixed and covered by `test_text_id_uses_reverse_mapping_from_id_row_space`. `build_books`/`build_hadiths` column order matches `write_db` INSERTs and the DB schema. Ids are globally unique via `id_offset` (`test_id_offset_yields_globally_unique_ids`). `validate()` param names match its call in `main()`.
