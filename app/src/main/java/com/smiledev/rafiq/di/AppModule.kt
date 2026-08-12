@@ -17,6 +17,7 @@ import com.smiledev.rafiq.data.remote.OverpassApi
 import com.smiledev.rafiq.data.remote.OverpassApiService
 import com.smiledev.rafiq.data.repository.AsmaulHusnaRepositoryImpl
 import com.smiledev.rafiq.data.repository.BookmarkRepositoryImpl
+import com.smiledev.rafiq.data.repository.HadithRepositoryImpl
 import com.smiledev.rafiq.data.repository.IslamicCalendarRepositoryImpl
 import com.smiledev.rafiq.data.repository.MetalPriceRepositoryImpl
 import com.smiledev.rafiq.data.repository.MosqueRepositoryImpl
@@ -27,6 +28,7 @@ import com.smiledev.rafiq.data.repository.QuranRepositoryImpl
 import com.smiledev.rafiq.data.repository.ReciterRepositoryImpl
 import com.smiledev.rafiq.domain.repository.AsmaulHusnaRepository
 import com.smiledev.rafiq.domain.repository.BookmarkRepository
+import com.smiledev.rafiq.domain.repository.HadithRepository
 import com.smiledev.rafiq.domain.repository.IslamicCalendarRepository
 import com.smiledev.rafiq.domain.repository.MetalPriceRepository
 import com.smiledev.rafiq.domain.repository.MosqueRepository
@@ -69,6 +71,7 @@ abstract class RepositoryModule {
     @Binds @Singleton abstract fun bindPrayerTimesRepository(impl: PrayerTimesRepositoryImpl): PrayerTimesRepository
     @Binds @Singleton abstract fun bindMetalPriceRepository(impl: MetalPriceRepositoryImpl): MetalPriceRepository
     @Binds @Singleton abstract fun bindProphetRepository(impl: ProphetRepositoryImpl): ProphetRepository
+    @Binds @Singleton abstract fun bindHadithRepository(impl: HadithRepositoryImpl): HadithRepository
     @Binds @Singleton abstract fun bindReciterRepository(impl: ReciterRepositoryImpl): ReciterRepository
     @Binds @Singleton abstract fun bindBookmarkRepository(impl: BookmarkRepositoryImpl): BookmarkRepository
     @Binds @Singleton abstract fun bindPrayerLogRepository(impl: PrayerLogRepositoryImpl): PrayerLogRepository
