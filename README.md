@@ -1,8 +1,8 @@
 # 🕌 Rafiq - Islamic Lifestyle App for Android
 
 <p align="center">
-  <a href="https://github.com/smiledev/rafiq-android/actions/workflows/pr-check.yml"><img src="https://github.com/smiledev/rafiq-android/actions/workflows/pr-check.yml/badge.svg" alt="PR Check"/></a>
-  <a href="https://github.com/smiledev/rafiq-android/actions/workflows/release.yml"><img src="https://github.com/smiledev/rafiq-android/actions/workflows/release.yml/badge.svg" alt="Release"/></a>
+  <a href="https://github.com/suryamudti/rafiq-android/actions/workflows/pr-check.yml"><img src="https://github.com/suryamudti/rafiq-android/actions/workflows/pr-check.yml/badge.svg" alt="PR Check"/></a>
+  <a href="https://github.com/suryamudti/rafiq-android/actions/workflows/release.yml"><img src="https://github.com/suryamudti/rafiq-android/actions/workflows/release.yml/badge.svg" alt="Release"/></a>
   <a href="https://kotlinlang.org"><img src="https://img.shields.io/badge/Kotlin-2.0.0-blue.svg?style=flat&logo=kotlin" alt="Kotlin"/></a>
   <a href="https://developer.android.com/about/versions/marshmallow"><img src="https://img.shields.io/badge/Min%20SDK-23%2B-brightgreen.svg" alt="Min SDK"/></a>
   <a href="https://developer.android.com/jetpack/compose"><img src="https://img.shields.io/badge/Jetpack-Compose%20(M3)-4285F4.svg?style=flat&logo=android" alt="Jetpack Compose"/></a>
@@ -17,7 +17,7 @@
 
 ## 📥 Download
 
-Go to the [Releases](https://github.com/smiledev/rafiq-android/releases) section to download the latest APK.
+Go to the [Releases](https://github.com/suryamudti/rafiq-android/releases) section to download the latest APK.
 
 ---
 
@@ -40,13 +40,13 @@ Go to the [Releases](https://github.com/smiledev/rafiq-android/releases) section
 | **🕌 Prayer Times** | Real-time prayer calculation via Aladhan API with date navigation and countdown timer. |
 | **📖 Quran & Tafsir** | 114 Surahs with Uthmani Arabic text, Indonesian/English translations, per-ayah tafsir, sajdah markers, and memorization mode. |
 | **🔊 Recitations** | Audio streaming of 15 reciters via Media3 ExoPlayer with background playback. |
-| **🧭 Qibla Compass** | Live compass bearing calculation pointing towards Mecca with distance display. |
+| **🧭 Qibla Compass** | 16-point direction name, live heading/bearing readout, turn left/right offset indicator (proximity within 5°), Kaaba info card, and a Google Maps button. |
 | **✨ 99 Names of Allah** | Complete list with Arabic typography, transliterations, meanings, and search functionality. |
-| **📅 Islamic Calendar** | Hijri dates, upcoming Islamic events, and detailed month selector. |
-| **📜 Prophet Stories** | Biographies and details of 25 Prophets of Islam with instant search. |
-| **💰 Zakat Calculator** | Real-time gold and silver spot prices conversion via Metals.live API with asset Nisab threshold logic. |
+| **📅 Islamic Calendar** | Tabular Hijri dates, monthly grid with event/fasting dots, day sheet, upcoming observances (57 events), and sunnah fasting recommendations. |
+| **📜 Prophet Stories** | Biographies of 25 Prophets with facts, key events, lessons, and verse references; Arabic/Latin search, favorites filter, share, adjustable story font size, and prev/next navigation. |
+| **💰 Zakat Calculator** | Nisab threshold logic with instant results computed locally while gold/silver prices refresh in the background from the Metals.live API (in-memory cache). |
 | **📿 Tasbih Counter** | Digital zikr counter with haptic feedback and target goals. |
-| **🗺️ Nearby Mosques** | Location-aware OpenStreetMap view (OsmDroid) with nearby mosque discovery via the Overpass API. |
+| **🗺️ Nearby Mosques** | Location-aware OpenStreetMap view (OsmDroid) with nearby mosque discovery via a reliable Overpass POST API with mirror failover. |
 | **🔖 Bookmarked Verses** | Bookmark favorite verses saved locally in Room database. |
 | **📊 Prayer Tracker** | Daily prayer log screen with toggle switches to track daily worship. |
 | **🔔 Notifications** | Background prayer alarm notifications scheduled via WorkManager. |
@@ -149,7 +149,7 @@ graph TD
 - **Tafsir**: [EQuran.id API](https://equran.id/) (`api/v2/tafsir/{surah}`) for Indonesian tafsir and [IslamicApp API](https://api.islamic.app/) (`v1/verses/by_key/{sura}:{aya}`) for English tafsir (Ibn Kathir).
 - **Prayer Timings API**: [Aladhan REST API](https://aladhan.com/prayer-times-api) (`v1/timings/{date}`).
 - **Zakat Gold/Silver Spot Prices**: [Metals.live API](https://metals.live/) (`v1/spot/gold`, `v1/spot/silver`).
-- **Nearby Mosques**: [Overpass API](https://overpass-api.de/) (`https://overpass-api.de/api/`) with mosque names from OSM elements.
+- **Nearby Mosques**: [Overpass API](https://overpass-api.de/) (POST query body) with mirror failover across `overpass-api.de`, `overpass.kumi.systems`, and `maps.mail.ru`.
 - **Maps**: OpenStreetMap tile provider managed via `OsmDroid`.
 - **Static Content**: JSON assets for 99 Names, Islamic events, prophets, dzikir/tasbih, reciters, chapters, and juz metadata.
 
