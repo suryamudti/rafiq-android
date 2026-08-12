@@ -123,5 +123,38 @@ class TestDbBuilder(unittest.TestCase):
         self.assertEqual(rows[0][7], 'Terjemahan Indonesia')
 
 
+import sqlite3
+import tempfile
+from build_hadith_db import write_db, validate, DB_SCHEMA
+
+
+class TestDbWriter(unittest.TestCase):
+    def _fixture(self):
+        books = [('bukhari.1', 'bukhari', 1, 'كتاب بدء الوحي', 'Revelation', '')]
+        hadiths = [(1, 'bukhari.1', 1, '', 'N', 'A', 'E', 'I')]
+        return books, hadiths
+
+    def test_write_db_creates_queryable_schema(self):
+        tmp = os.path.join(tempfile.mkdtemp(), 'h.db')
+        books, hadiths = self._fixture()
+        write_db(tmp, books, hadiths, {'source': 'fixture'})
+        conn = sqlite3.connect(tmp)
+        rows = conn.execute('SELECT * FROM hadiths').fetchall()
+        conn.close()
+        self.assertEqual(rows, [(1, 'bukhari.1', 1, '', 'N', 'A', 'E', 'I')])
+
+    def test_validate_reports_blank_text_and_counts(self):
+        tmp = os.path.join(tempfile.mkdtemp(), 'h2.db')
+        conn = sqlite3.connect(tmp)
+        conn.executescript(DB_SCHEMA)
+        conn.execute("INSERT INTO books VALUES ('bukhari.1','bukhari',1,'a','b','')")
+        conn.execute("INSERT INTO hadiths VALUES (1,'bukhari.1',1,'','N','','E','')")
+        conn.commit()
+        problems = validate(conn, expected_books=1, expected_hadiths=1)
+        conn.close()
+        self.assertTrue(any('blank text_ar' in p for p in problems))
+        self.assertTrue(any('text_id' in p and '0' in p for p in problems))
+
+
 if __name__ == '__main__':
     unittest.main()
