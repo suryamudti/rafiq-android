@@ -58,6 +58,24 @@
     <string name="prophets_title">25 Nabi</string>
     <string name="search_prophets">Cari nabi</string>
     <string name="no_prophets_match">Tidak ada nabi yang cocok dengan \"%s\"</string>
+    <string name="prophets_summary">Ringkasan</string>
+    <string name="prophets_story">Kisah</string>
+    <string name="prophets_miracles">Mukjizat</string>
+    <string name="prophets_facts">Fakta</string>
+    <string name="prophets_key_events">Peristiwa Penting</string>
+    <string name="prophets_lessons">Pelajaran</string>
+    <string name="prophets_verse_references">Referensi Ayat</string>
+    <string name="prophets_era">Era</string>
+    <string name="prophets_people">Kaum</string>
+    <string name="prophets_lifespan">Usia</string>
+    <string name="prophets_favorites">Favorit</string>
+    <string name="no_favorite_prophets">Belum ada nabi favorit</string>
+    <string name="prophet_not_found">Nabi tidak ditemukan</string>
+    <string name="prophets_share">Bagikan</string>
+    <string name="prophets_previous">Sebelumnya</string>
+    <string name="prophets_next">Berikutnya</string>
+    <string name="prophets_story_font_size">Ukuran Huruf Kisah: %dsp</string>
+    <string name="verse_ref">%1$s %2$d:%3$d</string>
     <!-- Recitation -->
     <string name="audio_recitations">Murottal</string>
     <string name="select_reciter">Pilih Qari</string>

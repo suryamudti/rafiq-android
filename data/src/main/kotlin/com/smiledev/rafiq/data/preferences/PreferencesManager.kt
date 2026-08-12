@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
@@ -31,6 +32,8 @@ class PreferencesManager @Inject constructor(
         val TRANSLATION_FONT_SIZE = intPreferencesKey("translation_font_size")
         val LAST_READ_SURA = intPreferencesKey("last_read_sura")
         val LAST_READ_AYA = intPreferencesKey("last_read_aya")
+        val FAVORITE_PROPHET_IDS = stringSetPreferencesKey("favorite_prophet_ids")
+        val STORY_FONT_SIZE = intPreferencesKey("story_font_size")
     }
 
     val themeMode: Flow<String> = context.dataStore.data.map { prefs ->
@@ -81,6 +84,14 @@ class PreferencesManager @Inject constructor(
         prefs[LAST_READ_AYA] ?: 0
     }
 
+    val favoriteProphetIds: Flow<Set<Int>> = context.dataStore.data.map { prefs ->
+        prefs[FAVORITE_PROPHET_IDS].orEmpty().mapNotNull { it.toIntOrNull() }.toSet()
+    }
+
+    val storyFontSize: Flow<Int> = context.dataStore.data.map { prefs ->
+        prefs[STORY_FONT_SIZE] ?: 16
+    }
+
     suspend fun setThemeMode(mode: String) {
         context.dataStore.edit { prefs -> prefs[THEME_MODE] = mode }
     }
@@ -129,5 +140,17 @@ class PreferencesManager @Inject constructor(
             prefs[LAST_READ_SURA] = sura
             prefs[LAST_READ_AYA] = aya
         }
+    }
+
+    suspend fun toggleFavoriteProphet(id: Int) {
+        context.dataStore.edit { prefs ->
+            val current = prefs[FAVORITE_PROPHET_IDS].orEmpty()
+            val updated = if (id.toString() in current) current - id.toString() else current + id.toString()
+            prefs[FAVORITE_PROPHET_IDS] = updated
+        }
+    }
+
+    suspend fun setStoryFontSize(size: Int) {
+        context.dataStore.edit { prefs -> prefs[STORY_FONT_SIZE] = size }
     }
 }
