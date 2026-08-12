@@ -40,6 +40,7 @@ import androidx.navigation3.runtime.NavKey
 import com.smiledev.rafiq.IslamicCalendar
 import com.smiledev.rafiq.Mosques
 import com.smiledev.rafiq.PrayerTimes
+import com.smiledev.rafiq.Prophets
 import com.smiledev.rafiq.Qibla
 import com.smiledev.rafiq.Quran
 import com.smiledev.rafiq.R
@@ -66,6 +67,7 @@ private val features = listOf(
     FeatureItem(R.string.zakat, ZakatCalculator, R.drawable.ic_zakat, Color(0xFFFF9800)),
     FeatureItem(R.string.tasbih, Tasbih, R.drawable.ic_tasbih, Color(0xFF009688)),
     FeatureItem(R.string.hadiths, HadithBooks, R.drawable.ic_hadith, Color(0xFF8D6E63)),
+    FeatureItem(R.string.prophets, Prophets, R.drawable.ic_prophet, Color(0xFFFFA000)),
 )
 
 @Composable

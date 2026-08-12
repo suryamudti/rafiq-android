@@ -9,7 +9,42 @@
     "story_en": "Allah created Adam from clay and breathed life into him. He was taught the names of all things, showcasing human intellect. Allah commanded the angels and Iblis to prostrate before Adam. While the angels obeyed, Iblis refused out of pride. Adam and his wife Hawwa (Eve) lived in Paradise but were tricked by Iblis into eating from the forbidden tree. Sent to Earth, they repented sincerely, and Allah forgave them. Adam established the first worship of Allah on Earth and lived for about 1,000 years, guiding his children in monotheism.",
     "story_id": "Allah menciptakan Adam dari tanah liat dan meniupkan ruh kehidupan ke dalamnya. Dia diajarkan nama-nama segala sesuatu, menunjukkan kecerdasan manusia. Allah memerintahkan para malaikat dan Iblis untuk bersujud kepada Adam. Para malaikat patuh, namun Iblis menolak karena sombong. Adam dan istrinya Hawwa (Hawa) tinggal di Surga tetapi ditipu oleh Iblis hingga memakan buah dari pohon terlarang. Diturunkan ke Bumi, mereka bertaubat dengan tulus dan Allah mengampuni mereka. Adam memulai ibadah pertama kepada Allah di Bumi dan hidup sekitar 1.000 tahun, membimbing keturunannya dalam tauhid.",
     "miracles_en": "Created directly by Allah's hands from clay, receiving the divine breath of life, being taught the names of all things, and having the angels prostrate to him in respect.",
-    "miracles_id": "Diciptakan langsung oleh tangan Allah dari tanah liat, menerima tiupan ruh kehidupan ilahi, diajarkan nama-nama segala sesuatu, dan para malaikat bersujud kepadanya sebagai bentuk penghormatan."
+    "miracles_id": "Diciptakan langsung oleh tangan Allah dari tanah liat, menerima tiupan ruh kehidupan ilahi, diajarkan nama-nama segala sesuatu, dan para malaikat bersujud kepadanya sebagai bentuk penghormatan.",
+    "era_en": "Primordial era — the beginning of humanity",
+    "era_id": "Zaman purba — awal mula umat manusia",
+    "people_en": "All of humanity; his descendants",
+    "people_id": "Seluruh umat manusia; keturunannya",
+    "lifespan_en": "Reported to have lived about 1,000 years",
+    "lifespan_id": "Diriwayatkan hidup sekitar 1.000 tahun",
+    "events_en": [
+      "Created by Allah from clay and given the breath of life",
+      "Taught the names of all things",
+      "Angels prostrated to him; Iblis refused out of pride",
+      "Adam and Hawwa (Eve) sent to Earth after the forbidden tree",
+      "Repented sincerely and was forgiven by Allah"
+    ],
+    "events_id": [
+      "Diciptakan oleh Allah dari tanah liat dan ditiupkan ruh kehidupan",
+      "Diajarkan nama-nama segala sesuatu",
+      "Para malaikat bersujud kepadanya; Iblis menolak karena sombong",
+      "Adam dan Hawa diturunkan ke Bumi setelah memakan buah terlarang",
+      "Bertaubat dengan tulus dan diampuni oleh Allah"
+    ],
+    "lessons_en": [
+      "Pride was Iblis's downfall — humility is the path to Allah",
+      "Sincere repentance erases sin",
+      "Humans were created with dignity and knowledge"
+    ],
+    "lessons_id": [
+      "Kesombongan menjadi kejatuhan Iblis — kerendahan hati adalah jalan menuju Allah",
+      "Taubat yang tulus menghapus dosa",
+      "Manusia diciptakan dengan kemuliaan dan ilmu"
+    ],
+    "verses": [
+      {"surah": 2, "surah_name_en": "Al-Baqarah", "surah_name_id": "Al-Baqarah", "ayah_start": 30, "ayah_end": 39},
+      {"surah": 7, "surah_name_en": "Al-A'raf", "surah_name_id": "Al-A'raf", "ayah_start": 11, "ayah_end": 25},
+      {"surah": 20, "surah_name_en": "Ta-Ha", "surah_name_id": "Thaha", "ayah_start": 115, "ayah_end": 123}
+    ]
   },
   {
     "id": 2,
@@ -33,7 +68,41 @@
     "story_en": "Prophet Nuh was sent to a society that had fallen deeply into idol worship, worshipping five righteous men who had passed away (Wadd, Suwa', Yaghuth, Ya'uq, and Nasr). For 950 years, Nuh preached patiently, using every means—publicly and privately, night and day—to guide them back to monotheism. Only a small group of poor and weak citizens believed in him, while the wealthy chiefs mocked and threatened him. When their disbelief became absolute and they challenged him to bring the punishment, Allah commanded Nuh to build a massive Ark. Despite his people's intense ridicule for building a ship in a land far from any sea or river, he completed it. The Great Flood arrived; water gushed from the earth and poured from the sky. Nuh, the believers, and pairs of every animal species boarded the Ark and were saved, while the disbelievers—including Nuh's own wife and his son Yam (who refused to join and tried to seek refuge on a mountain)—perished in the deluge. The Ark eventually came to rest on Mount Judi, and Nuh helped rebuild humanity on the foundation of monotheism.",
     "story_id": "Nabi Nuh diutus kepada masyarakat yang telah tenggelam dalam penyembahan berhala (Wadd, Suwa', Yaghuts, Ya'uq, dan Nasr). Selama 950 tahun, Nuh berdakwah dengan sabar siang dan malam, baik secara sembunyi-sembunyi maupun terang-terangan. Namun, hanya sebagian kecil orang miskin dan lemah yang beriman, sementara para pembesar yang kaya mengejek dan mengancamnya. Ketika keingkaran mereka telah mencapai puncaknya, Allah memerintahkan Nuh membangun sebuah Bahtera besar. Meskipun diejek karena membuat kapal di daratan kering tanpa laut atau sungai, Nuh tetap menyelesaikannya. Banjir Besar pun datang; air memancar dari bumi dan tercurah dari langit. Nuh, orang-orang beriman, dan sepasang dari setiap spesies hewan diselamatkan di dalam Bahtera, sementara orang-orang kafir—termasuk istri Nuh dan putranya, Kan'an (Yam)—tenggelam. Bahtera akhirnya berlabuh di Bukit Judi.",
     "miracles_en": "Building the massive Ark under divine guidance in a dry land, and surviving the catastrophic global deluge that wiped out the entire disbelieving population.",
-    "miracles_id": "Membangun Bahtera raksasa di bawah bimbingan ilahi di tanah gersang, dan selamat dari air bah global dahsyat yang menyapu bersih seluruh populasi orang kafir."
+    "miracles_id": "Membangun Bahtera raksasa di bawah bimbingan ilahi di tanah gersang, dan selamat dari air bah global dahsyat yang menyapu bersih seluruh populasi orang kafir.",
+    "era_en": "Ancient era — generations after Adam",
+    "era_id": "Zaman dahulu kala — beberapa generasi setelah Adam",
+    "people_en": "His people, who worshipped idols",
+    "people_id": "Kaumnya yang menyembah berhala",
+    "lifespan_en": "Called his people to Allah for 950 years",
+    "lifespan_id": "Menyeru kaumnya kepada Allah selama 950 tahun",
+    "events_en": [
+      "Called his people to monotheism for 950 years",
+      "His people rejected and mocked him",
+      "Built the ark by Allah's command",
+      "The flood drowned the disbelievers",
+      "The believers were saved aboard the ark"
+    ],
+    "events_id": [
+      "Menyeru kaumnya kepada tauhid selama 950 tahun",
+      "Kaumnya menolak dan mencemoohnya",
+      "Membangun bahtera atas perintah Allah",
+      "Banjir besar menenggelamkan orang-orang kafir",
+      "Orang-orang beriman selamat di atas bahtera"
+    ],
+    "lessons_en": [
+      "Persevere in calling to the truth even when mocked",
+      "Patience over long-term struggle is rewarded",
+      "Trust in Allah's command and follow it without hesitation"
+    ],
+    "lessons_id": [
+      "Istiqamah menyeru kebenaran meski diejek",
+      "Kesabaran dalam perjuangan panjang akan berbuah",
+      "Percaya pada perintah Allah dan melaksanakannya tanpa ragu"
+    ],
+    "verses": [
+      {"surah": 11, "surah_name_en": "Hud", "surah_name_id": "Hud", "ayah_start": 25, "ayah_end": 48},
+      {"surah": 71, "surah_name_en": "Nuh", "surah_name_id": "Nuh", "ayah_start": 1, "ayah_end": 28}
+    ]
   },
   {
     "id": 4,

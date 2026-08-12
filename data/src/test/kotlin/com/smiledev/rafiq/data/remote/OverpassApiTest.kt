@@ -14,7 +14,7 @@ class OverpassApiTest {
 
     @Before
     fun setUp() {
-        api = OverpassApi(service)
+        api = OverpassApi(listOf(service))
     }
 
     @Test
@@ -49,5 +49,39 @@ class OverpassApiTest {
             ");" +
             "out center 50;"
         coEvery { service.query(expected) } returns OverpassResponse(emptyList())
+    }
+
+    @Test
+    fun `fetchMosques falls back to next mirror when first fails`() = runTest {
+        val failingService: OverpassApiService = mockk()
+        val workingService: OverpassApiService = mockk()
+        val elements = listOf(
+            OverpassElement(type = "node", id = 1, lat = -6.2, lon = 106.8, tags = mapOf("name" to "Masjid"))
+        )
+        coEvery { failingService.query(any()) } throws RuntimeException("mirror down")
+        coEvery { workingService.query(any()) } returns OverpassResponse(elements)
+
+        val api = OverpassApi(listOf(failingService, workingService))
+        val result = api.fetchMosques(-6.2, 106.8)
+
+        assertEquals(1, result.size)
+        assertEquals(1L, result[0].id)
+    }
+
+    @Test
+    fun `fetchMosques rethrows when all mirrors fail`() = runTest {
+        val service1: OverpassApiService = mockk()
+        val service2: OverpassApiService = mockk()
+        coEvery { service1.query(any()) } throws RuntimeException("mirror 1 down")
+        coEvery { service2.query(any()) } throws RuntimeException("mirror 2 down")
+
+        val api = OverpassApi(listOf(service1, service2))
+
+        try {
+            api.fetchMosques(-6.2, 106.8)
+            throw AssertionError("Expected exception was not thrown")
+        } catch (e: RuntimeException) {
+            assertEquals("mirror 2 down", e.message)
+        }
     }
 }
