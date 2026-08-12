@@ -47,8 +47,8 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from pipeline_lib import parse_mysql_inserts, norm_ar, trim_isnad, trigset, dice
 
 DUMP = """INSERT INTO `shahih_bukhari` (`id`, `kitab`, `arab`, `terjemah`) VALUES
-(1, 'shahih_bukhari', '\\u062d\\u062f\\u062b\\u0646\\u0627', 'Telah menceritakan kepada kami [Abu]'),
-(2, 'shahih_bukhari', '\\u0648 \\u062d\\u062f\\u062b', 'Dan ia berkata \\'salam\\' ''benar'''),;
+(1, 'shahih_bukhari', '\u062d\u062f\u062b\u0646\u0627', 'Telah menceritakan kepada kami [Abu]'),
+(2, 'shahih_bukhari', '\u0648 \u062d\u062f\u062b', 'Dan ia berkata \\'salam\\' ''benar'''),;
 """
 
 
@@ -66,7 +66,7 @@ class TestNormalize(unittest.TestCase):
     def test_norm_ar_removes_tashkeel_and_punctuation(self):
         self.assertEqual(
             norm_ar('حَدَّثَنَا الْحُمَيْدِيُّ، قَالَ:  سُفْيَانَ!'),
-            'حدثنا الحميدي قال سفيان'
+            'حدثنا الحميدي، قال سفيان'
         )
 
     def test_trim_isnad_keeps_matn_tail(self):
