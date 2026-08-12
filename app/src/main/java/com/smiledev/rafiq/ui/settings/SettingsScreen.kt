@@ -35,6 +35,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation3.runtime.NavKey
 import com.smiledev.rafiq.AsmaulHusna
 import com.smiledev.rafiq.BookmarkList
+import com.smiledev.rafiq.HadithBooks
 import com.smiledev.rafiq.PrayerLog
 import com.smiledev.rafiq.Prophets
 import com.smiledev.rafiq.R
@@ -120,6 +121,7 @@ fun SettingsScreen(
                     MoreFeatureItem(R.string.prophets) { onNavigate(Prophets) }
                     MoreFeatureItem(R.string.bookmarks) { onNavigate(BookmarkList) }
                     MoreFeatureItem(R.string.prayer_log) { onNavigate(PrayerLog) }
+                    MoreFeatureItem(R.string.hadiths) { onNavigate(HadithBooks) }
                 }
             }
         }
