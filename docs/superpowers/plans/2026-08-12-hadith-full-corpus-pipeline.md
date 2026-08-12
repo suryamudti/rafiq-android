@@ -792,7 +792,7 @@ Run:
 ```powershell
 $env:PYTHONIOENCODING="utf-8"; python -c "import sqlite3; c=sqlite3.connect('app/src/main/assets/quran-data/hadiths/hadith.db'); print('books', c.execute('select count(*) from books').fetchone()); print('hadiths', c.execute('select count(*) from hadiths').fetchone()); print('first:', c.execute('select book_id,in_book_number,substr(text_ar,1,30),substr(text_en,1,30),substr(text_id,1,40) from hadiths order by id limit 1').fetchone()); print('with_id', c.execute(\"select count(*) from hadiths where trim(text_id)!=''\").fetchone())"
 ```
-Expected: `books (154,)`, `hadiths (14734,)`, first row is Bukhari book 1 hadith 1 with Arabic + Muhsin Khan EN + Indonesian, `with_id` ≈ 10,368.
+Expected: `books (154,)`, `hadiths (14734,)`, first row is Bukhari book 1 hadith 1 with Arabic + Muhsin Khan EN + Indonesian, `with_id` ≈ 10,322.
 
 - [ ] **Step 3: Spot-check a matched and an unmatched hadith**
 
@@ -832,8 +832,9 @@ public domain. The Indonesian translations are MIT-licensed from irsyadulibad/ha
 
 - hadith-json v1.2.0 contains 2 hadiths with blank English text (Bukhari id 6857,
   Muslim id 13569); the pipeline drops them, so counts are Bukhari 7,276 / Muslim 7,458.
-- Indonesian coverage is best-effort: ~84% of hadiths matched by normalized Arabic matn.
-  Unmatched rows store `text_id = ''` and the app falls back to the English translation.
+- Indonesian coverage is best-effort: ~84% of Indonesian-source rows matched a hadith by
+  normalized Arabic matn (~10,322 of 14,734 hadiths carry Indonesian text). Unmatched rows
+  store `text_id = ''` and the app falls back to the English translation.
 - `narrator_ar` is always empty (no separate Arabic narrator in hadith-json).
 - `in_book_number` is recomputed per book (hadith-json's `idInBook` is a global counter).
 

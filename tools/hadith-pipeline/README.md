@@ -25,8 +25,9 @@ public domain. The Indonesian translations are MIT-licensed from irsyadulibad/ha
 
 - hadith-json v1.2.0 contains 2 hadiths with blank English text (Bukhari id 6857,
   Muslim id 13569); the pipeline drops them, so counts are Bukhari 7,276 / Muslim 7,458.
-- Indonesian coverage is best-effort: ~84% of hadiths matched by normalized Arabic matn.
-  Unmatched rows store `text_id = ''` and the app falls back to the English translation.
+- Indonesian coverage is best-effort: ~84% of Indonesian-source rows matched a hadith by
+  normalized Arabic matn (~10,322 of 14,734 hadiths carry Indonesian text). Unmatched rows
+  store `text_id = ''` and the app falls back to the English translation.
 - `narrator_ar` is always empty (no separate Arabic narrator in hadith-json).
 - `in_book_number` is recomputed per book (hadith-json's `idInBook` is a global counter).
 
