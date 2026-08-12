@@ -81,4 +81,33 @@ class HadithRepositoryImplTest {
         assertTrue("Expected Error but got ${result}", result is Result.Error)
         assertTrue((result as Result.Error).error is AppError.Database)
     }
+
+    @Test
+    fun `getHadithsByBook returns hadiths in book number order`() {
+        val result = repo.getHadithsByBook("bukhari.1")
+
+        assertTrue("Expected Success but got ${result}", result is Result.Success)
+        val hadiths = (result as Result.Success).data
+        assertEquals(1, hadiths.size)
+        assertEquals("bukhari.1", hadiths[0].bookId)
+        assertEquals("t1", hadiths[0].textEn)
+    }
+
+    @Test
+    fun `getHadithsByBook filters to the requested book`() {
+        val result = repo.getHadithsByBook("muslim.1")
+
+        assertTrue("Expected Success but got ${result}", result is Result.Success)
+        assertEquals(0, (result as Result.Success).data.size)
+    }
+
+    @Test
+    fun `getHadithsByBook returns Error when db file missing`() {
+        dbFile.delete()
+
+        val result = repo.getHadithsByBook("bukhari.1")
+
+        assertTrue("Expected Error but got ${result}", result is Result.Error)
+        assertTrue((result as Result.Error).error is AppError.Database)
+    }
 }
