@@ -140,4 +140,8 @@
     <string name="currency">Currency</string>
     <string name="zakat_due">Zakat Due: %s</string>
     <string name="zakat_not_due">Zakat Not Due</string>
+    <!-- Hadith -->
+    <string name="hadiths">Hadiths</string>
+    <string name="hadith_reference">Sahih %1$s · Book %2$d, Hadith %3$d</string>
+    <string name="hadith_no_arabic">[No Arabic text]</string>
 </resources>
