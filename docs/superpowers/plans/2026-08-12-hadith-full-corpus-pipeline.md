@@ -286,7 +286,8 @@ class TestMatcher(unittest.TestCase):
         ]
         matched, unmatched = match_sequences(id_rows, hj)
         self.assertEqual(matched, [None, 0])
-        self.assertEqual(unmatched, [(1, unmatched[0][1])])
+        self.assertEqual([r[0] for r in unmatched], [1])   # rid of the unmatched row
+        self.assertEqual(len(unmatched), 1)
         self.assertLess(unmatched[0][1], 0.55)
 ```
 
