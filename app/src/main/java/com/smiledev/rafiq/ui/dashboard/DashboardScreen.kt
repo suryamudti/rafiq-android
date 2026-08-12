@@ -48,6 +48,7 @@ import com.smiledev.rafiq.Recitation
 import com.smiledev.rafiq.Settings
 import com.smiledev.rafiq.Tasbih
 import com.smiledev.rafiq.ZakatCalculator
+import com.smiledev.rafiq.HadithBooks
 import com.smiledev.rafiq.core.displayMessage
 
 private data class FeatureItem(
@@ -65,6 +66,7 @@ private val features = listOf(
     FeatureItem(R.string.calendar, IslamicCalendar, R.drawable.ic_calendar, Color(0xFF009688)),
     FeatureItem(R.string.zakat, ZakatCalculator, R.drawable.ic_zakat, Color(0xFFFF9800)),
     FeatureItem(R.string.tasbih, Tasbih, R.drawable.ic_tasbih, Color(0xFF009688)),
+    FeatureItem(R.string.hadiths, HadithBooks, R.drawable.ic_hadith, Color(0xFF8D6E63)),
     FeatureItem(R.string.prophets, Prophets, R.drawable.ic_prophet, Color(0xFFFFA000)),
 )
 

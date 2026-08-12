@@ -168,4 +168,8 @@
     <string name="currency">Mata Uang</string>
     <string name="zakat_due">Zakat: %s</string>
     <string name="zakat_not_due">Zakat Tidak Wajib</string>
+    <!-- Hadith -->
+    <string name="hadiths">Hadis</string>
+    <string name="hadith_reference">Shahih %1$s · Kitab %2$d, Hadis %3$d</string>
+    <string name="hadith_no_arabic">[Tidak ada teks Arab]</string>
 </resources>

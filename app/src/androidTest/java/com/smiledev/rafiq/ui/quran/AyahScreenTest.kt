@@ -54,7 +54,15 @@ class AyahScreenTest {
         every { prefs.ayahFontSize } returns MutableStateFlow(22)
         every { prefs.translationFontSize } returns MutableStateFlow(15)
 
-        val viewModel = AyahViewModel(quranRepo, bookmarkRepo, prefs, createDispatcherProvider())
+        val viewModel = AyahViewModel(
+            quranRepo,
+            bookmarkRepo,
+            prefs,
+            mockk(relaxed = true),
+            mockk(relaxed = true),
+            mockk(relaxed = true),
+            createDispatcherProvider()
+        )
 
         composeTestRule.setContent {
             AyahScreen(suraNumber = 1, suraName = "Al-Fatiha", onBack = {}, viewModel = viewModel)

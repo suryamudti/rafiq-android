@@ -18,6 +18,9 @@ import com.smiledev.rafiq.ui.mosques.MosquesScreen
 import com.smiledev.rafiq.ui.prophets.ProphetsScreen
 import com.smiledev.rafiq.ui.prophets.ProphetDetailScreen
 import com.smiledev.rafiq.ui.recitation.RecitationScreen
+import com.smiledev.rafiq.ui.hadith.HadithBooksScreen
+import com.smiledev.rafiq.ui.hadith.HadithListScreen
+import com.smiledev.rafiq.ui.hadith.HadithDetailScreen
 import com.smiledev.rafiq.ui.zakat.ZakatCalculatorScreen
 import com.smiledev.rafiq.ui.asmaulhusna.AsmaulHusnaScreen
 import com.smiledev.rafiq.ui.tasbih.TasbihScreen
@@ -97,6 +100,28 @@ fun MainNavigation() {
               backStack.removeLastOrNull()
               backStack.add(ProphetDetail(id))
             },
+            modifier = Modifier.safeDrawingPadding()
+          )
+        }
+        entry<HadithBooks> {
+          HadithBooksScreen(
+            onHadithBookClick = { bookId -> backStack.add(HadithList(bookId)) },
+            onBack = { backStack.removeLastOrNull() },
+            modifier = Modifier.safeDrawingPadding()
+          )
+        }
+        entry<HadithList> { key ->
+          HadithListScreen(
+            bookId = key.bookId,
+            onHadithClick = { id -> backStack.add(HadithDetail(id)) },
+            onBack = { backStack.removeLastOrNull() },
+            modifier = Modifier.safeDrawingPadding()
+          )
+        }
+        entry<HadithDetail> { key ->
+          HadithDetailScreen(
+            hadithId = key.hadithId,
+            onBack = { backStack.removeLastOrNull() },
             modifier = Modifier.safeDrawingPadding()
           )
         }

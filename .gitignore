@@ -22,3 +22,7 @@ evals/worktrees/
 evals/__pycache__/
 /.worktree/
 
+
+# Python
+__pycache__/
+*.pyc

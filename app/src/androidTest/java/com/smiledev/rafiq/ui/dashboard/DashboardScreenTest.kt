@@ -33,7 +33,12 @@ class DashboardScreenTest {
         every { prefs.latitude } returns MutableStateFlow("")
         every { prefs.longitude } returns MutableStateFlow("")
         every { prefs.prayerCalculationMethod } returns MutableStateFlow(2)
-        return DashboardViewModel(repo, prefs, DefaultDispatcherProvider)
+        return DashboardViewModel(
+            repo,
+            prefs,
+            androidx.test.core.app.ApplicationProvider.getApplicationContext(),
+            DefaultDispatcherProvider
+        )
     }
 
     @Test
