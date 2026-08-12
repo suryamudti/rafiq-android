@@ -28,7 +28,7 @@ HJ_BASE = 'https://raw.githubusercontent.com/AhmedBaset/hadith-json/v1.2.0/db/by
 ID_BASE = 'https://raw.githubusercontent.com/irsyadulibad/hadits-database/main/'
 
 EXPECTED_BOOKS = {'bukhari': 97, 'muslim': 57}
-EXPECTED_HADITHS = {'bukhari': 7277, 'muslim': 7459}
+EXPECTED_HADITHS = {'bukhari': 7276, 'muslim': 7458}  # 2 blank-EN rows dropped
 
 DB_SCHEMA = """
 CREATE TABLE books (
@@ -135,11 +135,11 @@ def validate(conn, expected_books, expected_hadiths):
     return problems
 
 
-def build(collection, cache_dir=None):
+def build(collection, cache_dir=None, id_offset=0):
     hj_doc, id_rows = load_collection(collection, cache_dir)
     matched, unmatched = match_sequences(id_rows, hj_doc['hadiths'])
     books = build_books(hj_doc, collection)
-    hadiths = build_hadiths(collection, hj_doc, id_rows, matched)
+    hadiths = build_hadiths(collection, hj_doc, id_rows, matched, id_offset)
     match_rate = round(100 * (len(id_rows) - len(unmatched)) / len(id_rows), 1)
     return collection, books, hadiths, match_rate, unmatched
 
@@ -154,7 +154,7 @@ def main():
     all_hadiths = []
     report = []
     for collection in ('bukhari', 'muslim'):
-        name, books, hadiths, rate, unmatched = build(collection, cache)
+        name, books, hadiths, rate, unmatched = build(collection, cache, len(all_hadiths))
         all_books.extend(books)
         all_hadiths.extend(hadiths)
         report.append('%s: %d books, %d hadiths, ID match %s%% (%d unmatched)'

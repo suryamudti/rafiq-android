@@ -122,6 +122,40 @@ class TestDbBuilder(unittest.TestCase):
         rows = build_hadiths('bukhari', doc, id_rows, [0])
         self.assertEqual(rows[0][7], 'Terjemahan Indonesia')
 
+    def test_skips_hadiths_with_blank_text_en(self):
+        hadiths = [
+            {'id': 1, 'chapterId': 1, 'arabic': 'A1', 'english': {'narrator': 'N1', 'text': 'T1'}},
+            {'id': 2, 'chapterId': 1, 'arabic': 'A2', 'english': {'narrator': 'N2', 'text': '  '}},
+        ]
+        doc = self._hj_doc(chapters=[{'id': 1, 'arabic': 'X', 'english': 'Y'}], hadiths=hadiths)
+        rows = build_hadiths('bukhari', doc, [], [])
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0][5], 'A1')
+
+    def test_text_id_uses_reverse_mapping_from_id_row_space(self):
+        # matched[k] is aligned to id_rows, NOT hadiths: id row 0 matched HJ
+        # hadith index 2. The reverse map routes terjemah to the right hadith.
+        hadiths = [
+            {'id': 1, 'chapterId': 1, 'arabic': 'A1', 'english': {'narrator': 'N1', 'text': 'T1'}},
+            {'id': 2, 'chapterId': 1, 'arabic': 'A2', 'english': {'narrator': 'N2', 'text': 'T2'}},
+            {'id': 3, 'chapterId': 1, 'arabic': 'A3', 'english': {'narrator': 'N3', 'text': 'T3'}},
+        ]
+        doc = self._hj_doc(chapters=[{'id': 1, 'arabic': 'X', 'english': 'Y'}], hadiths=hadiths)
+        id_rows = [(1, 'shahih_bukhari', 'A3', 'Terjemahan A3')]
+        rows = build_hadiths('bukhari', doc, id_rows, [2])
+        self.assertEqual(rows[2][7], 'Terjemahan A3')
+        self.assertEqual(rows[0][7], '')
+        self.assertEqual(rows[1][7], '')
+
+    def test_id_offset_yields_globally_unique_ids(self):
+        hadiths = [{'id': 1, 'chapterId': 1, 'arabic': 'A',
+                    'english': {'narrator': 'N', 'text': 'T'}}]
+        doc = self._hj_doc(chapters=[{'id': 1, 'arabic': 'X', 'english': 'Y'}], hadiths=hadiths)
+        first = build_hadiths('bukhari', doc, [], [])
+        second = build_hadiths('muslim', doc, [], [], id_offset=len(first))
+        self.assertEqual(first[0][0], 1)
+        self.assertEqual(second[0][0], 2)
+
 
 import sqlite3
 import tempfile
