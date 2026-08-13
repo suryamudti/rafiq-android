@@ -20,4 +20,9 @@ evals/kb_context.md
 evals/results/
 evals/worktrees/
 evals/__pycache__/
+/.worktree/
 
+
+# Python
+__pycache__/
+*.pyc

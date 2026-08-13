@@ -48,7 +48,7 @@ Refactor `OverpassApi` (data/src/main/kotlin/com/smiledev/rafiq/data/remote/Over
 
 ### 1.3 Query consideration
 
-The current query uses `out center 50;`. Overpass supports POST `data` in body; Retrofit uses `@Query("data")` on POST which puts it in the URL query string — that's what overpass-api.de accepted in live testing (200 with UA). Keep `@POST("interpreter")` + `@Query("data")` unchanged.
+The current query uses `out center 50;`. Device verification revealed the real bug: Retrofit `@POST("interpreter")` + `@Query("data")` sends the query in the URL but leaves the POST body **empty**, which Overpass rejects with `400 Bad Request` on every mirror (custom User-Agent alone is not enough). Fixed by sending the query as the POST body: `@FormUrlEncoded @POST("interpreter") suspend fun query(@Field("data") query: String)` — verified live returning `200 OK` against `overpass-api.de` (mirror failover also observed: a 504 on one mirror triggered the next).
 
 ## Part 2 — Qibla Screen Enhancements
 

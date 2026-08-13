@@ -33,11 +33,21 @@
     <string name="qibla_direction">Arah Kiblat</string>
     <string name="bearing_from_north">%d° dari Utara</string>
     <string name="distance_to_mecca">Jarak ke Mekah: %d km</string>
+    <string name="distance_to_mecca_formatted">Jarak ke Mekah: %s km</string>
     <string name="calibrate_compass">Gerakkan ponsel dalam pola angka-8 untuk mengkalibrasi kompas</string>
     <string name="north">U</string>
     <string name="south">S</string>
     <string name="east">T</string>
     <string name="west">B</string>
+    <string name="qibla_heading">Arah: %d°</string>
+    <string name="qibla_bearing">Kiblat: %d°</string>
+    <string name="turn_left">Putar %d° ke kiri menghadap Kiblat</string>
+    <string name="turn_right">Putar %d° ke kanan menghadap Kiblat</string>
+    <string name="facing_qibla">Menghadap Kiblat</string>
+    <string name="kaaba_info">Ka\'bah (Mekah)</string>
+    <string name="kaaba_coords">Koordinat Ka\'bah: %1$s, %2$s</string>
+    <string name="your_coords">Lokasi Anda: %1$s, %2$s</string>
+    <string name="open_in_maps">Buka di Google Maps</string>
     <!-- Mosques -->
     <string name="nearby_mosques">Masjid Terdekat</string>
     <string name="grant_location_permission">Izinkan Akses Lokasi</string>
@@ -48,6 +58,24 @@
     <string name="prophets_title">25 Nabi</string>
     <string name="search_prophets">Cari nabi</string>
     <string name="no_prophets_match">Tidak ada nabi yang cocok dengan \"%s\"</string>
+    <string name="prophets_summary">Ringkasan</string>
+    <string name="prophets_story">Kisah</string>
+    <string name="prophets_miracles">Mukjizat</string>
+    <string name="prophets_facts">Fakta</string>
+    <string name="prophets_key_events">Peristiwa Penting</string>
+    <string name="prophets_lessons">Pelajaran</string>
+    <string name="prophets_verse_references">Referensi Ayat</string>
+    <string name="prophets_era">Era</string>
+    <string name="prophets_people">Kaum</string>
+    <string name="prophets_lifespan">Usia</string>
+    <string name="prophets_favorites">Favorit</string>
+    <string name="no_favorite_prophets">Belum ada nabi favorit</string>
+    <string name="prophet_not_found">Nabi tidak ditemukan</string>
+    <string name="prophets_share">Bagikan</string>
+    <string name="prophets_previous">Sebelumnya</string>
+    <string name="prophets_next">Berikutnya</string>
+    <string name="prophets_story_font_size">Ukuran Huruf Kisah: %dsp</string>
+    <string name="verse_ref">%1$s %2$d:%3$d</string>
     <!-- Recitation -->
     <string name="audio_recitations">Murottal</string>
     <string name="select_reciter">Pilih Qari</string>
@@ -140,4 +168,8 @@
     <string name="currency">Mata Uang</string>
     <string name="zakat_due">Zakat: %s</string>
     <string name="zakat_not_due">Zakat Tidak Wajib</string>
+    <!-- Hadith -->
+    <string name="hadiths">Hadis</string>
+    <string name="hadith_reference">Shahih %1$s · Kitab %2$d, Hadis %3$d</string>
+    <string name="hadith_no_arabic">[Tidak ada teks Arab]</string>
 </resources>

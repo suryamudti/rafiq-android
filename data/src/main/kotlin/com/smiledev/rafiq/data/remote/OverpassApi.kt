@@ -1,7 +1,8 @@
 package com.smiledev.rafiq.data.remote
 
+import retrofit2.http.Field
+import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
-import retrofit2.http.Query
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -24,13 +25,14 @@ data class OverpassResponse(
 )
 
 interface OverpassApiService {
+    @FormUrlEncoded
     @POST("interpreter")
-    suspend fun query(@Query("data") query: String): OverpassResponse
+    suspend fun query(@Field("data") query: String): OverpassResponse
 }
 
 @Singleton
 class OverpassApi @Inject constructor(
-    private val service: OverpassApiService
+    private val services: List<OverpassApiService>
 ) {
     suspend fun fetchMosques(lat: Double, lon: Double, radius: Int = 5000): List<OverpassElement> {
         val query = buildString {
@@ -41,7 +43,14 @@ class OverpassApi @Inject constructor(
             append(");")
             append("out center 50;")
         }
-        val response = service.query(query)
-        return response.elements
+        var lastError: Exception? = null
+        for (service in services) {
+            try {
+                return service.query(query).elements
+            } catch (e: Exception) {
+                lastError = e
+            }
+        }
+        throw lastError ?: IllegalStateException("No Overpass mirrors configured")
     }
 }

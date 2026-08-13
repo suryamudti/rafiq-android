@@ -11,6 +11,9 @@ import kotlinx.serialization.Serializable
 @Serializable data object Mosques : NavKey
 @Serializable data object Prophets : NavKey
 @Serializable data class ProphetDetail(val prophetId: Int) : NavKey
+@Serializable data object HadithBooks : NavKey
+@Serializable data class HadithList(val bookId: String) : NavKey
+@Serializable data class HadithDetail(val hadithId: Int) : NavKey
 @Serializable data object Recitation : NavKey
 @Serializable data object IslamicCalendar : NavKey
 @Serializable data object ZakatCalculator : NavKey

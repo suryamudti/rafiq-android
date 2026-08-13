@@ -2,8 +2,8 @@ package com.smiledev.rafiq.data.repository
 
 import com.smiledev.rafiq.core.AppError
 import com.smiledev.rafiq.core.Result
-import com.smiledev.rafiq.core.getOrNull
 import com.smiledev.rafiq.data.remote.MetalPriceApi
+import com.smiledev.rafiq.domain.model.MetalPrices
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
@@ -23,33 +23,33 @@ class MetalPriceRepositoryImplTest {
     }
 
     @Test
-    fun `getGoldPricePerGram returns converted price`() = runTest {
+    fun `fetchMetalPrices fetches gold and silver and caches result`() = runTest {
         coEvery { metalPriceApi.getGoldPricePerGram() } returns 65.0
-
-        val result = repo.getGoldPricePerGram()
-
-        val price = result.getOrNull() ?: 0.0
-        assertEquals(65.0, price, 0.001)
-    }
-
-    @Test
-    fun `getSilverPricePerGram returns converted price`() = runTest {
         coEvery { metalPriceApi.getSilverPricePerGram() } returns 0.75
 
-        val result = repo.getSilverPricePerGram()
+        val result = repo.fetchMetalPrices()
 
-        val price = result.getOrNull() ?: 0.0
-        assertEquals(0.75, price, 0.001)
+        assertTrue(result is Result.Success)
+        val prices = (result as Result.Success).data
+        assertEquals(65.0, prices.goldPricePerGram, 0.001)
+        assertEquals(0.75, prices.silverPricePerGram, 0.001)
+        assertEquals(MetalPrices(65.0, 0.75), repo.getCachedMetalPrices())
     }
 
     @Test
-    fun `network error returns AppError`() = runTest {
+    fun `getCachedMetalPrices is null before any fetch`() {
+        assertEquals(null, repo.getCachedMetalPrices())
+    }
+
+    @Test
+    fun `network error returns AppError and does not cache`() = runTest {
         coEvery { metalPriceApi.getGoldPricePerGram() } throws RuntimeException("Timeout")
 
-        val result = repo.getGoldPricePerGram()
+        val result = repo.fetchMetalPrices()
 
         assertTrue(result is Result.Error)
         val error = (result as Result.Error).error
         assertTrue(error is AppError.Network)
+        assertEquals(null, repo.getCachedMetalPrices())
     }
 }

@@ -33,11 +33,21 @@
     <string name="qibla_direction">Qibla Direction</string>
     <string name="bearing_from_north">%d° from North</string>
     <string name="distance_to_mecca">Distance to Mecca: %d km</string>
+    <string name="distance_to_mecca_formatted">Distance to Mecca: %s km</string>
     <string name="calibrate_compass">Move your phone in a figure-8 pattern to calibrate the compass</string>
     <string name="north">N</string>
     <string name="south">S</string>
     <string name="east">E</string>
     <string name="west">W</string>
+    <string name="qibla_heading">Heading: %d°</string>
+    <string name="qibla_bearing">Qibla: %d°</string>
+    <string name="turn_left">Turn %d° left to face Qibla</string>
+    <string name="turn_right">Turn %d° right to face Qibla</string>
+    <string name="facing_qibla">Facing Qibla</string>
+    <string name="kaaba_info">Kaaba (Mecca)</string>
+    <string name="kaaba_coords">Kaaba coords: %1$s, %2$s</string>
+    <string name="your_coords">Your location: %1$s, %2$s</string>
+    <string name="open_in_maps">Open in Google Maps</string>
     <!-- Mosques -->
     <string name="nearby_mosques">Nearby Mosques</string>
     <string name="grant_location_permission">Grant Location Permission</string>
@@ -48,6 +58,24 @@
     <string name="prophets_title">25 Prophets</string>
     <string name="search_prophets">Search prophets</string>
     <string name="no_prophets_match">No prophets match \"%s\"</string>
+    <string name="prophets_summary">Summary</string>
+    <string name="prophets_story">Story</string>
+    <string name="prophets_miracles">Miracles</string>
+    <string name="prophets_facts">Facts</string>
+    <string name="prophets_key_events">Key Events</string>
+    <string name="prophets_lessons">Lessons</string>
+    <string name="prophets_verse_references">Verse References</string>
+    <string name="prophets_era">Era</string>
+    <string name="prophets_people">People</string>
+    <string name="prophets_lifespan">Lifespan</string>
+    <string name="prophets_favorites">Favorites</string>
+    <string name="no_favorite_prophets">No favorite prophets yet</string>
+    <string name="prophet_not_found">Prophet not found</string>
+    <string name="prophets_share">Share</string>
+    <string name="prophets_previous">Previous</string>
+    <string name="prophets_next">Next</string>
+    <string name="prophets_story_font_size">Story Font Size: %dsp</string>
+    <string name="verse_ref">%1$s %2$d:%3$d</string>
     <!-- Recitation -->
     <string name="audio_recitations">Audio Recitations</string>
     <string name="select_reciter">Select a Reciter</string>
@@ -140,4 +168,8 @@
     <string name="currency">Currency</string>
     <string name="zakat_due">Zakat Due: %s</string>
     <string name="zakat_not_due">Zakat Not Due</string>
+    <!-- Hadith -->
+    <string name="hadiths">Hadiths</string>
+    <string name="hadith_reference">Sahih %1$s · Book %2$d, Hadith %3$d</string>
+    <string name="hadith_no_arabic">[No Arabic text]</string>
 </resources>
