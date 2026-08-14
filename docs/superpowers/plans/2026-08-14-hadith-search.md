@@ -68,7 +68,7 @@ Adds `searchHadiths` and `getHadithById` to the interface and implements them wi
   - `fun searchHadiths(query: String, limit: Int = 100): Result<List<Hadith>, AppError>`
   - `fun getHadithById(id: Int): Result<Hadith?, AppError>`
 
-- [ ] **Step 1: Write failing repository tests**
+- [x] **Step 1: Write failing repository tests**
 
 Add these tests to `HadithRepositoryImplTest`. Extend `createFixtureDb` (see Step 3) so the fixture has 4 hadiths across 2 books with distinct text in each language, a literal `%` and literal `_`, then add the test methods:
 
@@ -182,12 +182,12 @@ fun `getHadithById returns null when not found`() {
 }
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `.\gradlew :data:testDebugUnitTest --tests "com.smiledev.rafiq.data.repository.HadithRepositoryImplTest"`
 Expected: compilation FAILS — `searchHadiths` / `getHadithById` not defined on `HadithRepository`.
 
-- [ ] **Step 3: Update the fixture in `createFixtureDb`**
+- [x] **Step 3: Update the fixture in `createFixtureDb`**
 
 Replace the body of `createFixtureDb` in `HadithRepositoryImplTest` so it creates 4 hadiths (keep the same two books):
 
@@ -218,7 +218,7 @@ private fun createFixtureDb(file: File) {
 
 Note: the pre-existing `getHadithsByBook` test asserts `hadiths[0].textEn == "t1"`; the new fixture keeps hadith id 1's `text_en` as `t1`, so that assertion still passes unchanged. No other pre-existing test references the id-1 text values.
 
-- [ ] **Step 4: Implement the interface + implementation**
+- [x] **Step 4: Implement the interface + implementation**
 
 Modify `HadithRepository.kt`:
 
@@ -309,12 +309,12 @@ private fun cursorToHadith(c: Cursor): Hadith = Hadith(
 
 Also refactor `getHadithsByBook` to reuse `cursorToHadith` (replace its inline `Hadith(...)` construction with `list.add(cursorToHadith(cursor))`) so the mapping stays in one place.
 
-- [ ] **Step 5: Run repository tests to verify they pass**
+- [x] **Step 5: Run repository tests to verify they pass**
 
 Run: `.\gradlew :data:testDebugUnitTest --tests "com.smiledev.rafiq.data.repository.HadithRepositoryImplTest"`
 Expected: ALL PASS (including the pre-existing `getBooks`/`getHadithsByBook` tests — fix any assertions your fixture change affected).
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add domain/src/main/kotlin/com/smiledev/rafiq/domain/repository/HadithRepository.kt data/src/main/kotlin/com/smiledev/rafiq/data/repository/HadithRepositoryImpl.kt data/src/test/kotlin/com/smiledev/rafiq/data/repository/HadithRepositoryImplTest.kt
@@ -337,7 +337,7 @@ Makes `HadithDetailScreen` load a single hadith by id so it works when opened di
 - Consumes: `hadithRepository.getHadithById(id)` (Task 1).
 - Produces: `HadithListViewModel.loadById(id: Int)`.
 
-- [ ] **Step 1: Write failing VM tests**
+- [x] **Step 1: Write failing VM tests**
 
 Add to `HadithListViewModelTest.kt`:
 
@@ -384,12 +384,12 @@ fun `loadById error surfaces in state`() = runTest(testDispatcher) {
 
 Add missing imports if not already present: `org.junit.Assert.assertTrue`.
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `.\gradlew :app:testDebugUnitTest --tests "com.smiledev.rafiq.ui.hadith.HadithListViewModelTest"`
 Expected: FAIL — `loadById` is unresolved.
 
-- [ ] **Step 3: Implement `loadById` in `HadithListViewModel`**
+- [x] **Step 3: Implement `loadById` in `HadithListViewModel`**
 
 Add after `load(bookId)`:
 
@@ -419,7 +419,7 @@ fun loadById(id: Int) {
 
 Note the `hadith?.let { h -> ... }` binding is required — cross-module smart casts from nullable don't work.
 
-- [ ] **Step 4: Wire `loadById` into `HadithDetailScreen`**
+- [x] **Step 4: Wire `loadById` into `HadithDetailScreen`**
 
 In `HadithDetailScreen.kt`, after `val state by viewModel.uiState.collectAsState()`, add:
 
@@ -429,7 +429,7 @@ LaunchedEffect(hadithId) { viewModel.loadById(hadithId) }
 
 Add the import `androidx.compose.runtime.LaunchedEffect`.
 
-- [ ] **Step 5: Update `HadithDetailScreenTest` fixture stubs**
+- [x] **Step 5: Update `HadithDetailScreenTest` fixture stubs**
 
 In `HadithDetailScreenTest.kt`'s `viewModel()` helper, the repo is `mockk(relaxed = true)`; the new `LaunchedEffect` will call `repo.getHadithById(1)`, which a relaxed mockk would answer with an empty/nonsense `Result`. Stub it explicitly:
 
@@ -439,12 +439,12 @@ every { repo.getHadithById(1) } returns Result.Success(hadith)
 
 `getBooks()` is already stubbed. All four existing tests (`showsArabicAndReferenceLine`, `enModeShowsEnglishTranslationOnly`, `idModeShowsIndonesianTranslationOnly`, `bothModeShowsBothTranslationsWithChips`) then pass unchanged because `loadById` repopulates `hadiths` with the same single hadith.
 
-- [ ] **Step 6: Run tests to verify they pass**
+- [x] **Step 6: Run tests to verify they pass**
 
 Run: `.\gradlew :app:testDebugUnitTest --tests "com.smiledev.rafiq.ui.hadith.HadithListViewModelTest"`
 Expected: ALL PASS.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add app/src/main/java/com/smiledev/rafiq/ui/hadith/HadithListViewModel.kt app/src/main/java/com/smiledev/rafiq/ui/hadith/HadithDetailScreen.kt app/src/test/java/com/smiledev/rafiq/ui/hadith/HadithListViewModelTest.kt app/src/androidTest/java/com/smiledev/rafiq/ui/hadith/HadithDetailScreenTest.kt
@@ -469,7 +469,7 @@ State + debounced search logic. Debounce cancels the in-flight search Job on eac
   - `fun search(query: String)`
   - `fun resolvedLanguage(): String`
 
-- [ ] **Step 1: Write the failing VM test**
+- [x] **Step 1: Write the failing VM test**
 
 Create `HadithSearchViewModelTest.kt` (mirror `HadithListViewModelTest` setup — mockk repo, relaxed prefs with `MutableStateFlow("system")`, `TestDispatcherProvider` over `StandardTestDispatcher`):
 
@@ -579,12 +579,12 @@ class HadithSearchViewModelTest {
 }
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `.\gradlew :app:testDebugUnitTest --tests "com.smiledev.rafiq.ui.hadith.HadithSearchViewModelTest"`
 Expected: FAIL — `HadithSearchViewModel` unresolved.
 
-- [ ] **Step 3: Implement `HadithSearchViewModel`**
+- [x] **Step 3: Implement `HadithSearchViewModel`**
 
 Create `HadithSearchViewModel.kt`:
 
@@ -687,12 +687,12 @@ class HadithSearchViewModel @Inject constructor(
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `.\gradlew :app:testDebugUnitTest --tests "com.smiledev.rafiq.ui.hadith.HadithSearchViewModelTest"`
 Expected: ALL PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add app/src/main/java/com/smiledev/rafiq/ui/hadith/HadithSearchViewModel.kt app/src/test/java/com/smiledev/rafiq/ui/hadith/HadithSearchViewModelTest.kt
@@ -715,7 +715,7 @@ The dedicated search screen: search field, hint, no-results, and result cards wi
 - Consumes: `HadithSearchViewModel` (Task 3) with `uiState`, `search()`, `resolvedLanguage()`.
 - Produces: `@Composable fun HadithSearchScreen(onHadithClick: (Int) -> Unit, onBack: () -> Unit, viewModel: HadithSearchViewModel = hiltViewModel(), modifier: Modifier = Modifier)`.
 
-- [ ] **Step 1: Add string resources**
+- [x] **Step 1: Add string resources**
 
 In `app/src/main/res/values/strings.xml`, inside the `<!-- Hadith -->` block:
 
@@ -733,7 +733,7 @@ In `app/src/main/res/values-id/strings.xml`, inside the `<!-- Hadith -->` block:
 <string name="no_hadiths_match">Tidak ada hadis yang cocok dengan \"%s\"</string>
 ```
 
-- [ ] **Step 2: Write the failing Compose UI test**
+- [x] **Step 2: Write the failing Compose UI test**
 
 Create `HadithSearchScreenTest.kt` (mirror `HadithDetailScreenTest` setup — `createComposeRule`, anonymous `DispatcherProvider` over `UnconfinedTestDispatcher(testScope.testScheduler)`). Because the VM debounces with `delay(250)`, call `search()` then advance the test scheduler BEFORE `setContent` so results are ready:
 
@@ -823,12 +823,12 @@ class HadithSearchScreenTest {
 }
 ```
 
-- [ ] **Step 3: Run test to verify it fails**
+- [x] **Step 3: Run test to verify it fails**
 
 Run: `.\gradlew :app:connectedDebugAndroidTest --tests "com.smiledev.rafiq.ui.hadith.HadithSearchScreenTest"` (emulator `Medium_Phone_API_35` required)
 Expected: FAIL — `HadithSearchScreen` unresolved.
 
-- [ ] **Step 4: Implement `HadithSearchScreen`**
+- [x] **Step 4: Implement `HadithSearchScreen`**
 
 Create `HadithSearchScreen.kt`:
 
@@ -1032,12 +1032,12 @@ private fun highlightMatches(text: String, query: String): AnnotatedString {
 }
 ```
 
-- [ ] **Step 5: Run test to verify it passes**
+- [x] **Step 5: Run test to verify it passes**
 
 Run: `.\gradlew :app:connectedDebugAndroidTest --tests "com.smiledev.rafiq.ui.hadith.HadithSearchScreenTest"` (emulator required)
 Expected: ALL PASS.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add app/src/main/java/com/smiledev/rafiq/ui/hadith/HadithSearchScreen.kt app/src/androidTest/java/com/smiledev/rafiq/ui/hadith/HadithSearchScreenTest.kt app/src/main/res/values/strings.xml app/src/main/res/values-id/strings.xml
@@ -1059,7 +1059,7 @@ Adds the `HadithSearch` route and a Search action on the hadith books top bar.
 - Consumes: `HadithSearchScreen` (Task 4), `HadithList`/`HadithDetail` keys (exist).
 - Produces: `@Serializable data object HadithSearch : NavKey`; `HadithBooksScreen(onHadithBookClick, onSearch, onBack, ...)`.
 
-- [ ] **Step 1: Add the NavKey**
+- [x] **Step 1: Add the NavKey**
 
 In `NavigationKeys.kt`, add next to the other hadith keys:
 
@@ -1067,7 +1067,7 @@ In `NavigationKeys.kt`, add next to the other hadith keys:
 @Serializable data object HadithSearch : NavKey
 ```
 
-- [ ] **Step 2: Wire the route**
+- [x] **Step 2: Wire the route**
 
 In `Navigation.kt`, add an import `com.smiledev.rafiq.ui.hadith.HadithSearchScreen` and, after the `entry<HadithBooks>` block:
 
@@ -1081,7 +1081,7 @@ entry<HadithSearch> {
 }
 ```
 
-- [ ] **Step 3: Add the Search action to `HadithBooksScreen`**
+- [x] **Step 3: Add the Search action to `HadithBooksScreen`**
 
 Add an `onSearch: () -> Unit = {}` parameter (default keeps the existing `HadithBooksScreenTest` call sites compiling) and a Search `IconButton` in the `TopAppBar` actions:
 
@@ -1112,17 +1112,17 @@ Add imports: `androidx.compose.material.icons.Icons`, `androidx.compose.material
 
 Update `Navigation.kt`'s `entry<HadithBooks>` to pass `onSearch = { backStack.add(HadithSearch) }`.
 
-- [ ] **Step 4: Build to verify**
+- [x] **Step 4: Build to verify**
 
 Run: `.\gradlew :app:assembleDebug`
 Expected: BUILD SUCCESSFUL (Hilt graph + nav wiring compile).
 
-- [ ] **Step 5: Run the JVM test suite to confirm nothing regressed**
+- [x] **Step 5: Run the JVM test suite to confirm nothing regressed**
 
 Run: `.\gradlew :app:testDebugUnitTest :data:testDebugUnitTest`
 Expected: ALL PASS.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add app/src/main/java/com/smiledev/rafiq/NavigationKeys.kt app/src/main/java/com/smiledev/rafiq/Navigation.kt app/src/main/java/com/smiledev/rafiq/ui/hadith/HadithBooksScreen.kt
