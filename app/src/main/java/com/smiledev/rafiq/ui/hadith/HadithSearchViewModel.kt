@@ -13,29 +13,37 @@ import com.smiledev.rafiq.domain.model.Hadith
 import com.smiledev.rafiq.domain.model.HadithBook
 import com.smiledev.rafiq.domain.repository.HadithRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+private const val SEARCH_DEBOUNCE_MS = 250L
+private const val SEARCH_LIMIT = 100
+
 @Immutable
-data class HadithListUiState(
-    val book: HadithBook? = null,
-    val hadiths: List<Hadith> = emptyList(),
+data class HadithSearchUiState(
+    val query: String = "",
+    val results: List<Hadith> = emptyList(),
+    val books: List<HadithBook> = emptyList(),
     val isLoading: Boolean = false,
     val error: AppError? = null,
     val translationLanguage: String = "system"
 )
 
 @HiltViewModel
-class HadithListViewModel @Inject constructor(
+class HadithSearchViewModel @Inject constructor(
     private val hadithRepository: HadithRepository,
     private val preferencesManager: PreferencesManager,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(HadithListUiState())
-    val uiState: StateFlow<HadithListUiState> = _uiState
+    private val _uiState = MutableStateFlow(HadithSearchUiState())
+    val uiState: StateFlow<HadithSearchUiState> = _uiState
+
+    private var searchJob: Job? = null
 
     init {
         viewModelScope.launch(dispatcherProvider.io) {
@@ -43,41 +51,40 @@ class HadithListViewModel @Inject constructor(
                 _uiState.value = _uiState.value.copy(translationLanguage = lang)
             }
         }
+        loadBooks()
     }
 
-    fun load(bookId: String) {
+    private fun loadBooks() {
         viewModelScope.launch(dispatcherProvider.io) {
-            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
-            val booksResult = hadithRepository.getBooks()
-            val hadithsResult = hadithRepository.getHadithsByBook(bookId)
-            val book = (booksResult as? Result.Success)?.data?.find { it.id == bookId }
-            when (hadithsResult) {
-                is Result.Success -> _uiState.value = _uiState.value.copy(
-                    book = book, hadiths = hadithsResult.data, isLoading = false
-                )
-                is Result.Error -> _uiState.value = _uiState.value.copy(isLoading = false, error = hadithsResult.error)
+            when (val result = hadithRepository.getBooks()) {
+                is Result.Success -> _uiState.value = _uiState.value.copy(books = result.data)
+                is Result.Error -> _uiState.value = _uiState.value.copy(error = result.error)
             }
         }
     }
 
-    fun loadById(id: Int) {
-        viewModelScope.launch(dispatcherProvider.io) {
+    fun search(query: String) {
+        _uiState.value = _uiState.value.copy(query = query)
+        searchJob?.cancel()
+        searchJob = viewModelScope.launch(dispatcherProvider.io) {
+            delay(SEARCH_DEBOUNCE_MS)
+            val term = _uiState.value.query.trim()
+            if (term.isEmpty()) {
+                _uiState.value = _uiState.value.copy(results = emptyList(), isLoading = false, error = null)
+                return@launch
+            }
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
-            val booksResult = hadithRepository.getBooks()
-            val hadithResult = hadithRepository.getHadithById(id)
-            when (hadithResult) {
+            when (val result = hadithRepository.searchHadiths(term, SEARCH_LIMIT)) {
                 is Result.Success -> {
-                    val hadith = hadithResult.data
-                    val book = hadith?.let { h ->
-                        (booksResult as? Result.Success)?.data?.find { it.id == h.bookId }
+                    if (_uiState.value.query.trim() == term) {
+                        _uiState.value = _uiState.value.copy(results = result.data, isLoading = false)
                     }
-                    _uiState.value = _uiState.value.copy(
-                        hadiths = hadith?.let { listOf(it) } ?: emptyList(),
-                        book = book,
-                        isLoading = false
-                    )
                 }
-                is Result.Error -> _uiState.value = _uiState.value.copy(isLoading = false, error = hadithResult.error)
+                is Result.Error -> {
+                    if (_uiState.value.query.trim() == term) {
+                        _uiState.value = _uiState.value.copy(isLoading = false, error = result.error)
+                    }
+                }
             }
         }
     }

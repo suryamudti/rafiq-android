@@ -3,6 +3,7 @@ package com.smiledev.rafiq.ui.hadith
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import com.smiledev.rafiq.core.DispatcherProvider
 import com.smiledev.rafiq.core.Result
 import com.smiledev.rafiq.data.preferences.PreferencesManager
@@ -14,11 +15,12 @@ import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
 
 @kotlinx.coroutines.ExperimentalCoroutinesApi
-class HadithDetailScreenTest {
+class HadithSearchScreenTest {
 
     @get:Rule
     val composeTestRule = createComposeRule()
@@ -36,55 +38,46 @@ class HadithDetailScreenTest {
     private val book = HadithBook("bukhari.1", "bukhari", 1, "كتاب بدء الوحي", "Revelation", "Permulaan Wahyu")
     private val hadith = Hadith(1, "bukhari.1", 1, "Narrator", "Narrator", "نص عربي", "English text", "Teks Indonesia")
 
-    private fun viewModel(lang: String): HadithListViewModel {
+    private fun viewModel(query: String, result: List<Hadith>): HadithSearchViewModel {
         val repo = mockk<HadithRepository>(relaxed = true)
         every { repo.getBooks() } returns Result.Success(listOf(book))
-        every { repo.getHadithsByBook("bukhari.1") } returns Result.Success(listOf(hadith))
-        every { repo.getHadithById(1) } returns Result.Success(hadith)
+        every { repo.searchHadiths(any(), 100) } returns Result.Success(result)
         val prefs = mockk<PreferencesManager>(relaxed = true)
-        every { prefs.translationLanguage } returns MutableStateFlow(lang)
-        return HadithListViewModel(repo, prefs, dispatcher()).apply { load("bukhari.1") }
+        every { prefs.translationLanguage } returns MutableStateFlow("en")
+        return HadithSearchViewModel(repo, prefs, dispatcher()).apply {
+            search(query)
+            testScope.testScheduler.advanceUntilIdle()
+        }
     }
 
     @Test
-    fun showsArabicAndReferenceLine() {
+    fun showsHintWhenQueryBlank() {
         composeTestRule.setContent {
-            HadithDetailScreen(hadithId = 1, onBack = {}, viewModel = viewModel("en"))
+            HadithSearchScreen(onHadithClick = {}, onBack = {}, viewModel = viewModel("", emptyList()))
         }
 
-        composeTestRule.onNodeWithText("نص عربي").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Sahih al-Bukhari · Book 1, Hadith 1").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Type to search the whole hadith collection").assertIsDisplayed()
     }
 
     @Test
-    fun enModeShowsEnglishTranslationOnly() {
+    fun showsResultAndTappingCallsOnHadithClick() {
+        var clicked: Int? = null
         composeTestRule.setContent {
-            HadithDetailScreen(hadithId = 1, onBack = {}, viewModel = viewModel("en"))
-        }
-
-        composeTestRule.onNodeWithText("English text").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Teks Indonesia").assertDoesNotExist()
-    }
-
-    @Test
-    fun idModeShowsIndonesianTranslationOnly() {
-        composeTestRule.setContent {
-            HadithDetailScreen(hadithId = 1, onBack = {}, viewModel = viewModel("id"))
-        }
-
-        composeTestRule.onNodeWithText("Teks Indonesia").assertIsDisplayed()
-        composeTestRule.onNodeWithText("English text").assertDoesNotExist()
-    }
-
-    @Test
-    fun bothModeShowsBothTranslationsWithChips() {
-        composeTestRule.setContent {
-            HadithDetailScreen(hadithId = 1, onBack = {}, viewModel = viewModel("both"))
+            HadithSearchScreen(onHadithClick = { clicked = it }, onBack = {}, viewModel = viewModel("English", listOf(hadith)))
         }
 
         composeTestRule.onNodeWithText("English text").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Teks Indonesia").assertIsDisplayed()
-        composeTestRule.onNodeWithText("ID").assertIsDisplayed()
-        composeTestRule.onNodeWithText("EN").assertIsDisplayed()
+        composeTestRule.onNodeWithText("English text").performClick()
+        composeTestRule.waitForIdle()
+        assertEquals(1, clicked)
+    }
+
+    @Test
+    fun showsNoMatchMessageWhenQueryHasNoResults() {
+        composeTestRule.setContent {
+            HadithSearchScreen(onHadithClick = {}, onBack = {}, viewModel = viewModel("zzz", emptyList()))
+        }
+
+        composeTestRule.onNodeWithText("No hadiths match \"zzz\"").assertIsDisplayed()
     }
 }

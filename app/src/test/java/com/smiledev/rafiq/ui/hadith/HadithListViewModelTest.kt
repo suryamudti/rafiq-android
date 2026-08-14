@@ -16,6 +16,7 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -72,5 +73,45 @@ class HadithListViewModelTest {
         advanceUntilIdle()
 
         assertEquals("en", vm.resolvedLanguage()) // JVM default locale; adjust if locale is id
+    }
+
+    @Test
+    fun `loadById populates single hadith and book`() = runTest(testDispatcher) {
+        every { repository.getBooks() } returns Result.Success(listOf(book))
+        every { repository.getHadithById(1) } returns Result.Success(hadith)
+
+        val vm = createVm()
+        vm.loadById(1)
+        advanceUntilIdle()
+
+        assertEquals(1, vm.uiState.value.hadiths.size)
+        assertEquals(hadith.id, vm.uiState.value.hadiths[0].id)
+        assertEquals("bukhari.1", vm.uiState.value.book?.id)
+        assertEquals(false, vm.uiState.value.isLoading)
+    }
+
+    @Test
+    fun `loadById not found leaves empty hadiths`() = runTest(testDispatcher) {
+        every { repository.getBooks() } returns Result.Success(listOf(book))
+        every { repository.getHadithById(999) } returns Result.Success(null)
+
+        val vm = createVm()
+        vm.loadById(999)
+        advanceUntilIdle()
+
+        assertTrue(vm.uiState.value.hadiths.isEmpty())
+    }
+
+    @Test
+    fun `loadById error surfaces in state`() = runTest(testDispatcher) {
+        every { repository.getBooks() } returns Result.Success(listOf(book))
+        every { repository.getHadithById(1) } returns Result.Error(AppError.Database("fail", null))
+
+        val vm = createVm()
+        vm.loadById(1)
+        advanceUntilIdle()
+
+        assertEquals(true, vm.uiState.value.error != null)
+        assertEquals(false, vm.uiState.value.isLoading)
     }
 }

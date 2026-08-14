@@ -9,6 +9,7 @@ import io.mockk.every
 import io.mockk.mockk
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -54,9 +55,10 @@ class HadithRepositoryImplTest {
         db.execSQL(
             "INSERT INTO books VALUES ('bukhari.1','bukhari',1,'كتاب بدء الوحي','Revelation','Permulaan Wahyu')"
         )
-        db.execSQL(
-            "INSERT INTO hadiths VALUES (1,'bukhari.1',1,'','','n1','t1','t1id')"
-        )
+        db.execSQL("INSERT INTO hadiths VALUES (1,'bukhari.1',1,'','','نص واحد','t1','satu')")
+        db.execSQL("INSERT INTO hadiths VALUES (2,'muslim.1',1,'','','نص اثنان','prayer text','teks shalat')")
+        db.execSQL("INSERT INTO hadiths VALUES (3,'bukhari.1',2,'','','نص ثلاثة','price 50% off','harga diskon 50%')")
+        db.execSQL("INSERT INTO hadiths VALUES (4,'muslim.1',2,'','','نص أربعة','under_score text','teks garis_bawah')")
         db.close()
     }
 
@@ -88,7 +90,7 @@ class HadithRepositoryImplTest {
 
         assertTrue("Expected Success but got ${result}", result is Result.Success)
         val hadiths = (result as Result.Success).data
-        assertEquals(1, hadiths.size)
+        assertEquals(2, hadiths.size)
         assertEquals("bukhari.1", hadiths[0].bookId)
         assertEquals("t1", hadiths[0].textEn)
     }
@@ -98,7 +100,9 @@ class HadithRepositoryImplTest {
         val result = repo.getHadithsByBook("muslim.1")
 
         assertTrue("Expected Success but got ${result}", result is Result.Success)
-        assertEquals(0, (result as Result.Success).data.size)
+        val hadiths = (result as Result.Success).data
+        assertEquals(2, hadiths.size)
+        assertTrue(hadiths.all { it.bookId == "muslim.1" })
     }
 
     @Test
@@ -109,5 +113,113 @@ class HadithRepositoryImplTest {
 
         assertTrue("Expected Error but got ${result}", result is Result.Error)
         assertTrue((result as Result.Error).error is AppError.Database)
+    }
+
+    @Test
+    fun `searchHadiths matches text_id`() {
+        val result = repo.searchHadiths("shalat")
+
+        assertTrue("Expected Success but got ${result}", result is Result.Success)
+        val hadiths = (result as Result.Success).data
+        assertEquals(1, hadiths.size)
+        assertEquals(2, hadiths[0].id)
+    }
+
+    @Test
+    fun `searchHadiths matches text_en`() {
+        val result = repo.searchHadiths("prayer")
+
+        assertTrue("Expected Success but got ${result}", result is Result.Success)
+        assertEquals(listOf(2), (result as Result.Success).data.map { it.id })
+    }
+
+    @Test
+    fun `searchHadiths matches text_ar`() {
+        val result = repo.searchHadiths("نص")
+
+        assertTrue("Expected Success but got ${result}", result is Result.Success)
+        assertEquals(listOf(1, 2, 3, 4), (result as Result.Success).data.map { it.id })
+    }
+
+    @Test
+    fun `searchHadiths matches book name_en`() {
+        val result = repo.searchHadiths("Revelation")
+
+        assertTrue("Expected Success but got ${result}", result is Result.Success)
+        assertEquals(listOf(1, 3), (result as Result.Success).data.map { it.id })
+    }
+
+    @Test
+    fun `searchHadiths matches book name_id`() {
+        val result = repo.searchHadiths("Iman")
+
+        assertTrue("Expected Success but got ${result}", result is Result.Success)
+        assertEquals(listOf(2, 4), (result as Result.Success).data.map { it.id })
+    }
+
+    @Test
+    fun `searchHadiths returns empty for no match`() {
+        val result = repo.searchHadiths("zzz-not-there")
+
+        assertTrue("Expected Success but got ${result}", result is Result.Success)
+        assertTrue((result as Result.Success).data.isEmpty())
+    }
+
+    @Test
+    fun `searchHadiths blank query returns empty without error`() {
+        val result = repo.searchHadiths("   ")
+
+        assertTrue("Expected Success but got ${result}", result is Result.Success)
+        assertTrue((result as Result.Success).data.isEmpty())
+    }
+
+    @Test
+    fun `searchHadiths treats percent as literal not wildcard`() {
+        val result = repo.searchHadiths("50%")
+
+        assertTrue("Expected Success but got ${result}", result is Result.Success)
+        assertEquals(listOf(3), (result as Result.Success).data.map { it.id })
+    }
+
+    @Test
+    fun `searchHadiths treats underscore as literal not wildcard`() {
+        val result = repo.searchHadiths("under_score")
+
+        assertTrue("Expected Success but got ${result}", result is Result.Success)
+        assertEquals(listOf(4), (result as Result.Success).data.map { it.id })
+    }
+
+    @Test
+    fun `searchHadiths applies limit`() {
+        val result = repo.searchHadiths("نص", limit = 2)
+
+        assertTrue("Expected Success but got ${result}", result is Result.Success)
+        assertEquals(2, (result as Result.Success).data.size)
+    }
+
+    @Test
+    fun `searchHadiths returns Error when db file missing`() {
+        dbFile.delete()
+
+        val result = repo.searchHadiths("prayer")
+
+        assertTrue("Expected Error but got ${result}", result is Result.Error)
+        assertTrue((result as Result.Error).error is AppError.Database)
+    }
+
+    @Test
+    fun `getHadithById returns hadith when found`() {
+        val result = repo.getHadithById(2)
+
+        assertTrue("Expected Success but got ${result}", result is Result.Success)
+        assertEquals(2, (result as Result.Success).data?.id)
+    }
+
+    @Test
+    fun `getHadithById returns null when not found`() {
+        val result = repo.getHadithById(999)
+
+        assertTrue("Expected Success but got ${result}", result is Result.Success)
+        assertNull((result as Result.Success).data)
     }
 }

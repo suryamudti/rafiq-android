@@ -172,4 +172,7 @@
     <string name="hadiths">Hadis</string>
     <string name="hadith_reference">Shahih %1$s · Kitab %2$d, Hadis %3$d</string>
     <string name="hadith_no_arabic">[Tidak ada teks Arab]</string>
+    <string name="search_hadiths">Cari hadis…</string>
+    <string name="search_hadiths_hint">Ketik untuk mencari seluruh koleksi hadis</string>
+    <string name="no_hadiths_match">Tidak ada hadis yang cocok dengan \"%s\"</string>
 </resources>
