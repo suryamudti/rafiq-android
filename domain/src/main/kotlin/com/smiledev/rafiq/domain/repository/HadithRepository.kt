@@ -8,4 +8,6 @@ import com.smiledev.rafiq.domain.model.HadithBook
 interface HadithRepository {
     fun getBooks(): Result<List<HadithBook>, AppError>
     fun getHadithsByBook(bookId: String): Result<List<Hadith>, AppError>
+    fun searchHadiths(query: String, limit: Int = 100): Result<List<Hadith>, AppError>
+    fun getHadithById(id: Int): Result<Hadith?, AppError>
 }

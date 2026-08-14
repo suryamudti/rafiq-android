@@ -1,6 +1,7 @@
 package com.smiledev.rafiq.data.repository
 
 import android.content.Context
+import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import com.smiledev.rafiq.core.AppError
 import com.smiledev.rafiq.core.DatabaseCopier
@@ -59,18 +60,7 @@ class HadithRepositoryImpl @Inject constructor(
             )
             val list = mutableListOf<Hadith>()
             while (cursor.moveToNext()) {
-                list.add(
-                    Hadith(
-                        id = cursor.getInt(0),
-                        bookId = cursor.getString(1),
-                        inBookNumber = cursor.getInt(2),
-                        narratorAr = cursor.getString(3).ifBlank { null },
-                        narratorEn = cursor.getString(4).ifBlank { null },
-                        textAr = cursor.getString(5),
-                        textEn = cursor.getString(6),
-                        textId = cursor.getString(7)
-                    )
-                )
+                list.add(cursorToHadith(cursor))
             }
             cursor.close()
             list.asSuccess()
@@ -78,6 +68,71 @@ class HadithRepositoryImpl @Inject constructor(
             Result.Error(AppError.Database("Failed to load hadiths for book $bookId", e))
         }
     }
+
+    override fun searchHadiths(query: String, limit: Int): Result<List<Hadith>, AppError> {
+        val term = query.trim()
+        if (term.isEmpty()) return emptyList<Hadith>().asSuccess()
+        return try {
+            val d = getDatabase()
+            val pattern = "%${escapeLike(term)}%"
+            val args = arrayOf(pattern, pattern, pattern, pattern, pattern, pattern, limit.toString())
+            val cursor = d.rawQuery(
+                """
+                SELECT h.id, h.book_id, h.in_book_number, h.narrator_ar, h.narrator_en,
+                       h.text_ar, h.text_en, h.text_id
+                FROM hadiths h
+                JOIN books b ON b.id = h.book_id
+                WHERE h.text_id LIKE ? ESCAPE '\'
+                   OR h.text_en LIKE ? ESCAPE '\'
+                   OR h.text_ar LIKE ? ESCAPE '\'
+                   OR b.name_id LIKE ? ESCAPE '\'
+                   OR b.name_en LIKE ? ESCAPE '\'
+                   OR b.name_ar LIKE ? ESCAPE '\'
+                ORDER BY h.id
+                LIMIT ?
+                """.trimIndent(),
+                args
+            )
+            val list = mutableListOf<Hadith>()
+            while (cursor.moveToNext()) {
+                list.add(cursorToHadith(cursor))
+            }
+            cursor.close()
+            list.asSuccess()
+        } catch (e: Exception) {
+            Result.Error(AppError.Database("Failed to search hadiths for \"$query\"", e))
+        }
+    }
+
+    override fun getHadithById(id: Int): Result<Hadith?, AppError> {
+        return try {
+            val d = getDatabase()
+            val cursor = d.rawQuery(
+                "SELECT id, book_id, in_book_number, narrator_ar, narrator_en, text_ar, text_en, text_id" +
+                    " FROM hadiths WHERE id = ?",
+                arrayOf(id.toString())
+            )
+            val hadith = if (cursor.moveToFirst()) cursorToHadith(cursor) else null
+            cursor.close()
+            hadith.asSuccess()
+        } catch (e: Exception) {
+            Result.Error(AppError.Database("Failed to load hadith $id", e))
+        }
+    }
+
+    private fun escapeLike(term: String): String =
+        term.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
+
+    private fun cursorToHadith(c: Cursor): Hadith = Hadith(
+        id = c.getInt(0),
+        bookId = c.getString(1),
+        inBookNumber = c.getInt(2),
+        narratorAr = c.getString(3).ifBlank { null },
+        narratorEn = c.getString(4).ifBlank { null },
+        textAr = c.getString(5),
+        textEn = c.getString(6),
+        textId = c.getString(7)
+    )
 
     private fun getDatabase(): SQLiteDatabase {
         if (db?.isOpen == true) return db!!
