@@ -40,6 +40,7 @@ class HadithDetailScreenTest {
         val repo = mockk<HadithRepository>(relaxed = true)
         every { repo.getBooks() } returns Result.Success(listOf(book))
         every { repo.getHadithsByBook("bukhari.1") } returns Result.Success(listOf(hadith))
+        every { repo.getHadithById(1) } returns Result.Success(hadith)
         val prefs = mockk<PreferencesManager>(relaxed = true)
         every { prefs.translationLanguage } returns MutableStateFlow(lang)
         return HadithListViewModel(repo, prefs, dispatcher()).apply { load("bukhari.1") }

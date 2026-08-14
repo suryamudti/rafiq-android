@@ -60,6 +60,28 @@ class HadithListViewModel @Inject constructor(
         }
     }
 
+    fun loadById(id: Int) {
+        viewModelScope.launch(dispatcherProvider.io) {
+            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+            val booksResult = hadithRepository.getBooks()
+            val hadithResult = hadithRepository.getHadithById(id)
+            when (hadithResult) {
+                is Result.Success -> {
+                    val hadith = hadithResult.data
+                    val book = hadith?.let { h ->
+                        (booksResult as? Result.Success)?.data?.find { it.id == h.bookId }
+                    }
+                    _uiState.value = _uiState.value.copy(
+                        hadiths = hadith?.let { listOf(it) } ?: emptyList(),
+                        book = book,
+                        isLoading = false
+                    )
+                }
+                is Result.Error -> _uiState.value = _uiState.value.copy(isLoading = false, error = hadithResult.error)
+            }
+        }
+    }
+
     fun resolvedLanguage(): String {
         val lang = _uiState.value.translationLanguage
         return if (lang == "system") currentLocaleCode() else lang
