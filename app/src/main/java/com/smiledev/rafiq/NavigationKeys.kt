@@ -12,6 +12,7 @@ import kotlinx.serialization.Serializable
 @Serializable data object Prophets : NavKey
 @Serializable data class ProphetDetail(val prophetId: Int) : NavKey
 @Serializable data object HadithBooks : NavKey
+@Serializable data object HadithSearch : NavKey
 @Serializable data class HadithList(val bookId: String) : NavKey
 @Serializable data class HadithDetail(val hadithId: Int) : NavKey
 @Serializable data object Recitation : NavKey

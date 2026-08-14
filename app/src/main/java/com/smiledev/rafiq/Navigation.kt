@@ -19,6 +19,7 @@ import com.smiledev.rafiq.ui.prophets.ProphetsScreen
 import com.smiledev.rafiq.ui.prophets.ProphetDetailScreen
 import com.smiledev.rafiq.ui.recitation.RecitationScreen
 import com.smiledev.rafiq.ui.hadith.HadithBooksScreen
+import com.smiledev.rafiq.ui.hadith.HadithSearchScreen
 import com.smiledev.rafiq.ui.hadith.HadithListScreen
 import com.smiledev.rafiq.ui.hadith.HadithDetailScreen
 import com.smiledev.rafiq.ui.zakat.ZakatCalculatorScreen
@@ -106,6 +107,14 @@ fun MainNavigation() {
         entry<HadithBooks> {
           HadithBooksScreen(
             onHadithBookClick = { bookId -> backStack.add(HadithList(bookId)) },
+            onSearch = { backStack.add(HadithSearch) },
+            onBack = { backStack.removeLastOrNull() },
+            modifier = Modifier.safeDrawingPadding()
+          )
+        }
+        entry<HadithSearch> {
+          HadithSearchScreen(
+            onHadithClick = { id -> backStack.add(HadithDetail(id)) },
             onBack = { backStack.removeLastOrNull() },
             modifier = Modifier.safeDrawingPadding()
           )
