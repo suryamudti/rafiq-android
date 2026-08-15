@@ -116,6 +116,42 @@ class QuranRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun searchAyahs(query: String, localeCode: String, limit: Int): Result<List<Ayah>, AppError> {
+        return try {
+            val term = query.trim()
+            if (term.isEmpty()) return emptyList<Ayah>().asSuccess()
+            val pattern = "%${escapeLike(term)}%"
+
+            val arabicMatches = searchArabic(pattern, limit)
+            val translationMatches = searchTranslation(pattern, localeCode, limit)
+
+            val keys = (arabicMatches.keys + translationMatches.keys)
+                .sortedWith(compareBy({ it.first }, { it.second }))
+                .take(limit)
+            val metadata = getMetadataMap()
+
+            val results = keys.map { (sura, aya) ->
+                val arabicData = arabicMatches[sura to aya] ?: fetchArabic(sura, aya)
+                val meta = metadata["$sura:$aya"]
+                AyahData(
+                    sura = sura,
+                    aya = aya,
+                    text = arabicData?.text ?: "",
+                    bismillah = arabicData?.bismillah,
+                    translation = translationMatches[sura to aya]
+                        ?: getTranslationForAya(sura, aya, localeCode),
+                    page = meta?.page ?: 0,
+                    juz = meta?.juz ?: 0,
+                    sajda = meta?.sajda ?: false,
+                    sajdaType = meta?.sajdaType
+                ).toDomain()
+            }
+            results.asSuccess()
+        } catch (e: Exception) {
+            Result.Error(AppError.Database("Failed to search ayahs", e))
+        }
+    }
+
     private fun getMetadataMap(): Map<String, VerseMetadata> {
         if (metadataCache != null) return metadataCache!!
         val json = readAssetJson("quran-data/quran-metadata.json")
@@ -207,4 +243,74 @@ class QuranRepositoryImpl @Inject constructor(
         reader.close()
         return JSONObject(text)
     }
+
+    private fun searchArabic(pattern: String, limit: Int): Map<Pair<Int, Int>, AyahData> {
+        val db = getQuranDatabase()
+        val result = mutableMapOf<Pair<Int, Int>, AyahData>()
+        db.rawQuery(
+            "SELECT sura, aya, text, bismillah FROM quran WHERE text LIKE ? ESCAPE '\\' " +
+                "ORDER BY CAST(sura AS INTEGER), CAST(aya AS INTEGER) LIMIT ?",
+            arrayOf(pattern, limit.toString())
+        ).use { c ->
+            while (c.moveToNext()) {
+                val sura = c.getString(0).toIntOrNull() ?: 0
+                val aya = c.getString(1).toIntOrNull() ?: 0
+                val bismillahStr = if (c.isNull(3)) null else c.getString(3)
+                result[sura to aya] = AyahData(
+                    sura = sura,
+                    aya = aya,
+                    text = c.getString(2),
+                    bismillah = if (bismillahStr.isNullOrEmpty()) null else bismillahStr
+                )
+            }
+        }
+        return result
+    }
+
+    private fun searchTranslation(pattern: String, localeCode: String, limit: Int): Map<Pair<Int, Int>, String> {
+        val db = getTranslationDatabase(localeCode) ?: return emptyMap()
+        val result = mutableMapOf<Pair<Int, Int>, String>()
+        db.rawQuery(
+            "SELECT sura, ayah, text FROM verses WHERE text LIKE ? ESCAPE '\\' " +
+                "ORDER BY CAST(sura AS INTEGER), ayah LIMIT ?",
+            arrayOf(pattern, limit.toString())
+        ).use { c ->
+            while (c.moveToNext()) {
+                val sura = c.getString(0).toIntOrNull() ?: 0
+                val aya = c.getInt(1)
+                result[sura to aya] = c.getString(2)
+            }
+        }
+        return result
+    }
+
+    private fun fetchArabic(sura: Int, aya: Int): AyahData? {
+        val db = getQuranDatabase()
+        db.rawQuery(
+            "SELECT text, bismillah FROM quran WHERE sura = ? AND aya = ?",
+            arrayOf(sura.toString(), aya.toString())
+        ).use { c ->
+            if (!c.moveToFirst()) return null
+            val bismillahStr = if (c.isNull(1)) null else c.getString(1)
+            return AyahData(
+                sura = sura,
+                aya = aya,
+                text = c.getString(0),
+                bismillah = if (bismillahStr.isNullOrEmpty()) null else bismillahStr
+            )
+        }
+    }
+
+    private fun getTranslationForAya(sura: Int, aya: Int, localeCode: String): String? {
+        val db = getTranslationDatabase(localeCode) ?: return null
+        db.rawQuery(
+            "SELECT text FROM verses WHERE CAST(sura AS INTEGER) = ? AND ayah = ?",
+            arrayOf(sura.toString(), aya.toString())
+        ).use { c ->
+            return if (c.moveToFirst()) c.getString(0) else null
+        }
+    }
+
+    private fun escapeLike(input: String): String =
+        input.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
 }
