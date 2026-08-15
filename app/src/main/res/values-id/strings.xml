@@ -175,4 +175,6 @@
     <string name="search_hadiths">Cari hadis…</string>
     <string name="search_hadiths_hint">Ketik untuk mencari seluruh koleksi hadis</string>
     <string name="no_hadiths_match">Tidak ada hadis yang cocok dengan \"%s\"</string>
+    <string name="search_quran_hint">Cari di seluruh Al-Quran…</string>
+    <string name="no_ayahs_match">Tidak ada hasil</string>
 </resources>

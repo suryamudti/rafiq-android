@@ -52,6 +52,9 @@ fun MainNavigation() {
             onBookmarkClick = { sura, name, aya ->
               backStack.add(Ayah(suraNumber = sura, suraName = name, scrollToAya = aya))
             },
+            onSearchResultClick = { sura, name, aya ->
+              backStack.add(Ayah(suraNumber = sura, suraName = name, scrollToAya = aya))
+            },
             onBack = { backStack.removeLastOrNull() },
             modifier = Modifier.safeDrawingPadding()
           )
