@@ -268,6 +268,15 @@ class QuranRepositoryImpl @Inject constructor(
     }
 
     private fun searchTranslation(pattern: String, localeCode: String, limit: Int): Map<Pair<Int, Int>, String> {
+        if (localeCode == "both") {
+            val merged = searchTranslationSingle(pattern, "en", limit).toMutableMap()
+            merged.putAll(searchTranslationSingle(pattern, "id", limit))
+            return merged
+        }
+        return searchTranslationSingle(pattern, localeCode, limit)
+    }
+
+    private fun searchTranslationSingle(pattern: String, localeCode: String, limit: Int): Map<Pair<Int, Int>, String> {
         val db = getTranslationDatabase(localeCode) ?: return emptyMap()
         val result = mutableMapOf<Pair<Int, Int>, String>()
         db.rawQuery(
@@ -302,6 +311,13 @@ class QuranRepositoryImpl @Inject constructor(
     }
 
     private fun getTranslationForAya(sura: Int, aya: Int, localeCode: String): String? {
+        if (localeCode == "both") {
+            return getTranslationForAyaSingle(sura, aya, "id") ?: getTranslationForAyaSingle(sura, aya, "en")
+        }
+        return getTranslationForAyaSingle(sura, aya, localeCode)
+    }
+
+    private fun getTranslationForAyaSingle(sura: Int, aya: Int, localeCode: String): String? {
         val db = getTranslationDatabase(localeCode) ?: return null
         db.rawQuery(
             "SELECT text FROM verses WHERE CAST(sura AS INTEGER) = ? AND ayah = ?",

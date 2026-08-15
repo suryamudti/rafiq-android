@@ -154,6 +154,35 @@ class QuranRepositoryImplTest {
     }
 
     @Test
+    fun `searchAyahs matches id translation when locale is both`() {
+        val result = repo.searchAyahs("puji", "both")
+
+        assertTrue("Expected Success but got ${result}", result is Result.Success)
+        val ayahs = (result as Result.Success).data
+        assertEquals(listOf(1 to 2), ayahs.map { it.sura to it.aya })
+        assertEquals("Segala puji bagi Allah, Tuhan semesta alam", ayahs[0].translation)
+    }
+
+    @Test
+    fun `searchAyahs matches en translation when locale is both`() {
+        val result = repo.searchAyahs("Merciful", "both")
+
+        assertTrue("Expected Success but got ${result}", result is Result.Success)
+        val ayahs = (result as Result.Success).data
+        assertEquals(listOf(1 to 1), ayahs.map { it.sura to it.aya })
+    }
+
+    @Test
+    fun `searchAyahs with both finds id-only term in id translation`() {
+        val result = repo.searchAyahs("selain", "both")
+
+        assertTrue("Expected Success but got ${result}", result is Result.Success)
+        val ayahs = (result as Result.Success).data
+        assertEquals(listOf(2 to 255), ayahs.map { it.sura to it.aya })
+        assertEquals("Allah, tidak ada tuhan selain Dia", ayahs[0].translation)
+    }
+
+    @Test
     fun `searchAyahs dedupes when term matches Arabic and translation of same ayah`() {
         val result = repo.searchAyahs("ٱللَّهِ", "id")
 
