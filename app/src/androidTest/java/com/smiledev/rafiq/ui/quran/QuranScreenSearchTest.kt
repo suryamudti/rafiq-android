@@ -27,7 +27,7 @@ class QuranScreenSearchTest {
         val repo = mockk<QuranRepository>(relaxed = true)
         val prefs = mockk<PreferencesManager>(relaxed = true)
 
-        every { repo.getChapters("en") } returns Result.Success(
+        every { repo.getChapters(any()) } returns Result.Success(
             listOf(Surah(1, 1, "الفاتحة", "Al-Fatiha", "Al-Fatiha", 7, "Mecca"))
         )
         every { repo.searchAyahs(any(), any(), any()) } returns Result.Success(
