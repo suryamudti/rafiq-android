@@ -38,7 +38,6 @@ data class AyahUiState(
     val translationLanguage: String = "system",
     val ayahFontSize: Int = 22,
     val translationFontSize: Int = 15,
-    val searchQuery: String = "",
     val memorizationMode: Boolean = false,
     val memorizationRevealedAyah: Int? = null,
     val memorizationRepeatCount: Int = 0,
@@ -133,20 +132,6 @@ class AyahViewModel @Inject constructor(
 
     fun clearAyahs() {
         _uiState.value = _uiState.value.copy(ayahs = emptyList(), currentSurah = null)
-    }
-
-    fun setSearchQuery(query: String) {
-        _uiState.value = _uiState.value.copy(searchQuery = query)
-    }
-
-    fun getFilteredAyahs(): List<Ayah> {
-        val q = _uiState.value.searchQuery.trim().lowercase()
-        if (q.isEmpty()) return _uiState.value.ayahs
-        return _uiState.value.ayahs.filter { ayah ->
-            ayah.text.lowercase().contains(q) ||
-            (ayah.translationId?.lowercase()?.contains(q) == true) ||
-            (ayah.translationEn?.lowercase()?.contains(q) == true)
-        }
     }
 
     fun saveLastReadPosition(sura: Int, aya: Int) {

@@ -175,4 +175,6 @@
     <string name="search_hadiths">Search hadiths…</string>
     <string name="search_hadiths_hint">Type to search the whole hadith collection</string>
     <string name="no_hadiths_match">No hadiths match \"%s\"</string>
+    <string name="search_quran_hint">Search the whole Quran…</string>
+    <string name="no_ayahs_match">No results found</string>
 </resources>

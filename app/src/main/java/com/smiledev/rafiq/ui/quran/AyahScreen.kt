@@ -32,7 +32,6 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -42,7 +41,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
@@ -98,7 +96,6 @@ fun AyahScreen(
     val listState = rememberLazyListState()
     var hasScrolled by remember(suraNumber, scrollToAya) { mutableStateOf(false) }
     var actionAyah by remember { mutableStateOf<Ayah?>(null) }
-    var showSearch by remember { mutableStateOf(false) }
     var showJumpSheet by remember { mutableStateOf(false) }
     var showFontSizeSheet by remember { mutableStateOf(false) }
     var showOverflowMenu by remember { mutableStateOf(false) }
@@ -320,9 +317,6 @@ fun AyahScreen(
                     Text("Back", modifier = Modifier.clickable(onClick = onBack).padding(16.dp))
                 },
                 actions = {
-                    IconButton(onClick = { showSearch = !showSearch }) {
-                        Icon(Icons.Filled.Search, contentDescription = "Search")
-                    }
                     Box {
                         IconButton(onClick = { showOverflowMenu = true }) {
                             Icon(Icons.Filled.MoreVert, contentDescription = "More options")
@@ -361,15 +355,6 @@ fun AyahScreen(
                     containerColor = MaterialTheme.colorScheme.surface
                 )
             )
-            if (showSearch) {
-                OutlinedTextField(
-                    value = state.searchQuery,
-                    onValueChange = { viewModel.setSearchQuery(it) },
-                    placeholder = { Text("Search this surah...") },
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
-                    singleLine = true
-                )
-            }
         }
     ) { padding ->
         Box(modifier = Modifier.fillMaxSize().padding(padding)) {
@@ -385,16 +370,7 @@ fun AyahScreen(
                     )
                 }
                 else -> {
-                    val displayAyahs = viewModel.getFilteredAyahs()
-                    if (displayAyahs.isEmpty() && state.searchQuery.isNotBlank()) {
-                        Text(
-                            text = "No results found",
-                            modifier = Modifier.fillMaxWidth().padding(32.dp),
-                            textAlign = TextAlign.Center,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    } else {
-                        LazyColumn(
+                    LazyColumn(
                             state = listState,
                             modifier = modifier.fillMaxSize()
                         ) {
@@ -413,7 +389,7 @@ fun AyahScreen(
                                     HorizontalDivider()
                                 }
                             }
-                            itemsIndexed(displayAyahs) { index, ayah ->
+                            itemsIndexed(state.ayahs) { index, ayah ->
                             VerseCell(
                                 ayah = ayah,
                                 translationLanguage = state.translationLanguage,
@@ -432,7 +408,6 @@ fun AyahScreen(
                             )
                         }
                     }
-                }
             }
         }
     }
