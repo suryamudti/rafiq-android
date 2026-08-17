@@ -39,9 +39,9 @@
 -dontwarn kotlin.uuid.Uuid
 -keepclassmembers class kotlinx.serialization.json.** { *** Companion; }
 -keepclasseswithmembers class kotlinx.serialization.json.** { kotlinx.serialization.KSerializer serializer(...); }
--keep,includedescriptorclasses class com.smiledev.rafiq.**$$serializer { *; }
--keepclassmembers class com.smiledev.rafiq.** { *** Companion; }
--keepclasseswithmembers class com.smiledev.rafiq.** { kotlinx.serialization.KSerializer serializer(...); }
+-keep,includedescriptorclasses class com.smiledev.rafiq_quran.**$$serializer { *; }
+-keepclassmembers class com.smiledev.rafiq_quran.** { *** Companion; }
+-keepclasseswithmembers class com.smiledev.rafiq_quran.** { kotlinx.serialization.KSerializer serializer(...); }
 
 # Compose
 -dontwarn androidx.compose.**
@@ -70,6 +70,6 @@
 -dontwarn com.google.android.gms.**
 
 # Keep domain model classes (used by Gson and Room)
--keepclassmembers class com.smiledev.rafiq.domain.model.** { *; }
--keepclassmembers class com.smiledev.rafiq.data.local.** { *; }
--keepclassmembers class com.smiledev.rafiq.data.remote.** { *; }
+-keepclassmembers class com.smiledev.rafiq_quran.domain.model.** { *; }
+-keepclassmembers class com.smiledev.rafiq_quran.data.local.** { *; }
+-keepclassmembers class com.smiledev.rafiq_quran.data.remote.** { *; }

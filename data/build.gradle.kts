@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.smiledev.rafiq.data"
+    namespace = "com.smiledev.rafiq_quran.data"
     compileSdk = 36
     defaultConfig { minSdk = 23 }
     compileOptions {

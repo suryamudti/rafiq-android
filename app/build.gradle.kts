@@ -8,10 +8,10 @@ plugins {
 }
 
 android {
-    namespace = "com.smiledev.rafiq"
+    namespace = "com.smiledev.rafiq_quran"
     compileSdk = 36
     defaultConfig {
-        applicationId = "com.smiledev.rafiq"
+        applicationId = "com.smiledev.rafiq_quran"
         minSdk = 23
         targetSdk = 36
         val baseVersionName = "1.0"
