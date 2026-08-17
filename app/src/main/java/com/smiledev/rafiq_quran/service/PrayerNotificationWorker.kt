@@ -1,4 +1,4 @@
-package com.smiledev.rafiq.service
+package com.smiledev.rafiq_quran.service
 
 import android.Manifest
 import android.annotation.SuppressLint

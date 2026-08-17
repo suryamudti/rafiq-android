@@ -1,14 +1,14 @@
-package com.smiledev.rafiq.data.repository
+package com.smiledev.rafiq_quran.data.repository
 
 import android.content.Context
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.Tasks
-import com.smiledev.rafiq.core.AppError
-import com.smiledev.rafiq.core.Result
-import com.smiledev.rafiq.core.retryIO
-import com.smiledev.rafiq.data.preferences.PreferencesManager
-import com.smiledev.rafiq.domain.repository.LocationProvider
-import com.smiledev.rafiq.domain.repository.GeoLocation
+import com.smiledev.rafiq_quran.core.AppError
+import com.smiledev.rafiq_quran.core.Result
+import com.smiledev.rafiq_quran.core.retryIO
+import com.smiledev.rafiq_quran.data.preferences.PreferencesManager
+import com.smiledev.rafiq_quran.domain.repository.LocationProvider
+import com.smiledev.rafiq_quran.domain.repository.GeoLocation
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject

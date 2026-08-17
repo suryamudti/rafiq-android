@@ -1,4 +1,4 @@
-package com.smiledev.rafiq
+package com.smiledev.rafiq_quran
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -10,8 +10,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import com.smiledev.rafiq.data.preferences.PreferencesManager
-import com.smiledev.rafiq.theme.RafiqAppTheme
+import com.smiledev.rafiq_quran.data.preferences.PreferencesManager
+import com.smiledev.rafiq_quran.theme.RafiqAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 

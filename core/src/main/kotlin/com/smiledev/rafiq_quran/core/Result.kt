@@ -1,4 +1,4 @@
-package com.smiledev.rafiq.core
+package com.smiledev.rafiq_quran.core
 
 sealed class Result<out T, out E : AppError> {
     data class Success<T>(val data: T) : Result<T, Nothing>()

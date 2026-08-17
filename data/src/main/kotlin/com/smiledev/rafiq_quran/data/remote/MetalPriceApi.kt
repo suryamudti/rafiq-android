@@ -1,4 +1,4 @@
-package com.smiledev.rafiq.data.remote
+package com.smiledev.rafiq_quran.data.remote
 
 import retrofit2.http.GET
 import javax.inject.Inject

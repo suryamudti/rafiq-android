@@ -1,14 +1,14 @@
-package com.smiledev.rafiq.ui.dashboard
+package com.smiledev.rafiq_quran.ui.dashboard
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
-import com.smiledev.rafiq.core.DefaultDispatcherProvider
-import com.smiledev.rafiq.core.Result
-import com.smiledev.rafiq.data.preferences.PreferencesManager
-import com.smiledev.rafiq.domain.model.PrayerTimings
-import com.smiledev.rafiq.domain.model.PrayerTimesData
-import com.smiledev.rafiq.domain.repository.PrayerTimesRepository
+import com.smiledev.rafiq_quran.core.DefaultDispatcherProvider
+import com.smiledev.rafiq_quran.core.Result
+import com.smiledev.rafiq_quran.data.preferences.PreferencesManager
+import com.smiledev.rafiq_quran.domain.model.PrayerTimings
+import com.smiledev.rafiq_quran.domain.model.PrayerTimesData
+import com.smiledev.rafiq_quran.domain.repository.PrayerTimesRepository
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk

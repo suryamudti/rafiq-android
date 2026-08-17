@@ -1,4 +1,4 @@
-package com.smiledev.rafiq.data.repository
+package com.smiledev.rafiq_quran.data.repository
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue

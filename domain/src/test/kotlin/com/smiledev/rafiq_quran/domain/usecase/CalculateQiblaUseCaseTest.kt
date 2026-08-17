@@ -1,4 +1,4 @@
-package com.smiledev.rafiq.domain.usecase
+package com.smiledev.rafiq_quran.domain.usecase
 
 import org.junit.Assert.assertEquals
 import org.junit.Test

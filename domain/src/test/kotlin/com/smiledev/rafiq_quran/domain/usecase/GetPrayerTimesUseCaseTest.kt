@@ -1,10 +1,10 @@
-package com.smiledev.rafiq.domain.usecase
+package com.smiledev.rafiq_quran.domain.usecase
 
-import com.smiledev.rafiq.core.AppError
-import com.smiledev.rafiq.core.Result
-import com.smiledev.rafiq.domain.model.PrayerTimings
-import com.smiledev.rafiq.domain.model.PrayerTimesData
-import com.smiledev.rafiq.domain.repository.PrayerTimesRepository
+import com.smiledev.rafiq_quran.core.AppError
+import com.smiledev.rafiq_quran.core.Result
+import com.smiledev.rafiq_quran.domain.model.PrayerTimings
+import com.smiledev.rafiq_quran.domain.model.PrayerTimesData
+import com.smiledev.rafiq_quran.domain.repository.PrayerTimesRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk

@@ -1,4 +1,4 @@
-package com.smiledev.rafiq.ui.tasbih
+package com.smiledev.rafiq_quran.ui.tasbih
 
 import androidx.compose.runtime.Immutable
 import android.content.Context

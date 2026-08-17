@@ -1,4 +1,4 @@
-package com.smiledev.rafiq.ui.calendar
+package com.smiledev.rafiq_quran.ui.calendar
 
 import androidx.compose.ui.graphics.Color
 import org.junit.Assert.assertEquals

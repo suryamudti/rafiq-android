@@ -1,4 +1,4 @@
-package com.smiledev.rafiq.ui.hadith
+package com.smiledev.rafiq_quran.ui.hadith
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -31,10 +31,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.smiledev.rafiq.R
-import com.smiledev.rafiq.core.displayMessage
-import com.smiledev.rafiq.domain.model.Hadith
-import com.smiledev.rafiq.domain.model.HadithBook
+import com.smiledev.rafiq_quran.R
+import com.smiledev.rafiq_quran.core.displayMessage
+import com.smiledev.rafiq_quran.domain.model.Hadith
+import com.smiledev.rafiq_quran.domain.model.HadithBook
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

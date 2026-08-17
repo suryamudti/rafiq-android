@@ -1,4 +1,4 @@
-package com.smiledev.rafiq.ui.prayerlog
+package com.smiledev.rafiq_quran.ui.prayerlog
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -30,7 +30,7 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.smiledev.rafiq.R
+import com.smiledev.rafiq_quran.R
 
 private val prayerNames = listOf(
     "fajr" to R.string.fajr_subuh,

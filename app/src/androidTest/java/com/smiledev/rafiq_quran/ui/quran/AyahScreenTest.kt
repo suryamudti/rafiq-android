@@ -1,15 +1,15 @@
-package com.smiledev.rafiq.ui.quran
+package com.smiledev.rafiq_quran.ui.quran
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
-import com.smiledev.rafiq.core.DispatcherProvider
-import com.smiledev.rafiq.core.Result
-import com.smiledev.rafiq.data.preferences.PreferencesManager
-import com.smiledev.rafiq.domain.model.Ayah
-import com.smiledev.rafiq.domain.model.Surah
-import com.smiledev.rafiq.domain.repository.BookmarkRepository
-import com.smiledev.rafiq.domain.repository.QuranRepository
+import com.smiledev.rafiq_quran.core.DispatcherProvider
+import com.smiledev.rafiq_quran.core.Result
+import com.smiledev.rafiq_quran.data.preferences.PreferencesManager
+import com.smiledev.rafiq_quran.domain.model.Ayah
+import com.smiledev.rafiq_quran.domain.model.Surah
+import com.smiledev.rafiq_quran.domain.repository.BookmarkRepository
+import com.smiledev.rafiq_quran.domain.repository.QuranRepository
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk

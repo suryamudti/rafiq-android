@@ -1,15 +1,15 @@
-package com.smiledev.rafiq.ui.asmaulhusna
+package com.smiledev.rafiq_quran.ui.asmaulhusna
 
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.smiledev.rafiq.core.AppError
-import com.smiledev.rafiq.core.DefaultDispatcherProvider
-import com.smiledev.rafiq.core.DispatcherProvider
-import com.smiledev.rafiq.core.currentLocaleCode
-import com.smiledev.rafiq.core.Result
-import com.smiledev.rafiq.domain.model.AsmaulHusna
-import com.smiledev.rafiq.domain.repository.AsmaulHusnaRepository
+import com.smiledev.rafiq_quran.core.AppError
+import com.smiledev.rafiq_quran.core.DefaultDispatcherProvider
+import com.smiledev.rafiq_quran.core.DispatcherProvider
+import com.smiledev.rafiq_quran.core.currentLocaleCode
+import com.smiledev.rafiq_quran.core.Result
+import com.smiledev.rafiq_quran.domain.model.AsmaulHusna
+import com.smiledev.rafiq_quran.domain.repository.AsmaulHusnaRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

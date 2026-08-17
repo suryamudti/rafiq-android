@@ -1,6 +1,6 @@
-package com.smiledev.rafiq.domain.util
+package com.smiledev.rafiq_quran.domain.util
 
-import com.smiledev.rafiq.domain.model.GregorianDate
+import com.smiledev.rafiq_quran.domain.model.GregorianDate
 import java.util.Calendar
 
 fun interface TodayProvider {

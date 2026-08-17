@@ -1,12 +1,12 @@
-package com.smiledev.rafiq.ui.calendar
+package com.smiledev.rafiq_quran.ui.calendar
 
-import com.smiledev.rafiq.TestDispatcherProvider
-import com.smiledev.rafiq.core.Result
-import com.smiledev.rafiq.domain.model.GregorianDate
-import com.smiledev.rafiq.domain.model.HijriDate
-import com.smiledev.rafiq.domain.model.IslamicEvent
-import com.smiledev.rafiq.domain.repository.IslamicCalendarRepository
-import com.smiledev.rafiq.domain.util.TodayProvider
+import com.smiledev.rafiq_quran.TestDispatcherProvider
+import com.smiledev.rafiq_quran.core.Result
+import com.smiledev.rafiq_quran.domain.model.GregorianDate
+import com.smiledev.rafiq_quran.domain.model.HijriDate
+import com.smiledev.rafiq_quran.domain.model.IslamicEvent
+import com.smiledev.rafiq_quran.domain.repository.IslamicCalendarRepository
+import com.smiledev.rafiq_quran.domain.util.TodayProvider
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi

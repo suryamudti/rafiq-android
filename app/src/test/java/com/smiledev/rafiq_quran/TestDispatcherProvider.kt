@@ -1,6 +1,6 @@
-package com.smiledev.rafiq
+package com.smiledev.rafiq_quran
 
-import com.smiledev.rafiq.core.DispatcherProvider
+import com.smiledev.rafiq_quran.core.DispatcherProvider
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.test.StandardTestDispatcher
 

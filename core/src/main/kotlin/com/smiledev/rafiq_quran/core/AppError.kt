@@ -1,4 +1,4 @@
-package com.smiledev.rafiq.core
+package com.smiledev.rafiq_quran.core
 
 sealed interface AppError {
     data class Network(val message: String, val cause: Throwable? = null) : AppError

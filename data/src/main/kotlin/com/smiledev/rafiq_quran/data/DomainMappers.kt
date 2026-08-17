@@ -1,14 +1,14 @@
-package com.smiledev.rafiq.data
+package com.smiledev.rafiq_quran.data
 
-import com.smiledev.rafiq.core.AppError
-import com.smiledev.rafiq.core.Result
-import com.smiledev.rafiq.data.models.AyahData
-import com.smiledev.rafiq.data.remote.PrayerTimesData as DataPrayerTimesData
-import com.smiledev.rafiq.data.remote.PrayerTimings as DataPrayerTimings
-import com.smiledev.rafiq.domain.model.Ayah
-import com.smiledev.rafiq.domain.model.PrayerTimings
-import com.smiledev.rafiq.domain.model.PrayerTimesData
-import com.smiledev.rafiq.domain.model.Surah
+import com.smiledev.rafiq_quran.core.AppError
+import com.smiledev.rafiq_quran.core.Result
+import com.smiledev.rafiq_quran.data.models.AyahData
+import com.smiledev.rafiq_quran.data.remote.PrayerTimesData as DataPrayerTimesData
+import com.smiledev.rafiq_quran.data.remote.PrayerTimings as DataPrayerTimings
+import com.smiledev.rafiq_quran.domain.model.Ayah
+import com.smiledev.rafiq_quran.domain.model.PrayerTimings
+import com.smiledev.rafiq_quran.domain.model.PrayerTimesData
+import com.smiledev.rafiq_quran.domain.model.Surah
 
 fun AyahData.toDomain() = Ayah(
     sura = sura, aya = aya, text = text, bismillah = bismillah,

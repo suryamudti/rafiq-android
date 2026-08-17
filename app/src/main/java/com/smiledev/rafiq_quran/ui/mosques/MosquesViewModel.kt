@@ -1,4 +1,4 @@
-package com.smiledev.rafiq.ui.mosques
+package com.smiledev.rafiq_quran.ui.mosques
 
 import android.annotation.SuppressLint
 import androidx.compose.runtime.Immutable
@@ -7,15 +7,15 @@ import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.smiledev.rafiq.core.AppError
-import com.smiledev.rafiq.core.DefaultDispatcherProvider
-import com.smiledev.rafiq.core.DispatcherProvider
-import com.smiledev.rafiq.core.Result
-import com.smiledev.rafiq.data.preferences.PreferencesManager
-import com.smiledev.rafiq.domain.model.Mosque
-import com.smiledev.rafiq.domain.repository.GeoLocation
-import com.smiledev.rafiq.domain.repository.LocationProvider
-import com.smiledev.rafiq.domain.repository.MosqueRepository
+import com.smiledev.rafiq_quran.core.AppError
+import com.smiledev.rafiq_quran.core.DefaultDispatcherProvider
+import com.smiledev.rafiq_quran.core.DispatcherProvider
+import com.smiledev.rafiq_quran.core.Result
+import com.smiledev.rafiq_quran.data.preferences.PreferencesManager
+import com.smiledev.rafiq_quran.domain.model.Mosque
+import com.smiledev.rafiq_quran.domain.repository.GeoLocation
+import com.smiledev.rafiq_quran.domain.repository.LocationProvider
+import com.smiledev.rafiq_quran.domain.repository.MosqueRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow

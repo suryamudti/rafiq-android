@@ -1,10 +1,10 @@
-package com.smiledev.rafiq.ui.asmaulhusna
+package com.smiledev.rafiq_quran.ui.asmaulhusna
 
-import com.smiledev.rafiq.TestDispatcherProvider
-import com.smiledev.rafiq.core.AppError
-import com.smiledev.rafiq.core.Result
-import com.smiledev.rafiq.domain.model.AsmaulHusna
-import com.smiledev.rafiq.domain.repository.AsmaulHusnaRepository
+import com.smiledev.rafiq_quran.TestDispatcherProvider
+import com.smiledev.rafiq_quran.core.AppError
+import com.smiledev.rafiq_quran.core.Result
+import com.smiledev.rafiq_quran.domain.model.AsmaulHusna
+import com.smiledev.rafiq_quran.domain.repository.AsmaulHusnaRepository
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi

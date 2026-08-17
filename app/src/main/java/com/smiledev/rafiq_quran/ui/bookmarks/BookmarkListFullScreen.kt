@@ -1,4 +1,4 @@
-package com.smiledev.rafiq.ui.bookmarks
+package com.smiledev.rafiq_quran.ui.bookmarks
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -33,7 +33,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.smiledev.rafiq.R
+import com.smiledev.rafiq_quran.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

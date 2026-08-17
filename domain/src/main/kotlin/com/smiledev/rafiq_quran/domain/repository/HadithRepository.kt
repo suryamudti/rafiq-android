@@ -1,9 +1,9 @@
-package com.smiledev.rafiq.domain.repository
+package com.smiledev.rafiq_quran.domain.repository
 
-import com.smiledev.rafiq.core.AppError
-import com.smiledev.rafiq.core.Result
-import com.smiledev.rafiq.domain.model.Hadith
-import com.smiledev.rafiq.domain.model.HadithBook
+import com.smiledev.rafiq_quran.core.AppError
+import com.smiledev.rafiq_quran.core.Result
+import com.smiledev.rafiq_quran.domain.model.Hadith
+import com.smiledev.rafiq_quran.domain.model.HadithBook
 
 interface HadithRepository {
     fun getBooks(): Result<List<HadithBook>, AppError>

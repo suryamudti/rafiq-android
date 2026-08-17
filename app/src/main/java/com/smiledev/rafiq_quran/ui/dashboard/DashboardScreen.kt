@@ -1,4 +1,4 @@
-package com.smiledev.rafiq.ui.dashboard
+package com.smiledev.rafiq_quran.ui.dashboard
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -37,19 +37,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation3.runtime.NavKey
-import com.smiledev.rafiq.IslamicCalendar
-import com.smiledev.rafiq.Mosques
-import com.smiledev.rafiq.PrayerTimes
-import com.smiledev.rafiq.Prophets
-import com.smiledev.rafiq.Qibla
-import com.smiledev.rafiq.Quran
-import com.smiledev.rafiq.R
-import com.smiledev.rafiq.Recitation
-import com.smiledev.rafiq.Settings
-import com.smiledev.rafiq.Tasbih
-import com.smiledev.rafiq.ZakatCalculator
-import com.smiledev.rafiq.HadithBooks
-import com.smiledev.rafiq.core.displayMessage
+import com.smiledev.rafiq_quran.IslamicCalendar
+import com.smiledev.rafiq_quran.Mosques
+import com.smiledev.rafiq_quran.PrayerTimes
+import com.smiledev.rafiq_quran.Prophets
+import com.smiledev.rafiq_quran.Qibla
+import com.smiledev.rafiq_quran.Quran
+import com.smiledev.rafiq_quran.R
+import com.smiledev.rafiq_quran.Recitation
+import com.smiledev.rafiq_quran.Settings
+import com.smiledev.rafiq_quran.Tasbih
+import com.smiledev.rafiq_quran.ZakatCalculator
+import com.smiledev.rafiq_quran.HadithBooks
+import com.smiledev.rafiq_quran.core.displayMessage
 
 private data class FeatureItem(
     val labelResId: Int,

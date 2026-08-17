@@ -1,9 +1,9 @@
-package com.smiledev.rafiq.domain.usecase
+package com.smiledev.rafiq_quran.domain.usecase
 
-import com.smiledev.rafiq.core.AppError
-import com.smiledev.rafiq.core.Result
-import com.smiledev.rafiq.domain.model.IslamicEvent
-import com.smiledev.rafiq.domain.repository.IslamicCalendarRepository
+import com.smiledev.rafiq_quran.core.AppError
+import com.smiledev.rafiq_quran.core.Result
+import com.smiledev.rafiq_quran.domain.model.IslamicEvent
+import com.smiledev.rafiq_quran.domain.repository.IslamicCalendarRepository
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify

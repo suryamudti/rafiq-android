@@ -1,9 +1,9 @@
-package com.smiledev.rafiq.ui.prayerlog
+package com.smiledev.rafiq_quran.ui.prayerlog
 
-import com.smiledev.rafiq.TestDispatcherProvider
-import com.smiledev.rafiq.core.Result
-import com.smiledev.rafiq.domain.repository.PrayerLogDay
-import com.smiledev.rafiq.domain.repository.PrayerLogRepository
+import com.smiledev.rafiq_quran.TestDispatcherProvider
+import com.smiledev.rafiq_quran.core.Result
+import com.smiledev.rafiq_quran.domain.repository.PrayerLogDay
+import com.smiledev.rafiq_quran.domain.repository.PrayerLogRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every

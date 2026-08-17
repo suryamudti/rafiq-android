@@ -1,4 +1,4 @@
-package com.smiledev.rafiq.ui.qibla
+package com.smiledev.rafiq_quran.ui.qibla
 
 import android.content.Context
 import android.content.Intent
@@ -51,7 +51,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.smiledev.rafiq.R
+import com.smiledev.rafiq_quran.R
 import kotlin.math.*
 import java.util.Locale
 

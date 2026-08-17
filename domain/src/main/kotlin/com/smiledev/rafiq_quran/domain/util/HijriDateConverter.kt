@@ -1,7 +1,7 @@
-package com.smiledev.rafiq.domain.util
+package com.smiledev.rafiq_quran.domain.util
 
-import com.smiledev.rafiq.domain.model.GregorianDate
-import com.smiledev.rafiq.domain.model.HijriDate
+import com.smiledev.rafiq_quran.domain.model.GregorianDate
+import com.smiledev.rafiq_quran.domain.model.HijriDate
 import kotlin.math.min
 
 object HijriDateConverter {

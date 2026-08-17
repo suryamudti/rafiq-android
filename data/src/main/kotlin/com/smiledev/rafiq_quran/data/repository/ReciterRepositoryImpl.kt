@@ -1,13 +1,13 @@
-package com.smiledev.rafiq.data.repository
+package com.smiledev.rafiq_quran.data.repository
 
 import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.smiledev.rafiq.core.AppError
-import com.smiledev.rafiq.core.Result
-import com.smiledev.rafiq.data.asSuccess
-import com.smiledev.rafiq.domain.model.Reciter
-import com.smiledev.rafiq.domain.repository.ReciterRepository
+import com.smiledev.rafiq_quran.core.AppError
+import com.smiledev.rafiq_quran.core.Result
+import com.smiledev.rafiq_quran.data.asSuccess
+import com.smiledev.rafiq_quran.domain.model.Reciter
+import com.smiledev.rafiq_quran.domain.repository.ReciterRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton

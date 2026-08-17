@@ -1,12 +1,12 @@
-package com.smiledev.rafiq.data.repository
+package com.smiledev.rafiq_quran.data.repository
 
 import android.content.Context
-import com.smiledev.rafiq.core.AppError
-import com.smiledev.rafiq.core.Result
-import com.smiledev.rafiq.data.asSuccess
-import com.smiledev.rafiq.domain.model.ProphetStory
-import com.smiledev.rafiq.domain.model.VerseRef
-import com.smiledev.rafiq.domain.repository.ProphetRepository
+import com.smiledev.rafiq_quran.core.AppError
+import com.smiledev.rafiq_quran.core.Result
+import com.smiledev.rafiq_quran.data.asSuccess
+import com.smiledev.rafiq_quran.domain.model.ProphetStory
+import com.smiledev.rafiq_quran.domain.model.VerseRef
+import com.smiledev.rafiq_quran.domain.repository.ProphetRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import org.json.JSONArray
 import java.io.BufferedReader

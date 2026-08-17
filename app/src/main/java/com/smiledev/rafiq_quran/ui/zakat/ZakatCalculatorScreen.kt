@@ -1,4 +1,4 @@
-package com.smiledev.rafiq.ui.zakat
+package com.smiledev.rafiq_quran.ui.zakat
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -34,7 +34,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.smiledev.rafiq.R
+import com.smiledev.rafiq_quran.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

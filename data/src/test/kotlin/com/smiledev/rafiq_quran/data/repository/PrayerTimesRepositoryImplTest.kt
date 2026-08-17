@@ -1,15 +1,15 @@
-package com.smiledev.rafiq.data.repository
+package com.smiledev.rafiq_quran.data.repository
 
-import com.smiledev.rafiq.core.AppError
-import com.smiledev.rafiq.core.Result
-import com.smiledev.rafiq.data.remote.AladhanApi
-import com.smiledev.rafiq.data.remote.PrayerTimesData
-import com.smiledev.rafiq.data.remote.PrayerTimesResponse
-import com.smiledev.rafiq.data.remote.PrayerTimings
+import com.smiledev.rafiq_quran.core.AppError
+import com.smiledev.rafiq_quran.core.Result
+import com.smiledev.rafiq_quran.data.remote.AladhanApi
+import com.smiledev.rafiq_quran.data.remote.PrayerTimesData
+import com.smiledev.rafiq_quran.data.remote.PrayerTimesResponse
+import com.smiledev.rafiq_quran.data.remote.PrayerTimings
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import com.smiledev.rafiq.core.getOrNull
+import com.smiledev.rafiq_quran.core.getOrNull
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before

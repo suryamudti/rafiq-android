@@ -1,10 +1,10 @@
-package com.smiledev.rafiq
+package com.smiledev.rafiq_quran
 
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
-import com.smiledev.rafiq.theme.RafiqAppTheme
+import com.smiledev.rafiq_quran.theme.RafiqAppTheme
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -20,7 +20,7 @@ class ExampleInstrumentedTest {
     fun dashboardShowsRafiqApp() {
         composeTestRule.setContent {
             RafiqAppTheme {
-                com.smiledev.rafiq.ui.dashboard.DashboardScreen(
+                com.smiledev.rafiq_quran.ui.dashboard.DashboardScreen(
                     onNavigate = { },
                     modifier = Modifier
                 )

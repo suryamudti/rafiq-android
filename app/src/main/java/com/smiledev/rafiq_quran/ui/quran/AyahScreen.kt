@@ -1,4 +1,4 @@
-package com.smiledev.rafiq.ui.quran
+package com.smiledev.rafiq_quran.ui.quran
 
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -72,12 +72,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.smiledev.rafiq.R
-import com.smiledev.rafiq.core.currentLocaleCode
-import com.smiledev.rafiq.core.displayMessage
-import com.smiledev.rafiq.domain.model.Ayah
-import com.smiledev.rafiq.ui.quran.AyahViewModel
-import com.smiledev.rafiq.ui.quran.NavMarker
+import com.smiledev.rafiq_quran.R
+import com.smiledev.rafiq_quran.core.currentLocaleCode
+import com.smiledev.rafiq_quran.core.displayMessage
+import com.smiledev.rafiq_quran.domain.model.Ayah
+import com.smiledev.rafiq_quran.ui.quran.AyahViewModel
+import com.smiledev.rafiq_quran.ui.quran.NavMarker
 import kotlinx.coroutines.launch
 
 private val arabicFont = FontFamily(Font(R.font.me_quran))

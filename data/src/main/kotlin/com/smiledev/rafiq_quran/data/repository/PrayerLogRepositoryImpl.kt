@@ -1,12 +1,12 @@
-package com.smiledev.rafiq.data.repository
+package com.smiledev.rafiq_quran.data.repository
 
 import android.content.Context
-import com.smiledev.rafiq.core.AppError
-import com.smiledev.rafiq.core.Result
-import com.smiledev.rafiq.data.local.PrayerLogDatabase
-import com.smiledev.rafiq.data.local.PrayerLogEntity
-import com.smiledev.rafiq.domain.repository.PrayerLogDay
-import com.smiledev.rafiq.domain.repository.PrayerLogRepository
+import com.smiledev.rafiq_quran.core.AppError
+import com.smiledev.rafiq_quran.core.Result
+import com.smiledev.rafiq_quran.data.local.PrayerLogDatabase
+import com.smiledev.rafiq_quran.data.local.PrayerLogEntity
+import com.smiledev.rafiq_quran.domain.repository.PrayerLogDay
+import com.smiledev.rafiq_quran.domain.repository.PrayerLogRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

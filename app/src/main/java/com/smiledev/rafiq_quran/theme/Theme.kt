@@ -1,4 +1,4 @@
-package com.smiledev.rafiq.theme
+package com.smiledev.rafiq_quran.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme

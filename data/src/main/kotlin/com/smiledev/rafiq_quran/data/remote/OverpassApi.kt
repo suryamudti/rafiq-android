@@ -1,4 +1,4 @@
-package com.smiledev.rafiq.data.remote
+package com.smiledev.rafiq_quran.data.remote
 
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded

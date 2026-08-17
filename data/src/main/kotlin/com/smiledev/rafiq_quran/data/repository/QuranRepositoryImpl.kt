@@ -1,16 +1,16 @@
-package com.smiledev.rafiq.data.repository
+package com.smiledev.rafiq_quran.data.repository
 
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
-import com.smiledev.rafiq.core.AppError
-import com.smiledev.rafiq.core.DatabaseCopier
-import com.smiledev.rafiq.core.Result
-import com.smiledev.rafiq.data.asSuccess
-import com.smiledev.rafiq.data.models.AyahData
-import com.smiledev.rafiq.data.toDomain
-import com.smiledev.rafiq.domain.model.Ayah
-import com.smiledev.rafiq.domain.model.Surah
-import com.smiledev.rafiq.domain.repository.QuranRepository
+import com.smiledev.rafiq_quran.core.AppError
+import com.smiledev.rafiq_quran.core.DatabaseCopier
+import com.smiledev.rafiq_quran.core.Result
+import com.smiledev.rafiq_quran.data.asSuccess
+import com.smiledev.rafiq_quran.data.models.AyahData
+import com.smiledev.rafiq_quran.data.toDomain
+import com.smiledev.rafiq_quran.domain.model.Ayah
+import com.smiledev.rafiq_quran.domain.model.Surah
+import com.smiledev.rafiq_quran.domain.repository.QuranRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import org.json.JSONArray
 import org.json.JSONObject

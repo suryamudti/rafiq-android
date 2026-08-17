@@ -1,9 +1,9 @@
-package com.smiledev.rafiq.domain.usecase
+package com.smiledev.rafiq_quran.domain.usecase
 
-import com.smiledev.rafiq.core.AppError
-import com.smiledev.rafiq.core.Result
-import com.smiledev.rafiq.domain.model.PrayerTimesData
-import com.smiledev.rafiq.domain.repository.PrayerTimesRepository
+import com.smiledev.rafiq_quran.core.AppError
+import com.smiledev.rafiq_quran.core.Result
+import com.smiledev.rafiq_quran.domain.model.PrayerTimesData
+import com.smiledev.rafiq_quran.domain.repository.PrayerTimesRepository
 
 class GetPrayerTimesUseCase(
     private val prayerTimesRepository: PrayerTimesRepository

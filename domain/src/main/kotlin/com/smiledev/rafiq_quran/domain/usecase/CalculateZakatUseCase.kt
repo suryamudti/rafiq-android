@@ -1,6 +1,6 @@
-package com.smiledev.rafiq.domain.usecase
+package com.smiledev.rafiq_quran.domain.usecase
 
-import com.smiledev.rafiq.domain.model.MetalPrices
+import com.smiledev.rafiq_quran.domain.model.MetalPrices
 
 data class ZakatResult(
     val goldZakat: Double = 0.0,

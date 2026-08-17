@@ -1,4 +1,4 @@
-package com.smiledev.rafiq.core
+package com.smiledev.rafiq_quran.core
 
 import java.util.Locale
 

@@ -1,7 +1,7 @@
-package com.smiledev.rafiq.domain.repository
+package com.smiledev.rafiq_quran.domain.repository
 
-import com.smiledev.rafiq.core.AppError
-import com.smiledev.rafiq.core.Result
+import com.smiledev.rafiq_quran.core.AppError
+import com.smiledev.rafiq_quran.core.Result
 import kotlinx.coroutines.flow.Flow
 
 data class PrayerLogDay(

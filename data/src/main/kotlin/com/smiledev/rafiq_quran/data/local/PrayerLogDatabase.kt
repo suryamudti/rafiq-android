@@ -1,4 +1,4 @@
-package com.smiledev.rafiq.data.local
+package com.smiledev.rafiq_quran.data.local
 
 import android.content.Context
 import androidx.room.Dao

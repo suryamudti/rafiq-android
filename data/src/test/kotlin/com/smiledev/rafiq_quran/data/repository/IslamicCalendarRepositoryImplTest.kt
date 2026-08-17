@@ -1,10 +1,10 @@
-package com.smiledev.rafiq.data.repository
+package com.smiledev.rafiq_quran.data.repository
 
 import android.content.Context
 import android.content.res.AssetManager
-import com.smiledev.rafiq.core.Result
-import com.smiledev.rafiq.domain.model.GregorianDate
-import com.smiledev.rafiq.domain.util.TodayProvider
+import com.smiledev.rafiq_quran.core.Result
+import com.smiledev.rafiq_quran.domain.model.GregorianDate
+import com.smiledev.rafiq_quran.domain.util.TodayProvider
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Assert.assertEquals

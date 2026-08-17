@@ -1,4 +1,4 @@
-package com.smiledev.rafiq
+package com.smiledev.rafiq_quran
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
@@ -8,27 +8,27 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
-import com.smiledev.rafiq.ui.calendar.IslamicCalendarScreen
-import com.smiledev.rafiq.ui.dashboard.DashboardScreen
-import com.smiledev.rafiq.ui.quran.QuranScreen
-import com.smiledev.rafiq.ui.quran.AyahScreen
-import com.smiledev.rafiq.ui.prayertimes.PrayerTimesScreen
-import com.smiledev.rafiq.ui.qibla.QiblaScreen
-import com.smiledev.rafiq.ui.mosques.MosquesScreen
-import com.smiledev.rafiq.ui.prophets.ProphetsScreen
-import com.smiledev.rafiq.ui.prophets.ProphetDetailScreen
-import com.smiledev.rafiq.ui.recitation.RecitationScreen
-import com.smiledev.rafiq.ui.hadith.HadithBooksScreen
-import com.smiledev.rafiq.ui.hadith.HadithSearchScreen
-import com.smiledev.rafiq.ui.hadith.HadithListScreen
-import com.smiledev.rafiq.ui.hadith.HadithDetailScreen
-import com.smiledev.rafiq.ui.zakat.ZakatCalculatorScreen
-import com.smiledev.rafiq.ui.asmaulhusna.AsmaulHusnaScreen
-import com.smiledev.rafiq.ui.tasbih.TasbihScreen
-import com.smiledev.rafiq.ui.bookmarks.BookmarkListFullScreen
-import com.smiledev.rafiq.ui.prayerlog.PrayerLogScreen
+import com.smiledev.rafiq_quran.ui.calendar.IslamicCalendarScreen
+import com.smiledev.rafiq_quran.ui.dashboard.DashboardScreen
+import com.smiledev.rafiq_quran.ui.quran.QuranScreen
+import com.smiledev.rafiq_quran.ui.quran.AyahScreen
+import com.smiledev.rafiq_quran.ui.prayertimes.PrayerTimesScreen
+import com.smiledev.rafiq_quran.ui.qibla.QiblaScreen
+import com.smiledev.rafiq_quran.ui.mosques.MosquesScreen
+import com.smiledev.rafiq_quran.ui.prophets.ProphetsScreen
+import com.smiledev.rafiq_quran.ui.prophets.ProphetDetailScreen
+import com.smiledev.rafiq_quran.ui.recitation.RecitationScreen
+import com.smiledev.rafiq_quran.ui.hadith.HadithBooksScreen
+import com.smiledev.rafiq_quran.ui.hadith.HadithSearchScreen
+import com.smiledev.rafiq_quran.ui.hadith.HadithListScreen
+import com.smiledev.rafiq_quran.ui.hadith.HadithDetailScreen
+import com.smiledev.rafiq_quran.ui.zakat.ZakatCalculatorScreen
+import com.smiledev.rafiq_quran.ui.asmaulhusna.AsmaulHusnaScreen
+import com.smiledev.rafiq_quran.ui.tasbih.TasbihScreen
+import com.smiledev.rafiq_quran.ui.bookmarks.BookmarkListFullScreen
+import com.smiledev.rafiq_quran.ui.prayerlog.PrayerLogScreen
 
-import com.smiledev.rafiq.ui.settings.SettingsScreen
+import com.smiledev.rafiq_quran.ui.settings.SettingsScreen
 
 @Composable
 fun MainNavigation() {

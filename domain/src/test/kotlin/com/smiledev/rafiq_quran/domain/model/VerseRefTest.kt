@@ -1,4 +1,4 @@
-package com.smiledev.rafiq.domain.model
+package com.smiledev.rafiq_quran.domain.model
 
 import org.junit.Assert.assertEquals
 import org.junit.Test

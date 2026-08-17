@@ -1,11 +1,11 @@
-package com.smiledev.rafiq.ui.settings
+package com.smiledev.rafiq_quran.ui.settings
 
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.smiledev.rafiq.core.DefaultDispatcherProvider
-import com.smiledev.rafiq.core.DispatcherProvider
-import com.smiledev.rafiq.data.preferences.PreferencesManager
+import com.smiledev.rafiq_quran.core.DefaultDispatcherProvider
+import com.smiledev.rafiq_quran.core.DispatcherProvider
+import com.smiledev.rafiq_quran.data.preferences.PreferencesManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

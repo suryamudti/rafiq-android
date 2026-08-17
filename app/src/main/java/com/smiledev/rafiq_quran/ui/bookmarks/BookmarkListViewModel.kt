@@ -1,12 +1,12 @@
-package com.smiledev.rafiq.ui.bookmarks
+package com.smiledev.rafiq_quran.ui.bookmarks
 
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.smiledev.rafiq.core.DefaultDispatcherProvider
-import com.smiledev.rafiq.core.DispatcherProvider
-import com.smiledev.rafiq.domain.repository.BookmarkItem
-import com.smiledev.rafiq.domain.repository.BookmarkRepository
+import com.smiledev.rafiq_quran.core.DefaultDispatcherProvider
+import com.smiledev.rafiq_quran.core.DispatcherProvider
+import com.smiledev.rafiq_quran.domain.repository.BookmarkItem
+import com.smiledev.rafiq_quran.domain.repository.BookmarkRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

@@ -1,11 +1,11 @@
-package com.smiledev.rafiq.data.repository
+package com.smiledev.rafiq_quran.data.repository
 
-import com.smiledev.rafiq.core.AppError
-import com.smiledev.rafiq.core.Result
-import com.smiledev.rafiq.core.retryIO
-import com.smiledev.rafiq.data.remote.MetalPriceApi
-import com.smiledev.rafiq.domain.model.MetalPrices
-import com.smiledev.rafiq.domain.repository.MetalPriceRepository
+import com.smiledev.rafiq_quran.core.AppError
+import com.smiledev.rafiq_quran.core.Result
+import com.smiledev.rafiq_quran.core.retryIO
+import com.smiledev.rafiq_quran.data.remote.MetalPriceApi
+import com.smiledev.rafiq_quran.domain.model.MetalPrices
+import com.smiledev.rafiq_quran.domain.repository.MetalPriceRepository
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.async

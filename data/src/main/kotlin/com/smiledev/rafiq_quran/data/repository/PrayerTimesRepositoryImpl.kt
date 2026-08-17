@@ -1,12 +1,12 @@
-package com.smiledev.rafiq.data.repository
+package com.smiledev.rafiq_quran.data.repository
 
-import com.smiledev.rafiq.core.AppError
-import com.smiledev.rafiq.core.Result
-import com.smiledev.rafiq.core.retryIO
-import com.smiledev.rafiq.data.remote.AladhanApi
-import com.smiledev.rafiq.data.toDomain
-import com.smiledev.rafiq.domain.model.PrayerTimesData
-import com.smiledev.rafiq.domain.repository.PrayerTimesRepository
+import com.smiledev.rafiq_quran.core.AppError
+import com.smiledev.rafiq_quran.core.Result
+import com.smiledev.rafiq_quran.core.retryIO
+import com.smiledev.rafiq_quran.data.remote.AladhanApi
+import com.smiledev.rafiq_quran.data.toDomain
+import com.smiledev.rafiq_quran.domain.model.PrayerTimesData
+import com.smiledev.rafiq_quran.domain.repository.PrayerTimesRepository
 import javax.inject.Inject
 import javax.inject.Singleton
 

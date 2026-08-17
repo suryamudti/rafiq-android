@@ -1,17 +1,17 @@
-package com.smiledev.rafiq.ui.zakat
+package com.smiledev.rafiq_quran.ui.zakat
 
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.smiledev.rafiq.core.DefaultDispatcherProvider
-import com.smiledev.rafiq.core.DispatcherProvider
-import com.smiledev.rafiq.core.Result
-import com.smiledev.rafiq.domain.model.DefaultMetalPrices
-import com.smiledev.rafiq.domain.model.MetalPrices
-import com.smiledev.rafiq.domain.repository.MetalPriceRepository
-import com.smiledev.rafiq.domain.usecase.CalculateZakatUseCase
-import com.smiledev.rafiq.domain.usecase.ZakatResult
+import com.smiledev.rafiq_quran.core.DefaultDispatcherProvider
+import com.smiledev.rafiq_quran.core.DispatcherProvider
+import com.smiledev.rafiq_quran.core.Result
+import com.smiledev.rafiq_quran.domain.model.DefaultMetalPrices
+import com.smiledev.rafiq_quran.domain.model.MetalPrices
+import com.smiledev.rafiq_quran.domain.repository.MetalPriceRepository
+import com.smiledev.rafiq_quran.domain.usecase.CalculateZakatUseCase
+import com.smiledev.rafiq_quran.domain.usecase.ZakatResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

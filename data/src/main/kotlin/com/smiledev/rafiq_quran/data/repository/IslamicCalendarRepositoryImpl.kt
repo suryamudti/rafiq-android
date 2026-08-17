@@ -1,14 +1,14 @@
-package com.smiledev.rafiq.data.repository
+package com.smiledev.rafiq_quran.data.repository
 
 import android.content.Context
-import com.smiledev.rafiq.core.AppError
-import com.smiledev.rafiq.core.Result
-import com.smiledev.rafiq.data.asSuccess
-import com.smiledev.rafiq.domain.model.IslamicEvent
-import com.smiledev.rafiq.domain.repository.IslamicCalendarRepository
-import com.smiledev.rafiq.domain.util.HijriDateConverter
-import com.smiledev.rafiq.domain.util.SystemTodayProvider
-import com.smiledev.rafiq.domain.util.TodayProvider
+import com.smiledev.rafiq_quran.core.AppError
+import com.smiledev.rafiq_quran.core.Result
+import com.smiledev.rafiq_quran.data.asSuccess
+import com.smiledev.rafiq_quran.domain.model.IslamicEvent
+import com.smiledev.rafiq_quran.domain.repository.IslamicCalendarRepository
+import com.smiledev.rafiq_quran.domain.util.HijriDateConverter
+import com.smiledev.rafiq_quran.domain.util.SystemTodayProvider
+import com.smiledev.rafiq_quran.domain.util.TodayProvider
 import dagger.hilt.android.qualifiers.ApplicationContext
 import org.json.JSONArray
 import java.io.BufferedReader

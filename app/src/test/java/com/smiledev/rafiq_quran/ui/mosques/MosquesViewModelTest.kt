@@ -1,13 +1,13 @@
-package com.smiledev.rafiq.ui.mosques
+package com.smiledev.rafiq_quran.ui.mosques
 
 import android.content.Context
-import com.smiledev.rafiq.TestDispatcherProvider
-import com.smiledev.rafiq.core.Result
-import com.smiledev.rafiq.data.preferences.PreferencesManager
-import com.smiledev.rafiq.domain.model.Mosque
-import com.smiledev.rafiq.domain.repository.GeoLocation
-import com.smiledev.rafiq.domain.repository.LocationProvider
-import com.smiledev.rafiq.domain.repository.MosqueRepository
+import com.smiledev.rafiq_quran.TestDispatcherProvider
+import com.smiledev.rafiq_quran.core.Result
+import com.smiledev.rafiq_quran.data.preferences.PreferencesManager
+import com.smiledev.rafiq_quran.domain.model.Mosque
+import com.smiledev.rafiq_quran.domain.repository.GeoLocation
+import com.smiledev.rafiq_quran.domain.repository.LocationProvider
+import com.smiledev.rafiq_quran.domain.repository.MosqueRepository
 import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.every
@@ -95,18 +95,18 @@ class MosquesViewModelTest {
     @Test
     fun `loadMosques error sets error state`() = runTest(testDispatcher) {
         coEvery { locationProvider.getLastLocation() } returns Result.Success(GeoLocation(-6.2088, 106.8456))
-        coEvery { mosqueRepository.getNearbyMosques(-6.2088, 106.8456, 5000) } returns Result.Error(com.smiledev.rafiq.core.AppError.Network("Network error", Exception()))
+        coEvery { mosqueRepository.getNearbyMosques(-6.2088, 106.8456, 5000) } returns Result.Error(com.smiledev.rafiq_quran.core.AppError.Network("Network error", Exception()))
 
         viewModel.onPermissionResult(true)
         advanceUntilIdle()
 
         assertTrue(viewModel.uiState.value.error != null)
-        assertTrue(viewModel.uiState.value.error is com.smiledev.rafiq.core.AppError.Network)
+        assertTrue(viewModel.uiState.value.error is com.smiledev.rafiq_quran.core.AppError.Network)
     }
     
     @Test
     fun `locationProvider error falls back to default location and loads mosques`() = runTest(testDispatcher) {
-        coEvery { locationProvider.getLastLocation() } returns Result.Error(com.smiledev.rafiq.core.AppError.Network("GPS error", Exception()))
+        coEvery { locationProvider.getLastLocation() } returns Result.Error(com.smiledev.rafiq_quran.core.AppError.Network("GPS error", Exception()))
         coEvery { mosqueRepository.getNearbyMosques(-6.2088, 106.8456, 5000) } returns Result.Success(emptyList())
 
         viewModel.onPermissionResult(true)

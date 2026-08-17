@@ -1,8 +1,8 @@
-package com.smiledev.rafiq
+package com.smiledev.rafiq_quran
 
 import android.app.Application
 import android.os.Build
-import com.smiledev.rafiq.service.PrayerNotificationWorker
+import com.smiledev.rafiq_quran.service.PrayerNotificationWorker
 import dagger.hilt.android.HiltAndroidApp
 import org.osmdroid.config.Configuration
 

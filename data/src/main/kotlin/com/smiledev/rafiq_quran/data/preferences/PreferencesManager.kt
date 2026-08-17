@@ -1,4 +1,4 @@
-package com.smiledev.rafiq.data.preferences
+package com.smiledev.rafiq_quran.data.preferences
 
 import android.content.Context
 import androidx.datastore.preferences.core.booleanPreferencesKey

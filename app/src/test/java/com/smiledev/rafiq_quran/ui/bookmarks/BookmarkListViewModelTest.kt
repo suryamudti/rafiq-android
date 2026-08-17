@@ -1,9 +1,9 @@
-package com.smiledev.rafiq.ui.bookmarks
+package com.smiledev.rafiq_quran.ui.bookmarks
 
-import com.smiledev.rafiq.TestDispatcherProvider
-import com.smiledev.rafiq.core.Result
-import com.smiledev.rafiq.domain.repository.BookmarkItem
-import com.smiledev.rafiq.domain.repository.BookmarkRepository
+import com.smiledev.rafiq_quran.TestDispatcherProvider
+import com.smiledev.rafiq_quran.core.Result
+import com.smiledev.rafiq_quran.domain.repository.BookmarkItem
+import com.smiledev.rafiq_quran.domain.repository.BookmarkRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every

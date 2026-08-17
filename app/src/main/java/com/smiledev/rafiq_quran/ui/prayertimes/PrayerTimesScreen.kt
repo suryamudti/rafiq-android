@@ -1,4 +1,4 @@
-package com.smiledev.rafiq.ui.prayertimes
+package com.smiledev.rafiq_quran.ui.prayertimes
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -44,8 +44,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.smiledev.rafiq.R
-import com.smiledev.rafiq.core.displayMessage
+import com.smiledev.rafiq_quran.R
+import com.smiledev.rafiq_quran.core.displayMessage
 import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)

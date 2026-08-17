@@ -1,4 +1,4 @@
-package com.smiledev.rafiq.ui.settings
+package com.smiledev.rafiq_quran.ui.settings
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
@@ -33,12 +33,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation3.runtime.NavKey
-import com.smiledev.rafiq.AsmaulHusna
-import com.smiledev.rafiq.BookmarkList
-import com.smiledev.rafiq.HadithBooks
-import com.smiledev.rafiq.PrayerLog
-import com.smiledev.rafiq.Prophets
-import com.smiledev.rafiq.R
+import com.smiledev.rafiq_quran.AsmaulHusna
+import com.smiledev.rafiq_quran.BookmarkList
+import com.smiledev.rafiq_quran.HadithBooks
+import com.smiledev.rafiq_quran.PrayerLog
+import com.smiledev.rafiq_quran.Prophets
+import com.smiledev.rafiq_quran.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -1,15 +1,15 @@
-package com.smiledev.rafiq.data.repository
+package com.smiledev.rafiq_quran.data.repository
 
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
-import com.smiledev.rafiq.core.AppError
-import com.smiledev.rafiq.core.DatabaseCopier
-import com.smiledev.rafiq.core.Result
-import com.smiledev.rafiq.data.asSuccess
-import com.smiledev.rafiq.domain.model.Hadith
-import com.smiledev.rafiq.domain.model.HadithBook
-import com.smiledev.rafiq.domain.repository.HadithRepository
+import com.smiledev.rafiq_quran.core.AppError
+import com.smiledev.rafiq_quran.core.DatabaseCopier
+import com.smiledev.rafiq_quran.core.Result
+import com.smiledev.rafiq_quran.data.asSuccess
+import com.smiledev.rafiq_quran.domain.model.Hadith
+import com.smiledev.rafiq_quran.domain.model.HadithBook
+import com.smiledev.rafiq_quran.domain.repository.HadithRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import javax.inject.Inject

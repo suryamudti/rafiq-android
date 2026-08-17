@@ -1,4 +1,4 @@
-package com.smiledev.rafiq
+package com.smiledev.rafiq_quran
 
 import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable

@@ -1,6 +1,6 @@
-package com.smiledev.rafiq.ui.qibla
+package com.smiledev.rafiq_quran.ui.qibla
 
-import com.smiledev.rafiq.domain.usecase.CalculateQiblaUseCase
+import com.smiledev.rafiq_quran.domain.usecase.CalculateQiblaUseCase
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

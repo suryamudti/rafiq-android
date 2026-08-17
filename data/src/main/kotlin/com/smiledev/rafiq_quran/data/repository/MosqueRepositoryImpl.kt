@@ -1,11 +1,11 @@
-package com.smiledev.rafiq.data.repository
+package com.smiledev.rafiq_quran.data.repository
 
-import com.smiledev.rafiq.core.AppError
-import com.smiledev.rafiq.core.Result
-import com.smiledev.rafiq.core.retryIO
-import com.smiledev.rafiq.data.remote.OverpassApi
-import com.smiledev.rafiq.domain.model.Mosque
-import com.smiledev.rafiq.domain.repository.MosqueRepository
+import com.smiledev.rafiq_quran.core.AppError
+import com.smiledev.rafiq_quran.core.Result
+import com.smiledev.rafiq_quran.core.retryIO
+import com.smiledev.rafiq_quran.data.remote.OverpassApi
+import com.smiledev.rafiq_quran.domain.model.Mosque
+import com.smiledev.rafiq_quran.domain.repository.MosqueRepository
 import javax.inject.Inject
 import javax.inject.Singleton
 

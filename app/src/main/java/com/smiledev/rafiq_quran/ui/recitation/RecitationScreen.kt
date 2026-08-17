@@ -1,4 +1,4 @@
-package com.smiledev.rafiq.ui.recitation
+package com.smiledev.rafiq_quran.ui.recitation
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -41,10 +41,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.smiledev.rafiq.R
-import com.smiledev.rafiq.core.displayMessage
+import com.smiledev.rafiq_quran.R
+import com.smiledev.rafiq_quran.core.displayMessage
 import androidx.compose.ui.res.stringResource
-import com.smiledev.rafiq.domain.model.Surah
+import com.smiledev.rafiq_quran.domain.model.Surah
 
 private val arabicFont = FontFamily(Font(R.font.me_quran))
 

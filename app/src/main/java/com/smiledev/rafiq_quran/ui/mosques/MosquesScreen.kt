@@ -1,4 +1,4 @@
-package com.smiledev.rafiq.ui.mosques
+package com.smiledev.rafiq_quran.ui.mosques
 
 import android.Manifest
 import android.view.MotionEvent
@@ -31,8 +31,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import com.smiledev.rafiq.R
-import com.smiledev.rafiq.core.displayMessage
+import com.smiledev.rafiq_quran.R
+import com.smiledev.rafiq_quran.core.displayMessage
 import androidx.hilt.navigation.compose.hiltViewModel
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory

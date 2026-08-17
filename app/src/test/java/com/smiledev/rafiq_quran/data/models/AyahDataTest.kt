@@ -1,4 +1,4 @@
-package com.smiledev.rafiq.data.models
+package com.smiledev.rafiq_quran.data.models
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse

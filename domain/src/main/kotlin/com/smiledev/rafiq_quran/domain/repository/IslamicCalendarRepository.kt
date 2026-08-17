@@ -1,8 +1,8 @@
-package com.smiledev.rafiq.domain.repository
+package com.smiledev.rafiq_quran.domain.repository
 
-import com.smiledev.rafiq.core.AppError
-import com.smiledev.rafiq.core.Result
-import com.smiledev.rafiq.domain.model.IslamicEvent
+import com.smiledev.rafiq_quran.core.AppError
+import com.smiledev.rafiq_quran.core.Result
+import com.smiledev.rafiq_quran.domain.model.IslamicEvent
 
 interface IslamicCalendarRepository {
     val islamicMonthNames: List<String>

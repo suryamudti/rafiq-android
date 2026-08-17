@@ -1,4 +1,4 @@
-package com.smiledev.rafiq.ui.prophets
+package com.smiledev.rafiq_quran.ui.prophets
 
 import android.content.Context
 import android.content.Intent
@@ -51,8 +51,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.smiledev.rafiq.R
-import com.smiledev.rafiq.domain.model.ProphetStory
+import com.smiledev.rafiq_quran.R
+import com.smiledev.rafiq_quran.domain.model.ProphetStory
 
 private val arabicFont = FontFamily(Font(R.font.me_quran))
 

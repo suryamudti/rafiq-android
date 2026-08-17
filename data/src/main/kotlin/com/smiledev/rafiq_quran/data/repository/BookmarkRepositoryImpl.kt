@@ -1,12 +1,12 @@
-package com.smiledev.rafiq.data.repository
+package com.smiledev.rafiq_quran.data.repository
 
 import android.content.Context
-import com.smiledev.rafiq.core.AppError
-import com.smiledev.rafiq.core.Result
-import com.smiledev.rafiq.data.local.BookmarkDatabase
-import com.smiledev.rafiq.data.local.BookmarkEntity
-import com.smiledev.rafiq.domain.repository.BookmarkItem
-import com.smiledev.rafiq.domain.repository.BookmarkRepository
+import com.smiledev.rafiq_quran.core.AppError
+import com.smiledev.rafiq_quran.core.Result
+import com.smiledev.rafiq_quran.data.local.BookmarkDatabase
+import com.smiledev.rafiq_quran.data.local.BookmarkEntity
+import com.smiledev.rafiq_quran.domain.repository.BookmarkItem
+import com.smiledev.rafiq_quran.domain.repository.BookmarkRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

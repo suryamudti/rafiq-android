@@ -1,7 +1,7 @@
-package com.smiledev.rafiq.domain.util
+package com.smiledev.rafiq_quran.domain.util
 
-import com.smiledev.rafiq.domain.model.GregorianDate
-import com.smiledev.rafiq.domain.model.HijriDate
+import com.smiledev.rafiq_quran.domain.model.GregorianDate
+import com.smiledev.rafiq_quran.domain.model.HijriDate
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue

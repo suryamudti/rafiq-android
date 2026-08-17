@@ -1,11 +1,11 @@
-package com.smiledev.rafiq.ui.settings
+package com.smiledev.rafiq_quran.ui.settings
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import com.smiledev.rafiq.core.DispatcherProvider
-import com.smiledev.rafiq.data.preferences.PreferencesManager
+import com.smiledev.rafiq_quran.core.DispatcherProvider
+import com.smiledev.rafiq_quran.data.preferences.PreferencesManager
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every

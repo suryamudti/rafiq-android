@@ -1,11 +1,11 @@
-package com.smiledev.rafiq.ui.prophets
+package com.smiledev.rafiq_quran.ui.prophets
 
-import com.smiledev.rafiq.TestDispatcherProvider
-import com.smiledev.rafiq.core.AppError
-import com.smiledev.rafiq.core.Result
-import com.smiledev.rafiq.data.preferences.PreferencesManager
-import com.smiledev.rafiq.domain.model.ProphetStory
-import com.smiledev.rafiq.domain.repository.ProphetRepository
+import com.smiledev.rafiq_quran.TestDispatcherProvider
+import com.smiledev.rafiq_quran.core.AppError
+import com.smiledev.rafiq_quran.core.Result
+import com.smiledev.rafiq_quran.data.preferences.PreferencesManager
+import com.smiledev.rafiq_quran.domain.model.ProphetStory
+import com.smiledev.rafiq_quran.domain.repository.ProphetRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every

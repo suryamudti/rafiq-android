@@ -1,11 +1,11 @@
-package com.smiledev.rafiq.ui.zakat
+package com.smiledev.rafiq_quran.ui.zakat
 
 import androidx.lifecycle.SavedStateHandle
-import com.smiledev.rafiq.core.DispatcherProvider
-import com.smiledev.rafiq.core.Result
-import com.smiledev.rafiq.domain.model.MetalPrices
-import com.smiledev.rafiq.domain.repository.MetalPriceRepository
-import com.smiledev.rafiq.domain.usecase.CalculateZakatUseCase
+import com.smiledev.rafiq_quran.core.DispatcherProvider
+import com.smiledev.rafiq_quran.core.Result
+import com.smiledev.rafiq_quran.domain.model.MetalPrices
+import com.smiledev.rafiq_quran.domain.repository.MetalPriceRepository
+import com.smiledev.rafiq_quran.domain.usecase.CalculateZakatUseCase
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk

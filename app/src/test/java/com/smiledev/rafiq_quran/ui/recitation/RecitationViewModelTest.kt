@@ -1,12 +1,12 @@
-package com.smiledev.rafiq.ui.recitation
+package com.smiledev.rafiq_quran.ui.recitation
 
-import com.smiledev.rafiq.TestDispatcherProvider
-import com.smiledev.rafiq.core.AppError
-import com.smiledev.rafiq.core.Result
-import com.smiledev.rafiq.domain.model.Reciter
-import com.smiledev.rafiq.domain.repository.QuranRepository
-import com.smiledev.rafiq.domain.repository.ReciterRepository
-import com.smiledev.rafiq.service.AudioPlayerController
+import com.smiledev.rafiq_quran.TestDispatcherProvider
+import com.smiledev.rafiq_quran.core.AppError
+import com.smiledev.rafiq_quran.core.Result
+import com.smiledev.rafiq_quran.domain.model.Reciter
+import com.smiledev.rafiq_quran.domain.repository.QuranRepository
+import com.smiledev.rafiq_quran.domain.repository.ReciterRepository
+import com.smiledev.rafiq_quran.service.AudioPlayerController
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi

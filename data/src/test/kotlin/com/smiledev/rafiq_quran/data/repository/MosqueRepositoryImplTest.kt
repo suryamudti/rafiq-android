@@ -1,11 +1,11 @@
-package com.smiledev.rafiq.data.repository
+package com.smiledev.rafiq_quran.data.repository
 
-import com.smiledev.rafiq.core.AppError
-import com.smiledev.rafiq.core.Result
-import com.smiledev.rafiq.core.getOrNull
-import com.smiledev.rafiq.data.remote.OverpassApi
-import com.smiledev.rafiq.data.remote.OverpassCenter
-import com.smiledev.rafiq.data.remote.OverpassElement
+import com.smiledev.rafiq_quran.core.AppError
+import com.smiledev.rafiq_quran.core.Result
+import com.smiledev.rafiq_quran.core.getOrNull
+import com.smiledev.rafiq_quran.data.remote.OverpassApi
+import com.smiledev.rafiq_quran.data.remote.OverpassCenter
+import com.smiledev.rafiq_quran.data.remote.OverpassElement
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest

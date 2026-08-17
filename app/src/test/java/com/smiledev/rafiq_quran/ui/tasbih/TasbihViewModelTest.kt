@@ -1,4 +1,4 @@
-package com.smiledev.rafiq.ui.tasbih
+package com.smiledev.rafiq_quran.ui.tasbih
 
 import android.content.Context
 import android.os.Vibrator

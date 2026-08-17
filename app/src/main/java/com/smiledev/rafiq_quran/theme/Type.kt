@@ -1,4 +1,4 @@
-package com.smiledev.rafiq.theme
+package com.smiledev.rafiq_quran.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
