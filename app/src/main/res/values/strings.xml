@@ -198,6 +198,7 @@
     <string name="source_prayer_location_desc">Jakarta (-6.2088, 106.8456) is used when no location is saved.</string>
     <string name="source_authentic_text">Authentic Quranic text</string>
     <string name="source_recognized_translation">Recognized translation</string>
+    <string name="source_official_translation">Official government translation</string>
     <string name="source_authentic_collection">Authentic collection (Shahih)</string>
     <string name="source_kemenag_method">KEMENAG calculation method (20)</string>
     <string name="source_default_jakarta">Default: Jakarta</string>

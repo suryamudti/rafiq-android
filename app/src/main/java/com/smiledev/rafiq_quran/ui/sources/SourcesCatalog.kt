@@ -35,7 +35,7 @@ internal fun sourcesSections(): List<SourceSection> = listOf(
             SourceItem(
                 titleRes = R.string.source_quran_id,
                 descriptionRes = R.string.source_quran_id_desc,
-                authenticityRes = R.string.source_recognized_translation,
+                authenticityRes = R.string.source_official_translation,
                 translatorRes = R.string.source_translator_kemenag,
                 linkUrl = "https://quran.kemenag.go.id"
             )

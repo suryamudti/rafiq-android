@@ -198,6 +198,7 @@
     <string name="source_prayer_location_desc">Jakarta (-6.2088, 106.8456) digunakan saat belum ada lokasi yang disimpan.</string>
     <string name="source_authentic_text">Teks Al-Quran yang autentik</string>
     <string name="source_recognized_translation">Terjemahan yang diakui</string>
+    <string name="source_official_translation">Terjemahan resmi pemerintah</string>
     <string name="source_authentic_collection">Koleksi shahih</string>
     <string name="source_kemenag_method">Metode perhitungan KEMENAG (20)</string>
     <string name="source_default_jakarta">Default: Jakarta</string>
