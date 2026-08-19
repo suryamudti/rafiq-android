@@ -43,6 +43,8 @@ data class AyahUiState(
     val memorizationRepeatCount: Int = 0,
     val currentPlayingAyah: Int? = null,
     val isPlaying: Boolean = false,
+    val positionMs: Long = 0L,
+    val durationMs: Long = 0L,
     val tafsirCache: Map<String, String> = emptyMap(),
     val tafsirLoadingAyah: Int? = null
 )
@@ -69,6 +71,15 @@ class AyahViewModel @Inject constructor(
 
     init {
         loadSurahs()
+        viewModelScope.launch(dispatcherProvider.main) {
+            audioPlayer.playbackState.collect { ps ->
+                _uiState.value = _uiState.value.copy(
+                    positionMs = ps.positionMs,
+                    durationMs = ps.durationMs,
+                    isPlaying = ps.isPlaying
+                )
+            }
+        }
         viewModelScope.launch(dispatcherProvider.io) {
             combine(
                 preferencesManager.translationLanguage,
@@ -161,7 +172,7 @@ class AyahViewModel @Inject constructor(
     private fun playAyahAudio(ayahNumber: Int) {
         val url = getAyahAudioUrl(_uiState.value.suraNumber, ayahNumber)
         val surahName = _uiState.value.currentSurah?.nameSimple ?: "Surah ${_uiState.value.suraNumber}"
-        val title = "$surahName – Ayah $ayahNumber"
+        val title = "$surahName · Ayah $ayahNumber"
         audioPlayer.playAyah(url, title, "Alafasy") {
             val state = _uiState.value
             val nextAyah = ayahNumber + 1
@@ -173,6 +184,10 @@ class AyahViewModel @Inject constructor(
             }
         }
         _uiState.value = _uiState.value.copy(isPlaying = true, currentPlayingAyah = ayahNumber)
+    }
+
+    fun seekTo(positionMs: Long) {
+        audioPlayer.seekTo(positionMs)
     }
 
     fun toggleMemorizationMode() {
