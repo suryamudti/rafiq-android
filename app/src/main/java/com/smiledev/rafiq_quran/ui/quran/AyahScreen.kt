@@ -76,6 +76,8 @@ import com.smiledev.rafiq_quran.R
 import com.smiledev.rafiq_quran.core.currentLocaleCode
 import com.smiledev.rafiq_quran.core.displayMessage
 import com.smiledev.rafiq_quran.domain.model.Ayah
+import com.smiledev.rafiq_quran.ui.common.formatDuration
+import com.smiledev.rafiq_quran.ui.common.rememberNotificationPermissionRequester
 import com.smiledev.rafiq_quran.ui.quran.AyahViewModel
 import com.smiledev.rafiq_quran.ui.quran.NavMarker
 import kotlinx.coroutines.launch
@@ -100,6 +102,7 @@ fun AyahScreen(
     var showFontSizeSheet by remember { mutableStateOf(false) }
     var showOverflowMenu by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
+    val requestNotificationPermission = rememberNotificationPermissionRequester()
 
     LaunchedEffect(suraNumber) {
         viewModel.loadAyahs(suraNumber)
@@ -399,7 +402,13 @@ fun AyahScreen(
                                 memorizationRevealedAyah = state.memorizationRevealedAyah,
                                 onRevealTranslation = { viewModel.revealTranslation(it) },
                                 isPlayingAyah = state.currentPlayingAyah == ayah.aya && state.isPlaying,
-                                onToggleAudio = { viewModel.toggleAyahAudio(ayah.aya) },
+                                onToggleAudio = {
+                                    requestNotificationPermission()
+                                    viewModel.toggleAyahAudio(ayah.aya)
+                                },
+                                positionMs = if (state.currentPlayingAyah == ayah.aya) state.positionMs else 0L,
+                                durationMs = if (state.currentPlayingAyah == ayah.aya) state.durationMs else 0L,
+                                onSeekTo = viewModel::seekTo,
                                 tafsirText = state.tafsirCache["${state.suraNumber}:${ayah.aya}"],
                                 tafsirLoading = state.tafsirLoadingAyah == ayah.aya,
                                 onLoadTafsir = { viewModel.loadTafsir(ayah.aya) },
@@ -445,6 +454,9 @@ private fun VerseCell(
     onRevealTranslation: ((Int) -> Unit)? = null,
     isPlayingAyah: Boolean = false,
     onToggleAudio: (() -> Unit)? = null,
+    positionMs: Long = 0L,
+    durationMs: Long = 0L,
+    onSeekTo: ((Long) -> Unit)? = null,
     tafsirText: String? = null,
     tafsirLoading: Boolean = false,
     onLoadTafsir: (() -> Unit)? = null,
@@ -537,6 +549,32 @@ private fun VerseCell(
                 ),
                 modifier = Modifier.weight(1f).padding(start = 8.dp)
             )
+        }
+
+        if (isPlayingAyah && onSeekTo != null) {
+            val duration = durationMs.coerceAtLeast(1L)
+            var dragPosition by remember { mutableStateOf<Float?>(null) }
+            Slider(
+                value = ((dragPosition ?: positionMs.toFloat())).coerceIn(0f, duration.toFloat()),
+                onValueChange = { dragPosition = it },
+                onValueChangeFinished = {
+                    dragPosition?.let { onSeekTo(it.toLong()) }
+                    dragPosition = null
+                },
+                valueRange = 0f..duration.toFloat(),
+                modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
+            )
+            Row(modifier = Modifier.fillMaxWidth()) {
+                Text(
+                    text = formatDuration(positionMs),
+                    style = MaterialTheme.typography.labelSmall
+                )
+                Spacer(Modifier.weight(1f))
+                Text(
+                    text = formatDuration(durationMs),
+                    style = MaterialTheme.typography.labelSmall
+                )
+            }
         }
 
         if (memorizationMode && memorizationRevealedAyah != ayah.aya) {
