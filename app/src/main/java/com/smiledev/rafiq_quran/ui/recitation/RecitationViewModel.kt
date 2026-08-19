@@ -17,6 +17,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.util.Locale
 import javax.inject.Inject
 
 @Immutable
@@ -26,6 +27,8 @@ data class RecitationUiState(
     val selectedReciter: Reciter? = null,
     val currentSurah: Surah? = null,
     val isPlaying: Boolean = false,
+    val positionMs: Long = 0L,
+    val durationMs: Long = 0L,
     val isLoading: Boolean = false,
     val error: AppError? = null
 )
@@ -41,7 +44,18 @@ class RecitationViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(RecitationUiState())
     val uiState: StateFlow<RecitationUiState> = _uiState
 
-    init { loadReciters() }
+    init {
+        loadReciters()
+        viewModelScope.launch(dispatcherProvider.main) {
+            audioPlayer.playbackState.collect { ps ->
+                _uiState.value = _uiState.value.copy(
+                    positionMs = ps.positionMs,
+                    durationMs = ps.durationMs,
+                    isPlaying = ps.isPlaying
+                )
+            }
+        }
+    }
 
     private fun loadReciters() {
         viewModelScope.launch(dispatcherProvider.io) {
@@ -76,19 +90,22 @@ class RecitationViewModel @Inject constructor(
 
     fun playSurah(surah: Surah) {
         val reciter = _uiState.value.selectedReciter ?: return
-        val url = "https://everyayah.com/data/${reciter.identifier}/${String.format("%03d", surah.chapterNumber)}.mp3"
-        _uiState.value = _uiState.value.copy(currentSurah = surah, isPlaying = true)
-        audioPlayer.play(url)
+        val url = "${reciter.audioBase}/${String.format(Locale.US, "%03d", surah.chapterNumber)}.mp3"
+        val title = "${surah.chapterNumber}. ${surah.nameSimple}"
+        audioPlayer.play(url, title, reciter.nameEn)
+        _uiState.value = _uiState.value.copy(currentSurah = surah)
     }
 
     fun togglePlayback() {
         audioPlayer.toggle()
-        _uiState.value = _uiState.value.copy(isPlaying = audioPlayer.isPlaying)
     }
 
     fun stop() {
         audioPlayer.stop()
-        _uiState.value = _uiState.value.copy(isPlaying = false)
+    }
+
+    fun seekTo(positionMs: Long) {
+        audioPlayer.seekTo(positionMs)
     }
 
     fun backToReciters() {

@@ -6,5 +6,5 @@ data class Reciter(
     val nameAr: String,
     val style: String,
     val country: String,
-    val identifier: String
+    val audioBase: String
 )

@@ -30,7 +30,7 @@ class ReciterRepositoryImpl @Inject constructor(
                     nameAr = it.name_ar,
                     style = it.style,
                     country = it.country,
-                    identifier = it.identifier
+                    audioBase = it.audio_base
                 )
             }.asSuccess()
         } catch (e: Exception) {
@@ -45,5 +45,5 @@ private data class ReciterRaw(
     val name_ar: String,
     val style: String,
     val country: String,
-    val identifier: String
+    val audio_base: String
 )

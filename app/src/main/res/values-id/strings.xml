@@ -84,6 +84,7 @@
     <string name="play">Putar</string>
     <string name="pause">Jeda</string>
     <string name="stop">Berhenti</string>
+    <string name="notification_channel_name">Pemutaran Media</string>
     <!-- Calendar -->
     <string name="islamic_calendar">Kalender Islam</string>
     <string name="todays_events">Acara Hari Ini</string>
