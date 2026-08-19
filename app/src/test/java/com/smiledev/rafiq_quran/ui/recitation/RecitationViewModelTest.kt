@@ -92,4 +92,30 @@ class RecitationViewModelTest {
 
         verify { audioPlayer.play("https://server10.mp3quran.net/jleel/114.mp3", "114. An-Nas", "Khalid Al-Jalil") }
     }
+
+    @Test
+    fun `seekTo delegates to audio player`() = runTest(testDispatcher) {
+        every { reciterRepository.getReciters() } returns Result.Success(emptyList())
+        every { audioPlayer.seekTo(any()) } returns Unit
+
+        val vm = createVm()
+        vm.seekTo(42000)
+        advanceUntilIdle()
+
+        verify { audioPlayer.seekTo(42000L) }
+    }
+
+    @Test
+    fun `playback state from controller updates ui state`() = runTest(testDispatcher) {
+        every { reciterRepository.getReciters() } returns Result.Success(emptyList())
+        val playbackStateFlow = MutableStateFlow(PlaybackState())
+        val vm = createVm(playbackStateFlow)
+
+        playbackStateFlow.value = PlaybackState(positionMs = 5000, durationMs = 60000, isPlaying = true)
+        advanceUntilIdle()
+
+        assertEquals(5000L, vm.uiState.value.positionMs)
+        assertEquals(60000L, vm.uiState.value.durationMs)
+        assertEquals(true, vm.uiState.value.isPlaying)
+    }
 }

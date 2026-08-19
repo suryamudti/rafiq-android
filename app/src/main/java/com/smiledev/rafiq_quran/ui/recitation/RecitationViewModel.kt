@@ -26,6 +26,8 @@ data class RecitationUiState(
     val selectedReciter: Reciter? = null,
     val currentSurah: Surah? = null,
     val isPlaying: Boolean = false,
+    val positionMs: Long = 0L,
+    val durationMs: Long = 0L,
     val isLoading: Boolean = false,
     val error: AppError? = null
 )
@@ -41,7 +43,18 @@ class RecitationViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(RecitationUiState())
     val uiState: StateFlow<RecitationUiState> = _uiState
 
-    init { loadReciters() }
+    init {
+        loadReciters()
+        viewModelScope.launch(dispatcherProvider.main) {
+            audioPlayer.playbackState.collect { ps ->
+                _uiState.value = _uiState.value.copy(
+                    positionMs = ps.positionMs,
+                    durationMs = ps.durationMs,
+                    isPlaying = ps.isPlaying
+                )
+            }
+        }
+    }
 
     private fun loadReciters() {
         viewModelScope.launch(dispatcherProvider.io) {
@@ -88,6 +101,10 @@ class RecitationViewModel @Inject constructor(
 
     fun stop() {
         audioPlayer.stop()
+    }
+
+    fun seekTo(positionMs: Long) {
+        audioPlayer.seekTo(positionMs)
     }
 
     fun backToReciters() {
