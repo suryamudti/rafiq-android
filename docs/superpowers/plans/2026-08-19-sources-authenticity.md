@@ -593,7 +593,9 @@ package com.smiledev.rafiq_quran.ui.sources
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performScrollTo
 import org.junit.Rule
 import org.junit.Test
 
@@ -608,21 +610,23 @@ class SourcesScreenTest {
 
         composeTestRule.onNodeWithText("Quran").assertIsDisplayed()
         composeTestRule.onNodeWithText("Hadith").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Prayer Times").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Sahih al-Bukhari").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Sahih Muslim").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Open source").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Prayer Times").performScrollTo().assertIsDisplayed()
+        composeTestRule.onNodeWithText("Sahih al-Bukhari").performScrollTo().assertIsDisplayed()
+        composeTestRule.onNodeWithText("Sahih Muslim").performScrollTo().assertIsDisplayed()
+        composeTestRule.onAllNodesWithText("Open source")[0].performScrollTo().assertIsDisplayed()
     }
 
     @Test
     fun hadithItemsShowTranslatorCredit() {
         composeTestRule.setContent { SourcesScreen(onBack = {}) }
 
-        composeTestRule.onNodeWithText("Translator: Muhsin Khan").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Translator: Abdul Hamid Siddiqui").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Translator: Muhsin Khan").performScrollTo().assertIsDisplayed()
+        composeTestRule.onNodeWithText("Translator: Abdul Hamid Siddiqui").performScrollTo().assertIsDisplayed()
     }
 }
 ```
+
+> Note: below-the-fold nodes (`Prayer Times`, `Sahih al-Bukhari`, `Sahih Muslim`, both translator credits) need `performScrollTo()` because the screen is a scrollable Column taller than the emulator viewport. `"Open source"` matches 6 nodes (one per card with a link), so the assertion targets `onAllNodesWithText(...)[0]`.
 
 - [ ] **Step 2: Add the Settings screen test**
 
