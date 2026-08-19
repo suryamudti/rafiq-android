@@ -80,6 +80,26 @@ class SettingsScreenTest {
     }
 
     @Test
+    fun sourcesItemIsDisplayed() {
+        val prefs = mockk<PreferencesManager>(relaxed = true)
+        every { prefs.themeMode } returns MutableStateFlow("system")
+        every { prefs.translationLanguage } returns MutableStateFlow("system")
+        every { prefs.ayahFontSize } returns MutableStateFlow(22)
+        every { prefs.translationFontSize } returns MutableStateFlow(15)
+        coEvery { prefs.setThemeMode(any()) } returns Unit
+        coEvery { prefs.setTranslationLanguage(any()) } returns Unit
+        coEvery { prefs.setAyahFontSize(any()) } returns Unit
+        coEvery { prefs.setTranslationFontSize(any()) } returns Unit
+        val viewModel = SettingsViewModel(prefs, createDispatcherProvider())
+
+        composeTestRule.setContent {
+            SettingsScreen(onBack = {}, viewModel = viewModel)
+        }
+
+        composeTestRule.onNodeWithText("Sources & Authenticity").assertIsDisplayed()
+    }
+
+    @Test
     fun clickingLightThemeCallsSetThemeMode() {
         val prefs = mockk<PreferencesManager>(relaxed = true)
         every { prefs.themeMode } returns MutableStateFlow("system")

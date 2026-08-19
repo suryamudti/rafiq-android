@@ -29,6 +29,7 @@ import com.smiledev.rafiq_quran.ui.bookmarks.BookmarkListFullScreen
 import com.smiledev.rafiq_quran.ui.prayerlog.PrayerLogScreen
 
 import com.smiledev.rafiq_quran.ui.settings.SettingsScreen
+import com.smiledev.rafiq_quran.ui.sources.SourcesScreen
 
 @Composable
 fun MainNavigation() {
@@ -187,6 +188,12 @@ fun MainNavigation() {
           SettingsScreen(
             onBack = { backStack.removeLastOrNull() },
             onNavigate = { navKey -> backStack.add(navKey) },
+            modifier = Modifier.safeDrawingPadding()
+          )
+        }
+        entry<Sources> {
+          SourcesScreen(
+            onBack = { backStack.removeLastOrNull() },
             modifier = Modifier.safeDrawingPadding()
           )
         }
