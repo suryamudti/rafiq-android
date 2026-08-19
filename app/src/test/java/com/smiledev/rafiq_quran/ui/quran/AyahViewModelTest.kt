@@ -40,14 +40,14 @@ class AyahViewModelTest {
         Ayah(sura = 1, aya = 2, text = "الْحَمْدُ", bismillah = null, translation = "Praise")
     )
 
-    private fun createVm(): AyahViewModel {
+    private fun createVm(playbackStateFlow: MutableStateFlow<PlaybackState> = MutableStateFlow(PlaybackState())): AyahViewModel {
         every { preferencesManager.translationLanguage } returns MutableStateFlow("system")
         every { preferencesManager.ayahFontSize } returns MutableStateFlow(22)
         every { preferencesManager.translationFontSize } returns MutableStateFlow(15)
         every { preferencesManager.lastReadSura } returns MutableStateFlow(0)
         every { preferencesManager.lastReadAya } returns MutableStateFlow(0)
         every { quranRepository.getChapters(any()) } returns Result.Success(listOf(surah))
-        every { audioPlayer.playbackState } returns MutableStateFlow(PlaybackState())
+        every { audioPlayer.playbackState } returns playbackStateFlow
         return AyahViewModel(
             quranRepository,
             bookmarkRepository,
@@ -119,5 +119,18 @@ class AyahViewModelTest {
         advanceUntilIdle()
 
         verify { audioPlayer.seekTo(15000L) }
+    }
+
+    @Test
+    fun `playback state from controller updates ui state`() = runTest(testDispatcher) {
+        val playbackStateFlow = MutableStateFlow(PlaybackState())
+        val vm = createVm(playbackStateFlow)
+
+        playbackStateFlow.value = PlaybackState(positionMs = 5000, durationMs = 60000, isPlaying = true)
+        advanceUntilIdle()
+
+        assertEquals(5000L, vm.uiState.value.positionMs)
+        assertEquals(60000L, vm.uiState.value.durationMs)
+        assertEquals(true, vm.uiState.value.isPlaying)
     }
 }

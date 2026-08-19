@@ -31,9 +31,15 @@ class AudioPlayerController @Inject constructor(
     private var controller: MediaController? = null
     private var connecting = false
     private var connectGeneration = 0
+    private var connectAttempts = 0
     private val pendingCommands = mutableListOf<(MediaController) -> Unit>()
     private var completionListener: (() -> Unit)? = null
     private var pollJob: Job? = null
+
+    private companion object {
+        const val MAX_CONNECT_ATTEMPTS = 3
+        const val CONNECT_RETRY_DELAY_MS = 1500L
+    }
 
     private val _playbackState = MutableStateFlow(PlaybackState())
     val playbackState: StateFlow<PlaybackState> = _playbackState
@@ -90,6 +96,7 @@ class AudioPlayerController @Inject constructor(
         controller?.release()
         controller = null
         connecting = false
+        connectAttempts = 0
         pendingCommands.clear()
         pollJob?.cancel()
         completionListener = null
@@ -102,7 +109,6 @@ class AudioPlayerController @Inject constructor(
         val sessionToken = SessionToken(context, ComponentName(context, AudioRecitationService::class.java))
         val future = MediaController.Builder(context, sessionToken).buildAsync()
         future.addListener({
-            connecting = false
             if (generation != connectGeneration) {
                 try {
                     future.get().release()
@@ -111,15 +117,24 @@ class AudioPlayerController @Inject constructor(
                 }
                 return@addListener
             }
+            connecting = false
             try {
                 onControllerConnected(future.get())
             } catch (e: Exception) {
                 controller = null
+                if (pendingCommands.isNotEmpty() && connectAttempts < MAX_CONNECT_ATTEMPTS) {
+                    connectAttempts++
+                    scope.launch {
+                        delay(CONNECT_RETRY_DELAY_MS)
+                        if (controller == null) connect()
+                    }
+                }
             }
         }, ContextCompat.getMainExecutor(context))
     }
 
     private fun onControllerConnected(c: MediaController) {
+        connectAttempts = 0
         controller = c
         c.addListener(object : Player.Listener {
             override fun onPlaybackStateChanged(playbackState: Int) {

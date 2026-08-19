@@ -17,6 +17,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.util.Locale
 import javax.inject.Inject
 
 @Immutable
@@ -89,7 +90,7 @@ class RecitationViewModel @Inject constructor(
 
     fun playSurah(surah: Surah) {
         val reciter = _uiState.value.selectedReciter ?: return
-        val url = "${reciter.audioBase}/${String.format("%03d", surah.chapterNumber)}.mp3"
+        val url = "${reciter.audioBase}/${String.format(Locale.US, "%03d", surah.chapterNumber)}.mp3"
         val title = "${surah.chapterNumber}. ${surah.nameSimple}"
         audioPlayer.play(url, title, reciter.nameEn)
         _uiState.value = _uiState.value.copy(currentSurah = surah)
