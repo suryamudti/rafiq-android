@@ -23,13 +23,17 @@ Go to the [Releases](https://github.com/suryamudti/rafiq-android/releases) secti
 
 ## 📸 Screenshots
 
-| Dashboard | Prayer Times | Quran Reader | Qibla Compass |
+| Dashboard | Prayer Times | Quran Reader | Ayah Reader |
 | :---: | :---: | :---: | :---: |
-| <img src="figure/dashboard.png" width="220"/> | <img src="figure/prayertimes.png" width="220"/> | <img src="figure/quran.png" width="220"/> | <img src="figure/qibla.png" width="220"/> |
+| <img src="figure/dashboard.png" width="220"/> | <img src="figure/prayertimes.png" width="220"/> | <img src="figure/quran.png" width="220"/> | <img src="figure/ayah.png" width="220"/> |
 
-| Zakat Calculator | 99 Names of Allah | Tasbih Counter | Nearby Mosques |
+| Qibla Compass | Zakat Calculator | 99 Names of Allah | Tasbih Counter |
 | :---: | :---: | :---: | :---: |
-| <img src="figure/zakat.png" width="220"/> | <img src="figure/asmaulhusna.png" width="220"/> | <img src="figure/tasbih.png" width="220"/> | <img src="figure/mosques.png" width="220"/> |
+| <img src="figure/qibla.png" width="220"/> | <img src="figure/zakat.png" width="220"/> | <img src="figure/asmaulhusna.png" width="220"/> | <img src="figure/tasbih.png" width="220"/> |
+
+| Nearby Mosques | Hadith Library | Prophet Stories | Islamic Calendar |
+| :---: | :---: | :---: | :---: |
+| <img src="figure/mosques.png" width="220"/> | <img src="figure/hadith.png" width="220"/> | <img src="figure/prophets.png" width="220"/> | <img src="figure/calendar.png" width="220"/> |
 
 ---
 
@@ -38,19 +42,20 @@ Go to the [Releases](https://github.com/suryamudti/rafiq-android/releases) secti
 | Feature | Description |
 |---|---|
 | **🕌 Prayer Times** | Real-time prayer calculation via Aladhan API with date navigation and countdown timer. |
-| **📖 Quran & Tafsir** | 114 Surahs with Uthmani Arabic text, Indonesian/English translations, per-ayah tafsir, sajdah markers, and memorization mode. |
+| **📖 Quran & Tafsir** | 114 Surahs with Uthmani Arabic text, Indonesian/English translations, per-ayah tafsir, sajdah markers, memorization mode, and global ayah search across the full corpus. |
 | **🔊 Recitations** | Audio streaming of 15 reciters via Media3 ExoPlayer with background playback. |
 | **🧭 Qibla Compass** | 16-point direction name, live heading/bearing readout, turn left/right offset indicator (proximity within 5°), Kaaba info card, and a Google Maps button. |
 | **✨ 99 Names of Allah** | Complete list with Arabic typography, transliterations, meanings, and search functionality. |
 | **📅 Islamic Calendar** | Tabular Hijri dates, monthly grid with event/fasting dots, day sheet, upcoming observances (57 events), and sunnah fasting recommendations. |
 | **📜 Prophet Stories** | Biographies of 25 Prophets with facts, key events, lessons, and verse references; Arabic/Latin search, favorites filter, share, adjustable story font size, and prev/next navigation. |
+| **📚 Hadith Library** | Full Sahih Bukhari and Sahih Muslim corpus (Arabic + Indonesian/English translations) with books, per-book hadith lists, detail view, and global hadith search with highlighted results. |
 | **💰 Zakat Calculator** | Nisab threshold logic with instant results computed locally while gold/silver prices refresh in the background from the Metals.live API (in-memory cache). |
 | **📿 Tasbih Counter** | Digital zikr counter with haptic feedback and target goals. |
 | **🗺️ Nearby Mosques** | Location-aware OpenStreetMap view (OsmDroid) with nearby mosque discovery via a reliable Overpass POST API with mirror failover. |
 | **🔖 Bookmarked Verses** | Bookmark favorite verses saved locally in Room database. |
 | **📊 Prayer Tracker** | Daily prayer log screen with toggle switches to track daily worship. |
 | **🔔 Notifications** | Background prayer alarm notifications scheduled via WorkManager. |
-| **⚙️ Settings** | Language preference (Bahasa Indonesia / English) and user preferences stored in DataStore. |
+| **⚙️ Settings** | Language preference (Bahasa Indonesia / English), theme mode, and user preferences stored in DataStore. |
 
 ---
 
@@ -137,7 +142,7 @@ graph TD
 ```
 
 ### Architecture Highlights
-- **Offline-First**: Bundled SQLite database assets (`quran-uthmani.db` and translation databases) ensure complete offline Quran reading without requiring an initial network load.
+- **Offline-First**: Bundled SQLite database assets (`quran-uthmani.db`, translation databases, and `hadith.db`) ensure complete offline Quran and Hadith reading without requiring an initial network load.
 - **Single Source of Truth**: Repositories in `:data` manage caching between remote REST APIs (Aladhan, Metals.live) and local databases.
 - **Unidirectional Data Flow (UDF)**: ViewModels expose immutable `StateFlow<UiState>` to Compose UI elements while handling events asynchronously via Coroutines.
 
@@ -146,6 +151,7 @@ graph TD
 ## 🌐 Data Sources & APIs
 
 - **Quran Text & Translation**: Bundled SQLite databases (`quran-uthmani.db`, `translations/en.sahih.db`, `translations/id.indonesian.db`) via `DatabaseCopier`.
+- **Hadith Corpus**: Bundled SQLite database (`hadith.db`) with the full Sahih Bukhari and Sahih Muslim corpus in Arabic with Indonesian/English translations.
 - **Tafsir**: [EQuran.id API](https://equran.id/) (`api/v2/tafsir/{surah}`) for Indonesian tafsir and [IslamicApp API](https://api.islamic.app/) (`v1/verses/by_key/{sura}:{aya}`) for English tafsir (Ibn Kathir).
 - **Prayer Timings API**: [Aladhan REST API](https://aladhan.com/prayer-times-api) (`v1/timings/{date}`).
 - **Zakat Gold/Silver Spot Prices**: [Metals.live API](https://metals.live/) (`v1/spot/gold`, `v1/spot/silver`).
@@ -166,8 +172,8 @@ graph TD
 ### Build APK
 
 ```powershell
-# Set JAVA_HOME (Windows PowerShell example)
-$env:JAVA_HOME = "C:\Program Files\Android\Android Studio\jbr"
+# Set JAVA_HOME (Windows PowerShell example; Temurin JDK 17 recommended)
+$env:JAVA_HOME = "C:\Program Files\Eclipse Adoptium\jdk-17.0.19.10-hotspot"
 
 # Build debug APK
 .\gradlew assembleDebug

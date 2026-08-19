@@ -3,7 +3,8 @@
 ## Build & Run
 
 ```powershell
-$env:JAVA_HOME = "C:\Program Files\Android\Android Studio\jbr"
+# Android Studio's bundled jbr is incomplete (missing conf/security/java.security) on this machine; use Temurin JDK 17.
+$env:JAVA_HOME = "C:\Program Files\Eclipse Adoptium\jdk-17.0.19.10-hotspot"
 .\gradlew assembleDebug
 adb -s emulator-5554 install -r app\build\outputs\apk\debug\app-debug.apk
 ```
