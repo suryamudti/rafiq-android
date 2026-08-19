@@ -30,7 +30,7 @@ class AudioPlayerController @Inject constructor(
     private val scope = CoroutineScope(SupervisorJob() + dispatcherProvider.main)
     private var controller: MediaController? = null
     private var connecting = false
-    private var released = false
+    private var connectGeneration = 0
     private val pendingCommands = mutableListOf<(MediaController) -> Unit>()
     private var completionListener: (() -> Unit)? = null
     private var pollJob: Job? = null
@@ -86,7 +86,7 @@ class AudioPlayerController @Inject constructor(
     }
 
     fun release() {
-        released = true
+        connectGeneration++
         controller?.release()
         controller = null
         connecting = false
@@ -96,13 +96,14 @@ class AudioPlayerController @Inject constructor(
     }
 
     private fun connect() {
-        if (released || controller != null || connecting) return
+        if (controller != null || connecting) return
         connecting = true
+        val generation = connectGeneration
         val sessionToken = SessionToken(context, ComponentName(context, AudioRecitationService::class.java))
         val future = MediaController.Builder(context, sessionToken).buildAsync()
         future.addListener({
             connecting = false
-            if (released) {
+            if (generation != connectGeneration) {
                 try {
                     future.get().release()
                 } catch (_: Exception) {
@@ -119,10 +120,6 @@ class AudioPlayerController @Inject constructor(
     }
 
     private fun onControllerConnected(c: MediaController) {
-        if (released) {
-            c.release()
-            return
-        }
         controller = c
         c.addListener(object : Player.Listener {
             override fun onPlaybackStateChanged(playbackState: Int) {
@@ -145,7 +142,6 @@ class AudioPlayerController @Inject constructor(
     }
 
     private fun runOrQueue(command: (MediaController) -> Unit) {
-        if (released) return
         val c = controller
         if (c != null) {
             command(c)
