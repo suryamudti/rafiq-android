@@ -30,6 +30,7 @@ class AudioPlayerController @Inject constructor(
     private val scope = CoroutineScope(SupervisorJob() + dispatcherProvider.main)
     private var controller: MediaController? = null
     private var connecting = false
+    private var released = false
     private val pendingCommands = mutableListOf<(MediaController) -> Unit>()
     private var completionListener: (() -> Unit)? = null
     private var pollJob: Job? = null
@@ -85,19 +86,30 @@ class AudioPlayerController @Inject constructor(
     }
 
     fun release() {
+        released = true
         controller?.release()
         controller = null
+        connecting = false
+        pendingCommands.clear()
         pollJob?.cancel()
         completionListener = null
     }
 
     private fun connect() {
-        if (controller != null || connecting) return
+        if (released || controller != null || connecting) return
         connecting = true
         val sessionToken = SessionToken(context, ComponentName(context, AudioRecitationService::class.java))
         val future = MediaController.Builder(context, sessionToken).buildAsync()
         future.addListener({
             connecting = false
+            if (released) {
+                try {
+                    future.get().release()
+                } catch (_: Exception) {
+                    // controller future was already released or failed; nothing to clean up
+                }
+                return@addListener
+            }
             try {
                 onControllerConnected(future.get())
             } catch (e: Exception) {
@@ -107,12 +119,17 @@ class AudioPlayerController @Inject constructor(
     }
 
     private fun onControllerConnected(c: MediaController) {
+        if (released) {
+            c.release()
+            return
+        }
         controller = c
         c.addListener(object : Player.Listener {
             override fun onPlaybackStateChanged(playbackState: Int) {
                 if (playbackState == Player.STATE_ENDED) {
-                    completionListener?.invoke()
+                    val callback = completionListener
                     completionListener = null
+                    callback?.invoke()
                 }
                 updatePlaybackState()
             }
@@ -128,6 +145,7 @@ class AudioPlayerController @Inject constructor(
     }
 
     private fun runOrQueue(command: (MediaController) -> Unit) {
+        if (released) return
         val c = controller
         if (c != null) {
             command(c)
