@@ -24,3 +24,4 @@ import kotlinx.serialization.Serializable
 @Serializable data object PrayerLog : NavKey
 
 @Serializable data object Settings : NavKey
+@Serializable data object Sources : NavKey

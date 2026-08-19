@@ -39,6 +39,7 @@ import com.smiledev.rafiq_quran.HadithBooks
 import com.smiledev.rafiq_quran.PrayerLog
 import com.smiledev.rafiq_quran.Prophets
 import com.smiledev.rafiq_quran.R
+import com.smiledev.rafiq_quran.Sources
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -124,6 +125,11 @@ fun SettingsScreen(
                     MoreFeatureItem(R.string.hadiths) { onNavigate(HadithBooks) }
                 }
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
+            HorizontalDivider()
+            Spacer(modifier = Modifier.height(8.dp))
+            MoreFeatureItem(R.string.sources_and_authenticity) { onNavigate(Sources) }
         }
     }
 }
