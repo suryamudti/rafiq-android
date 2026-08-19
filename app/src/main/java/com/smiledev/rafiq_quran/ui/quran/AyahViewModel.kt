@@ -154,23 +154,15 @@ class AyahViewModel @Inject constructor(
             audioPlayer.stop()
             _uiState.value = state.copy(isPlaying = false, currentPlayingAyah = null)
         } else {
-            val url = getAyahAudioUrl(state.suraNumber, ayahNumber)
-            audioPlayer.playAyah(url) {
-                val nextAyah = ayahNumber + 1
-                val maxAyah = state.ayahs.size
-                if (nextAyah <= maxAyah) {
-                    playAyahAudio(nextAyah)
-                } else {
-                    _uiState.value = _uiState.value.copy(isPlaying = false, currentPlayingAyah = null)
-                }
-            }
-            _uiState.value = state.copy(isPlaying = true, currentPlayingAyah = ayahNumber)
+            playAyahAudio(ayahNumber)
         }
     }
 
     private fun playAyahAudio(ayahNumber: Int) {
         val url = getAyahAudioUrl(_uiState.value.suraNumber, ayahNumber)
-        audioPlayer.playAyah(url) {
+        val surahName = _uiState.value.currentSurah?.nameSimple ?: "Surah ${_uiState.value.suraNumber}"
+        val title = "$surahName – Ayah $ayahNumber"
+        audioPlayer.playAyah(url, title, "Alafasy") {
             val state = _uiState.value
             val nextAyah = ayahNumber + 1
             val maxAyah = state.ayahs.size

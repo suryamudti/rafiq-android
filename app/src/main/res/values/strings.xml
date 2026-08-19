@@ -84,6 +84,7 @@
     <string name="play">Play</string>
     <string name="pause">Pause</string>
     <string name="stop">Stop</string>
+    <string name="notification_channel_name">Media Playback</string>
     <!-- Calendar -->
     <string name="islamic_calendar">Islamic Calendar</string>
     <string name="todays_events">Today\'s Events</string>

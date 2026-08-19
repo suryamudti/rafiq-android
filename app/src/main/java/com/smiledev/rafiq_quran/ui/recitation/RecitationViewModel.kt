@@ -77,18 +77,17 @@ class RecitationViewModel @Inject constructor(
     fun playSurah(surah: Surah) {
         val reciter = _uiState.value.selectedReciter ?: return
         val url = "${reciter.audioBase}/${String.format("%03d", surah.chapterNumber)}.mp3"
-        _uiState.value = _uiState.value.copy(currentSurah = surah, isPlaying = true)
-        audioPlayer.play(url)
+        val title = "${surah.chapterNumber}. ${surah.nameSimple}"
+        audioPlayer.play(url, title, reciter.nameEn)
+        _uiState.value = _uiState.value.copy(currentSurah = surah)
     }
 
     fun togglePlayback() {
         audioPlayer.toggle()
-        _uiState.value = _uiState.value.copy(isPlaying = audioPlayer.isPlaying)
     }
 
     fun stop() {
         audioPlayer.stop()
-        _uiState.value = _uiState.value.copy(isPlaying = false)
     }
 
     fun backToReciters() {

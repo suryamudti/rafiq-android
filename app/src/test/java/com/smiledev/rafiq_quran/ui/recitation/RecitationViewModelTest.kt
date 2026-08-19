@@ -8,10 +8,12 @@ import com.smiledev.rafiq_quran.domain.model.Surah
 import com.smiledev.rafiq_quran.domain.repository.QuranRepository
 import com.smiledev.rafiq_quran.domain.repository.ReciterRepository
 import com.smiledev.rafiq_quran.service.AudioPlayerController
+import com.smiledev.rafiq_quran.service.PlaybackState
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
@@ -27,6 +29,11 @@ class RecitationViewModelTest {
     private val quranRepository: QuranRepository = mockk()
     private val audioPlayer: AudioPlayerController = mockk()
 
+    private fun createVm(playbackStateFlow: MutableStateFlow<PlaybackState> = MutableStateFlow(PlaybackState())): RecitationViewModel {
+        every { audioPlayer.playbackState } returns playbackStateFlow
+        return RecitationViewModel(reciterRepository, quranRepository, audioPlayer, testDispatcherProvider)
+    }
+
     @Test
     fun `load reciters success`() = runTest(testDispatcher) {
         val reciters = listOf(
@@ -34,7 +41,7 @@ class RecitationViewModelTest {
         )
         every { reciterRepository.getReciters() } returns Result.Success(reciters)
 
-        val vm = RecitationViewModel(reciterRepository, quranRepository, audioPlayer, testDispatcherProvider)
+        val vm = createVm()
         advanceUntilIdle()
 
         assertEquals(1, vm.uiState.value.reciters.size)
@@ -44,7 +51,7 @@ class RecitationViewModelTest {
     fun `load reciters error`() = runTest(testDispatcher) {
         every { reciterRepository.getReciters() } returns Result.Error(AppError.Database("fail", null))
 
-        val vm = RecitationViewModel(reciterRepository, quranRepository, audioPlayer, testDispatcherProvider)
+        val vm = createVm()
         advanceUntilIdle()
 
         assertEquals(0, vm.uiState.value.reciters.size)
@@ -56,16 +63,16 @@ class RecitationViewModelTest {
         val surah = Surah(1, 1, "Al-Fatihah", "Al-Fatihah", "الفاتحة", 7, "Meccan")
         every { reciterRepository.getReciters() } returns Result.Success(listOf(reciter))
         every { quranRepository.getChapters() } returns Result.Success(listOf(surah))
-        every { audioPlayer.play(any()) } returns Unit
+        every { audioPlayer.play(any(), any(), any()) } returns Unit
 
-        val vm = RecitationViewModel(reciterRepository, quranRepository, audioPlayer, testDispatcherProvider)
+        val vm = createVm()
         advanceUntilIdle()
         vm.selectReciter(reciter)
         advanceUntilIdle()
         vm.playSurah(surah)
         advanceUntilIdle()
 
-        verify { audioPlayer.play("https://download.quranicaudio.com/quran/abdul_basit_murattal/001.mp3") }
+        verify { audioPlayer.play("https://download.quranicaudio.com/quran/abdul_basit_murattal/001.mp3", "1. Al-Fatihah", "Abdul Basit") }
     }
 
     @Test
@@ -74,15 +81,15 @@ class RecitationViewModelTest {
         val surah = Surah(114, 114, "An-Nas", "An-Nas", "الناس", 6, "Meccan")
         every { reciterRepository.getReciters() } returns Result.Success(listOf(reciter))
         every { quranRepository.getChapters() } returns Result.Success(listOf(surah))
-        every { audioPlayer.play(any()) } returns Unit
+        every { audioPlayer.play(any(), any(), any()) } returns Unit
 
-        val vm = RecitationViewModel(reciterRepository, quranRepository, audioPlayer, testDispatcherProvider)
+        val vm = createVm()
         advanceUntilIdle()
         vm.selectReciter(reciter)
         advanceUntilIdle()
         vm.playSurah(surah)
         advanceUntilIdle()
 
-        verify { audioPlayer.play("https://server10.mp3quran.net/jleel/114.mp3") }
+        verify { audioPlayer.play("https://server10.mp3quran.net/jleel/114.mp3", "114. An-Nas", "Khalid Al-Jalil") }
     }
 }
