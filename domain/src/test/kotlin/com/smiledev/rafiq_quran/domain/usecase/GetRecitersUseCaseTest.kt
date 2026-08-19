@@ -17,7 +17,7 @@ class GetRecitersUseCaseTest {
 
     @Test
     fun `invoke delegates to repository and returns success`() {
-        val reciters = listOf(Reciter(1, "Abdul Basit", "عبد الباسط", "Mujawwad", "Egypt", "abdul_basit"))
+        val reciters = listOf(Reciter(1, "Abdul Basit", "عبد الباسط", "Mujawwad", "Egypt", "https://download.quranicaudio.com/quran/abdul_basit_murattal"))
         every { repository.getReciters() } returns Result.Success(reciters)
 
         val result = useCase()

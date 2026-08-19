@@ -76,7 +76,7 @@ class RecitationViewModel @Inject constructor(
 
     fun playSurah(surah: Surah) {
         val reciter = _uiState.value.selectedReciter ?: return
-        val url = "https://everyayah.com/data/${reciter.identifier}/${String.format("%03d", surah.chapterNumber)}.mp3"
+        val url = "${reciter.audioBase}/${String.format("%03d", surah.chapterNumber)}.mp3"
         _uiState.value = _uiState.value.copy(currentSurah = surah, isPlaying = true)
         audioPlayer.play(url)
     }
