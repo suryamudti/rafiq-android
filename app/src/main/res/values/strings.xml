@@ -177,4 +177,35 @@
     <string name="no_hadiths_match">No hadiths match \"%s\"</string>
     <string name="search_quran_hint">Search the whole Quran…</string>
     <string name="no_ayahs_match">No results found</string>
+    <!-- Sources & Authenticity -->
+    <string name="sources_and_authenticity">Sources &amp; Authenticity</string>
+    <string name="source_section_quran">Quran</string>
+    <string name="source_section_hadith">Hadith</string>
+    <string name="source_section_prayer_times">Prayer Times</string>
+    <string name="source_quran_uthmani">Quran Text (Uthmani)</string>
+    <string name="source_quran_uthmani_desc">Standard Uthmani Arabic script, bundled with the app.</string>
+    <string name="source_quran_en">English Translation</string>
+    <string name="source_quran_en_desc">Saheeh International translation, bundled with the app.</string>
+    <string name="source_quran_id">Indonesian Translation</string>
+    <string name="source_quran_id_desc">Official translation by the Indonesian Ministry of Religious Affairs (Kemenag), bundled with the app.</string>
+    <string name="source_hadith_bukhari">Sahih al-Bukhari</string>
+    <string name="source_hadith_bukhari_desc">Authentic collection by Imam al-Bukhari. Arabic with Muhsin Khan English translation, bundled with the app.</string>
+    <string name="source_hadith_muslim">Sahih Muslim</string>
+    <string name="source_hadith_muslim_desc">Authentic collection by Imam Muslim. Arabic with Abdul Hamid Siddiqui English translation, bundled with the app.</string>
+    <string name="source_prayer_aladhan">Prayer Times API</string>
+    <string name="source_prayer_aladhan_desc">Calculated by the Aladhan API with KEMENAG calculation method 20.</string>
+    <string name="source_prayer_location">Default Location</string>
+    <string name="source_prayer_location_desc">Jakarta (-6.2088, 106.8456) is used when no location is saved.</string>
+    <string name="source_authentic_text">Authentic Quranic text</string>
+    <string name="source_recognized_translation">Recognized translation</string>
+    <string name="source_authentic_collection">Authentic collection (Shahih)</string>
+    <string name="source_kemenag_method">KEMENAG calculation method (20)</string>
+    <string name="source_default_jakarta">Default: Jakarta</string>
+    <string name="source_translator">Translator: %s</string>
+    <string name="source_translator_saheeh">Saheeh International</string>
+    <string name="source_translator_kemenag">Indonesian Ministry of Religious Affairs (Kemenag)</string>
+    <string name="source_translator_muhsin_khan">Muhsin Khan</string>
+    <string name="source_translator_siddiqui">Abdul Hamid Siddiqui</string>
+    <string name="open_source">Open source</string>
+    <string name="link_error">Could not open link</string>
 </resources>
