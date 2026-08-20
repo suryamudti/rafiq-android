@@ -73,3 +73,7 @@
 -keepclassmembers class com.smiledev.rafiq_quran.domain.model.** { *; }
 -keepclassmembers class com.smiledev.rafiq_quran.data.local.** { *; }
 -keepclassmembers class com.smiledev.rafiq_quran.data.remote.** { *; }
+
+# Keep private Gson model classes used via TypeToken reflection (asset JSON parsing)
+-keep class com.smiledev.rafiq_quran.data.repository.ReciterRaw { *; }
+-keep class com.smiledev.rafiq_quran.data.repository.AsmaulHusnaRaw { *; }
