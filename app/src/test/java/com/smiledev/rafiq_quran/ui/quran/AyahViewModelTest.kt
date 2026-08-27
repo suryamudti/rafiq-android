@@ -47,6 +47,7 @@ class AyahViewModelTest {
         every { preferencesManager.lastReadSura } returns MutableStateFlow(0)
         every { preferencesManager.lastReadAya } returns MutableStateFlow(0)
         every { quranRepository.getChapters(any()) } returns Result.Success(listOf(surah))
+        every { bookmarkRepository.observeAll() } returns MutableStateFlow(emptyList())
         every { audioPlayer.playbackState } returns playbackStateFlow
         return AyahViewModel(
             quranRepository,

@@ -133,9 +133,16 @@ fun ZakatCalculatorScreen(
 
             Spacer(Modifier.height(16.dp))
 
-            if (state.isUsingFallback) {
+            if (state.isRefreshing) {
                 Text(
-                    text = "Using last-known price — refreshing…",
+                    text = "Refreshing latest prices…",
+                    fontSize = 11.sp,
+                    color = Color.Gray,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+            } else if (state.isUsingFallback) {
+                Text(
+                    text = "Offline — showing last known price",
                     fontSize = 11.sp,
                     color = Color.Gray,
                     modifier = Modifier.padding(bottom = 8.dp)

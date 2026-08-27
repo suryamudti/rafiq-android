@@ -85,6 +85,9 @@ class AudioPlayerController @Inject constructor(
     fun stop() {
         completionListener = null
         runOrQueue { c -> c.stop() }
+        controller?.release()
+        controller = null
+        context.stopService(android.content.Intent(context, AudioRecitationService::class.java))
     }
 
     fun seekTo(positionMs: Long) {
@@ -159,7 +162,13 @@ class AudioPlayerController @Inject constructor(
     private fun runOrQueue(command: (MediaController) -> Unit) {
         val c = controller
         if (c != null) {
-            command(c)
+            try {
+                command(c)
+            } catch (_: Exception) {
+                controller = null
+                pendingCommands.add(command)
+                connect()
+            }
         } else {
             pendingCommands.add(command)
             connect()

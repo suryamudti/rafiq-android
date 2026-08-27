@@ -409,7 +409,7 @@ fun AyahScreen(
                                 positionMs = if (state.currentPlayingAyah == ayah.aya) state.positionMs else 0L,
                                 durationMs = if (state.currentPlayingAyah == ayah.aya) state.durationMs else 0L,
                                 onSeekTo = viewModel::seekTo,
-                                tafsirText = state.tafsirCache["${state.suraNumber}:${ayah.aya}"],
+                                tafsirText = if (ayah.aya in state.tafsirErrors) "Failed to load tafsir" else state.tafsirCache[viewModel.tafsirCacheKey(ayah.aya)],
                                 tafsirLoading = state.tafsirLoadingAyah == ayah.aya,
                                 onLoadTafsir = { viewModel.loadTafsir(ayah.aya) },
                                 ayahFontSize = state.ayahFontSize,

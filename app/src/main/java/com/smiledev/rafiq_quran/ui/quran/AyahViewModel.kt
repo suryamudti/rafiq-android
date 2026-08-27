@@ -46,7 +46,8 @@ data class AyahUiState(
     val positionMs: Long = 0L,
     val durationMs: Long = 0L,
     val tafsirCache: Map<String, String> = emptyMap(),
-    val tafsirLoadingAyah: Int? = null
+    val tafsirLoadingAyah: Int? = null,
+    val tafsirErrors: Set<Int> = emptySet()
 )
 
 @HiltViewModel
@@ -67,7 +68,8 @@ class AyahViewModel @Inject constructor(
     private var cachedSurahs: List<Surah> = emptyList()
     private var lastReadSura: Int = 0
     private var lastReadAya: Int = 0
-    private var tafsirSuraLoaded: Int = -1
+    private var tafsirSuraLoadedId: Int = -1
+    private var bookmarkedBySura: Map<Int, Set<Int>> = emptyMap()
 
     init {
         loadSurahs()
@@ -97,6 +99,15 @@ class AyahViewModel @Inject constructor(
                 )
             }.collect()
         }
+        viewModelScope.launch(dispatcherProvider.io) {
+            bookmarkRepository.observeAll().collect { items ->
+                bookmarkedBySura = items.groupBy { it.sura }.mapValues { (_, v) -> v.map { it.aya }.toSet() }
+                val sura = _uiState.value.suraNumber
+                if (sura > 0) {
+                    _uiState.value = _uiState.value.copy(bookmarkedAyahs = bookmarkedBySura[sura] ?: emptySet())
+                }
+            }
+        }
     }
 
     private fun loadSurahs() {
@@ -119,6 +130,7 @@ class AyahViewModel @Inject constructor(
                         ayahs = result.data,
                         currentSurah = surah,
                         suraNumber = surahNumber,
+                        bookmarkedAyahs = bookmarkedBySura[surahNumber] ?: emptySet(),
                         isLoading = false
                     )
                 }
@@ -212,27 +224,35 @@ class AyahViewModel @Inject constructor(
         return lang == "id" || (lang == "system" && currentLocaleCode() == "id")
     }
 
+    fun tafsirCacheKey(ayahNumber: Int): String {
+        val lang = if (shouldUseIndonesianTafsir()) "id" else "en"
+        return "$lang:${_uiState.value.suraNumber}:$ayahNumber"
+    }
+
     fun loadTafsir(ayahNumber: Int) {
         val suraNumber = _uiState.value.suraNumber
-        val key = "$suraNumber:$ayahNumber"
+        val lang = if (shouldUseIndonesianTafsir()) "id" else "en"
+        val key = "$lang:$suraNumber:$ayahNumber"
         if (_uiState.value.tafsirCache.containsKey(key)) return
-        _uiState.value = _uiState.value.copy(tafsirLoadingAyah = ayahNumber)
+        _uiState.value = _uiState.value.copy(
+            tafsirLoadingAyah = ayahNumber,
+            tafsirErrors = _uiState.value.tafsirErrors - ayahNumber
+        )
         viewModelScope.launch(dispatcherProvider.io) {
             try {
-                if (shouldUseIndonesianTafsir() && suraNumber != tafsirSuraLoaded) {
+                if (lang == "id" && suraNumber != tafsirSuraLoadedId) {
                     val resp = equranApi.getTafsir(suraNumber)
                     val entries = resp.data.tafsir
                     val newCache = mutableMapOf<String, String>()
                     for (entry in entries) {
-                        val k = "$suraNumber:${entry.ayat}"
-                        newCache[k] = entry.teks
+                        newCache["id:$suraNumber:${entry.ayat}"] = entry.teks
                     }
-                    tafsirSuraLoaded = suraNumber
+                    tafsirSuraLoadedId = suraNumber
                     _uiState.value = _uiState.value.copy(
                         tafsirCache = _uiState.value.tafsirCache + newCache,
                         tafsirLoadingAyah = null
                     )
-                } else if (!shouldUseIndonesianTafsir()) {
+                } else if (lang == "en") {
                     val response = islamicAppApi.getVerseWithTafsir(suraNumber, ayahNumber, "en-tafisr-ibn-kathir")
                     val tafsirs = response.data.verse.tafsirs
                     val tafsirText = if (tafsirs != null) {
@@ -244,17 +264,18 @@ class AyahViewModel @Inject constructor(
                     } else "Tafsir not available"
                     _uiState.value = _uiState.value.copy(
                         tafsirCache = _uiState.value.tafsirCache + (key to plainText),
+                        tafsirErrors = _uiState.value.tafsirErrors - ayahNumber,
                         tafsirLoadingAyah = null
                     )
                 } else {
                     _uiState.value = _uiState.value.copy(
-                        tafsirCache = _uiState.value.tafsirCache + (key to "Tafsir not available"),
+                        tafsirErrors = _uiState.value.tafsirErrors + ayahNumber,
                         tafsirLoadingAyah = null
                     )
                 }
             } catch (_: Exception) {
                 _uiState.value = _uiState.value.copy(
-                    tafsirCache = _uiState.value.tafsirCache + (key to "Failed to load tafsir"),
+                    tafsirErrors = _uiState.value.tafsirErrors + ayahNumber,
                     tafsirLoadingAyah = null
                 )
             }
