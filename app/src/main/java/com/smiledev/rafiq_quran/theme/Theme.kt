@@ -41,7 +41,7 @@ private val LightColorScheme = lightColorScheme(
 @Composable
 fun RafiqAppTheme(
     themeMode: String = "system",
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit,
 ) {
     val darkTheme = when (themeMode) {

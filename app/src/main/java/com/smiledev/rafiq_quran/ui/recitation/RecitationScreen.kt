@@ -77,7 +77,7 @@ fun RecitationScreen(
                         stringResource(R.string.back),
                         modifier = Modifier.clickable(
                             onClick = {
-                                if (state.selectedReciter != null) viewModel.backToReciters() else onBack
+                                if (state.selectedReciter != null) viewModel.backToReciters() else onBack()
                             }
                         ).padding(16.dp)
                     )

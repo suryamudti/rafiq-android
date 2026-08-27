@@ -25,7 +25,8 @@ data class ZakatUiState(
     val cashAmount: String = "",
     val selectedCurrency: String = "USD",
     val result: ZakatResult = ZakatResult(),
-    val isUsingFallback: Boolean = false
+    val isUsingFallback: Boolean = false,
+    val isRefreshing: Boolean = false
 )
 
 @HiltViewModel
@@ -62,6 +63,7 @@ class ZakatCalculatorViewModel @Inject constructor(
     fun calculate() {
         val s = _uiState.value
         val cached = metalPriceRepository.getCachedMetalPrices()
+        _uiState.value = _uiState.value.copy(isRefreshing = true)
         publishResult(s, cached ?: DefaultMetalPrices, isUsingFallback = cached == null)
         refreshPrices()
     }
@@ -69,8 +71,11 @@ class ZakatCalculatorViewModel @Inject constructor(
     private fun prefetchPrices() {
         viewModelScope.launch(dispatcherProvider.io) {
             when (val result = metalPriceRepository.fetchMetalPrices()) {
-                is Result.Success -> recomputeIfHasInputs(result.data)
-                is Result.Error -> Unit
+                is Result.Success -> {
+                    _uiState.value = _uiState.value.copy(isRefreshing = false)
+                    recomputeIfHasInputs(result.data)
+                }
+                is Result.Error -> _uiState.value = _uiState.value.copy(isRefreshing = false)
             }
         }
     }
@@ -78,8 +83,11 @@ class ZakatCalculatorViewModel @Inject constructor(
     private fun refreshPrices() {
         viewModelScope.launch(dispatcherProvider.io) {
             when (val result = metalPriceRepository.fetchMetalPrices()) {
-                is Result.Success -> recomputeIfHasInputs(result.data)
-                is Result.Error -> Unit
+                is Result.Success -> {
+                    _uiState.value = _uiState.value.copy(isRefreshing = false)
+                    recomputeIfHasInputs(result.data)
+                }
+                is Result.Error -> _uiState.value = _uiState.value.copy(isRefreshing = false)
             }
         }
     }

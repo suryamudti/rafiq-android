@@ -1,5 +1,6 @@
 package com.smiledev.rafiq_quran.ui.prayertimes
 
+import android.content.Context
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,8 +10,10 @@ import com.smiledev.rafiq_quran.core.DispatcherProvider
 import com.smiledev.rafiq_quran.core.Result
 import com.smiledev.rafiq_quran.data.preferences.PreferencesManager
 import com.smiledev.rafiq_quran.domain.repository.PrayerTimesRepository
+import com.smiledev.rafiq_quran.service.PrayerNotificationWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
-
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -48,11 +51,14 @@ data class PrayerTimesUiState(
 class PrayerTimesViewModel @Inject constructor(
     private val prayerTimesRepository: PrayerTimesRepository,
     private val preferencesManager: PreferencesManager,
+    @ApplicationContext private val appContext: Context,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(PrayerTimesUiState())
     val uiState: StateFlow<PrayerTimesUiState> = _uiState
+
+    private var countdownJob: Job? = null
 
     private val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.US)
     private val timeFormat = SimpleDateFormat("HH:mm", Locale.US)
@@ -90,11 +96,12 @@ class PrayerTimesViewModel @Inject constructor(
             when (result) {
                 is Result.Success -> {
                     val data = result.data
+                    val dhuhaTime = addMinutes(data.timings.sunrise, 20)
                     val times = listOf(
                         PrayerTimeEntry("Imsak", data.timings.imsak),
                         PrayerTimeEntry("Fajr (Subuh)", data.timings.fajr),
                         PrayerTimeEntry("Sunrise", data.timings.sunrise),
-                        PrayerTimeEntry("Dhuha", data.timings.sunrise),
+                        PrayerTimeEntry("Dhuha", dhuhaTime),
                         PrayerTimeEntry("Dzuhur", data.timings.dhuhr),
                         PrayerTimeEntry("Asr", data.timings.asr),
                         PrayerTimeEntry("Maghrib", data.timings.maghrib),
@@ -106,6 +113,7 @@ class PrayerTimesViewModel @Inject constructor(
                         isLoading = false
                     )
                     startCountdown(times)
+                    PrayerNotificationWorker.scheduleNow(appContext)
                 }
                 is Result.Error -> {
                     _uiState.value = _uiState.value.copy(isLoading = false, error = result.error)
@@ -115,7 +123,8 @@ class PrayerTimesViewModel @Inject constructor(
     }
 
     private fun startCountdown(times: List<PrayerTimeEntry>) {
-        viewModelScope.launch(dispatcherProvider.io) {
+        countdownJob?.cancel()
+        countdownJob = viewModelScope.launch(dispatcherProvider.io) {
             while (isActive) {
                 val now = Calendar.getInstance()
                 val nowMinutes = now.get(Calendar.HOUR_OF_DAY) * 60 + now.get(Calendar.MINUTE)
@@ -171,4 +180,15 @@ class PrayerTimesViewModel @Inject constructor(
 
     val displayDate: String
         get() = displayDateFormat.format(_uiState.value.currentDate)
+
+    private fun addMinutes(time: String, add: Int): String {
+        val parts = time.split(":")
+        if (parts.size != 2) return time
+        val hour = parts[0].toIntOrNull() ?: return time
+        val minute = parts[1].toIntOrNull() ?: return time
+        val total = hour * 60 + minute + add
+        val h = (total / 60) % 24
+        val m = total % 60
+        return "%02d:%02d".format(h, m)
+    }
 }

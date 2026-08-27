@@ -47,12 +47,17 @@ class MosquesViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(MosquesUiState())
     val uiState: StateFlow<MosquesUiState> = _uiState
 
-    fun checkLocationPermission() {
+    private var lastLat: Double = -6.2088
+    private var lastLon: Double = 106.8456
+
+    fun checkLocationPermission(): Boolean {
         val coarse = ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION)
-        if (coarse == PackageManager.PERMISSION_GRANTED) {
+        val granted = coarse == PackageManager.PERMISSION_GRANTED
+        if (granted) {
             _uiState.value = _uiState.value.copy(locationGranted = true)
             fetchLocation()
         }
+        return granted
     }
 
     fun onPermissionResult(granted: Boolean) {
@@ -91,6 +96,8 @@ class MosquesViewModel @Inject constructor(
     }
 
     private fun loadMosques(lat: Double, lon: Double) {
+        lastLat = lat
+        lastLon = lon
         viewModelScope.launch(dispatcherProvider.io) {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             when (val result = mosqueRepository.getNearbyMosques(lat, lon)) {
@@ -108,5 +115,9 @@ class MosquesViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun retry() {
+        loadMosques(lastLat, lastLon)
     }
 }
