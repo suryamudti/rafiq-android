@@ -8,13 +8,23 @@ import com.smiledev.rafiq_quran.service.PrayerNotificationWorker
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withTimeoutOrNull
 import org.osmdroid.config.Configuration
 
 @HiltAndroidApp
 class RafiqApp : Application() {
     override fun attachBaseContext(base: Context) {
-        val lang = runBlocking { PreferencesManager(base).translationLanguage.first() }
-        super.attachBaseContext(base.wrapLocale(lang))
+        val wrapped = try {
+            val lang = runBlocking {
+                withTimeoutOrNull(1000) {
+                    PreferencesManager(base).translationLanguage.first()
+                } ?: "system"
+            }
+            base.wrapLocale(lang)
+        } catch (_: Exception) {
+            base
+        }
+        super.attachBaseContext(wrapped)
     }
 
     override fun onCreate() {

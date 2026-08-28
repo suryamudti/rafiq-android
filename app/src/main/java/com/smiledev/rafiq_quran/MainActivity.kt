@@ -16,6 +16,7 @@ import com.smiledev.rafiq_quran.theme.RafiqAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withTimeoutOrNull
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -24,8 +25,17 @@ class MainActivity : ComponentActivity() {
   @Inject lateinit var preferencesManager: PreferencesManager
 
   override fun attachBaseContext(newBase: Context) {
-    val lang = runBlocking { PreferencesManager(newBase.applicationContext).translationLanguage.first() }
-    super.attachBaseContext(newBase.wrapLocale(lang))
+    val wrapped = try {
+        val lang = runBlocking {
+            withTimeoutOrNull(1000) {
+                PreferencesManager(newBase).translationLanguage.first()
+            } ?: "system"
+        }
+        newBase.wrapLocale(lang)
+    } catch (_: Exception) {
+        newBase
+    }
+    super.attachBaseContext(wrapped)
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
