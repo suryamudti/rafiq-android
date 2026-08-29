@@ -9,7 +9,6 @@ import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeoutOrNull
-import org.osmdroid.config.Configuration
 
 @HiltAndroidApp
 class RafiqApp : Application() {
@@ -29,11 +28,6 @@ class RafiqApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        Configuration.getInstance().apply {
-            userAgentValue = packageName
-            osmdroidBasePath = cacheDir
-            osmdroidTileCache = cacheDir.resolve("tiles")
-        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             PrayerNotificationWorker.createNotificationChannel(this)
         }

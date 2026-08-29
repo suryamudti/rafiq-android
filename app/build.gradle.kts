@@ -5,6 +5,7 @@ plugins {
   alias(libs.plugins.kotlin.serialization)
   alias(libs.plugins.kapt)
   alias(libs.plugins.hilt)
+
 }
 
 android {
@@ -66,9 +67,9 @@ kapt {
 
 configurations.all {
     resolutionStrategy {
-        force("org.jetbrains.kotlin:kotlin-stdlib:2.0.0")
-        force("org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.0.0")
-        force("org.jetbrains.kotlin:kotlin-stdlib-jdk7:2.0.0")
+        force("org.jetbrains.kotlin:kotlin-stdlib:2.1.20")
+        force("org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.1.20")
+        force("org.jetbrains.kotlin:kotlin-stdlib-jdk7:2.1.20")
     }
 }
 
@@ -131,8 +132,8 @@ dependencies {
   // WorkManager
   implementation(libs.work.runtime.ktx)
 
-  // OsmDroid
-  implementation(libs.osmdroid.android)
+  // MapLibre Native 13.5.1 (BSD-2, no API key, OSM Bright style)
+  implementation(libs.maplibre.sdk)
 
   // Media3 ExoPlayer
   implementation(libs.media3.exoplayer)

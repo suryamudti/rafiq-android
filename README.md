@@ -51,7 +51,7 @@ Go to the [Releases](https://github.com/suryamudti/rafiq-android/releases) secti
 | **📚 Hadith Library** | Full Sahih Bukhari and Sahih Muslim corpus (Arabic + Indonesian/English translations) with books, per-book hadith lists, detail view, and global hadith search with highlighted results. |
 | **💰 Zakat Calculator** | Nisab threshold logic with instant results computed locally while gold/silver prices refresh in the background from the Metals.live API (in-memory cache). |
 | **📿 Tasbih Counter** | Digital zikr counter with haptic feedback and target goals. |
-| **🗺️ Nearby Mosques** | Location-aware OpenStreetMap view (OsmDroid) with nearby mosque discovery via a reliable Overpass POST API with mirror failover. |
+| **🗺️ Nearby Mosques** | Location-aware MapLibre view (no Play Services) with nearby mosque discovery via a reliable Overpass POST API with mirror failover. |
 | **🔖 Bookmarked Verses** | Bookmark favorite verses saved locally in Room database. |
 | **📊 Prayer Tracker** | Daily prayer log screen with toggle switches to track daily worship. |
 | **🔔 Notifications** | Background prayer alarm notifications scheduled via WorkManager. |
@@ -82,7 +82,7 @@ Go to the [Releases](https://github.com/suryamudti/rafiq-android/releases) secti
 - **[OkHttp](https://square.github.io/okhttp/)**: HTTP client with logging interceptor.
 - **[Media3 ExoPlayer](https://developer.android.com/guide/topics/media/media3)**: Audio playback engine for streaming recitations.
 - **[Google Play Services Location](https://developers.google.com/android/reference/com/google/android/gms/location/package-summary)**: Fused location provider for nearby mosques.
-- **[OsmDroid](https://github.com/osmdroid/osmdroid)** (6.1.18): OpenStreetMap integration for locating nearby mosques.
+- **[MapLibre Native](https://maplibre.org/)** (13.5.1): MapLibre rendering with GeoJson clustering for nearby mosques (BSD-2, no API key/billing).
 - **[WorkManager](https://developer.android.com/topic/libraries/architecture/workmanager)**: Deferrable background task management for notifications.
 
 ---
@@ -156,7 +156,7 @@ graph TD
 - **Prayer Timings API**: [Aladhan REST API](https://aladhan.com/prayer-times-api) (`v1/timings/{date}`).
 - **Zakat Gold/Silver Spot Prices**: [Metals.live API](https://metals.live/) (`v1/spot/gold`, `v1/spot/silver`).
 - **Nearby Mosques**: [Overpass API](https://overpass-api.de/) (POST query body) with mirror failover across `overpass-api.de`, `overpass.kumi.systems`, and `maps.mail.ru`.
-- **Maps**: OpenStreetMap tile provider managed via `OsmDroid`.
+- **Maps**: MapLibre Native with vector style `https://demotiles.maplibre.org/styles/osm-bright-gl-style/style.json` (clustering via `GeoJsonSource` + `SymbolLayer`).
 - **Static Content**: JSON assets for 99 Names, Islamic events, prophets, dzikir/tasbih, reciters, chapters, and juz metadata.
 
 ---
