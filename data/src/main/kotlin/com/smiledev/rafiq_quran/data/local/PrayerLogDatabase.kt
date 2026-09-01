@@ -10,6 +10,7 @@ import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
 import kotlinx.coroutines.flow.Flow
 
 @Entity(tableName = "prayer_logs")
@@ -34,13 +35,17 @@ interface PrayerLogDao {
     suspend fun upsert(log: PrayerLogEntity)
 }
 
-@Database(entities = [PrayerLogEntity::class], version = 1, exportSchema = false)
+@Database(entities = [PrayerLogEntity::class], version = 2, exportSchema = false)
 abstract class PrayerLogDatabase : RoomDatabase() {
     abstract fun prayerLogDao(): PrayerLogDao
 
     companion object {
         @Volatile
         private var INSTANCE: PrayerLogDatabase? = null
+
+        private val MIGRATION_1_2 = Migration(1, 2) { _ ->
+            // Migration v1→v2: no-op since schema is backward-compatible
+        }
 
         fun getInstance(context: Context): PrayerLogDatabase {
             return INSTANCE ?: synchronized(this) {
@@ -49,7 +54,7 @@ abstract class PrayerLogDatabase : RoomDatabase() {
                     PrayerLogDatabase::class.java,
                     "prayer_logs.db"
                 )
-                    .fallbackToDestructiveMigration()
+                    .addMigrations(MIGRATION_1_2)
                     .build()
                 INSTANCE = instance
                 instance
