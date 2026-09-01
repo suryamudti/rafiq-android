@@ -47,13 +47,19 @@ interface BookmarkDao {
     suspend fun delete(bookmark: BookmarkEntity): Int
 }
 
-@Database(entities = [BookmarkEntity::class], version = 1, exportSchema = false)
+@Database(entities = [BookmarkEntity::class], version = 2, exportSchema = false)
 abstract class BookmarkDatabase : RoomDatabase() {
     abstract fun bookmarkDao(): BookmarkDao
 
     companion object {
         @Volatile
         private var INSTANCE: BookmarkDatabase? = null
+
+        private val MIGRATION_1_2 = Room.Migration(
+            fromVersion = 1,
+            toVersion = 2) { database ->
+            // Migration v1→v2: no-op since schema is backward-compatible
+        }
 
         fun getInstance(context: Context): BookmarkDatabase {
             return INSTANCE ?: synchronized(this) {
@@ -62,7 +68,7 @@ abstract class BookmarkDatabase : RoomDatabase() {
                     BookmarkDatabase::class.java,
                     "bookmarks.db"
                 )
-                    .fallbackToDestructiveMigration()
+                    .addMigrations(MIGRATION_1_2)
                     .build()
                 INSTANCE = instance
                 instance
