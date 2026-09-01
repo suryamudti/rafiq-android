@@ -13,6 +13,8 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
 
+private val Context.dataStore by preferencesDataStore(name = "rafiq_settings")
+
 /**
  * DataStore-based preferences manager for the Rafiq Quran application.
  * Provides observable [Flow]s for all user preferences with typed accessors

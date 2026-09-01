@@ -10,6 +10,7 @@ import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
 import kotlinx.coroutines.flow.Flow
 
 @Entity(tableName = "prayer_logs")
@@ -42,9 +43,7 @@ abstract class PrayerLogDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: PrayerLogDatabase? = null
 
-        private val MIGRATION_1_2 = Room.Migration(
-            fromVersion = 1,
-            toVersion = 2) { database ->
+        private val MIGRATION_1_2 = Migration(1, 2) { _ ->
             // Migration v1→v2: no-op since schema is backward-compatible
         }
 
