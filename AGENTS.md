@@ -22,7 +22,7 @@ Emulator: `Medium_Phone_API_35`. No lint or typecheck commands currently set up.
 
 - **Navigation3** — type-safe nav via `@Serializable data object/class` NavKey tokens in `NavigationKeys.kt`. All 15 routes use `entryProvider { entry<Key> { ... } }` pattern in `Navigation.kt`.
 - **Hilt (KAPT)** — NOT KSP. Uses `kapt` plugin with `correctErrorTypes=true`. The warning "Kapt currently doesn't support language version 2.0+. Falling back to 1.9." is harmless.
-- **Kotlin 2.0.0** — Downgraded from 2.0.21 because Room 2.6.1's embedded `kotlinx-metadata-jvm` only supports up to metadata 2.0.0, while Kotlin 2.0.10+ produces metadata 2.1.0. Upgraded Room to 2.8.4 to resolve.
+- **Kotlin 2.1.20** — Upgraded from 2.0.0 for MapLibre Native 13.5.1 (compiled with Kotlin 2.1). Room 2.8.4 still compatible; R8 warns `kotlin metadata` but debug `assembleDebug` succeeds. Downgrade note: Room 2.6.1 metadata 2.0.0 cap vs Kotlin 2.0.10+ 2.1.0 was fixed by Room 2.8.4.
 - **AGP 8.9.2** — Hilt 2.56.2 requires AGP 8.x, NOT 9.x.
 - **Material Icons: core only** — `material-icons-core`, never use extended set. Available: `DateRange`, `Face`, `Favorite`, `List` (AutoMirrored), `LocationOn`, `Notifications`, `Person`, `Place`, `PlayArrow`, `Refresh`, `ShoppingCart`, `Star`.
 - **DataStore** — all user prefs via `PreferencesManager`, NOT SharedPreferences.
@@ -49,16 +49,9 @@ Emulator: `Medium_Phone_API_35`. No lint or typecheck commands currently set up.
 - **Aladhan** (`https://api.aladhan.com/`): `v1/timings/{date}?latitude=&longitude=&method=20`. Default coords: Jakarta (-6.2088, 106.8456).
 - **Metals.live** (`https://api.metals.live/`): `v1/spot/gold` and `v1/spot/silver`. Prices in USD/oz, converted to per-gram.
 
-## OsmDroid
+## MapLibre Native
 
-Requires init before MapView creation:
-```kotlin
-Configuration.getInstance().apply {
-    userAgentValue = context.packageName
-    osmdroidBasePath = context.cacheDir
-    osmdroidTileCache = context.cacheDir.resolve("tiles")
-}
-```
+Nearby Mosque uses `MapLibre Native 13.5.1` (`org.maplibre.gl:android-sdk`, style `https://demotiles.maplibre.org/styles/osm-bright-gl-style/style.json`) via `MapView` + `AndroidView` + `GeoJsonSource`/`SymbolLayer`/`CircleLayer` clustering (`IconFactory`, `CameraUpdateFactory`). No API key/billing, no Play Services gate. `MapView` lifecycle via `DefaultLifecycleObserver` forwarding `onCreate/onDestroy` (`LifecycleEventObserver`). `RafiqApp.onCreate` no longer touches map tiles.
 
 ## File Structure (Multi-module)
 

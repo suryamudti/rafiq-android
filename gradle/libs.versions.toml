@@ -10,7 +10,7 @@ androidxTestRunner = "1.7.0"
 androidxTestEspresso = "3.7.0"
 coroutines = "1.10.2"
 junit = "4.13.2"
-kotlin = "2.0.0"
+kotlin = "2.1.20"
 nav3Core = "1.0.1"
 lifecycleViewmodelNav3 = "2.10.0"
 kotlinxSerialization = "1.7.3"
@@ -19,7 +19,7 @@ hilt = "2.56.2"
 hiltNavigationCompose = "1.2.0"
 room = "2.8.4"
 work = "2.10.0"
-osmdroid = "6.1.18"
+maplibre = "13.5.1"
 retrofit = "2.11.0"
 okhttp = "4.12.0"
 media3 = "1.5.1"
@@ -64,9 +64,6 @@ room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 # WorkManager
 work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "work" }
 
-# OsmDroid
-osmdroid-android = { module = "org.osmdroid:osmdroid-android", version.ref = "osmdroid" }
-
 # Retrofit
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
@@ -82,6 +79,9 @@ media3-session = { module = "androidx.media3:media3-session", version.ref = "med
 # Google Play Services
 play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "gmsLocation" }
 
+# MapLibre Native
+maplibre-sdk = { module = "org.maplibre.gl:android-sdk", version.ref = "maplibre" }
+
 # Gson
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 
@@ -96,5 +96,6 @@ compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+  kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+  hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+

@@ -46,10 +46,6 @@
 # Compose
 -dontwarn androidx.compose.**
 
-# OsmDroid
--keep class org.osmdroid.** { *; }
--dontwarn org.osmdroid.**
-
 # Media3 / ExoPlayer
 -keep class androidx.media3.** { *; }
 -dontwarn androidx.media3.**
@@ -65,9 +61,13 @@
 # DataStore
 -dontwarn androidx.datastore.**
 
-# Google Play Services
+# Google Play Services (location)
 -keep class com.google.android.gms.** { *; }
 -dontwarn com.google.android.gms.**
+
+# MapLibre Native
+-keep class org.maplibre.android.** { *; }
+-dontwarn org.maplibre.android.**
 
 # Keep domain model classes (used by Gson and Room)
 -keepclassmembers class com.smiledev.rafiq_quran.domain.model.** { *; }

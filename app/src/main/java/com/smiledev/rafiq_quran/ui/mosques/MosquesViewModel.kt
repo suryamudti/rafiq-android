@@ -20,14 +20,12 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import org.osmdroid.util.GeoPoint
 import javax.inject.Inject
 
 @Immutable
 data class MosquesUiState(
-    val userLocation: GeoPoint? = null,
+    val userLocation: GeoLocation? = null,
     val locationGranted: Boolean = false,
     val showPermissionDenied: Boolean = false,
     val isLoading: Boolean = false,
@@ -76,9 +74,9 @@ class MosquesViewModel @Inject constructor(
             _uiState.value = _uiState.value.copy(isLoading = true)
             when (val result = locationProvider.getLastLocation()) {
                 is Result.Success -> {
-                    val geoPoint = GeoPoint(result.data.latitude, result.data.longitude)
+                    val geoLocation = GeoLocation(result.data.latitude, result.data.longitude)
                     _uiState.value = _uiState.value.copy(
-                        userLocation = geoPoint,
+                        userLocation = geoLocation,
                         isLoading = false
                     )
                     loadMosques(result.data.latitude, result.data.longitude)
