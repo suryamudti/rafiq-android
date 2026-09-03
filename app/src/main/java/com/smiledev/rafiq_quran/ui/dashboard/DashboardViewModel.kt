@@ -15,6 +15,7 @@ import com.smiledev.rafiq_quran.domain.repository.PrayerTimesRepository
 import com.smiledev.rafiq_quran.domain.repository.QuranRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -137,6 +138,7 @@ class DashboardViewModel @Inject constructor(
     val uiState: StateFlow<DashboardUiState> = _uiState
 
     private val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.US)
+    private var countdownJob: Job? = null
 
     init {
         val versionName = runCatching {
@@ -268,6 +270,7 @@ class DashboardViewModel @Inject constructor(
                         hijriDate = hijri,
                         prayerTimeline = timeline
                     )
+                    updateCountdown(times, timeline)
                     startCountdown(times, timeline)
                 }
                 is Result.Error -> {
@@ -277,56 +280,66 @@ class DashboardViewModel @Inject constructor(
         }
     }
 
-    private fun startCountdown(allTimes: List<PrayerTimeEntry>, timeline: List<PrayerTimeEntry>) {
-        viewModelScope.launch(dispatcherProvider.io) {
-            while (isActive) {
-                val now = Calendar.getInstance()
-                val nowMinutes = now.get(Calendar.HOUR_OF_DAY) * 60 + now.get(Calendar.MINUTE)
+    private fun updateCountdown(allTimes: List<PrayerTimeEntry>, timeline: List<PrayerTimeEntry>) {
+        val now = Calendar.getInstance()
+        val nowMinutes = now.get(Calendar.HOUR_OF_DAY) * 60 + now.get(Calendar.MINUTE)
 
-                var nextPrayer: PrayerTimeEntry? = null
-                for (pt in allTimes) {
-                    val parts = pt.time.split(":")
-                    if (parts.size == 2) {
-                        val ptMinutes = parts[0].toIntOrNull()?.let {
-                            it * 60 + (parts[1].toIntOrNull() ?: 0)
-                        }
-                        if (ptMinutes != null && ptMinutes > nowMinutes) {
-                            nextPrayer = pt
-                            break
-                        }
-                    }
+        var nextPrayer: PrayerTimeEntry? = null
+        for (pt in allTimes) {
+            val parts = pt.time.split(":")
+            if (parts.size == 2) {
+                val ptMinutes = parts[0].toIntOrNull()?.let {
+                    it * 60 + (parts[1].toIntOrNull() ?: 0)
                 }
-                if (nextPrayer == null) nextPrayer = allTimes.first()
-
-                val parts = nextPrayer.time.split(":")
-                if (parts.size == 2) {
-                    val targetMinutes = parts[0].toIntOrNull()
-                        ?.let { it * 60 + (parts[1].toIntOrNull() ?: 0) } ?: 0
-                    var diff = targetMinutes - nowMinutes
-                    if (diff < 0) diff += 24 * 60
-                    val hours = diff / 60
-                    val mins = diff % 60
-
-                    val activeIdx = when {
-                        nextPrayer.name.contains("Fajr", ignoreCase = true) || nextPrayer.name.contains("Imsak", ignoreCase = true) -> 0
-                        nextPrayer.name.contains("Dzuhur", ignoreCase = true) || nextPrayer.name.contains("Sunrise", ignoreCase = true) -> 1
-                        nextPrayer.name.contains("Asr", ignoreCase = true) -> 2
-                        nextPrayer.name.contains("Maghrib", ignoreCase = true) -> 3
-                        nextPrayer.name.contains("Isya", ignoreCase = true) -> 4
-                        else -> 0
-                    }
-
-                    _uiState.value = _uiState.value.copy(
-                        nextPrayerName = nextPrayer.name,
-                        nextPrayerTime = nextPrayer.time,
-                        countdown = "${hours}h ${mins}m",
-                        prayerTimeline = timeline,
-                        activePrayerIndex = activeIdx
-                    )
+                if (ptMinutes != null && ptMinutes > nowMinutes) {
+                    nextPrayer = pt
+                    break
                 }
-                delay(30_000)
             }
         }
+        if (nextPrayer == null) nextPrayer = allTimes.first()
+
+        val parts = nextPrayer.time.split(":")
+        if (parts.size == 2) {
+            val targetMinutes = parts[0].toIntOrNull()
+                ?.let { it * 60 + (parts[1].toIntOrNull() ?: 0) } ?: 0
+            var diff = targetMinutes - nowMinutes
+            if (diff < 0) diff += 24 * 60
+            val hours = diff / 60
+            val mins = diff % 60
+
+            val activeIdx = when {
+                nextPrayer.name.contains("Fajr", ignoreCase = true) || nextPrayer.name.contains("Imsak", ignoreCase = true) -> 0
+                nextPrayer.name.contains("Dzuhur", ignoreCase = true) || nextPrayer.name.contains("Sunrise", ignoreCase = true) -> 1
+                nextPrayer.name.contains("Asr", ignoreCase = true) -> 2
+                nextPrayer.name.contains("Maghrib", ignoreCase = true) -> 3
+                nextPrayer.name.contains("Isya", ignoreCase = true) -> 4
+                else -> 0
+            }
+
+            _uiState.value = _uiState.value.copy(
+                nextPrayerName = nextPrayer.name,
+                nextPrayerTime = nextPrayer.time,
+                countdown = "${hours}h ${mins}m",
+                prayerTimeline = timeline,
+                activePrayerIndex = activeIdx
+            )
+        }
+    }
+
+    private fun startCountdown(allTimes: List<PrayerTimeEntry>, timeline: List<PrayerTimeEntry>) {
+        countdownJob?.cancel()
+        countdownJob = viewModelScope.launch(dispatcherProvider.io) {
+            while (isActive) {
+                delay(30_000)
+                updateCountdown(allTimes, timeline)
+            }
+        }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        countdownJob?.cancel()
     }
 
     fun refresh() {

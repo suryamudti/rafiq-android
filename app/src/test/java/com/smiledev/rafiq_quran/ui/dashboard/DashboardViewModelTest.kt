@@ -1,8 +1,6 @@
 package com.smiledev.rafiq_quran.ui.dashboard
 
 import android.content.Context
-import android.content.pm.PackageInfo
-import android.content.pm.PackageManager
 import com.smiledev.rafiq_quran.TestDispatcherProvider
 import com.smiledev.rafiq_quran.core.Result
 import com.smiledev.rafiq_quran.data.preferences.PreferencesManager
@@ -20,13 +18,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -112,7 +108,7 @@ class DashboardViewModelTest {
             quranRepository = quranRepository,
             prayerLogRepository = prayerLogRepository
         )
-        advanceUntilIdle()
+        testScheduler.runCurrent()
 
         val state = vm.uiState.value
         assertTrue(state.greeting.isNotBlank())
@@ -132,7 +128,7 @@ class DashboardViewModelTest {
             quranRepository = quranRepository,
             prayerLogRepository = prayerLogRepository
         )
-        advanceUntilIdle()
+        testScheduler.runCurrent()
 
         val state = vm.uiState.value
         assertEquals("14 Ramadan 1447", state.hijriDate)
@@ -152,7 +148,7 @@ class DashboardViewModelTest {
             quranRepository = quranRepository,
             prayerLogRepository = prayerLogRepository
         )
-        advanceUntilIdle()
+        testScheduler.runCurrent()
 
         val state = vm.uiState.value
         assertEquals(2, state.lastReadSura)
@@ -181,7 +177,7 @@ class DashboardViewModelTest {
             quranRepository = quranRepository,
             prayerLogRepository = prayerLogRepository
         )
-        advanceUntilIdle()
+        testScheduler.runCurrent()
 
         val state = vm.uiState.value
         assertEquals(3, state.todayCompletedPrayersCount)
