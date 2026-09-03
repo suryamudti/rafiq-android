@@ -106,7 +106,8 @@ class DashboardViewModelTest {
             context = context,
             dispatcherProvider = testDispatcherProvider,
             quranRepository = quranRepository,
-            prayerLogRepository = prayerLogRepository
+            prayerLogRepository = prayerLogRepository,
+            enablePeriodicCountdown = false
         )
         testScheduler.runCurrent()
 
@@ -126,7 +127,8 @@ class DashboardViewModelTest {
             context = context,
             dispatcherProvider = testDispatcherProvider,
             quranRepository = quranRepository,
-            prayerLogRepository = prayerLogRepository
+            prayerLogRepository = prayerLogRepository,
+            enablePeriodicCountdown = false
         )
         testScheduler.runCurrent()
 
@@ -146,7 +148,8 @@ class DashboardViewModelTest {
             context = context,
             dispatcherProvider = testDispatcherProvider,
             quranRepository = quranRepository,
-            prayerLogRepository = prayerLogRepository
+            prayerLogRepository = prayerLogRepository,
+            enablePeriodicCountdown = false
         )
         testScheduler.runCurrent()
 
@@ -175,11 +178,27 @@ class DashboardViewModelTest {
             context = context,
             dispatcherProvider = testDispatcherProvider,
             quranRepository = quranRepository,
-            prayerLogRepository = prayerLogRepository
+            prayerLogRepository = prayerLogRepository,
+            enablePeriodicCountdown = false
         )
         testScheduler.runCurrent()
 
         val state = vm.uiState.value
         assertEquals(3, state.todayCompletedPrayersCount)
+    }
+
+    @Test
+    fun `periodic countdown can be started and stopped cleanly`() = runTest(testDispatcher) {
+        val vm = DashboardViewModel(
+            prayerTimesRepository = prayerTimesRepository,
+            preferencesManager = preferencesManager,
+            context = context,
+            dispatcherProvider = testDispatcherProvider,
+            quranRepository = quranRepository,
+            prayerLogRepository = prayerLogRepository,
+            enablePeriodicCountdown = true
+        )
+        testScheduler.runCurrent()
+        vm.stopCountdown()
     }
 }

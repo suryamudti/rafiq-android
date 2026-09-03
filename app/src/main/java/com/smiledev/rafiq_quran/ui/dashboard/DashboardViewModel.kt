@@ -131,7 +131,8 @@ class DashboardViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
     private val quranRepository: QuranRepository? = null,
-    private val prayerLogRepository: PrayerLogRepository? = null
+    private val prayerLogRepository: PrayerLogRepository? = null,
+    private val enablePeriodicCountdown: Boolean = true
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(DashboardUiState())
@@ -271,7 +272,9 @@ class DashboardViewModel @Inject constructor(
                         prayerTimeline = timeline
                     )
                     updateCountdown(times, timeline)
-                    startCountdown(times, timeline)
+                    if (enablePeriodicCountdown) {
+                        startCountdown(times, timeline)
+                    }
                 }
                 is Result.Error -> {
                     _uiState.value = _uiState.value.copy(isLoading = false, error = result.error)
@@ -337,9 +340,14 @@ class DashboardViewModel @Inject constructor(
         }
     }
 
-    override fun onCleared() {
-        super.onCleared()
+    fun stopCountdown() {
         countdownJob?.cancel()
+        countdownJob = null
+    }
+
+    public override fun onCleared() {
+        super.onCleared()
+        stopCountdown()
     }
 
     fun refresh() {
