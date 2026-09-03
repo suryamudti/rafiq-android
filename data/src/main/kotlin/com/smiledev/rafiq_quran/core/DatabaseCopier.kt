@@ -14,7 +14,15 @@ private fun Context.translationDbFile(flatName: String): File {
 @Singleton
 class DatabaseCopier @Inject constructor(private val context: Context) {
 
+    private fun isValidDbName(dbName: String): Boolean {
+        return dbName.isNotEmpty() && !dbName.contains("/") && !dbName.contains("\\")
+    }
+
     fun copyDatabaseIfNeeded(dbName: String) {
+        if (!isValidDbName(dbName)) {
+            android.util.Log.e("DatabaseCopier", "Invalid database name: $dbName")
+            return
+        }
         val flatName = dbName.replace('/', '_')
         val dbFile = context.translationDbFile(flatName)
         if (!dbFile.exists() || dbFile.length() == 0L) {
@@ -32,6 +40,10 @@ class DatabaseCopier @Inject constructor(private val context: Context) {
     }
 
     fun copyAndVerifyTranslationDb(dbName: String): Boolean {
+        if (!isValidDbName(dbName)) {
+            android.util.Log.e("DatabaseCopier", "Invalid database name: $dbName")
+            return false
+        }
         val flatName = dbName.replace('/', '_')
         val assetPath = "quran-data/$dbName"
         val dbFile = context.translationDbFile(flatName)
