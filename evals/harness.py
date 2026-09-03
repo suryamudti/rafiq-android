@@ -2,6 +2,8 @@ import argparse
 import json
 import os
 import re
+import shlex
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -17,7 +19,7 @@ WORKTREES_DIR = EVALS_DIR / "worktrees"
 KB_CONTEXT_PATH = EVALS_DIR / "kb_context.md"
 
 VALID_TYPES = {"retrieval", "coding"}
-VALID_CHECK_KINDS = {"file_touched", "transcript_mentions", "test"}
+VALID_CHECK_KINDS = {"file_touched", "transcript_mentions", "test", "content_contains"}
 
 
 @dataclass
@@ -52,12 +54,15 @@ def validate_task(task: Task, repo: Path) -> list[str]:
     if not task.prompt:
         errors.append("prompt is required")
     for c in task.checks:
-        if c.get("kind") not in VALID_CHECK_KINDS:
-            errors.append(f"unknown check kind: {c.get('kind')}")
-        if c.get("kind") in ("file_touched", "transcript_mentions") and not c.get("files"):
-            errors.append(f"check {c.get('kind')} needs 'files'")
-        if c.get("kind") == "test" and not c.get("command"):
+        kind = c.get("kind")
+        if kind not in VALID_CHECK_KINDS:
+            errors.append(f"unknown check kind: {kind}")
+        if kind in ("file_touched", "transcript_mentions") and not c.get("files"):
+            errors.append(f"check {kind} needs 'files'")
+        if kind == "test" and not c.get("command"):
             errors.append("test check needs 'command'")
+        if kind == "content_contains" and (not c.get("file") or not c.get("pattern")):
+            errors.append("content_contains check needs 'file' and 'pattern'")
     return errors
 
 
@@ -100,10 +105,39 @@ def create_worktree(name: str, base_commit: str) -> Path:
 def remove_worktree(name: str, worktree: Path) -> None:
     if not worktree.exists():
         return
-    run_cmd(["git", "worktree", "remove", "--force", str(worktree)], REPO_DIR, 60)
+    for _ in range(3):
+        rc, _, _ = run_cmd(["git", "worktree", "remove", "--force", str(worktree)], REPO_DIR, 60)
+        if rc == 0 or not worktree.exists():
+            break
+        time.sleep(0.5)
+
+    if worktree.exists():
+        def _handle_remove_readonly(func, path, exc_info):
+            try:
+                os.chmod(path, 0o777)
+                func(path)
+            except Exception:
+                pass
+        shutil.rmtree(str(worktree), onerror=_handle_remove_readonly)
+
+    run_cmd(["git", "worktree", "prune"], REPO_DIR, 30)
 
 
 def inject_kb(worktree: Path) -> None:
+    kb_dir = REPO_DIR / "kb"
+    needs_rebuild = not KB_CONTEXT_PATH.exists()
+    if not needs_rebuild and kb_dir.exists():
+        kb_mtime = max((f.stat().st_mtime for f in kb_dir.glob("*.md")), default=0)
+        if kb_mtime > KB_CONTEXT_PATH.stat().st_mtime:
+            needs_rebuild = True
+
+    if needs_rebuild and kb_dir.exists():
+        try:
+            from build_kb_context import build_context
+            build_context(kb_dir, KB_CONTEXT_PATH)
+        except Exception:
+            pass
+
     if not KB_CONTEXT_PATH.exists():
         raise FileNotFoundError(
             "kb_context.md missing; run `python evals/build_kb_context.py` first"
@@ -130,11 +164,29 @@ def run_cmd(cmd: list[str], cwd: Path, timeout_s: int) -> tuple[int, str, str]:
 
 
 def _opencode_cmd(opencode_bin: str, args: list[str]) -> list[str]:
-    return opencode_bin.split() + args
+    posix = (os.name != "nt")
+    parts = shlex.split(opencode_bin, posix=posix) if isinstance(opencode_bin, str) else list(opencode_bin)
+    return parts + args
 
 
-def run_agent(worktree: Path, prompt: str, timeout_s: int, opencode_bin: str) -> tuple[int, str]:
-    cmd = _opencode_cmd(opencode_bin, ["run", prompt])
+def run_agent(
+    worktree: Path,
+    prompt: str,
+    timeout_s: int,
+    opencode_bin: str | list[str] = "opencode",
+    agent_cmd: str | None = None,
+) -> tuple[int, str]:
+    if agent_cmd:
+        posix = (os.name != "nt")
+        if "{prompt}" in agent_cmd:
+            cmd_str = agent_cmd.replace("{prompt}", prompt)
+            cmd = shlex.split(cmd_str, posix=posix)
+        else:
+            cmd = shlex.split(agent_cmd, posix=posix) + [prompt]
+    elif isinstance(opencode_bin, list):
+        cmd = list(opencode_bin) + ["run", prompt]
+    else:
+        cmd = _opencode_cmd(opencode_bin, ["run", prompt])
     rc, out, err = run_cmd(cmd, worktree, timeout_s)
     return rc, out + err
 
@@ -170,10 +222,33 @@ def run_checks(task: Task, worktree: Path, transcript: str) -> dict[str, bool]:
         elif kind == "transcript_mentions":
             key = "transcript_mentions:" + ",".join(check["files"])
             results[key] = any(f in transcript for f in check["files"])
+        elif kind == "content_contains":
+            target_file = check.get("file")
+            pattern = check.get("pattern", "")
+            key = f"content_contains:{target_file}:{pattern}"
+            if not target_file:
+                results["content_contains:missing_file"] = False
+            else:
+                file_path = worktree / target_file
+                if not file_path.exists():
+                    results[key] = False
+                else:
+                    try:
+                        content = file_path.read_text(encoding="utf-8", errors="ignore")
+                        results[key] = bool(re.search(pattern, content))
+                    except Exception:
+                        results[key] = False
         elif kind == "test":
-            cmd = check["command"].split()
+            command_str = check["command"]
+            posix = (os.name != "nt")
+            cmd = shlex.split(command_str, posix=posix)
+            if cmd and os.name == "nt":
+                if cmd[0] in ("./gradlew", ".\\gradlew", "gradlew"):
+                    gw = worktree / "gradlew.bat"
+                    if gw.exists():
+                        cmd[0] = str(gw)
             rc, _, _ = run_cmd(cmd, worktree, task.timeout_min * 60)
-            results["test:" + check["command"]] = rc == 0
+            results["test:" + command_str] = rc == 0
     return results
 
 
@@ -249,13 +324,16 @@ def run_variant(
     keep_worktrees: bool,
     results_dir: Path,
     use_kb: bool,
+    agent_cmd: str | None = None,
 ) -> dict:
     name = f"{task.id}-{variant}"
     worktree = create_worktree(name, task.base_commit)
     try:
         if use_kb:
             inject_kb(worktree)
-        rc, transcript = run_agent(worktree, task.prompt, timeout_min * 60, opencode_bin)
+        rc, transcript = run_agent(
+            worktree, task.prompt, timeout_min * 60, opencode_bin, agent_cmd=agent_cmd
+        )
         agent_diff = capture_diff(worktree)
         checks = run_checks(task, worktree, transcript)
         overlap = diff_overlap(agent_diff, gold_diff(task)) if task.gold_commit else 0.0
@@ -266,6 +344,7 @@ def run_variant(
         )
         result = {
             "task_id": task.id,
+            "task_type": task.type,
             "variant": variant,
             "exit_code": rc,
             "timed_out": rc == -1,
@@ -286,6 +365,38 @@ def list_tasks() -> None:
     for p in sorted(TASKS_DIR.glob("*.json")):
         task = load_task(p)
         print(f"{task.id}: [{task.type}] {task.title} (base={task.base_commit[:8]})")
+
+
+def verify_tasks(repo_dir: Path = REPO_DIR, tasks_dir: Path = TASKS_DIR) -> int:
+    tasks = [load_task(p) for p in sorted(tasks_dir.glob("*.json"))]
+    total_errors = 0
+    print(f"Verifying {len(tasks)} tasks in {tasks_dir}...")
+    for task in tasks:
+        errors = validate_task(task, repo_dir)
+        rc, _, _ = run_cmd(["git", "cat-file", "-e", f"{task.base_commit}^{{commit}}"], repo_dir, 30)
+        if rc != 0:
+            errors.append(f"base_commit {task.base_commit[:8]} not found in git history")
+        if task.gold_commit:
+            rc, _, _ = run_cmd(["git", "cat-file", "-e", f"{task.gold_commit}^{{commit}}"], repo_dir, 30)
+            if rc != 0:
+                errors.append(f"gold_commit {task.gold_commit[:8]} not found in git history")
+        for gf in task.gold_files:
+            target_commit = task.gold_commit or task.base_commit
+            rc, _, _ = run_cmd(["git", "cat-file", "-e", f"{target_commit}:{gf}"], repo_dir, 30)
+            if rc != 0:
+                errors.append(f"gold_file '{gf}' not found in commit {target_commit[:8]}")
+        if errors:
+            print(f"[FAIL] {task.id} ({task.title}):")
+            for e in errors:
+                print(f"  - {e}")
+            total_errors += len(errors)
+        else:
+            print(f"[OK] {task.id}: {task.title} ({task.type}, base={task.base_commit[:8]})")
+    if total_errors > 0:
+        print(f"\nCompleted with {total_errors} error(s).", file=sys.stderr)
+        return 1
+    print("\nAll tasks passed verification.")
+    return 0
 
 
 def _resolve_task_arg(args_task: str) -> list[Task]:
@@ -318,9 +429,11 @@ def main() -> None:
     run_p.add_argument("--keep-worktrees", action="store_true")
     run_p.add_argument("--timeout-min", type=int, default=30)
     run_p.add_argument("--opencode-bin", help="opencode CLI binary (default: OPENCODE_BIN or PATH)")
+    run_p.add_argument("--agent-cmd", help="Custom agent command template, e.g. 'agy run {prompt}' or 'opencode run'")
     run_p.add_argument("--results-dir", type=Path, default=RESULTS_DIR)
 
     sub.add_parser("list", help="list eval tasks")
+    sub.add_parser("verify-tasks", help="verify all eval tasks schemas and commits")
 
     args = parser.parse_args()
 
@@ -328,7 +441,13 @@ def main() -> None:
         list_tasks()
         return
 
-    opencode_bin = args.opencode_bin or find_opencode_bin()
+    if args.command == "verify-tasks":
+        sys.exit(verify_tasks())
+
+    opencode_bin = args.opencode_bin
+    if not args.agent_cmd and not opencode_bin:
+        opencode_bin = find_opencode_bin()
+
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 
     if args.task:
@@ -352,8 +471,9 @@ def main() -> None:
                 continue
             print(f"RUN {task.id}/{variant} ...", flush=True)
             result = run_variant(
-                task, variant, opencode_bin, args.timeout_min, args.no_judge,
+                task, variant, opencode_bin or "opencode", args.timeout_min, args.no_judge,
                 args.keep_worktrees, args.results_dir, use_kb=(variant == "kb"),
+                agent_cmd=args.agent_cmd,
             )
             print(
                 f"DONE {task.id}/{variant} exit={result['exit_code']} "
@@ -363,3 +483,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
