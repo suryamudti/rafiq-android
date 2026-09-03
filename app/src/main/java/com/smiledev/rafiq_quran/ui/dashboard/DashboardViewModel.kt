@@ -131,9 +131,30 @@ class DashboardViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
     private val quranRepository: QuranRepository? = null,
-    private val prayerLogRepository: PrayerLogRepository? = null,
-    private val enablePeriodicCountdown: Boolean = true
+    private val prayerLogRepository: PrayerLogRepository? = null
 ) : ViewModel() {
+
+    var enablePeriodicCountdown: Boolean = true
+
+    // Secondary constructor for unit testing with configurable periodic countdown
+    constructor(
+        prayerTimesRepository: PrayerTimesRepository,
+        preferencesManager: PreferencesManager,
+        context: Context,
+        dispatcherProvider: DispatcherProvider,
+        quranRepository: QuranRepository?,
+        prayerLogRepository: PrayerLogRepository?,
+        enablePeriodicCountdown: Boolean
+    ) : this(
+        prayerTimesRepository,
+        preferencesManager,
+        context,
+        dispatcherProvider,
+        quranRepository,
+        prayerLogRepository
+    ) {
+        this.enablePeriodicCountdown = enablePeriodicCountdown
+    }
 
     private val _uiState = MutableStateFlow(DashboardUiState())
     val uiState: StateFlow<DashboardUiState> = _uiState
