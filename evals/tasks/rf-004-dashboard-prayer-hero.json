@@ -13,7 +13,7 @@
   "checks": [
     {"kind": "file_touched", "files": ["app/src/main/java/com/smiledev/rafiq/ui/dashboard/DashboardScreen.kt"]},
     {"kind": "file_touched", "files": ["app/src/main/java/com/smiledev/rafiq/ui/dashboard/DashboardViewModel.kt"]},
-    {"kind": "test", "command": "python -c pass"}
+    {"kind": "content_contains", "file": "app/src/main/java/com/smiledev/rafiq/ui/dashboard/DashboardViewModel.kt", "pattern": "nextPrayer|countdown"}
   ],
   "rubric": [
     "Adds a prayer hero section with next prayer + countdown",

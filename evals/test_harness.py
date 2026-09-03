@@ -47,6 +47,12 @@ class LoadTaskTest(unittest.TestCase):
         self.assertTrue(any("base_commit" in e for e in errors))
         self.assertTrue(any("type" in e for e in errors))
 
+    def test_validate_content_contains_requires_file_and_pattern(self):
+        task = Task(id="x", title="t", type="coding", base_commit="0" * 40,
+                    prompt="p", checks=[{"kind": "content_contains"}])
+        errors = validate_task(task, REPO_DIR)
+        self.assertTrue(any("content_contains check needs 'file' and 'pattern'" in e for e in errors))
+
 
 from harness import (
     KB_CONTEXT_PATH,
@@ -104,6 +110,19 @@ class AgentRunTest(unittest.TestCase):
             with self.assertRaises(FileNotFoundError):
                 find_opencode_bin()
 
+    def test_run_agent_with_agent_cmd(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            wt = Path(tmp)
+            fake = wt / "fake_agent.py"
+            fake.write_text(
+                "import sys\nprint('ARG:' + ' '.join(sys.argv[1:]))\n",
+                encoding="utf-8",
+            )
+            cmd_template = f"{sys.executable} {fake} --input {{prompt}}"
+            rc, transcript = run_agent(wt, "hello_world", 30, agent_cmd=cmd_template)
+        self.assertEqual(rc, 0)
+        self.assertIn("ARG:--input hello_world", transcript)
+
 
 from harness import diff_overlap, gold_diff, judge_llm, run_checks
 
@@ -130,6 +149,25 @@ class GradingTest(unittest.TestCase):
         self.assertTrue(results["file_touched:b.kt"])
         self.assertFalse(results["file_touched:missing.kt"])
         self.assertTrue(results["transcript_mentions:data/x.kt"])
+
+    def test_run_checks_content_contains(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            wt = Path(tmp)
+            (wt / "foo.kt").write_text("class PrayerHeroWidget { val countdown = 10 }", encoding="utf-8")
+            task = Task(
+                id="t", title="t", type="coding",
+                base_commit="a78852fc00dbc1bbd9ecc9ce9b513cbf8da522a5",
+                prompt="p",
+                checks=[
+                    {"kind": "content_contains", "file": "foo.kt", "pattern": "PrayerHero|countdown"},
+                    {"kind": "content_contains", "file": "foo.kt", "pattern": "nonexistent_pattern"},
+                    {"kind": "content_contains", "file": "missing.kt", "pattern": "PrayerHero"},
+                ],
+            )
+            results = run_checks(task, wt, transcript="")
+        self.assertTrue(results["content_contains:foo.kt:PrayerHero|countdown"])
+        self.assertFalse(results["content_contains:foo.kt:nonexistent_pattern"])
+        self.assertFalse(results["content_contains:missing.kt:PrayerHero"])
 
     def test_diff_overlap(self):
         agent = "+line one\n+line two\n+other line\n context\n"
@@ -238,9 +276,15 @@ class OrchestrationTest(unittest.TestCase):
             )
         self.assertEqual(result["task_id"], "rf-smoke")
         self.assertEqual(result["variant"], "baseline")
+        self.assertEqual(result["task_type"], "retrieval")
         self.assertIn("checks", result)
         self.assertIn("transcript", result)
         self.assertFalse(result["timed_out"])
+
+    def test_verify_tasks_succeeds_on_repo(self):
+        from harness import verify_tasks
+        rc = verify_tasks()
+        self.assertEqual(rc, 0)
 
 
 if __name__ == "__main__":
