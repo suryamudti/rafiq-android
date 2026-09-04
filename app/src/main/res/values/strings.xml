@@ -125,6 +125,7 @@
     <!-- Asmaul Husna -->
     <string name="asmaul_husna_title">99 Names of Allah</string>
     <string name="search_names">Search names…</string>
+    <string name="no_names_found">No names found</string>
     <!-- Tasbih -->
     <string name="tasbih_counter">Tasbih Counter</string>
     <string name="count">Count</string>
