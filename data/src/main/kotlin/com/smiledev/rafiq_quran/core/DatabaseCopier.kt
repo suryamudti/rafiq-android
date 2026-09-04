@@ -15,7 +15,10 @@ private fun Context.translationDbFile(flatName: String): File {
 class DatabaseCopier @Inject constructor(private val context: Context) {
 
     private fun isValidDbName(dbName: String): Boolean {
-        return dbName.isNotEmpty() && !dbName.contains("/") && !dbName.contains("\\")
+        return dbName.isNotBlank() &&
+            !dbName.contains("..") &&
+            !dbName.startsWith("/") &&
+            !dbName.contains("\\")
     }
 
     fun copyDatabaseIfNeeded(dbName: String) {
