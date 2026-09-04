@@ -15,6 +15,7 @@ import javax.inject.Inject
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 
@@ -22,7 +23,7 @@ import kotlinx.coroutines.launch
 data class AsmaulHusnaUiState(
     val names: List<AsmaulHusna> = emptyList(),
     val searchQuery: String = "",
-    val isLoading: Boolean = false,
+    val isLoading: Boolean = true,
     val error: AppError? = null
 )
 
@@ -41,31 +42,39 @@ class AsmaulHusnaViewModel @Inject constructor(
 
     private fun load() {
         viewModelScope.launch(dispatcherProvider.io) {
-            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+            _uiState.update { it.copy(isLoading = true, error = null) }
             val result = repository.getNames()
             when (result) {
                 is Result.Success -> {
-                    _uiState.value = _uiState.value.copy(names = result.data, isLoading = false)
+                    _uiState.update { it.copy(names = result.data, isLoading = false) }
                 }
                 is Result.Error -> {
-                    _uiState.value = _uiState.value.copy(isLoading = false, error = result.error)
+                    _uiState.update { it.copy(isLoading = false, error = result.error) }
                 }
             }
         }
     }
 
     fun search(query: String) {
-        _uiState.value = _uiState.value.copy(searchQuery = query)
+        _uiState.update { it.copy(searchQuery = query) }
     }
 
-    fun filteredNames(): List<AsmaulHusna> {
-        val q = _uiState.value.searchQuery.lowercase()
-        if (q.isEmpty()) return _uiState.value.names
-        return _uiState.value.names.filter {
+    fun filterNames(names: List<AsmaulHusna>, query: String): List<AsmaulHusna> {
+        val q = query.trim().lowercase()
+        if (q.isEmpty()) return names
+        return names.filter {
             it.transliteration.lowercase().contains(q) ||
             it.meaningEn.lowercase().contains(q) ||
             it.meaningId.lowercase().contains(q) ||
             it.arabic.contains(q)
         }
+    }
+
+    fun filterNames(state: AsmaulHusnaUiState): List<AsmaulHusna> {
+        return filterNames(state.names, state.searchQuery)
+    }
+
+    fun filteredNames(): List<AsmaulHusna> {
+        return filterNames(_uiState.value.names, _uiState.value.searchQuery)
     }
 }

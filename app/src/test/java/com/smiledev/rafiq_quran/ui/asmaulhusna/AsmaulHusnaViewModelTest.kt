@@ -73,4 +73,45 @@ class AsmaulHusnaViewModelTest {
         assertEquals(1, vm.filteredNames().size)
         assertEquals("Ar-Rahim", vm.filteredNames()[0].transliteration)
     }
+
+    @Test
+    fun `initial state has isLoading true`() {
+        val vm = AsmaulHusnaViewModel(repository, testDispatcherProvider)
+        assertEquals(true, vm.uiState.value.isLoading)
+        assertEquals(0, vm.uiState.value.names.size)
+    }
+
+    @Test
+    fun `filterNames matches meaning, transliteration, and arabic`() {
+        val names = listOf(
+            AsmaulHusna(1, "الرحمن", "Ar-Rahman", "The Most Gracious", "Maha Pengasih", "B1", "M1"),
+            AsmaulHusna(2, "الرحيم", "Ar-Rahim", "The Most Merciful", "Maha Penyayang", "B2", "M2"),
+            AsmaulHusna(3, "الملك", "Al-Malik", "The King", "Maha Raja", "B3", "M3")
+        )
+        val vm = AsmaulHusnaViewModel(repository, testDispatcherProvider)
+
+        // Matches English meaning
+        val byMeaningEn = vm.filterNames(names, "gracious")
+        assertEquals(1, byMeaningEn.size)
+        assertEquals("Ar-Rahman", byMeaningEn[0].transliteration)
+
+        // Matches Indonesian meaning
+        val byMeaningId = vm.filterNames(names, "penyayang")
+        assertEquals(1, byMeaningId.size)
+        assertEquals("Ar-Rahim", byMeaningId[0].transliteration)
+
+        // Matches Arabic
+        val byArabic = vm.filterNames(names, "الملك")
+        assertEquals(1, byArabic.size)
+        assertEquals("Al-Malik", byArabic[0].transliteration)
+
+        // Trims whitespace
+        val trimmed = vm.filterNames(names, "  king  ")
+        assertEquals(1, trimmed.size)
+        assertEquals("Al-Malik", trimmed[0].transliteration)
+
+        // Unmatched query returns empty
+        val unmatched = vm.filterNames(names, "unknown query")
+        assertEquals(0, unmatched.size)
+    }
 }

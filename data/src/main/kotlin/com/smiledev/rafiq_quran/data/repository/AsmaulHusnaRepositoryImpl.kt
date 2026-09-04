@@ -17,13 +17,15 @@ class AsmaulHusnaRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ) : AsmaulHusnaRepository {
     private val gson = Gson()
+    private var cachedNames: List<AsmaulHusna>? = null
 
     override fun getNames(): Result<List<AsmaulHusna>, AppError> {
+        cachedNames?.let { return it.asSuccess() }
         return try {
             val json = context.assets.open("quran-data/asmaul_husna.json").bufferedReader().use { it.readText() }
             val type = object : TypeToken<List<AsmaulHusnaRaw>>() {}.type
-            val raw: List<AsmaulHusnaRaw> = gson.fromJson(json, type)
-            raw.map {
+            val raw: List<AsmaulHusnaRaw>? = gson.fromJson(json, type)
+            val names = raw?.map {
                 AsmaulHusna(
                     id = it.id,
                     arabic = it.arabic,
@@ -33,8 +35,10 @@ class AsmaulHusnaRepositoryImpl @Inject constructor(
                     benefitEn = it.benefit_en,
                     benefitId = it.benefit_id
                 )
-            }.asSuccess()
-        } catch (e: Exception) {
+            } ?: emptyList()
+            cachedNames = names
+            names.asSuccess()
+        } catch (e: Throwable) {
             Result.Error(AppError.Database("Failed to load Asmaul Husna", e))
         }
     }
