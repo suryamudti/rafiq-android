@@ -146,12 +146,21 @@
     <string name="font_size">Font Size</string>
     <string name="ayah_font_size">Ayah Font Size: %dsp</string>
     <string name="translation_font_size">Translation Font Size: %dsp</string>
-    <!-- Dashboard Greetings -->
+    <!-- Dashboard Greetings & Revamp -->
     <string name="greeting_morning">Good morning</string>
     <string name="greeting_afternoon">Good afternoon</string>
     <string name="greeting_evening">Good evening</string>
     <string name="greeting_night">Good night</string>
     <string name="greeting_assalamualaikum">السلام عليكم</string>
+    <string name="last_read">Last Read</string>
+    <string name="continue_reading">Continue</string>
+    <string name="start_reading">Start Reading</string>
+    <string name="verse_of_the_day">Verse of the Day</string>
+    <string name="today_prayers">Today\'s Prayers</string>
+    <string name="quick_access">Quick Access</string>
+    <string name="completed">Completed</string>
+    <string name="open_prayer_log">Open Log</string>
+    <string name="surah_and_ayah">%1$s • Ayah %2$d</string>
     <!-- Settings -->
     <string name="more_features">More Features</string>
     <string name="retry">Retry</string>

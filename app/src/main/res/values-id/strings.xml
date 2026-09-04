@@ -146,12 +146,21 @@
     <string name="font_size">Ukuran Huruf</string>
     <string name="ayah_font_size">Ukuran Huruf Ayat: %dsp</string>
     <string name="translation_font_size">Ukuran Huruf Terjemahan: %dsp</string>
-    <!-- Dashboard Greetings -->
+    <!-- Dashboard Greetings & Revamp -->
     <string name="greeting_morning">Selamat pagi</string>
     <string name="greeting_afternoon">Selamat siang</string>
     <string name="greeting_evening">Selamat sore</string>
     <string name="greeting_night">Selamat malam</string>
     <string name="greeting_assalamualaikum">السلام عليكم</string>
+    <string name="last_read">Terakhir Dibaca</string>
+    <string name="continue_reading">Lanjutkan</string>
+    <string name="start_reading">Mulai Membaca</string>
+    <string name="verse_of_the_day">Ayat Hari Ini</string>
+    <string name="today_prayers">Shalat Hari Ini</string>
+    <string name="quick_access">Fitur Utama</string>
+    <string name="completed">Selesai</string>
+    <string name="open_prayer_log">Buka Catatan</string>
+    <string name="surah_and_ayah">%1$s • Ayat %2$d</string>
     <!-- Settings -->
     <string name="more_features">Fitur Lainnya</string>
     <string name="retry">Coba lagi</string>
