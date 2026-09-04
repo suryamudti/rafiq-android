@@ -54,6 +54,14 @@
     <string name="your_location">Lokasi Anda</string>
     <string name="tap_for_details">Ketuk untuk detail</string>
     <string name="fallback_location">Lokasi cadangan</string>
+    <string name="search_this_area">Cari di area ini</string>
+    <string name="recenter_location">Lokasi Saya</string>
+    <string name="no_mosques_found">Tidak ada masjid ditemukan di area ini</string>
+    <string name="mosques_found_count">%d masjid ditemukan</string>
+    <string name="directions">Petunjuk Arah</string>
+    <string name="view_list">Daftar</string>
+    <string name="view_map">Peta</string>
+    <string name="view_on_map">Lihat di Peta</string>
     <!-- Prophets -->
     <string name="prophets_title">25 Nabi</string>
     <string name="search_prophets">Cari nabi</string>

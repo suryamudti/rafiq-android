@@ -26,9 +26,11 @@ import javax.inject.Inject
 @Immutable
 data class MosquesUiState(
     val userLocation: GeoLocation? = null,
+    val searchCenter: GeoLocation? = null,
     val locationGranted: Boolean = false,
     val showPermissionDenied: Boolean = false,
     val isLoading: Boolean = false,
+    val isSearchingArea: Boolean = false,
     val mosques: List<Mosque> = emptyList(),
     val error: AppError? = null
 )
@@ -69,7 +71,7 @@ class MosquesViewModel @Inject constructor(
     }
 
     @SuppressLint("MissingPermission")
-    private fun fetchLocation() {
+    fun fetchLocation() {
         viewModelScope.launch(dispatcherProvider.io) {
             _uiState.value = _uiState.value.copy(isLoading = true)
             when (val result = locationProvider.getLastLocation()) {
@@ -93,22 +95,42 @@ class MosquesViewModel @Inject constructor(
         }
     }
 
-    private fun loadMosques(lat: Double, lon: Double) {
+    fun searchArea(lat: Double, lon: Double) {
+        loadMosques(lat, lon, isAreaSearch = true)
+    }
+
+    fun recenterOnUser() {
+        val loc = _uiState.value.userLocation
+        if (loc != null) {
+            loadMosques(loc.latitude, loc.longitude, isAreaSearch = false)
+        } else {
+            fetchLocation()
+        }
+    }
+
+    private fun loadMosques(lat: Double, lon: Double, isAreaSearch: Boolean = false) {
         lastLat = lat
         lastLon = lon
         viewModelScope.launch(dispatcherProvider.io) {
-            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+            _uiState.value = if (isAreaSearch) {
+                _uiState.value.copy(isSearchingArea = true, error = null)
+            } else {
+                _uiState.value.copy(isLoading = true, error = null)
+            }
             when (val result = mosqueRepository.getNearbyMosques(lat, lon)) {
                 is Result.Success -> {
                     _uiState.value = _uiState.value.copy(
                         mosques = result.data,
-                        isLoading = false
+                        searchCenter = GeoLocation(lat, lon),
+                        isLoading = false,
+                        isSearchingArea = false
                     )
                 }
                 is Result.Error -> {
                     _uiState.value = _uiState.value.copy(
                         error = result.error,
-                        isLoading = false
+                        isLoading = false,
+                        isSearchingArea = false
                     )
                 }
             }
