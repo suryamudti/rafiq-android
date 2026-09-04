@@ -115,4 +115,37 @@ class MosquesViewModelTest {
         // Should load mosques at default location (error cleared after successful load)
         assertFalse(viewModel.uiState.value.showPermissionDenied)
     }
+
+    @Test
+    fun `searchArea updates mosques and searchCenter`() = runTest(testDispatcher) {
+        val mosques = listOf(
+            Mosque(3, "Masjid Al-Azhar", -6.23, 106.80)
+        )
+        coEvery { mosqueRepository.getNearbyMosques(-6.23, 106.80, 5000) } returns Result.Success(mosques)
+
+        viewModel.searchArea(-6.23, 106.80)
+        advanceUntilIdle()
+
+        assertEquals(1, viewModel.uiState.value.mosques.size)
+        assertEquals("Masjid Al-Azhar", viewModel.uiState.value.mosques[0].name)
+        assertEquals(-6.23, viewModel.uiState.value.searchCenter?.latitude ?: 0.0, 0.001)
+        assertEquals(106.80, viewModel.uiState.value.searchCenter?.longitude ?: 0.0, 0.001)
+        assertFalse(viewModel.uiState.value.isSearchingArea)
+    }
+
+    @Test
+    fun `recenterOnUser with userLocation searches user coordinates`() = runTest(testDispatcher) {
+        val userLoc = GeoLocation(-6.15, 106.75)
+        coEvery { locationProvider.getLastLocation() } returns Result.Success(userLoc)
+        coEvery { mosqueRepository.getNearbyMosques(-6.15, 106.75, 5000) } returns Result.Success(emptyList())
+
+        viewModel.onPermissionResult(true)
+        advanceUntilIdle()
+
+        viewModel.recenterOnUser()
+        advanceUntilIdle()
+
+        assertEquals(-6.15, viewModel.uiState.value.searchCenter?.latitude ?: 0.0, 0.001)
+        assertEquals(106.75, viewModel.uiState.value.searchCenter?.longitude ?: 0.0, 0.001)
+    }
 }
