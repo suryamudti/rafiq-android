@@ -5,6 +5,7 @@ import com.smiledev.rafiq_quran.core.AppError
 import com.smiledev.rafiq_quran.core.Result
 import com.smiledev.rafiq_quran.data.preferences.PreferencesManager
 import com.smiledev.rafiq_quran.domain.model.HadithBook
+import com.smiledev.rafiq_quran.domain.model.HadithTopic
 import com.smiledev.rafiq_quran.domain.repository.HadithRepository
 import io.mockk.every
 import io.mockk.mockk
@@ -28,8 +29,13 @@ class HadithBooksViewModelTest {
         HadithBook("bukhari.1", "bukhari", 1, "كتاب بدء الوحي", "Revelation", "Permulaan Wahyu")
     )
 
+    private fun topics() = listOf(
+        HadithTopic("faith", "الإيمان والعقيدة", "Faith & Creed", "Iman & Akidah", listOf("bukhari.1"))
+    )
+
     private fun createVm(): HadithBooksViewModel {
         every { preferencesManager.translationLanguage } returns MutableStateFlow("system")
+        every { repository.getTopics() } returns Result.Success(topics())
         return HadithBooksViewModel(repository, preferencesManager, testDispatcherProvider)
     }
 
@@ -41,6 +47,8 @@ class HadithBooksViewModelTest {
         advanceUntilIdle()
 
         assertEquals(1, vm.uiState.value.books.size)
+        assertEquals(1, vm.uiState.value.topics.size)
+        assertEquals("faith", vm.uiState.value.topics[0].id)
         assertEquals(false, vm.uiState.value.isLoading)
         assertEquals(null, vm.uiState.value.error)
     }

@@ -189,6 +189,9 @@
     <string name="zakat_not_due">Zakat Not Due</string>
     <!-- Hadith -->
     <string name="hadiths">Hadiths</string>
+    <string name="hadith_tab_books">Books</string>
+    <string name="hadith_tab_topics">Topics</string>
+    <string name="hadith_topic_books_count">%1$d Books</string>
     <string name="hadith_reference">Sahih %1$s · Book %2$d, Hadith %3$d</string>
     <string name="hadith_no_arabic">[No Arabic text]</string>
     <string name="search_hadiths">Search hadiths…</string>

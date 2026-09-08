@@ -10,6 +10,7 @@ import com.smiledev.rafiq_quran.core.Result
 import com.smiledev.rafiq_quran.core.currentLocaleCode
 import com.smiledev.rafiq_quran.data.preferences.PreferencesManager
 import com.smiledev.rafiq_quran.domain.model.HadithBook
+import com.smiledev.rafiq_quran.domain.model.HadithTopic
 import com.smiledev.rafiq_quran.domain.repository.HadithRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,6 +21,7 @@ import javax.inject.Inject
 @Immutable
 data class HadithBooksUiState(
     val books: List<HadithBook> = emptyList(),
+    val topics: List<HadithTopic> = emptyList(),
     val isLoading: Boolean = false,
     val error: AppError? = null,
     val translationLanguage: String = "system"
@@ -50,7 +52,15 @@ class HadithBooksViewModel @Inject constructor(
         viewModelScope.launch(dispatcherProvider.io) {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             when (val result = hadithRepository.getBooks()) {
-                is Result.Success -> _uiState.value = _uiState.value.copy(books = result.data, isLoading = false)
+                is Result.Success -> {
+                    val topicsResult = hadithRepository.getTopics()
+                    val topics = if (topicsResult is Result.Success) topicsResult.data else emptyList()
+                    _uiState.value = _uiState.value.copy(
+                        books = result.data,
+                        topics = topics,
+                        isLoading = false
+                    )
+                }
                 is Result.Error -> _uiState.value = _uiState.value.copy(isLoading = false, error = result.error)
             }
         }

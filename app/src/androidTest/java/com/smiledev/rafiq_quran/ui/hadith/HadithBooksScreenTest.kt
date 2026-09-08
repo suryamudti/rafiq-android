@@ -73,4 +73,48 @@ class HadithBooksScreenTest {
 
         composeTestRule.onNodeWithText("Sahih al-Bukhari · Book 1").assertIsDisplayed()
     }
+
+    @Test
+    fun topicsTabDisplaysTopicsAndExpandsBook() {
+        val topic = com.smiledev.rafiq_quran.domain.model.HadithTopic(
+            id = "faith",
+            nameAr = "الإيمان والعقيدة",
+            nameEn = "Faith & Creed",
+            nameId = "Iman & Akidah",
+            bookIds = listOf("bukhari.1")
+        )
+        val repo = mockk<HadithRepository>(relaxed = true)
+        every { repo.getBooks() } returns Result.Success(listOf(book))
+        every { repo.getTopics() } returns Result.Success(listOf(topic))
+        val prefs = mockk<PreferencesManager>(relaxed = true)
+        every { prefs.translationLanguage } returns MutableStateFlow("en")
+        val viewModel = HadithBooksViewModel(repo, prefs, dispatcher())
+
+        var clickedId: String? = null
+        composeTestRule.setContent {
+            HadithBooksScreen(
+                onHadithBookClick = { clickedId = it },
+                onBack = {},
+                viewModel = viewModel
+            )
+        }
+
+        // Verify tabs exist
+        composeTestRule.onNodeWithText("Books").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Topics").assertIsDisplayed()
+
+        // Switch to Topics tab
+        composeTestRule.onNodeWithText("Topics").performClick()
+
+        // Topic should be displayed
+        composeTestRule.onNodeWithText("Faith & Creed").assertIsDisplayed()
+
+        // Click to expand topic
+        composeTestRule.onNodeWithText("Faith & Creed").performClick()
+
+        // The book inside should be visible and clickable
+        composeTestRule.onNodeWithText("Revelation").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Revelation").performClick()
+        assertEquals("bukhari.1", clickedId)
+    }
 }

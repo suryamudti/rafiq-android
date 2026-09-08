@@ -222,4 +222,17 @@ class HadithRepositoryImplTest {
         assertTrue("Expected Success but got ${result}", result is Result.Success)
         assertNull((result as Result.Success).data)
     }
+
+    @Test
+    fun `getTopics returns 16 topics with all 154 books covered`() {
+        val result = repo.getTopics()
+
+        assertTrue("Expected Success but got ${result}", result is Result.Success)
+        val topics = (result as Result.Success).data
+        assertEquals(16, topics.size)
+
+        val totalBooks = topics.flatMap { it.bookIds }.toSet()
+        assertEquals(154, totalBooks.size)
+        assertTrue(topics.any { it.id == "prayer" && it.bookIds.contains("bukhari.8") })
+    }
 }
