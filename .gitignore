@@ -26,3 +26,6 @@ evals/__pycache__/
 # Python
 __pycache__/
 *.pyc
+
+# Graphify
+graphify-out/
