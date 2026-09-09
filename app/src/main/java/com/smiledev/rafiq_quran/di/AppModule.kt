@@ -79,6 +79,7 @@ abstract class RepositoryModule {
     @Binds @Singleton abstract fun bindPrayerLogRepository(impl: PrayerLogRepositoryImpl): PrayerLogRepository
     @Binds @Singleton abstract fun bindMosqueRepository(impl: MosqueRepositoryImpl): MosqueRepository
     @Binds @Singleton abstract fun bindLocationProvider(impl: LocationProviderImpl): LocationProvider
+    @Binds @Singleton abstract fun bindPrayerGuidanceRepository(impl: com.smiledev.rafiq_quran.data.repository.PrayerGuidanceRepositoryImpl): com.smiledev.rafiq_quran.domain.repository.PrayerGuidanceRepository
 }
 
 @Module
@@ -337,4 +338,8 @@ object AppModule {
 
     @Provides @Singleton
     fun provideCalculateQiblaUseCase(): CalculateQiblaUseCase = CalculateQiblaUseCase()
+
+    @Provides @Singleton
+    fun provideGetPrayerGuidanceUseCase(repo: com.smiledev.rafiq_quran.domain.repository.PrayerGuidanceRepository): com.smiledev.rafiq_quran.domain.usecase.GetPrayerGuidanceUseCase =
+        com.smiledev.rafiq_quran.domain.usecase.GetPrayerGuidanceUseCase(repo)
 }
