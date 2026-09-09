@@ -61,6 +61,7 @@ import com.smiledev.rafiq_quran.BookmarkList
 import com.smiledev.rafiq_quran.HadithBooks
 import com.smiledev.rafiq_quran.IslamicCalendar
 import com.smiledev.rafiq_quran.Mosques
+import com.smiledev.rafiq_quran.PrayerGuidance
 import com.smiledev.rafiq_quran.PrayerLog
 import com.smiledev.rafiq_quran.PrayerTimes
 import com.smiledev.rafiq_quran.Prophets
@@ -171,6 +172,13 @@ private val quickServices = listOf(
         iconResId = R.drawable.ic_prayer_log,
         tintColor = Color(0xFF4F46E5),
         containerColor = Color(0xFFEEF2FF)
+    ),
+    QuickServiceItem(
+        labelResId = R.string.prayer_guidance,
+        navKey = PrayerGuidance,
+        iconResId = R.drawable.ic_prayer_guide,
+        tintColor = Color(0xFF00796B),
+        containerColor = Color(0xFFE0F2F1)
     )
 )
 

@@ -231,4 +231,19 @@
     <string name="source_translator_siddiqui">Abdul Hamid Siddiqui</string>
     <string name="open_source">Buka sumber</string>
     <string name="link_error">Tidak dapat membuka tautan</string>
+    <!-- Panduan Sholat -->
+    <string name="prayer_guidance">Panduan Sholat</string>
+    <string name="prayer_guidance_desc">Panduan lengkap sholat fardhu, sunnah, tata cara wudhu, dan dzikir</string>
+    <string name="category_all">Semua</string>
+    <string name="category_fardhu">Sholat Fardhu</string>
+    <string name="category_sunnah">Sholat Sunnah</string>
+    <string name="category_purification">Wudhu &amp; Thaharah</string>
+    <string name="category_post_prayer">Dzikir &amp; Doa</string>
+    <string name="search_prayer_guide">Cari panduan sholat, wudhu, dzikir…</string>
+    <string name="no_guides_found">Tidak ada panduan yang sesuai</string>
+    <string name="rakaat_count">%d Raka\'at</string>
+    <string name="niyyah">Niat Sholat</string>
+    <string name="prayer_steps">Panduan Langkah Demi Langkah</string>
+    <string name="step_number">Langkah %d</string>
+    <string name="tips_and_notes">Catatan Penting &amp; Keutamaan</string>
 </resources>

@@ -27,6 +27,8 @@ import com.smiledev.rafiq_quran.ui.asmaulhusna.AsmaulHusnaScreen
 import com.smiledev.rafiq_quran.ui.tasbih.TasbihScreen
 import com.smiledev.rafiq_quran.ui.bookmarks.BookmarkListFullScreen
 import com.smiledev.rafiq_quran.ui.prayerlog.PrayerLogScreen
+import com.smiledev.rafiq_quran.ui.prayerguidance.PrayerGuidanceScreen
+import com.smiledev.rafiq_quran.ui.prayerguidance.PrayerGuidanceDetailScreen
 
 import com.smiledev.rafiq_quran.ui.settings.SettingsScreen
 import com.smiledev.rafiq_quran.ui.sources.SourcesScreen
@@ -179,6 +181,20 @@ fun MainNavigation() {
         }
         entry<PrayerLog> {
           PrayerLogScreen(
+            onBack = { backStack.removeLastOrNull() },
+            modifier = Modifier.safeDrawingPadding()
+          )
+        }
+        entry<PrayerGuidance> {
+          PrayerGuidanceScreen(
+            onGuidanceClick = { guidanceId -> backStack.add(PrayerGuidanceDetail(guidanceId)) },
+            onBack = { backStack.removeLastOrNull() },
+            modifier = Modifier.safeDrawingPadding()
+          )
+        }
+        entry<PrayerGuidanceDetail> { key ->
+          PrayerGuidanceDetailScreen(
+            guidanceId = key.guidanceId,
             onBack = { backStack.removeLastOrNull() },
             modifier = Modifier.safeDrawingPadding()
           )

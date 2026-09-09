@@ -1,0 +1,1109 @@
+[
+  {
+    "id": "wudhu",
+    "nameEn": "Wudu (Ablution)",
+    "nameId": "Tata Cara Wudhu",
+    "nameArabic": "الوُضُوء",
+    "category": "PURIFICATION",
+    "rakaat": null,
+    "descriptionEn": "Ritual purification and ablution required before performing daily prayers.",
+    "descriptionId": "Tata cara bersuci dari hadats kecil sebagai syarat sah sholat.",
+    "niyyahArabic": "نَوَيْتُ الْوُضُوءَ لِرَفْعِ الْحَدَثِ الْأَصْغَرِ فَرْضًا لِلَّهِ تَعَالَى",
+    "niyyahTransliteration": "Nawaitul wudhuu'a liraf'il hadatsil ashghari fardhan lillaahi ta'aalaa",
+    "niyyahTranslationEn": "I intend to perform ablution to remove minor impurity, as an obligation for Allah the Almighty.",
+    "niyyahTranslationId": "Aku berniat berwudhu untuk menghilangkan hadats kecil, fardhu karena Allah Ta'ala.",
+    "steps": [
+      {
+        "order": 1,
+        "titleEn": "Niyyah & Bismillah",
+        "titleId": "Niat & Membaca Basmalah",
+        "descriptionEn": "Begin with the intention in your heart and pronounce Bismillah, then wash both hands up to the wrists 3 times.",
+        "descriptionId": "Berniat dalam hati untuk bersuci, membaca bismillah, dan membasuh kedua telapak tangan hingga pergelangan 3 kali.",
+        "arabic": "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ",
+        "transliteration": "Bismillaahir-rahmaanir-rahiim",
+        "translationEn": "In the name of Allah, the Most Gracious, the Most Merciful.",
+        "translationId": "Dengan nama Allah Yang Maha Pengasih lagi Maha Penyayang."
+      },
+      {
+        "order": 2,
+        "titleEn": "Rinsing Mouth (Madhmadhah)",
+        "titleId": "Berkumur-kumur (Madhmadhah)",
+        "descriptionEn": "Rinse the mouth thoroughly with water 3 times.",
+        "descriptionId": "Berkumur-kumur membersihkan rongga mulut sebanyak 3 kali.",
+        "arabic": null,
+        "transliteration": null,
+        "translationEn": null,
+        "translationId": null
+      },
+      {
+        "order": 3,
+        "titleEn": "Cleansing Nostrils (Istinsyaq)",
+        "titleId": "Menghirup Air ke Hidung (Istinsyaq)",
+        "descriptionEn": "Sniff water gently into the nostrils and blow it out 3 times using the left hand.",
+        "descriptionId": "Menghirup air ke dalam lubang hidung lalu mengeluarkannya sebanyak 3 kali.",
+        "arabic": null,
+        "transliteration": null,
+        "translationEn": null,
+        "translationId": null
+      },
+      {
+        "order": 4,
+        "titleEn": "Washing the Face",
+        "titleId": "Membasuh Muka",
+        "descriptionEn": "Wash the entire face 3 times from the hairline to the chin and from ear to ear.",
+        "descriptionId": "Membasuh seluruh wajah secara merata sebanyak 3 kali, dari batas tumbuhnya rambut hingga dagu dan dari telinga ke telinga.",
+        "arabic": null,
+        "transliteration": null,
+        "translationEn": null,
+        "translationId": null
+      },
+      {
+        "order": 5,
+        "titleEn": "Washing Arms to the Elbows",
+        "titleId": "Membasuh Kedua Tangan Hingga Siku",
+        "descriptionEn": "Wash the right arm including the elbow 3 times, then repeat for the left arm 3 times.",
+        "descriptionId": "Membasuh tangan kanan hingga melewati siku 3 kali, lalu dilanjutkan tangan kiri 3 kali.",
+        "arabic": null,
+        "transliteration": null,
+        "translationEn": null,
+        "translationId": null
+      },
+      {
+        "order": 6,
+        "titleEn": "Wiping Head & Ears",
+        "titleId": "Mengusap Sebagian Kepala & Telinga",
+        "descriptionEn": "Wipe wet hands over the head from front to back and wipe the inside and outside of both ears 3 times.",
+        "descriptionId": "Mengusap kepala dengan tangan yang dibasahi air lalu mengusap kedua telinga luar dan dalam sebanyak 3 kali.",
+        "arabic": null,
+        "transliteration": null,
+        "translationEn": null,
+        "translationId": null
+      },
+      {
+        "order": 7,
+        "titleEn": "Washing Feet to the Ankles",
+        "titleId": "Membasuh Kedua Kaki Hingga Mata Kaki",
+        "descriptionEn": "Wash the right foot including the ankle and between toes 3 times, then repeat for the left foot 3 times.",
+        "descriptionId": "Membasuh kaki kanan hingga di atas mata kaki dan sela-sela jari 3 kali, lalu kaki kiri 3 kali.",
+        "arabic": null,
+        "transliteration": null,
+        "translationEn": null,
+        "translationId": null
+      },
+      {
+        "order": 8,
+        "titleEn": "Post-Wudu Supplication",
+        "titleId": "Doa Sesudah Wudhu",
+        "descriptionEn": "Facing the Qibla, recite the authentic Prophetic supplication.",
+        "descriptionId": "Menghadap kiblat dan membaca doa setelah berwudhu.",
+        "arabic": "أَشْهَدُ أَنْ لَا إِلٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ، اللَّهُمَّ اجْعَلْنِي مِنَ التَّوَّابِينَ، وَاجْعَلْنِي مِنَ الْمُتَطَهِّرِينَ",
+        "transliteration": "Asyhadu allaa ilaaha illallaahu wahdahu laa syariika lah, wa asyhadu anna Muhammadan 'abduhuu wa rasuuluh. Allaahummaj'alnii minat-tawwaabiina waj'alnii minal-mutathahhiriin.",
+        "translationEn": "I bear witness that none has the right to be worshipped but Allah alone, without partner; and I bear witness that Muhammad is His servant and Messenger. O Allah, make me of the repentant and make me of the purified.",
+        "translationId": "Aku bersaksi tiada tuhan selain Allah yang Maha Esa tiada sekutu bagi-Nya, dan aku bersaksi bahwa Muhammad adalah hamba dan utusan-Nya. Ya Allah jadikanlah aku golongan orang yang bertaubat dan jadikanlah aku golongan orang yang bersuci."
+      }
+    ],
+    "tipsEn": [
+      "Ensure water reaches all designated areas, especially between toes and under rings.",
+      "Avoid wasting water, as the Prophet (peace be upon him) forbade excess even at a flowing river.",
+      "Maintaining wudu throughout the day is a beloved Sunnah."
+    ],
+    "tipsId": [
+      "Pastikan air merata ke seluruh anggota wudhu, termasuk sela-sela jari dan bawah cincin.",
+      "Jangan berlebih-lebihan dalam penggunaan air meski di sungai yang mengalir.",
+      "Senantiasa menjaga wudhu (dawamul wudhu) merupakan amalan sunnah yang sangat mulia."
+    ]
+  },
+  {
+    "id": "tayammum",
+    "nameEn": "Tayammum (Dry Ablution)",
+    "nameId": "Tata Cara Tayammum",
+    "nameArabic": "التَّيَمُّم",
+    "category": "PURIFICATION",
+    "rakaat": null,
+    "descriptionEn": "Dry purification using clean dust/earth when water is absent or cannot be used due to illness.",
+    "descriptionId": "Keringanan bersuci dengan debu yang suci ketika tidak ada air atau ada udzur sakit.",
+    "niyyahArabic": "نَوَيْتُ التَّيَمُّمَ لِاسْتِبَاحَةِ الصَّلَاةِ فَرْضًا لِلَّهِ تَعَالَى",
+    "niyyahTransliteration": "Nawaitut-tayammuma li-istibaahatis-shalaati fardhan lillaahi ta'aalaa",
+    "niyyahTranslationEn": "I intend to perform tayammum to permit prayer, as an obligation for Allah the Almighty.",
+    "niyyahTranslationId": "Aku berniat melakukan tayammum agar diperbolehkan sholat fardhu karena Allah Ta'ala.",
+    "steps": [
+      {
+        "order": 1,
+        "titleEn": "Niyyah & Bismillah",
+        "titleId": "Niat & Bismillah",
+        "descriptionEn": "Form the intention in heart and utter Bismillah.",
+        "descriptionId": "Berniat dalam hati untuk membolehkan sholat dan membaca bismillah.",
+        "arabic": "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ",
+        "transliteration": "Bismillaahir-rahmaanir-rahiim",
+        "translationEn": "In the name of Allah, the Most Gracious, the Most Merciful.",
+        "translationId": "Dengan nama Allah Yang Maha Pengasih lagi Maha Penyayang."
+      },
+      {
+        "order": 2,
+        "titleEn": "First Strike & Wiping Face",
+        "titleId": "Pukulan Pertama & Mengusap Wajah",
+        "descriptionEn": "Place both palms on clean dust/earth, blow off excess dust, then wipe across the entire face once.",
+        "descriptionId": "Menempelkan kedua telapak tangan ke debu yang bersih, meniup debu yang berlebih, lalu mengusapkannya ke seluruh wajah sekali.",
+        "arabic": null,
+        "transliteration": null,
+        "translationEn": null,
+        "translationId": null
+      },
+      {
+        "order": 3,
+        "titleEn": "Second Strike & Wiping Arms",
+        "titleId": "Pukulan Kedua & Mengusap Kedua Tangan",
+        "descriptionEn": "Place palms on clean dust again, then wipe the right arm up to the elbow with the left hand, and the left arm with the right hand.",
+        "descriptionId": "Menempelkan tangan kembali ke debu suci, lalu mengusap tangan kanan sampai siku dengan tangan kiri, dan tangan kiri dengan tangan kanan.",
+        "arabic": null,
+        "transliteration": null,
+        "translationEn": null,
+        "translationId": null
+      }
+    ],
+    "tipsEn": [
+      "Tayammum is valid only after prayer time has begun and efforts to find water have been exhausted.",
+      "One tayammum is traditionally used for one fardhu prayer and whatever sunnah prayers desired."
+    ],
+    "tipsId": [
+      "Tayammum dilakukan setelah masuk waktu sholat dan setelah berusaha mencari air.",
+      "Satu tayammum berlaku untuk satu sholat fardhu dan sholat sunnah yang mengikutinya."
+    ]
+  },
+  {
+    "id": "syarat_rukun",
+    "nameEn": "Conditions & Pillars of Prayer",
+    "nameId": "Syarat & Rukun Sholat",
+    "nameArabic": "شُرُوطُ وَأَرْكَانُ الصَّلَاة",
+    "category": "PURIFICATION",
+    "rakaat": null,
+    "descriptionEn": "Essential requirements, pillars (arkān), and invalidators of Islamic prayer.",
+    "descriptionId": "Panduan syarat sah, rukun sholat yang wajib dikerjakan, dan hal yang membatalkan sholat.",
+    "niyyahArabic": null,
+    "niyyahTransliteration": null,
+    "niyyahTranslationEn": null,
+    "niyyahTranslationId": null,
+    "steps": [
+      {
+        "order": 1,
+        "titleEn": "Conditions for Validity (Syarat Sah)",
+        "titleId": "Syarat Sah Sholat",
+        "descriptionEn": "1. Purity from major and minor impurities (Wudu/Ghusl)\n2. Purity of body, clothing, and place from najas\n3. Covering the 'Awrah\n4. Entry of prayer time\n5. Facing the Qibla.",
+        "descriptionId": "1. Suci dari hadats kecil dan besar\n2. Suci badan, pakaian, dan tempat dari najis\n3. Menutup aurat\n4. Telah masuk waktu sholat\n5. Menghadap kiblat.",
+        "arabic": null,
+        "transliteration": null,
+        "translationEn": null,
+        "translationId": null
+      },
+      {
+        "order": 2,
+        "titleEn": "The 13 Pillars of Prayer (Rukun Sholat)",
+        "titleId": "13 Rukun Sholat",
+        "descriptionEn": "1. Intention (Niyyah)\n2. Standing if able (Qiyam)\n3. Takbiratul Ihram\n4. Reciting Surah Al-Fatihah\n5. Ruku' with serenity (Tuma'ninah)\n6. I'tidal with serenity\n7. Sujud (two prostrations) with serenity\n8. Sitting between two prostrations with serenity\n9. Final Tashahhud\n10. Sitting for final Tashahhud\n11. Sending blessings on the Prophet (Shalawat)\n12. First Taslim (Salam)\n13. Performing all pillars in proper order (Tartib).",
+        "descriptionId": "1. Niat\n2. Berdiri bagi yang mampu\n3. Takbiratul Ihram\n4. Membaca Surat Al-Fatihah\n5. Ruku' dengan tuma'ninah\n6. I'tidal dengan tuma'ninah\n7. Sujud dua kali dengan tuma'ninah\n8. Duduk di antara dua sujud dengan tuma'ninah\n9. Duduk tasyahud akhir\n10. Membaca tasyahud akhir\n11. Membaca shalawat kepada Nabi Muhammad SAW\n12. Mengucapkan salam yang pertama\n13. Tertib (berurutan).",
+        "arabic": null,
+        "transliteration": null,
+        "translationEn": null,
+        "translationId": null
+      },
+      {
+        "order": 3,
+        "titleEn": "Invalidators of Prayer (Pembatal Sholat)",
+        "titleId": "Hal-Hal yang Membatalkan Sholat",
+        "descriptionEn": "Speaking intentionally, laughing out loud, eating or drinking, substantial unnecessary movements (3 consecutive movements), breaking wudu, uncovering 'awrah, turning away from Qibla, or omitting a pillar without remedy.",
+        "descriptionId": "Berbicara dengan sengaja, tertawa terbahak-bahak, makan atau minum, bergerak berturut-turut 3 kali di luar gerakan sholat, berhadats, terbukanya aurat, berpaling dari kiblat, atau meninggalkan rukun sholat.",
+        "arabic": null,
+        "transliteration": null,
+        "translationEn": null,
+        "translationId": null
+      }
+    ],
+    "tipsEn": [
+      "Tuma'ninah (calmness and staying still for the duration of saying Subhanallah) is an obligatory pillar in ruku, i'tidal, sujud, and sitting.",
+      "Reciting Al-Fatihah is obligatory in every raka'at for both imam and alone."
+    ],
+    "tipsId": [
+      "Tuma'ninah (diam sejenak seukuran membaca Subhanallah) adalah rukun wajib pada ruku', i'tidal, sujud, dan duduk.",
+      "Surah Al-Fatihah wajib dibaca dengan tartil dan tajwid yang benar pada setiap raka'at."
+    ]
+  },
+  {
+    "id": "subuh",
+    "nameEn": "Fajr Prayer (Subuh)",
+    "nameId": "Sholat Subuh",
+    "nameArabic": "صَلَاةُ الصُّبْح",
+    "category": "OBLIGATORY",
+    "rakaat": 2,
+    "descriptionEn": "The 2-raka'at morning prayer performed between the true dawn and sunrise, with audible recitation and recommended Qunut supplication.",
+    "descriptionId": "Sholat fardhu 2 raka'at yang dilaksanakan sejak fajar shadiq hingga terbit matahari.",
+    "niyyahArabic": "أُصَلِّي فَرْضَ الصُّبْحِ رَكْعَتَيْنِ مُسْتَقْبِلَ الْقِبْلَةِ أَدَاءً لِلَّهِ تَعَالَى",
+    "niyyahTransliteration": "Ushallii fardhas-shubhi rak'ataini mustaqbilal qiblati adaa-an lillaahi ta'aalaa",
+    "niyyahTranslationEn": "I intend to pray the 2 raka'at obligatory Fajr prayer facing the Qibla, on time, for Allah the Almighty.",
+    "niyyahTranslationId": "Aku berniat sholat fardhu Subuh dua raka'at menghadap kiblat, tepat pada waktunya karena Allah Ta'ala.",
+    "steps": [
+      {
+        "order": 1,
+        "titleEn": "Takbiratul Ihram & Iftitah",
+        "titleId": "Takbiratul Ihram & Doa Iftitah",
+        "descriptionEn": "Raise both hands to shoulder or ear level saying Allahu Akbar, fold hands on chest, and recite Doa Iftitah.",
+        "descriptionId": "Mengangkat kedua tangan sejajar telinga/bahu mengucap takbir, meletakkan tangan kanan di atas tangan kiri di dada, lalu membaca doa iftitah.",
+        "arabic": "اللَّهُ أَكْبَرُ كَبِيرًا وَالْحَمْدُ لِلَّهِ كَثِيرًا وَسُبْحَانَ اللَّهِ بُكْرَةً وَأَصِيلًا، إِنِّي وَجَّهْتُ وَجْهِيَ لِلَّذِي فَطَرَ السَّمَاوَاتِ وَالْأَرْضَ حَنِيفًا مُسْلِمًا وَمَا أَنَا مِنَ الْمُشْرِكِينَ",
+        "transliteration": "Allaahu akbaru kabiiraa walhamdu lillaahi katsiiraa wa subhaanallaahi bukrataw-wa ashiilaa. Innii wajjahtu wajhiya lilladzii fatharas-samaawaati wal ardha haniifam-muslimaw-wa maa ana minal musyrikiin.",
+        "translationEn": "Allah is Most Great in grandeur, abundant praise is for Allah, and glory be to Allah morning and evening. I have turned my face towards Him Who created the heavens and the earth, sincerely submissive, and I am not of the polytheists.",
+        "translationId": "Allah Maha Besar sebesar-besarnya, segala puji bagi Allah sebanyak-banyaknya, dan Maha Suci Allah pada pagi dan petang. Sesungguhnya aku hadapkan wajahku kepada Dzat yang menciptakan langit dan bumi dengan lurus dan berserah diri."
+      },
+      {
+        "order": 2,
+        "titleEn": "Surah Al-Fatihah",
+        "titleId": "Membaca Surah Al-Fatihah",
+        "descriptionEn": "Recite Surah Al-Fatihah aloud, followed by Amin and another short Surah (e.g. Al-Falaq, An-Nas, or Al-Ikhlas).",
+        "descriptionId": "Membaca surat Al-Fatihah secara jahar (bersuara), diikuti ucapan aamiin dan ayat/surat pendek dari Al-Quran.",
+        "arabic": "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ ۝ الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ ۝ الرَّحْمَٰنِ الرَّحِيمِ ۝ مَالِكِ يَوْمِ الدِّينِ ۝ إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ ۝ اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ ۝ صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ",
+        "transliteration": "Bismillaahir-rahmaanir-rahiim. Al-hamdu lillaahi rabbil-'aalamiin. Ar-rahmaanir-rahiim. Maaliki yawmid-diin. Iyyaaka na'budu wa iyyaaka nasta'iin. Ihdinas-shiraathal-mustaqiim. Shiraathalladziina an'amta 'alayhim ghayril maghdhuubi 'alayhim waladh-dhaalliin.",
+        "translationEn": "In the name of Allah, the Most Gracious, the Most Merciful. Praise be to Allah, Lord of the worlds. The Most Gracious, the Most Merciful. Master of the Day of Judgment. You alone we worship and You alone we ask for help. Guide us to the straight path. The path of those upon whom You have bestowed favor, not of those who have evoked anger or of those who are astray.",
+        "translationId": "Dengan nama Allah Yang Maha Pengasih lagi Maha Penyayang. Segala puji bagi Allah, Tuhan semesta alam. Maha Pemurah lagi Maha Penyayang. Pemilik hari pembalasan. Hanya kepada Engkaulah kami menyembah dan hanya kepada Engkaulah kami mohon pertolongan. Tunjukilah kami jalan yang lurus. Yaitu jalan orang-orang yang telah Engkau beri nikmat, bukan jalan mereka yang dimurkai dan bukan pula mereka yang sesat."
+      },
+      {
+        "order": 3,
+        "titleEn": "Ruku' (Bowing)",
+        "titleId": "Ruku' dengan Tuma'ninah",
+        "descriptionEn": "Say Allahu Akbar and bow with a straight flat back, resting hands on knees, reciting 3 times.",
+        "descriptionId": "Mengucapkan takbir dan membungkukkan badan hingga punggung rata, kedua tangan memegang lutut, membaca 3 kali:",
+        "arabic": "سُبْحَانَ رَبِّيَ الْعَظِيمِ وَبِحَمْدِهِ",
+        "transliteration": "Subhaana rabbiyal-'azhiimi wa bihamdih",
+        "translationEn": "Glory be to my Lord, the Almighty, and praise be to Him.",
+        "translationId": "Maha Suci Tuhanku Yang Maha Agung dan dengan memuji-Nya."
+      },
+      {
+        "order": 4,
+        "titleEn": "I'tidal (Standing Straight)",
+        "titleId": "I'tidal (Bangkit dari Ruku')",
+        "descriptionEn": "Rise upright with hands at sides, reciting Sami'allahu liman hamidah, followed by Rabbana lakal hamd.",
+        "descriptionId": "Bangkit tegak berdiri kembali sambil membaca:",
+        "arabic": "سَمِعَ اللَّهُ لِمَنْ حَمِدَهُ، رَبَّنَا لَكَ الْحَمْدُ مِلْءَ السَّمَاوَاتِ وَمِلْءَ الْأَرْضِ وَمِلْءَ مَا شِئْتَ مِنْ شَيْءٍ بَعْدُ",
+        "transliteration": "Sami'allaahu liman hamidah. Rabbanaa lakal-hamdu mil'us-samaawaati wa mil'ul-ardhi wa mil'u maa syi'ta min syay'im-ba'd.",
+        "translationEn": "Allah hears whoever praises Him. Our Lord, to You belongs all praise, filling the heavens, the earth, and whatever You will besides.",
+        "translationId": "Allah mendengar orang yang memuji-Nya. Ya Tuhan kami, bagi-Mu segala puji sepenuh langit dan bumi dan sepenuh apa yang Engkau kehendaki sesudahnya."
+      },
+      {
+        "order": 5,
+        "titleEn": "Sujud (Prostration)",
+        "titleId": "Sujud Pertama & Kedua",
+        "descriptionEn": "Say Allahu Akbar and prostrate placing forehead, nose, palms, knees, and toes on the ground, reciting 3 times.",
+        "descriptionId": "Bertakbir dan sujud dengan meletakkan dahi, hidung, kedua telapak tangan, lutut, dan jari-jari kaki ke lantai, membaca 3 kali:",
+        "arabic": "سُبْحَانَ رَبِّيَ الْأَعْلَى وَبِحَمْدِهِ",
+        "transliteration": "Subhaana rabbiyal-a'laa wa bihamdih",
+        "translationEn": "Glory be to my Lord, the Most High, and praise be to Him.",
+        "translationId": "Maha Suci Tuhanku Yang Maha Tinggi dan dengan memuji-Nya."
+      },
+      {
+        "order": 6,
+        "titleEn": "Sitting Between Sujud",
+        "titleId": "Duduk di Antara Dua Sujud (Iftirasy)",
+        "descriptionEn": "Rise to sit on the left foot with right foot upright, reciting the supplication of forgiveness and mercy.",
+        "descriptionId": "Duduk bersimpuh di atas kaki kiri dan menegakkan kaki kanan (iftirasy), membaca doa:",
+        "arabic": "رَبِّ اغْفِرْ لِي وَارْحَمْنِي وَاجْبُرْنِي وَارْفَعْنِي وَارْزُقْنِي وَاهْدِنِي وَعَافِنِي وَاعْفُ عَنِّي",
+        "transliteration": "Rabbigh-fir lii war-hamnii waj-burnii war-fa'nii war-zuqnii wah-dinii wa 'aafinii wa'fu 'annii",
+        "translationEn": "O Lord, forgive me, have mercy on me, mend my shortcomings, elevate me, provide for me, guide me, grant me health, and pardon me.",
+        "translationId": "Ya Tuhanku, ampunilah dosaku, kasihanilah aku, cukupkanlah kekuranganku, angkatlah derajatku, limpahkanlah rezeki kepadaku, tunjukilah aku, sehatkanlah aku, dan maafkanlah kesalahanku."
+      },
+      {
+        "order": 7,
+        "titleEn": "Second Raka'at & Doa Qunut",
+        "titleId": "Raka'at Kedua & Doa Qunut",
+        "descriptionEn": "Rise for 2nd raka'at, recite Al-Fatihah and Surah. In I'tidal after rising from Ruku', the Sunnah Qunut supplication is recited.",
+        "descriptionId": "Lakukan rakaat kedua seperti rakaat pertama. Saat i'tidal rakaat kedua, disunnahkan membaca doa Qunut Subuh:",
+        "arabic": "اللَّهُمَّ اهْدِنِي فِيمَنْ هَدَيْتَ، وَعَافِنِي فِيمَنْ عَافَيْتَ، وَتَوَلَّنِي فِيمَنْ تَوَلَّيْتَ، وَبَارِكْ لِي فِيمَا أَعْطَيْتَ، وَقِنِي شَرَّ مَا قَضَيْتَ، فَإِنَّكَ تَقْضِي وَلَا يُقْضَى عَلَيْكَ، وَإِنَّهُ لَا يَذِلُّ مَنْ وَالَيْتَ، وَلَا يَعِزُّ مَنْ عَادَيْتَ، تَبَارَكْتَ رَبَّنَا وَتَعَالَيْتَ",
+        "transliteration": "Allaahummah-dinii fiiman hadayt, wa 'aafinii fiiman 'aafayt, wa tawallanii fiiman tawallayt, wa baarik lii fiimaa a'thayt, wa qinii syarra maa qadhayt, fa-innaka taqdhii wa laa yuqdhaa 'alayk, wa innahuu laa yadzillu maw-waalayt, wa laa ya'izzu man 'aadayt, tabaarakta rabbanaa wa ta'aalayt.",
+        "translationEn": "O Allah, guide me among those whom You have guided, grant me health among those You have forgiven, take me into Your care among those You have cared for, bless what You have given me, and shield me from the evil You decreed. You decree and none decrees over You. He whom You support is never disgraced, and he whom You oppose is never honored. Blessed and Exalted are You, our Lord.",
+        "translationId": "Ya Allah tunjukilah aku bersama orang yang telah Engkau tunjuki, berilah kesehatan kepadaku bersama orang yang telah Engkau beri kesehatan, peliharalah aku bersama orang yang telah Engkau pelihara, berkahilah apa yang telah Engkau berikan kepadaku, dan lindungilah aku dari keburukan yang telah Engkau tetapkan. Sesungguhnya Engkaulah yang menetapkan dan tidak ada yang menetapkan atas-Mu."
+      },
+      {
+        "order": 8,
+        "titleEn": "Tashahhud Akhir & Salam",
+        "titleId": "Tasyahud Akhir & Salam",
+        "descriptionEn": "Perform final sitting (Tawarruk), recite Tashahhud and Shalawat Ibrahimiyah, then turn head to the right and left reciting Salam.",
+        "descriptionId": "Duduk tasyahud akhir (tawarruk), membaca tahiyyat dan shalawat ibrahimiyah, lalu menoleh ke kanan dan kiri mengucap salam.",
+        "arabic": "التَّحِيَّاتُ الْمُبَارَكَاتُ الصَّلَوَاتُ الطَّيِّبَاتُ لِلَّهِ، السَّلَامُ عَلَيْكَ أَيُّهَا النَّبِيُّ وَرَحْمَةُ اللَّهِ وَبَرَكَاتُهُ، السَّلَامُ عَلَيْنَا وَعَلَىٰ عِبَادِ اللَّهِ الصَّالِحِينَ، أَشْهَدُ أَنْ لَا إِلٰهَ إِلَّا اللَّهُ وَأَشْهَدُ أَنَّ مُحَمَّدًا رَسُولُ اللَّهِ، اللَّهُمَّ صَلِّ عَلَىٰ مُحَمَّدٍ وَعَلَىٰ آلِ مُحَمَّدٍ كَمَا صَلَّيْتَ عَلَىٰ إِبْرَاهِيمَ وَعَلَىٰ آلِ إِبْرَاهِيمَ، وَبَارِكْ عَلَىٰ مُحَمَّدٍ وَعَلَىٰ آلِ مُحَمَّدٍ كَمَا بَارَكْتَ عَلَىٰ إِبْرَاهِيمَ وَعَلَىٰ آلِ إِبْرَاهِيمَ فِي الْعَالَمِينَ إِنَّكَ حَمِيدٌ مَجِيدٌ",
+        "transliteration": "At-tahiyyaatul-mubaarakaatus-shalawaatut-thayyibaatu lillaah. As-salaamu 'alayka ayyuhan-nabiyyu wa rahmatullaahi wa barakaatuh. As-salaamu 'alaynaa wa 'alaa 'ibaadillaahis-shaalihiin. Asyhadu allaa ilaaha illallaahu wa asyhadu anna Muhammadar-rasuulullaah. Allaahumma shalli 'alaa Muhammad wa 'alaa aali Muhammad kamaa shallayta 'alaa Ibraahiim wa 'alaa aali Ibraahiim, wa baarik 'alaa Muhammad wa 'alaa aali Muhammad kamaa baarakta 'alaa Ibraahiim wa 'alaa aali Ibraahiim fil-'aalamiina innaka hamiidum-majiid.",
+        "translationEn": "All blessed greetings, prayers, and pure goods belong to Allah. Peace be upon you, O Prophet, and Allah's mercy and blessings. Peace be upon us and upon Allah's righteous servants. I bear witness that none has the right to be worshipped but Allah, and I bear witness that Muhammad is the Messenger of Allah. O Allah, send blessings upon Muhammad and the family of Muhammad as You sent blessings upon Abraham...",
+        "translationId": "Segala kehormatan, keberkahan, kebahagiaan dan kebaikan bagi Allah. Salam, rahmat, dan berkah-Nya semoga tercurah kepadamu, wahai Nabi. Salam keselamatan semoga tercurah kepada kami dan hamba-hamba Allah yang shalih. Aku bersaksi tiada tuhan selain Allah dan aku bersaksi bahwa Muhammad adalah utusan Allah. Ya Allah, limpahkanlah rahmat kepada Nabi Muhammad dan keluarga Nabi Muhammad..."
+      }
+    ],
+    "tipsEn": [
+      "The Fajr prayer has 2 sunnah raka'at before it (Qabliyah Subuh), described by the Prophet as 'better than the world and everything in it'.",
+      "Qunut in Fajr is Sunnah Mu'akkadah according to the Shafi'i school."
+    ],
+    "tipsId": [
+      "Sholat sunnah dua raka'at sebelum Subuh (Qabliyah Subuh) pahalanya lebih baik daripada dunia beserta isinya.",
+      "Membaca doa Qunut pada i'tidal rakaat kedua Subuh adalah sunnah mu'akkadah menurut mazhab Syafi'i."
+    ]
+  },
+  {
+    "id": "dzuhur",
+    "nameEn": "Dhuhr Prayer (Dzuhur)",
+    "nameId": "Sholat Dzuhur",
+    "nameArabic": "صَلَاةُ الظُّهْر",
+    "category": "OBLIGATORY",
+    "rakaat": 4,
+    "descriptionEn": "The 4-raka'at midday prayer performed after the sun passes its zenith (zawal). Silent (sirri) recitation.",
+    "descriptionId": "Sholat fardhu 4 raka'at di waktu tengah hari setelah matahari tergelincir ke arah barat.",
+    "niyyahArabic": "أُصَلِّي فَرْضَ الظُّهْرِ أَرْبَعَ رَكَعَاتٍ مُسْتَقْبِلَ الْقِبْلَةِ أَدَاءً لِلَّهِ تَعَالَى",
+    "niyyahTransliteration": "Ushallii fardhaz-zhuhri arba'a raka'aatin mustaqbilal qiblati adaa-an lillaahi ta'aalaa",
+    "niyyahTranslationEn": "I intend to pray the 4 raka'at obligatory Dhuhr prayer facing the Qibla, on time, for Allah the Almighty.",
+    "niyyahTranslationId": "Aku berniat sholat fardhu Dzuhur empat raka'at menghadap kiblat, tepat pada waktunya karena Allah Ta'ala.",
+    "steps": [
+      {
+        "order": 1,
+        "titleEn": "Raka'at 1 & 2 (Sirri Recitation)",
+        "titleId": "Raka'at 1 & 2 (Bacaan Sirr)",
+        "descriptionEn": "Perform first 2 raka'at with silent recitation of Al-Fatihah and a Surah, followed by ruku', i'tidal, and two sujud.",
+        "descriptionId": "Lakukan 2 rakaat pertama secara sirr (suara lirih) membaca Al-Fatihah dan surat pendek, ruku', i'tidal, dan sujud dua kali.",
+        "arabic": null,
+        "transliteration": null,
+        "translationEn": null,
+        "translationId": null
+      },
+      {
+        "order": 2,
+        "titleEn": "Tashahhud Awwal (First Sitting)",
+        "titleId": "Tasyahud Awal",
+        "descriptionEn": "Sit in Iftirasy posture after 2nd raka'at and recite the initial Tashahhud up to 'Allahumma shalli 'ala Muhammad'.",
+        "descriptionId": "Duduk iftirasy di rakaat kedua membaca tasyahud awal sampai ucapan shalawat kepada Nabi Muhammad SAW.",
+        "arabic": "التَّحِيَّاتُ الْمُبَارَكَاتُ الصَّلَوَاتُ الطَّيِّبَاتُ لِلَّهِ، السَّلَامُ عَلَيْكَ أَيُّهَا النَّبِيُّ وَرَحْمَةُ اللَّهِ وَبَرَكَاتُهُ، السَّلَامُ عَلَيْنَا وَعَلَىٰ عِبَادِ اللَّهِ الصَّالِحِينَ، أَشْهَدُ أَنْ لَا إِلٰهَ إِلَّا اللَّهُ وَأَشْهَدُ أَنَّ مُحَمَّدًا رَسُولُ اللَّهِ، اللَّهُمَّ صَلِّ عَلَىٰ مُحَمَّدٍ",
+        "transliteration": "At-tahiyyaatul-mubaarakaatus-shalawaatut-thayyibaatu lillaah. As-salaamu 'alayka ayyuhan-nabiyyu wa rahmatullaahi wa barakaatuh. As-salaamu 'alaynaa wa 'alaa 'ibaadillaahis-shaalihiin. Asyhadu allaa ilaaha illallaahu wa asyhadu anna Muhammadar-rasuulullaah. Allaahumma shalli 'alaa Muhammad.",
+        "translationEn": "All blessed greetings, prayers, and pure goods belong to Allah. Peace be upon you, O Prophet, and Allah's mercy and blessings...",
+        "translationId": "Segala penghormatan yang penuh berkah, shalawat dan kebaikan adalah milik Allah. Semoga kesejahteraan tercurah padamu wahai Nabi..."
+      },
+      {
+        "order": 3,
+        "titleEn": "Raka'at 3 & 4",
+        "titleId": "Raka'at 3 & 4",
+        "descriptionEn": "Stand up saying Allahu Akbar, recite Al-Fatihah only (silent), then perform ruku', i'tidal, and two sujud in both raka'ats.",
+        "descriptionId": "Bangkit bertakbir untuk rakaat ke-3 dan ke-4, hanya membaca Al-Fatihah (sirr), lalu ruku', i'tidal, dan sujud dua kali.",
+        "arabic": null,
+        "transliteration": null,
+        "translationEn": null,
+        "translationId": null
+      },
+      {
+        "order": 4,
+        "titleEn": "Final Tashahhud & Salam",
+        "titleId": "Tasyahud Akhir & Salam",
+        "descriptionEn": "Sit in Tawarruk position, recite full Tashahhud and Ibrahimiyah Shalawat, then conclude with Taslim to right and left.",
+        "descriptionId": "Duduk tawarruk pada rakaat ke-4 membaca tasyahud akhir dan shalawat ibrahimiyah lengkap, lalu mengucap salam ke kanan dan ke kiri.",
+        "arabic": "السَّلَامُ عَلَيْكُمْ وَرَحْمَةُ اللَّهِ",
+        "transliteration": "As-salaamu 'alaykum wa rahmatullaah",
+        "translationEn": "May the peace and mercy of Allah be upon you.",
+        "translationId": "Semoga keselamatan dan rahmat Allah terlimpah kepadamu."
+      }
+    ],
+    "tipsEn": [
+      "All recitations in Dhuhr are silent (sirri).",
+      "Surah recitation after Al-Fatihah is recommended only in the first two raka'at."
+    ],
+    "tipsId": [
+      "Semua bacaan Al-Fatihah dan surat dalam sholat Dzuhur dibaca secara lirih (sirr).",
+      "Surat pendek setelah Al-Fatihah disunnahkan dibaca hanya pada rakaat 1 dan 2."
+    ]
+  },
+  {
+    "id": "ashar",
+    "nameEn": "Asr Prayer (Ashar)",
+    "nameId": "Sholat Ashar",
+    "nameArabic": "صَلَاةُ العَصْر",
+    "category": "OBLIGATORY",
+    "rakaat": 4,
+    "descriptionEn": "The 4-raka'at late afternoon prayer, mentioned in the Quran as the 'middle prayer' (Al-Salat Al-Wusta). Silent recitation.",
+    "descriptionId": "Sholat fardhu 4 raka'at di waktu sore ketika bayangan suatu benda sama panjang dengan tingginya.",
+    "niyyahArabic": "أُصَلِّي فَرْضَ الْعَصْرِ أَرْبَعَ رَكَعَاتٍ مُسْتَقْبِلَ الْقِبْلَةِ أَدَاءً لِلَّهِ تَعَالَى",
+    "niyyahTransliteration": "Ushallii fardhal-'ashri arba'a raka'aatin mustaqbilal qiblati adaa-an lillaahi ta'aalaa",
+    "niyyahTranslationEn": "I intend to pray the 4 raka'at obligatory Asr prayer facing the Qibla, on time, for Allah the Almighty.",
+    "niyyahTranslationId": "Aku berniat sholat fardhu Ashar empat raka'at menghadap kiblat, tepat pada waktunya karena Allah Ta'ala.",
+    "steps": [
+      {
+        "order": 1,
+        "titleEn": "Raka'at 1 & 2 (Sirri Recitation)",
+        "titleId": "Raka'at 1 & 2 (Bacaan Sirr)",
+        "descriptionEn": "Perform first 2 raka'at with silent recitation of Al-Fatihah and a Surah, followed by ruku', i'tidal, and two sujud.",
+        "descriptionId": "Lakukan 2 rakaat pertama secara sirr (suara lirih) membaca Al-Fatihah dan surat pendek.",
+        "arabic": null,
+        "transliteration": null,
+        "translationEn": null,
+        "translationId": null
+      },
+      {
+        "order": 2,
+        "titleEn": "Tashahhud Awwal",
+        "titleId": "Tasyahud Awal",
+        "descriptionEn": "Sit in Iftirasy and recite the initial Tashahhud after the 2nd raka'at.",
+        "descriptionId": "Duduk iftirasy di rakaat kedua dan membaca tasyahud awal.",
+        "arabic": null,
+        "transliteration": null,
+        "translationEn": null,
+        "translationId": null
+      },
+      {
+        "order": 3,
+        "titleEn": "Raka'at 3 & 4, Final Tashahhud & Salam",
+        "titleId": "Raka'at 3 & 4, Tasyahud Akhir & Salam",
+        "descriptionEn": "Complete raka'ats 3 and 4 with Al-Fatihah only, sit in Tawarruk for final Tashahhud, and finish with Salam.",
+        "descriptionId": "Selesaikan rakaat 3 dan 4 dengan membaca Al-Fatihah saja, duduk tawarruk membaca tasyahud akhir lengkap, dan salam.",
+        "arabic": null,
+        "transliteration": null,
+        "translationEn": null,
+        "translationId": null
+      }
+    ],
+    "tipsEn": [
+      "The Prophet (pbuh) warned: 'Whoever misses the Asr prayer, it is as if he has lost his family and wealth.'",
+      "Ensure Asr is prayed before the sun turns yellow/dim near sunset."
+    ],
+    "tipsId": [
+      "Nabi SAW bersabda: 'Barangsiapa meninggalkan sholat Ashar, maka gugurlah amal kebaikannya.'",
+      "Utamakan sholat di awal waktu sebelum matahari menguning mendekati terbenam."
+    ]
+  },
+  {
+    "id": "maghrib",
+    "nameEn": "Maghrib Prayer (Maghrib)",
+    "nameId": "Sholat Maghrib",
+    "nameArabic": "صَلَاةُ المَغْرِب",
+    "category": "OBLIGATORY",
+    "rakaat": 3,
+    "descriptionEn": "The 3-raka'at sunset prayer performed right after the sun sets. Audible recitation in first 2 raka'at.",
+    "descriptionId": "Sholat fardhu 3 raka'at yang dilaksanakan tepat setelah terbenamnya matahari.",
+    "niyyahArabic": "أُصَلِّي فَرْضَ الْمَغْرِبِ ثَلَاثَ رَكَعَاتٍ مُسْتَقْبِلَ الْقِبْلَةِ أَدَاءً لِلَّهِ تَعَالَى",
+    "niyyahTransliteration": "Ushallii fardhal-maghribi tsalaatsa raka'aatin mustaqbilal qiblati adaa-an lillaahi ta'aalaa",
+    "niyyahTranslationEn": "I intend to pray the 3 raka'at obligatory Maghrib prayer facing the Qibla, on time, for Allah the Almighty.",
+    "niyyahTranslationId": "Aku berniat sholat fardhu Maghrib tiga raka'at menghadap kiblat, tepat pada waktunya karena Allah Ta'ala.",
+    "steps": [
+      {
+        "order": 1,
+        "titleEn": "Raka'at 1 & 2 (Audible Recitation)",
+        "titleId": "Raka'at 1 & 2 (Bacaan Jahar)",
+        "descriptionEn": "Recite Al-Fatihah and Surah aloud in the first two raka'at, followed by bowing and two prostrations.",
+        "descriptionId": "Membaca Al-Fatihah dan surat pendek secara jahar (bersuara) pada dua rakaat pertama.",
+        "arabic": null,
+        "transliteration": null,
+        "translationEn": null,
+        "translationId": null
+      },
+      {
+        "order": 2,
+        "titleEn": "Tashahhud Awwal (Raka'at 2)",
+        "titleId": "Tasyahud Awal (Raka'at 2)",
+        "descriptionEn": "Sit in Iftirasy after raka'at 2 and recite the first Tashahhud.",
+        "descriptionId": "Duduk iftirasy di rakaat ke-2 membaca tasyahud awal.",
+        "arabic": null,
+        "transliteration": null,
+        "translationEn": null,
+        "translationId": null
+      },
+      {
+        "order": 3,
+        "titleEn": "Raka'at 3 (Silent), Tashahhud & Salam",
+        "titleId": "Raka'at 3 (Sirr), Tasyahud Akhir & Salam",
+        "descriptionEn": "Rise for 3rd raka'at reciting Al-Fatihah silently, perform ruku' and sujud, sit in Tawarruk for final Tashahhud, and give Salam.",
+        "descriptionId": "Bangkit ke rakaat ke-3 membaca Al-Fatihah secara sirr (lirih), ruku', sujud dua kali, duduk tawarruk tasyahud akhir, dan salam.",
+        "arabic": null,
+        "transliteration": null,
+        "translationEn": null,
+        "translationId": null
+      }
+    ],
+    "tipsEn": [
+      "The time window for Maghrib is shorter than other prayers, so it is recommended to pray without delay.",
+      "Audible recitation applies to imam and praying alone, while ma'mum listens to imam."
+    ],
+    "tipsId": [
+      "Waktu Maghrib relatif pendek, maka sangat dianjurkan untuk menyegerakan sholat di awal waktu.",
+      "Bacaan jahar pada rakaat 1 dan 2 berlaku bagi imam dan sholat munfarid (sendirian)."
+    ]
+  },
+  {
+    "id": "isya",
+    "nameEn": "Isha Prayer (Isya)",
+    "nameId": "Sholat Isya",
+    "nameArabic": "صَلَاةُ العِشَاء",
+    "category": "OBLIGATORY",
+    "rakaat": 4,
+    "descriptionEn": "The 4-raka'at night prayer performed after the twilight (mega merah) disappears from the sky.",
+    "descriptionId": "Sholat fardhu 4 raka'at di malam hari setelah mega merah di ufuk barat menghilang.",
+    "niyyahArabic": "أُصَلِّي فَرْضَ الْعِشَاءِ أَرْبَعَ رَكَعَاتٍ مُسْتَقْبِلَ الْقِبْلَةِ أَدَاءً لِلَّهِ تَعَالَى",
+    "niyyahTransliteration": "Ushallii fardhal-'isyaa-i arba'a raka'aatin mustaqbilal qiblati adaa-an lillaahi ta'aalaa",
+    "niyyahTranslationEn": "I intend to pray the 4 raka'at obligatory Isha prayer facing the Qibla, on time, for Allah the Almighty.",
+    "niyyahTranslationId": "Aku berniat sholat fardhu Isya empat raka'at menghadap kiblat, tepat pada waktunya karena Allah Ta'ala.",
+    "steps": [
+      {
+        "order": 1,
+        "titleEn": "Raka'at 1 & 2 (Audible Recitation)",
+        "titleId": "Raka'at 1 & 2 (Bacaan Jahar)",
+        "descriptionEn": "Recite Al-Fatihah and Surah aloud in first 2 raka'at, followed by bowing and two prostrations.",
+        "descriptionId": "Membaca Al-Fatihah dan surat pendek secara jahar (bersuara) pada rakaat 1 dan 2.",
+        "arabic": null,
+        "transliteration": null,
+        "translationEn": null,
+        "translationId": null
+      },
+      {
+        "order": 2,
+        "titleEn": "Tashahhud Awwal",
+        "titleId": "Tasyahud Awal",
+        "descriptionEn": "Sit in Iftirasy after raka'at 2 and recite initial Tashahhud.",
+        "descriptionId": "Duduk iftirasy di rakaat ke-2 membaca tasyahud awal.",
+        "arabic": null,
+        "transliteration": null,
+        "translationEn": null,
+        "translationId": null
+      },
+      {
+        "order": 3,
+        "titleEn": "Raka'at 3 & 4 (Silent), Tashahhud & Salam",
+        "titleId": "Raka'at 3 & 4 (Sirr), Tasyahud Akhir & Salam",
+        "descriptionEn": "Rise for raka'ats 3 and 4 with silent Al-Fatihah, then perform final Tashahhud and give Salam.",
+        "descriptionId": "Lakukan rakaat 3 dan 4 dengan bacaan sirr, duduk tawarruk tasyahud akhir, lalu salam.",
+        "arabic": null,
+        "transliteration": null,
+        "translationEn": null,
+        "translationId": null
+      }
+    ],
+    "tipsEn": [
+      "Praying Isha in congregation brings the reward of praying half the night.",
+      "Following Isha with 2 raka'at Ba'diyah Isya and Witir is highly encouraged."
+    ],
+    "tipsId": [
+      "Sholat Isya berjamaah memiliki pahala setara dengan mendirikan sholat setengah malam penuh.",
+      "Dianjurkan melanjutkan dengan sholat sunnah Ba'diyah Isya 2 rakaat dan Witir."
+    ]
+  },
+  {
+    "id": "jumat",
+    "nameEn": "Friday Prayer (Jumat)",
+    "nameId": "Sholat Jumat",
+    "nameArabic": "صَلَاةُ الجُمُعَة",
+    "category": "OBLIGATORY",
+    "rakaat": 2,
+    "descriptionEn": "The 2-raka'at weekly congregational prayer replacing Dhuhr on Friday for Muslim men, preceded by two sermons (Khutbah).",
+    "descriptionId": "Sholat fardhu 2 raka'at pengganti Dzuhur di hari Jumat yang didahului oleh dua khutbah secara berjamaah.",
+    "niyyahArabic": "أُصَلِّي فَرْضَ الْجُمُعَةِ رَكْعَتَيْنِ مُسْتَقْبِلَ الْقِبْلَةِ مَأْمُومًا لِلَّهِ تَعَالَى",
+    "niyyahTransliteration": "Ushallii fardhal-jumu'ati rak'ataini mustaqbilal qiblati ma'muuman lillaahi ta'aalaa",
+    "niyyahTranslationEn": "I intend to pray the 2 raka'at obligatory Friday prayer as a follower facing the Qibla, for Allah the Almighty.",
+    "niyyahTranslationId": "Aku berniat sholat fardhu Jumat dua raka'at menghadap kiblat sebagai makmum karena Allah Ta'ala.",
+    "steps": [
+      {
+        "order": 1,
+        "titleEn": "Listening to Two Khutbahs",
+        "titleId": "Mendengarkan Dua Khutbah",
+        "descriptionEn": "Sit quietly and listen attentively to the Imam's sermons. Talking or fidgeting is strictly prohibited.",
+        "descriptionId": "Duduk tenang mendengarkan khutbah khatib. Dilarang berbicara, menegur orang lain, atau bermain gawai saat khutbah.",
+        "arabic": null,
+        "transliteration": null,
+        "translationEn": null,
+        "translationId": null
+      },
+      {
+        "order": 2,
+        "titleEn": "2 Raka'at Congregational Prayer",
+        "titleId": "Sholat Berjamaah 2 Raka'at",
+        "descriptionEn": "Perform 2 raka'at behind the Imam with audible recitation of Surah Al-Jumu'ah / Al-A'la and Al-Ghashiyah, concluding with Tashahhud and Salam.",
+        "descriptionId": "Melaksanakan sholat 2 rakaat di belakang imam dengan bacaan jahar (biasanya surat Al-Jumu'ah/Al-A'la dan Al-Ghasyiyah), diakhiri tasyahud akhir dan salam.",
+        "arabic": null,
+        "transliteration": null,
+        "translationEn": null,
+        "translationId": null
+      }
+    ],
+    "tipsEn": [
+      "Sunnah acts for Friday: Ghusl, clipping nails, using siwak/perfume, wearing clean white clothes, and reading Surah Al-Kahf.",
+      "Arrive at the mosque before the Imam ascends the pulpit to receive the angel's record of attendance."
+    ],
+    "tipsId": [
+      "Amalan sunnah hari Jumat: mandi Jumat, memotong kuku, memakai wewangian, berpakaian bersih/putih, dan membaca surat Al-Kahfi.",
+      "Datang lebih awal ke masjid sebelum khatib naik mimbar agar dicatat pahalanya oleh malaikat."
+    ]
+  },
+  {
+    "id": "jenazah",
+    "nameEn": "Funeral Prayer (Jenazah)",
+    "nameId": "Sholat Jenazah",
+    "nameArabic": "صَلَاةُ الجَنَازَة",
+    "category": "OBLIGATORY",
+    "rakaat": null,
+    "descriptionEn": "Communal obligation (Fardhu Kifayah) prayer over deceased Muslims, performed standing with 4 Takbirs, without ruku' or sujud.",
+    "descriptionId": "Sholat fardhu kifayah untuk jenazah muslim yang dilaksanakan berdiri dengan 4 takbir tanpa ruku' dan sujud.",
+    "niyyahArabic": "أُصَلِّي عَلَى هَٰذَا الْمَيِّتِ أَرْبَعَ تَكْبِيرَاتٍ فَرْضَ كِفَايَةٍ مَأْمُومًا لِلَّهِ تَعَالَى",
+    "niyyahTransliteration": "Ushallii 'alaa haadzal-mayyiti arba'a takbiiraatin fardha kifaayatin ma'muuman lillaahi ta'aalaa",
+    "niyyahTranslationEn": "I intend to pray over this deceased with 4 takbirs as communal obligation, following the imam, for Allah the Almighty.",
+    "niyyahTranslationId": "Aku berniat sholat atas jenazah ini empat takbir fardhu kifayah sebagai makmum karena Allah Ta'ala.",
+    "steps": [
+      {
+        "order": 1,
+        "titleEn": "1st Takbir: Surah Al-Fatihah",
+        "titleId": "Takbir Pertama: Membaca Al-Fatihah",
+        "descriptionEn": "Say Allahu Akbar (Takbiratul Ihram) and recite Surah Al-Fatihah silently.",
+        "descriptionId": "Mengucapkan takbiratul ihram lalu membaca surat Al-Fatihah secara lirih.",
+        "arabic": null,
+        "transliteration": null,
+        "translationEn": null,
+        "translationId": null
+      },
+      {
+        "order": 2,
+        "titleEn": "2nd Takbir: Shalawat on Prophet",
+        "titleId": "Takbir Kedua: Membaca Shalawat",
+        "descriptionEn": "Say 2nd Allahu Akbar and recite Shalawat Ibrahimiyah.",
+        "descriptionId": "Mengucapkan takbir kedua lalu membaca shalawat atas Nabi Muhammad SAW.",
+        "arabic": "اللَّهُمَّ صَلِّ عَلَىٰ مُحَمَّدٍ وَعَلَىٰ آلِ مُحَمَّدٍ",
+        "transliteration": "Allaahumma shalli 'alaa Muhammad wa 'alaa aali Muhammad",
+        "translationEn": "O Allah, send blessings upon Muhammad and the family of Muhammad.",
+        "translationId": "Ya Allah, limpahkanlah rahmat kepada Nabi Muhammad dan keluarga Nabi Muhammad."
+      },
+      {
+        "order": 3,
+        "titleEn": "3rd Takbir: Supplication for Deceased",
+        "titleId": "Takbir Ketiga: Mendoakan Jenazah",
+        "descriptionEn": "Say 3rd Allahu Akbar and pray for forgiveness and mercy for the deceased.",
+        "descriptionId": "Mengucapkan takbir ketiga lalu membaca doa ampunan dan rahmat bagi jenazah:",
+        "arabic": "اللَّهُمَّ اغْفِرْ لَهُ وَارْحَمْهُ وَعَافِهِ وَاعْفُ عَنْهُ، وَأَكْرِمْ نُزُلَهُ، وَوَسِّعْ مَدْخَلَهُ، وَاغْسِلْهُ بِالْمَاءِ وَالثَّلْجِ وَالْبَرَدِ",
+        "transliteration": "Allaahummagh-fir lahu war-hamhu wa 'aafihii wa'fu 'anhu, wa akrim nuzulahu, wa wassi' madkhalahu, wagh-silhu bil-maa-i wats-tsalji wal-barad.",
+        "translationEn": "O Allah, forgive him and have mercy on him, grant him peace and pardon him. Make his resting place honorable, widen his entrance, and wash him with water, snow, and hail.",
+        "translationId": "Ya Allah ampunilah dia, berilah rahmat, sejahterakanlah dan maafkanlah kesalahannya. Muliakan tempat tinggalnya, lapangkanlah kuburnya, dan basuhlah ia dengan air, salju, dan embun."
+      },
+      {
+        "order": 4,
+        "titleEn": "4th Takbir: Supplication & Salam",
+        "titleId": "Takbir Keempat: Doa Penutup & Salam",
+        "descriptionEn": "Say 4th Allahu Akbar, recite closing supplication, and turn head to right and left with Salam.",
+        "descriptionId": "Mengucapkan takbir keempat, membaca doa penutup, lalu mengucap salam ke kanan dan ke kiri.",
+        "arabic": "اللَّهُمَّ لَا تَحْرِمْنَا أَجْرَهُ وَلَا تَفْتِنَّا بَعْدَهُ وَاغْفِرْ لَنَا وَلَهُ",
+        "transliteration": "Allaahumma laa tahrimnaa ajrahu wa laa taftinnaa ba'dahu wagh-fir lanaa wa lahu",
+        "translationEn": "O Allah, do not deprive us of his reward, do not test us after him, and forgive us and him.",
+        "translationId": "Ya Allah, janganlah Engkau halangi kami dari pahalanya dan janganlah Engkau fitnah kami sesudahnya, serta ampunilah kami dan dia."
+      }
+    ],
+    "tipsEn": [
+      "If the deceased is female, use feminine pronouns ('lahaa', 'waj'al'ha', etc.).",
+      "Attending the funeral prayer and burial carries a reward equivalent to two Qirats (mountains) of good deeds."
+    ],
+    "tipsId": [
+      "Jika jenazah perempuan, gunakan kata ganti muannats ('lahâ', bukan 'lahu').",
+      "Mengikuti sholat jenazah hingga pemakaman pahalanya sebesar dua qirath (gunung besar pahala kebaikan)."
+    ]
+  },
+  {
+    "id": "tahajjud",
+    "nameEn": "Tahajjud Prayer (Night Prayer)",
+    "nameId": "Sholat Tahajjud",
+    "nameArabic": "صَلَاةُ التَّهَجُّد",
+    "category": "SUNNAH",
+    "rakaat": 2,
+    "descriptionEn": "The most virtuous voluntary night prayer, performed after sleeping, during the last third of the night.",
+    "descriptionId": "Sholat sunnah mu'akkadah yang dikerjakan pada malam hari sesudah tidur, terutama di sepertiga malam terakhir.",
+    "niyyahArabic": "أُصَلِّي سُنَّةَ التَّهَجُّدِ رَكْعَتَيْنِ لِلَّهِ تَعَالَى",
+    "niyyahTransliteration": "Ushallii sunnatat-tahajjudi rak'ataini lillaahi ta'aalaa",
+    "niyyahTranslationEn": "I intend to pray 2 raka'at of the Sunnah Tahajjud prayer for Allah the Almighty.",
+    "niyyahTranslationId": "Aku berniat sholat sunnah Tahajjud dua raka'at karena Allah Ta'ala.",
+    "steps": [
+      {
+        "order": 1,
+        "titleEn": "2 Raka'at Cycles",
+        "titleId": "Dilakukan Tiap 2 Raka'at",
+        "descriptionEn": "Performed in cycles of 2 raka'at (from 2 up to 8 or 12 raka'at) with serene recitations and prolonged prostrations.",
+        "descriptionId": "Dikerjakan minimal 2 rakaat hingga 8 atau 12 rakaat dengan salam setiap 2 rakaat, memperlama ruku' dan sujud.",
+        "arabic": null,
+        "transliteration": null,
+        "translationEn": null,
+        "translationId": null
+      },
+      {
+        "order": 2,
+        "titleEn": "Supplication After Tahajjud",
+        "titleId": "Doa Setelah Sholat Tahajjud",
+        "descriptionEn": "Conclude with the authentic supplication of the Prophet (pbuh).",
+        "descriptionId": "Membaca doa tahajjud yang diajarkan oleh Rasulullah SAW:",
+        "arabic": "اللَّهُمَّ لَكَ الْحَمْدُ أَنْتَ نُورُ السَّمَاوَاتِ وَالْأَرْضِ وَمَنْ فِيهِنَّ، وَلَكَ الْحَمْدُ أَنْتَ قَيِّمُ السَّمَاوَاتِ وَالْأَرْضِ وَمَنْ فِيهِنَّ، أَنْتَ الْحَقُّ وَوَعْدُكَ الْحَقُّ وَلِقَاؤُكَ حَقٌّ",
+        "transliteration": "Allaahumma lakal-hamdu Anta nuurus-samaawaati wal-ardhi wa man fiihinna, wa lakal-hamdu Anta qayyimus-samaawaati wal-ardhi wa man fiihinna, Antal-haqqu wa wa'dukal-haqqu wa liqaa'uka haqqun...",
+        "translationEn": "O Allah, to You belongs all praise. You are the Light of the heavens and earth and all within them. To You belongs all praise, You are the Sustainer of the heavens and earth and all within them. You are the Truth, Your promise is true...",
+        "translationId": "Ya Allah, bagi-Mu segala puji, Engkaulah cahaya langit dan bumi serta apa yang ada di dalamnya. Bagi-Mu segala puji, Engkaulah Pemelihara langit dan bumi serta apa yang ada di dalamnya. Engkaulah Yang Maha Benar, janji-Mu adalah benar, dan perjumpaan dengan-Mu adalah benar..."
+      }
+    ],
+    "tipsEn": [
+      "The best time is the last third of the night when Allah descends to the lowest heaven, accepting supplications.",
+      "Seal night prayers with the odd-numbered Witir prayer."
+    ],
+    "tipsId": [
+      "Waktu paling mustajab adalah sepertiga malam terakhir saat rahmat Allah turun membuka pintu doa.",
+      "Tutuplah sholat malam dengan sholat sunnah Witir."
+    ]
+  },
+  {
+    "id": "dhuha",
+    "nameEn": "Dhuha Prayer (Morning Prayer)",
+    "nameId": "Sholat Dhuha",
+    "nameArabic": "صَلَاةُ الضُّحَى",
+    "category": "SUNNAH",
+    "rakaat": 2,
+    "descriptionEn": "Sunnah prayer performed from 15 minutes after sunrise until before noon, bringing forgiveness and sustenance.",
+    "descriptionId": "Sholat sunnah 2 hingga 8 raka'at yang dikerjakan saat matahari naik setinggi tombak (pukul 07.00) hingga menjelang Dzuhur.",
+    "niyyahArabic": "أُصَلِّي سُنَّةَ الضُّحَى رَكْعَتَيْنِ لِلَّهِ تَعَالَى",
+    "niyyahTransliteration": "Ushallii sunnatad-dhuhaa rak'ataini lillaahi ta'aalaa",
+    "niyyahTranslationEn": "I intend to pray 2 raka'at of the Sunnah Dhuha prayer for Allah the Almighty.",
+    "niyyahTranslationId": "Aku berniat sholat sunnah Dhuha dua raka'at karena Allah Ta'ala.",
+    "steps": [
+      {
+        "order": 1,
+        "titleEn": "2 Raka'at Prayer",
+        "titleId": "Sholat 2 Raka'at",
+        "descriptionEn": "Pray 2 raka'at (up to 8). Recommended surahs are Asy-Syams in 1st raka'at and Ad-Duha in 2nd raka'at.",
+        "descriptionId": "Dikerjakan 2 rakaat (bisa sampai 8 rakaat). Dianjurkan membaca surat Asy-Syams di rakaat pertama dan Adh-Dhuha di rakaat kedua.",
+        "arabic": null,
+        "transliteration": null,
+        "translationEn": null,
+        "translationId": null
+      },
+      {
+        "order": 2,
+        "titleEn": "Doa Dhuha",
+        "titleId": "Doa Sholat Dhuha",
+        "descriptionEn": "Supplication for blessings, sustenance, and purification.",
+        "descriptionId": "Membaca doa sholat Dhuha:",
+        "arabic": "اللَّهُمَّ إِنَّ الضُّحَاءَ ضُحَاؤُكَ، وَالْبَهَاءَ بَهَاؤُكَ، وَالْجَمَالَ جَمَالُكَ، وَالْقُوَّةَ قُوَّتُكَ، وَالْقُدْرَةَ قُدْرَتُكَ، وَالْعِصْمَةَ عِصْمَتُكَ، اللَّهُمَّ إِنْ كَانَ رِزْقِي فِي السَّمَاءِ فَأَنْزِلْهُ، وَإِنْ كَانَ فِي الْأَرْضِ فَأَخْرِجْهُ، وَإِنْ كَانَ مُعَسَّرًا فَيَسِّرْهُ",
+        "transliteration": "Allaahumma innadh-dhuhaa-a dhuhaa-uka, wal bahaa-a bahaa-uka, wal jamaala jamaaluka, wal quwwata quwwatuka, wal qudrata qudratuka, wal 'ishmata 'ishmatuka. Allaahumma in kaana rizqii fis-samaa-i fa-anzilhu, wa in kaana fil ardhi fa-akhrijhu, wa in kaana mu'assaran fa-yassirhu...",
+        "translationEn": "O Allah, the forenoon is Your forenoon, the splendor is Your splendor, the beauty is Your beauty, the strength is Your strength, the power is Your power, and the protection is Your protection. O Allah, if my sustenance is in the sky, send it down, and if it is in the earth, bring it forth, and if it is difficult, make it easy...",
+        "translationId": "Ya Allah, sesungguhnya waktu dhuha adalah waktu dhuha-Mu, keagungan adalah keagungan-Mu, keindahan adalah keindahan-Mu, kekuatan adalah kekuatan-Mu, kekuasaan adalah kekuasaan-Mu, dan penjagaan adalah penjagaan-Mu. Ya Allah jika rezekiku berada di langit maka turunkanlah, jika di dalam bumi maka keluarkanlah, dan jika sukar maka mudahkanlah..."
+      }
+    ],
+    "tipsEn": [
+      "Praying Dhuha fulfills the daily charity required for all 360 joints of the body.",
+      "The prime time is when the heat of the sun begins to feel warm (Waqt al-Fasil)."
+    ],
+    "tipsId": [
+      "Sholat Dhuha mencukupi sedekah bagi 360 persendian tubuh setiap harinya.",
+      "Waktu paling utama adalah saat matahari mulai terasa panas (sekitar pukul 09.00 - 10.30)."
+    ]
+  },
+  {
+    "id": "witir",
+    "nameEn": "Witir Prayer (Odd Closing Prayer)",
+    "nameId": "Sholat Witir",
+    "nameArabic": "صَلَاةُ الوِتْر",
+    "category": "SUNNAH",
+    "rakaat": 3,
+    "descriptionEn": "Highly emphasized Sunnah prayer with an odd number of raka'at (1, 3, 5, etc.) that seals night prayers.",
+    "descriptionId": "Sholat sunnah mu'akkadah dengan raka'at ganjil (1, 3, 5, dll) sebagai penutup seluruh sholat malam.",
+    "niyyahArabic": "أُصَلِّي سُنَّةَ الْوِتْرِ ثَلَاثَ رَكَعَاتٍ لِلَّهِ تَعَالَى",
+    "niyyahTransliteration": "Ushallii sunnatal-witri tsalaatsa raka'aatin lillaahi ta'aalaa",
+    "niyyahTranslationEn": "I intend to pray 3 raka'at of the Sunnah Witir prayer for Allah the Almighty.",
+    "niyyahTranslationId": "Aku berniat sholat sunnah Witir tiga raka'at karena Allah Ta'ala.",
+    "steps": [
+      {
+        "order": 1,
+        "titleEn": "Performance Method",
+        "titleId": "Tata Cara Pelaksanaan",
+        "descriptionEn": "Can be prayed as 2 raka'at + 1 raka'at, or 3 continuous raka'at with one final Tashahhud. Recommended surahs: Al-A'la, Al-Kafirun, and Al-Ikhlas/Al-Falaq/An-Nas.",
+        "descriptionId": "Dapat dikerjakan 2 rakaat salam lalu 1 rakaat, atau 3 rakaat langsung dengan satu tasyahud akhir. Membaca surat Al-A'la di rakaat pertama, Al-Kafirun di rakaat kedua, dan Al-Ikhlas/Falaq/Nas di rakaat ketiga.",
+        "arabic": null,
+        "transliteration": null,
+        "translationEn": null,
+        "translationId": null
+      },
+      {
+        "order": 2,
+        "titleEn": "Dhikr After Witir",
+        "titleId": "Dzikir Setelah Witir",
+        "descriptionEn": "Recite 3 times after finishing Witir, raising voice on the third time.",
+        "descriptionId": "Membaca 3 kali setelah salam witir, memanjangkan nada pada kali ketiga:",
+        "arabic": "سُبْحَانَ الْمَلِكِ الْقُدُّوسِ",
+        "transliteration": "Subhaanal-malikil-qudduus",
+        "translationEn": "Glory be to the Sovereign, the Most Holy.",
+        "translationId": "Maha Suci Allah Raja Yang Maha Suci."
+      }
+    ],
+    "tipsEn": [
+      "The Prophet (pbuh) said: 'Make Witir the last of your prayer at night.'",
+      "In Ramadan, Qunut is recited in the final raka'at during the second half of the month."
+    ],
+    "tipsId": [
+      "Nabi SAW bersabda: 'Jadikanlah sholat witir sebagai sholat terakhirmu di waktu malam.'",
+      "Pada paruh kedua bulan Ramadan, disunnahkan membaca Qunut pada rakaat terakhir witir."
+    ]
+  },
+  {
+    "id": "rawatib",
+    "nameEn": "Rawatib Sunnah Prayers",
+    "nameId": "Sholat Sunnah Rawatib",
+    "nameArabic": "صَلَاةُ الرَّوَاتِب",
+    "category": "SUNNAH",
+    "rakaat": 2,
+    "descriptionEn": "Daily voluntary prayers accompanying obligatory prayers: Qabliyah (before) and Ba'diyah (after).",
+    "descriptionId": "Sholat sunnah yang mengiringi sholat fardhu, baik sebelum (qabliyah) maupun sesudah (ba'diyah).",
+    "niyyahArabic": "أُصَلِّي سُنَّةَ الظُّهْرِ رَكْعَتَيْنِ قَبْلِيَّةً لِلَّهِ تَعَالَى",
+    "niyyahTransliteration": "Ushallii sunnataz-zhuhri rak'ataini qabliyyatan lillaahi ta'aalaa",
+    "niyyahTranslationEn": "I intend to pray 2 raka'at of the Sunnah prayer before Dhuhr for Allah the Almighty.",
+    "niyyahTranslationId": "Aku berniat sholat sunnah sebelum Dzuhur (qabliyah) dua raka'at karena Allah Ta'ala.",
+    "steps": [
+      {
+        "order": 1,
+        "titleEn": "12 Confirmed Raka'at (Sunnah Mu'akkadah)",
+        "titleId": "12 Raka'at Rawatib Mu'akkad",
+        "descriptionEn": "The Prophet (pbuh) said: Whoever prays 12 voluntary raka'at in a day and night, a house will be built for him in Paradise:\n- 2 before Fajr\n- 4 before Dhuhr\n- 2 after Dhuhr\n- 2 after Maghrib\n- 2 after Isha.",
+        "descriptionId": "Nabi SAW bersabda bahwa siapa yang menjaga 12 rakaat sholat rawatib sehari semalam akan dibangunkan rumah di surga:\n- 2 rakaat sebelum Subuh\n- 2 atau 4 rakaat sebelum Dzuhur\n- 2 rakaat sesudah Dzuhur\n- 2 rakaat sesudah Maghrib\n- 2 rakaat sesudah Isya.",
+        "arabic": null,
+        "transliteration": null,
+        "translationEn": null,
+        "translationId": null
+      }
+    ],
+    "tipsEn": [
+      "There is no Ba'diyah prayer after Fajr or after Asr.",
+      "Changing position or speaking before praying sunnah rawatib separates fardhu from sunnah."
+    ],
+    "tipsId": [
+      "Tidak ada sholat ba'diyah setelah sholat Subuh dan setelah sholat Ashar.",
+      "Disunnahkan berpindah tempat sedikit atau berbicara sebelum melanjutkan sholat sunnah."
+    ]
+  },
+  {
+    "id": "istikharah",
+    "nameEn": "Istikharah Prayer (Seeking Guidance)",
+    "nameId": "Sholat Istikharah",
+    "nameArabic": "صَلَاةُ الإِسْتِخَارَة",
+    "category": "SUNNAH",
+    "rakaat": 2,
+    "descriptionEn": "2-raka'at prayer seeking Allah's guidance when facing important life decisions.",
+    "descriptionId": "Sholat sunnah 2 raka'at untuk memohon petunjuk kepada Allah dalam menentukan pilihan yang baik.",
+    "niyyahArabic": "أُصَلِّي سُنَّةَ الْإِسْتِخَارَةِ رَكْعَتَيْنِ لِلَّهِ تَعَالَى",
+    "niyyahTransliteration": "Ushallii sunnatal-istikhaarati rak'ataini lillaahi ta'aalaa",
+    "niyyahTranslationEn": "I intend to pray 2 raka'at of the Sunnah Istikharah prayer for Allah the Almighty.",
+    "niyyahTranslationId": "Aku berniat sholat sunnah Istikharah dua raka'at karena Allah Ta'ala.",
+    "steps": [
+      {
+        "order": 1,
+        "titleEn": "Perform 2 Raka'at",
+        "titleId": "Melaksanakan 2 Raka'at",
+        "descriptionEn": "Pray 2 regular raka'at, recite Al-Kafirun in 1st raka'at and Al-Ikhlas in 2nd raka'at.",
+        "descriptionId": "Sholat dua rakaat seperti biasa, disunnahkan membaca Al-Kafirun pada rakaat pertama dan Al-Ikhlas pada rakaat kedua.",
+        "arabic": null,
+        "transliteration": null,
+        "translationEn": null,
+        "translationId": null
+      },
+      {
+        "order": 2,
+        "titleEn": "Prophetic Istikharah Du'a",
+        "titleId": "Doa Sholat Istikharah",
+        "descriptionEn": "Recite the authentic supplication taught by the Prophet (pbuh), naming your specific matter.",
+        "descriptionId": "Membaca doa istikharah dan menyebutkan hajat atau pilihan yang sedang dihadapi:",
+        "arabic": "اللَّهُمَّ إِنِّي أَسْتَخِيرُكَ بِعِلْمِكَ، وَأَسْتَقْدِرُكَ بِقُدْرَتِكَ، وَأَسْأَلُكَ مِنْ فَضْلِكَ الْعَظِيمِ، فَإِنَّكَ تَقْدِرُ وَلَا أَقْدِرُ، وَتَعْلَمُ وَلَا أَعْلَمُ، وَأَنْتَ عَلَّامُ الْغُيُوبِ...",
+        "transliteration": "Allaahumma innii astakhiiruka bi-'ilmika, wa astaqdiruka bi-qudratika, wa as'aluka min fadhlikal-'azhiim, fa-innaka taqdiru wa laa aqdiru, wa ta'lamu wa laa a'lamu, wa Anta 'allaamul-ghuyuub...",
+        "translationEn": "O Allah, I seek Your guidance through Your knowledge, and I seek ability through Your power, and I ask of Your immense bounty. You have power and I have none, You know and I do not know, and You are the Knower of the unseen...",
+        "translationId": "Ya Allah, sesungguhnya aku memohon petunjuk dengan ilmu-Mu, memohon kekuatan dengan kekuasaan-Mu, dan memohon karunia-Mu yang agung. Sungguh Engkau Maha Kuasa dan aku tidak berdaya, Engkau Maha Mengetahui dan aku tidak tahu..."
+      }
+    ],
+    "tipsEn": [
+      "Istikharah does not require a dream; clarity, peace of heart, and circumstances aligning are signs of guidance.",
+      "Seek Istikharah with an open heart without stubborn prior bias."
+    ],
+    "tipsId": [
+      "Petunjuk istikharah tidak selalu berupa mimpi, melainkan ketenangan hati dan kemudahan dalam urusan tersebut.",
+      "Lakukan istikharah dengan hati yang tulus dan berserah diri pada ketetapan Allah yang terbaik."
+    ]
+  },
+  {
+    "id": "hajat",
+    "nameEn": "Hajat Prayer (Prayer of Need)",
+    "nameId": "Sholat Hajat",
+    "nameArabic": "صَلَاةُ الحَاجَة",
+    "category": "SUNNAH",
+    "rakaat": 2,
+    "descriptionEn": "Sunnah prayer performed to seek Allah's assistance in fulfilling a specific personal need or removing difficulty.",
+    "descriptionId": "Sholat sunnah 2 hingga 12 raka'at yang dikerjakan saat memiliki hajat atau keinginan khusus kepada Allah SWT.",
+    "niyyahArabic": "أُصَلِّي سُنَّةَ الْحَاجَةِ رَكْعَتَيْنِ لِلَّهِ تَعَالَى",
+    "niyyahTransliteration": "Ushallii sunnatal-haajati rak'ataini lillaahi ta'aalaa",
+    "niyyahTranslationEn": "I intend to pray 2 raka'at of the Sunnah Hajat prayer for Allah the Almighty.",
+    "niyyahTranslationId": "Aku berniat sholat sunnah Hajat dua raka'at karena Allah Ta'ala.",
+    "steps": [
+      {
+        "order": 1,
+        "titleEn": "2 Raka'at Prayer",
+        "titleId": "Sholat 2 Raka'at",
+        "descriptionEn": "Perform 2 raka'at with full devotion and humility.",
+        "descriptionId": "Melaksanakan sholat 2 rakaat dengan khusyuk dan tawadhu'.",
+        "arabic": null,
+        "transliteration": null,
+        "translationEn": null,
+        "translationId": null
+      },
+      {
+        "order": 2,
+        "titleEn": "Supplication of Hajat",
+        "titleId": "Doa Sholat Hajat",
+        "descriptionEn": "Recite praise of Allah, blessings on the Prophet, and supplication for your need.",
+        "descriptionId": "Memuji Allah, bershalawat, dan menyampaikan hajat yang diinginkan:",
+        "arabic": "لَا إِلٰهَ إِلَّا اللَّهُ الْحَلِيمُ الْكَرِيمُ، سُبْحَانَ اللَّهِ رَبِّ الْعَرْشِ الْعَظِيمِ، الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ، أَسْأَلُكَ مُوجِبَاتِ رَحْمَتِكَ، وَعَزَائِمَ مَغْفِرَتِكَ، وَالْغَنِيمَةَ مِنْ كُلِّ بِرٍّ، وَالسَّلَامَةَ مِنْ كُلِّ إِثْمٍ، لَا تَدَعْ لِي ذَنْبًا إِلَّا غَفَرْتَهُ، وَلَا هَمًّا إِلَّا فَرَّجْتَهُ، وَلَا حَاجَةً هِيَ لَكَ رِضًا إِلَّا قَضَيْتَهَا يَا أَرْحَمَ الرَّاحِمِينَ",
+        "transliteration": "Laa ilaaha illallaahul-haliimul-kariim, subhaanallaahi rabbil-'arsyil-'azhiim, al-hamdu lillaahi rabbil-'aalamiin, as'aluka muujibaati rahmatika, wa 'azaa'ima maghfiratika, wal ghaniimata min kulli birr, was-salaamata min kulli itsm, laa tada' lii dzanban illaa ghafartahu, wa laa hamman illaa farrajtahu, wa laa haajatan hiya laka ridhan illaa qadhaytahaa yaa arhamar-raahimiin.",
+        "translationEn": "There is no deity except Allah, the Clement, the Bountiful. Glory be to Allah, Lord of the Mighty Throne. Praise be to Allah, Lord of the worlds. I ask You for the causes of Your mercy, the resolves for Your forgiveness, gain from every righteousness, and safety from every sin. Leave no sin of mine unforgiven, no grief unrelieved, and no need pleasing to You unfulfilled, O Most Merciful...",
+        "translationId": "Tiada tuhan selain Allah Yang Maha Penyantun lagi Maha Pemurah. Maha Suci Allah Pemelihara 'Arsy yang agung. Segala puji bagi Allah Tuhan semesta alam. Aku memohon kepada-Mu sebab-sebab rahmat-Mu, ampunan-Mu, keuntungan dari segala kebaikan, dan selamat dari segala dosa. Jangan Engkau biarkan dosa padaku melainkan Engkau ampuni, tiada kesusahan melainkan Engkau beri jalan keluar, dan tiada hajat yang Engkau ridhai melainkan Engkau penuhi, wahai Dzat Yang Maha Penyayang..."
+      }
+    ],
+    "tipsEn": [
+      "Can be performed at any time except during disliked prayer times.",
+      "Combine prayer with heartfelt charity (sadaqah) for greater acceptance."
+    ],
+    "tipsId": [
+      "Dapat dikerjakan kapan saja di luar waktu-waktu terlarang sholat.",
+      "Sertai ikhtiar sholat hajat dengan memperbanyak istighfar dan sedekah."
+    ]
+  },
+  {
+    "id": "taubat",
+    "nameEn": "Taubah Prayer (Repentance)",
+    "nameId": "Sholat Taubat",
+    "nameArabic": "صَلَاةُ التَّوْبَة",
+    "category": "SUNNAH",
+    "rakaat": 2,
+    "descriptionEn": "2-raka'at prayer performed when seeking Allah's sincere forgiveness after falling into sin.",
+    "descriptionId": "Sholat sunnah 2 raka'at yang dikerjakan saat seseorang menyesali dosa dan ingin kembali kepada Allah dengan taubat nasuha.",
+    "niyyahArabic": "أُصَلِّي سُنَّةَ التَّوْبَةِ رَكْعَتَيْنِ لِلَّهِ تَعَالَى",
+    "niyyahTransliteration": "Ushallii sunnatat-taubati rak'ataini lillaahi ta'aalaa",
+    "niyyahTranslationEn": "I intend to pray 2 raka'at of the Sunnah Taubah prayer for Allah the Almighty.",
+    "niyyahTranslationId": "Aku berniat sholat sunnah Taubat dua raka'at karena Allah Ta'ala.",
+    "steps": [
+      {
+        "order": 1,
+        "titleEn": "Perform 2 Raka'at",
+        "titleId": "Sholat 2 Raka'at",
+        "descriptionEn": "Perform ablution thoroughly, pray 2 raka'at with deep regret and humility.",
+        "descriptionId": "Berwudhu dengan sempurna, lalu melaksanakan sholat 2 rakaat dengan penuh penyesalan.",
+        "arabic": null,
+        "transliteration": null,
+        "translationEn": null,
+        "translationId": null
+      },
+      {
+        "order": 2,
+        "titleEn": "Sayyidul Istighfar",
+        "titleId": "Membaca Sayyidul Istighfar",
+        "descriptionEn": "Recite the Master of Forgiveness supplication taught by the Prophet (pbuh).",
+        "descriptionId": "Membaca Sayyidul Istighfar (penghulu istighfar):",
+        "arabic": "اللَّهُمَّ أَنْتَ رَبِّي لَا إِلٰهَ إِلَّا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَىٰ عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ، أَعُوذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ، أَبُوءُ لَكَ بِنِعْمَتِكَ عَلَيَّ، وَأَبُوءُ بِذَنْبِي فَاغْفِرْ لِي فَإِنَّهُ لَا يَغْفِرُ الذُّنُوبَ إِلَّا أَنْتَ",
+        "transliteration": "Allaahumma Anta rabbii laa ilaaha illaa Anta, khalaqtanii wa anaa 'abduka, wa anaa 'alaa 'ahdika wa wa'dika mastatha'tu, a'uudzu bika min syarri maa shana'tu, abuu-u laka bini'matika 'alayya, wa abuu-u bi-dzanbii faghfir lii fa-innahuu laa yaghfirudz-dzunuuba illaa Anta.",
+        "translationEn": "O Allah, You are my Lord, none has the right to be worshipped except You. You created me and I am Your servant, and I abide by Your covenant and promise as best I can. I seek refuge in You from the evil of what I have done. I acknowledge Your blessing upon me and I acknowledge my sin, so forgive me, for none forgives sins except You.",
+        "translationId": "Ya Allah, Engkaulah Tuhanku, tiada tuhan selain Engkau. Engkau menciptakanku dan aku adalah hamba-Mu. Aku memegang janji-Mu semampuku. Aku berlindung kepada-Mu dari keburukan yang kuperbuat. Aku mengakui nikmat-Mu kepadaku dan aku mengakui dosaku, maka ampunilah aku, sesungguhnya tiada yang mengampuni dosa selain Engkau."
+      }
+    ],
+    "tipsEn": [
+      "Pillars of sincere repentance (Taubat Nasuha): Stopping the sin, feeling remorse, resolving never to return to it, and restoring people's rights if applicable.",
+      "Allah rejoices more over the repentance of His servant than one finding lost provisions in the desert."
+    ],
+    "tipsId": [
+      "Syarat taubat nasuha: berhenti berbuat dosa, menyesali perbuatan, bertekad tidak mengulanginya, dan menyelesaikan hak sesama manusia.",
+      "Allah Maha Menerima Taubat dan sangat mencintai hamba-hamba-Nya yang senantiasa bertaubat."
+    ]
+  },
+  {
+    "id": "dzikir_bada_sholat",
+    "nameEn": "Post-Prayer Dhikr (Dzikir Ba'da Sholat)",
+    "nameId": "Dzikir Ba'da Sholat Fardhu",
+    "nameArabic": "الأَذْكَارُ بَعْدَ الصَّلَاة",
+    "category": "POST_PRAYER",
+    "rakaat": null,
+    "descriptionEn": "Authentic Sunnah remembrances and glorifications recited immediately after completing obligatory prayers.",
+    "descriptionId": "Rangkaian dzikir dan wirid yang disunnahkan dibaca setelah menyelesaikan sholat fardhu.",
+    "niyyahArabic": null,
+    "niyyahTransliteration": null,
+    "niyyahTranslationEn": null,
+    "niyyahTranslationId": null,
+    "steps": [
+      {
+        "order": 1,
+        "titleEn": "Istighfar 3x & Salam Supplication",
+        "titleId": "Istighfar 3x & Doa Keselamatan",
+        "descriptionEn": "Seek forgiveness 3 times and recite the greeting of peace.",
+        "descriptionId": "Membaca istighfar 3 kali dan doa keselamatan:",
+        "arabic": "أَسْتَغْفِرُ اللَّهَ الْعَظِيمَ (٣×)، اللَّهُمَّ أَنْتَ السَّلَامُ وَمِنْكَ السَّلَامُ، تَبَارَكْتَ يَا ذَا الْجَلَالِ وَالْإِكْرَامِ",
+        "transliteration": "Astaghfirullaahal-'azhiim (3x). Allaahumma Antas-salaamu wa minkas-salaam, tabaarakta yaa dzal-jalaali wal-ikraam.",
+        "translationEn": "I seek the forgiveness of Allah the Almighty (3x). O Allah, You are Peace and from You comes peace. Blessed are You, O Possessor of Majesty and Honor.",
+        "translationId": "Aku memohon ampun kepada Allah Yang Maha Agung (3x). Ya Allah, Engkaulah As-Salam dan dari-Mu lah keselamatan, Maha Berkah Engkau wahai Pemilik Keagungan dan Kemuliaan."
+      },
+      {
+        "order": 2,
+        "titleEn": "Ayat Kursi (Surah Al-Baqarah 255)",
+        "titleId": "Membaca Ayat Kursi",
+        "descriptionEn": "Reciting Ayat Kursi after each fardhu prayer guarantees entrance into Paradise upon death.",
+        "descriptionId": "Nabi SAW bersabda bahwa siapa yang membaca Ayat Kursi setiap selesai sholat fardhu, tidak ada yang menghalanginya masuk surga selain kematian.",
+        "arabic": "اللَّهُ لَا إِلٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ۚ لَّهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ ۚ مَن ذَا الَّذِي يَشْفَعُ عِندَهُ إِلَّا بِإِذْنِهِ ۚ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ ۖ وَلَا يُحِيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلَّا بِمَا شَاءَ ۚ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ ۖ وَلَا يَئُودُهُ حِفْظُهُمَا ۚ وَهُوَ الْعَلِيُّ الْعَظِيمُ",
+        "transliteration": "Allaahu laa ilaaha illaa huwal-hayyul-qayyuum, laa ta'khudzuhuu sinatuw-wa laa nawm, lahuu maa fis-samaawaati wa maa fil-ardh, man dzalladzii yasyfa'u 'indahuu illaa bi-idznih, ya'lamu maa bayna aydiihim wa maa khalfahum, wa laa yuhiithuuna bi-syay'im-min 'ilmihii illaa bimaa syaa', wasi'a kursiyyuhus-samaawaati wal-ardh, wa laa ya'uuduhuu hifzhuhumaa, wa huwal-'aliyyul-'azhiim.",
+        "translationEn": "Allah! There is no deity except Him, the Ever-Living, the Sustainer of existence. Neither drowsiness overtakes Him nor sleep...",
+        "translationId": "Allah, tidak ada tuhan selain Dia. Yang Mahahidup, yang terus-menerus mengurus makhluk-Nya, tidak mengantuk dan tidak tidur..."
+      },
+      {
+        "order": 3,
+        "titleEn": "Tasbih, Tahmid, Takbir (33x each)",
+        "titleId": "Tasbih, Tahmid, Takbir (Masing-masing 33x)",
+        "descriptionEn": "Subhanallah (33x), Alhamdulillah (33x), Allahu Akbar (33x), completed to 100 with Tahlil.",
+        "descriptionId": "Membaca Subhanallah 33x, Alhamdulillah 33x, Allahu Akbar 33x, digenapkan 100 dengan Tahlil:",
+        "arabic": "سُبْحَانَ اللَّهِ (٣٣×)، الْحَمْدُ لِلَّهِ (٣٣×)، اللَّهُ أَكْبَرُ (٣٣×)\n\nلَا إِلٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَىٰ كُلِّ شَيْءٍ قَدِيرٌ",
+        "transliteration": "Subhaanallaah (33x), Alhamdu lillaah (33x), Allaahu akbar (33x).\n\nLaa ilaaha illallaahu wahdahuu laa syariika lah, lahul-mulku wa lahul-hamdu wa Huwa 'alaa kulli syay'in qadiir.",
+        "translationEn": "Glory be to Allah (33x), Praise be to Allah (33x), Allah is Most Great (33x).\nNone has the right to be worshipped but Allah alone, having no partner...",
+        "translationId": "Maha Suci Allah (33x), Segala puji bagi Allah (33x), Allah Maha Besar (33x).\nTiada tuhan selain Allah yang Maha Esa, tiada sekutu bagi-Nya..."
+      }
+    ],
+    "tipsEn": [
+      "Whoever recites these glorifications after prayer, their sins will be forgiven even if they are like the foam of the sea.",
+      "Counting with the fingers of the right hand is Sunnah."
+    ],
+    "tipsId": [
+      "Siapa yang membaca dzikir ini setelah sholat fardhu, dosanya diampuni meski sebanyak buih di lautan.",
+      "Menghitung tasbih menggunakan jari tangan kanan adalah sunnah Rasulullah SAW."
+    ]
+  },
+  {
+    "id": "doa_bada_sholat",
+    "nameEn": "Supplication After Prayer (Doa Ba'da Sholat)",
+    "nameId": "Doa Sesudah Sholat Fardhu",
+    "nameArabic": "الدُّعَاءُ بَعْدَ الصَّلَاة",
+    "category": "POST_PRAYER",
+    "rakaat": null,
+    "descriptionEn": "Comprehensive authentic Prophetic prayer recited after completing prayers.",
+    "descriptionId": "Kumpulan doa memohon keselamatan agama, kesehatan jasmani, rezeki halal, ampunan, dan kebaikan dunia akhirat.",
+    "niyyahArabic": null,
+    "niyyahTransliteration": null,
+    "niyyahTranslationEn": null,
+    "niyyahTranslationId": null,
+    "steps": [
+      {
+        "order": 1,
+        "titleEn": "Praise, Salawat & Main Supplication",
+        "titleId": "Pujian, Shalawat & Doa Keselamatan",
+        "descriptionEn": "Begin with praising Allah and sending blessings on the Prophet, then ask for safety in faith and ease at death.",
+        "descriptionId": "Membaca hamdalah, shalawat, lalu memohon keselamatan hidup:",
+        "arabic": "الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ، حَمْدًا يُوَافِي نِعَمَهُ وَيُكَافِئُ مَزِيدَهُ. اللَّهُمَّ صَلِّ عَلَىٰ سَيِّدِنَا مُحَمَّدٍ وَعَلَىٰ آلِ سَيِّدِنَا مُحَمَّدٍ. اللَّهُمَّ إِنَّا نَسْأَلُكَ سَلَامَةً فِي الدِّينِ، وَعَافِيَةً فِي الْجَسَدِ، وَزِيَادَةً فِي الْعِلْمِ، وَبَرَكَةً فِي الرِّزْقِ، وَتَوْبَةً قَبْلَ الْمَوْتِ، وَرَحْمَةً عِنْدَ الْمَوْتِ، وَمَغْفِرَةً بَعْدَ الْمَوْتِ",
+        "transliteration": "Alhamdu lillaahi rabbil-'aalamiin, hamday-yuwaafii ni'amahuu wa yukaafi'u maziidah. Allaahumma shalli 'alaa sayyidinaa Muhammad wa 'alaa aali sayyidinaa Muhammad. Allaahumma innaa nas'aluka salaamatan fid-diin, wa 'aafiyatan fil-jasad, wa ziyaadatan fil-'ilm, wa barakatan fir-rizq, wa tawbatan qablal-mawt, wa rahmatan 'indal-mawt, wa maghfiratam-ba'dal-mawt.",
+        "translationEn": "Praise be to Allah, Lord of the worlds, praise matching His blessings and equivalent to His abundance. O Allah, send blessings upon our master Muhammad and his family. O Allah, we ask You for safety in religion, well-being in the body, increase in knowledge, blessing in sustenance, repentance before death, mercy at death, and forgiveness after death.",
+        "translationId": "Segala puji bagi Allah Tuhan semesta alam, pujian yang sebanding dengan nikmat-Nya. Ya Allah, limpahkanlah rahmat kepada junjungan kami Nabi Muhammad beserta keluarganya. Ya Allah kami memohon kepada-Mu keselamatan dalam agama, kesehatan jasmani, bertambahnya ilmu, keberkahan rezeki, taubat sebelum mati, rahmat ketika mati, dan ampunan setelah mati."
+      },
+      {
+        "order": 2,
+        "titleEn": "Dua for Parents & Dunya/Akhirah",
+        "titleId": "Doa untuk Kedua Orang Tua & Kebaikan Dunia Akhirat",
+        "descriptionEn": "Supplication for parents and the famous Rabbana Atina supplication.",
+        "descriptionId": "Mendoakan orang tua dan memohon kebaikan dunia akhirat:",
+        "arabic": "رَبَّنَا اغْفِرْ لَنَا وَلِوَالِدَيْنَا وَارْحَمْهُمْ كَمَا رَبَّوْنَا صِغَارًا.\n\nرَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ",
+        "transliteration": "Rabbanagh-fir lanaa wa li-waalidaynaa war-hamhum kamaa rabbawnaa shighaaraa.\n\nRabbanaa aatinaa fid-dunyaa hasanataw-wa fil-aakhirati hasanataw-wa qinaa 'adzaaban-naar.",
+        "translationEn": "Our Lord, forgive us and our parents and have mercy on them as they raised us when we were young.\nOur Lord, give us in this world that which is good and in the Hereafter that which is good, and protect us from the punishment of the Fire.",
+        "translationId": "Ya Tuhan kami, ampunilah dosa kami dan dosa kedua orang tua kami, sayangilah mereka sebagaimana mereka menyayangi kami di waktu kecil.\nYa Tuhan kami, berilah kami kebaikan di dunia dan kebaikan di akhirat, dan lindungilah kami dari siksa neraka."
+      }
+    ],
+    "tipsEn": [
+      "The time after obligatory prayer is one of the most accepted times for supplication.",
+      "Raise hands to chest level and wipe face at the conclusion of dua."
+    ],
+    "tipsId": [
+      "Waktu sesudah sholat fardhu adalah waktu yang mustajab untuk berdoa.",
+      "Angkat kedua tangan setinggi dada dan usapkan ke wajah setelah selesai berdoa."
+    ]
+  }
+]

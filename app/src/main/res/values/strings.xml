@@ -231,4 +231,19 @@
     <string name="source_translator_siddiqui">Abdul Hamid Siddiqui</string>
     <string name="open_source">Open source</string>
     <string name="link_error">Could not open link</string>
+    <!-- Prayer Guidance -->
+    <string name="prayer_guidance">Prayer Guidance</string>
+    <string name="prayer_guidance_desc">Complete guide to obligatory &amp; sunnah prayers, wudu, and dhikr</string>
+    <string name="category_all">All</string>
+    <string name="category_fardhu">Obligatory</string>
+    <string name="category_sunnah">Sunnah</string>
+    <string name="category_purification">Wudu &amp; Taharah</string>
+    <string name="category_post_prayer">Dhikr &amp; Dua</string>
+    <string name="search_prayer_guide">Search prayers &amp; guides…</string>
+    <string name="no_guides_found">No prayer guides found</string>
+    <string name="rakaat_count">%d Raka\'at</string>
+    <string name="niyyah">Niyyah (Intention)</string>
+    <string name="prayer_steps">Step-by-Step Guide</string>
+    <string name="step_number">Step %d</string>
+    <string name="tips_and_notes">Important Notes &amp; Virtues</string>
 </resources>
