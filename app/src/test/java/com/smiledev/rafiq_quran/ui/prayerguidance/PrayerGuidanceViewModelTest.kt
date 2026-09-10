@@ -70,6 +70,13 @@ class PrayerGuidanceViewModelTest {
     )
 
     @Test
+    fun `initial state has isLoading true`() {
+        val vm = PrayerGuidanceViewModel(useCase, testDispatcherProvider)
+        assertEquals(true, vm.uiState.value.isLoading)
+        assertEquals(0, vm.uiState.value.items.size)
+    }
+
+    @Test
     fun `load guidance success on init`() = runTest(testDispatcher) {
         every { repository.getGuidanceList() } returns Result.Success(sampleItems)
 

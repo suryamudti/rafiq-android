@@ -77,3 +77,5 @@
 # Keep private Gson model classes used via TypeToken reflection (asset JSON parsing)
 -keep class com.smiledev.rafiq_quran.data.repository.ReciterRaw { *; }
 -keep class com.smiledev.rafiq_quran.data.repository.AsmaulHusnaRaw { *; }
+-keep class com.smiledev.rafiq_quran.data.repository.PrayerGuidanceRaw { *; }
+-keep class com.smiledev.rafiq_quran.data.repository.PrayerStepRaw { *; }
