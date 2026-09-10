@@ -200,7 +200,8 @@ fun PrayerGuidanceScreen(
                         if (filteredItems.isEmpty()) {
                             Box(
                                 modifier = Modifier
-                                    .fillMaxSize()
+                                    .weight(1f)
+                                    .fillMaxWidth()
                                     .padding(32.dp),
                                 contentAlignment = Alignment.Center
                             ) {
@@ -212,7 +213,9 @@ fun PrayerGuidanceScreen(
                             }
                         } else {
                             LazyColumn(
-                                modifier = Modifier.fillMaxSize(),
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .fillMaxWidth(),
                                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                                 verticalArrangement = Arrangement.spacedBy(12.dp)
                             ) {

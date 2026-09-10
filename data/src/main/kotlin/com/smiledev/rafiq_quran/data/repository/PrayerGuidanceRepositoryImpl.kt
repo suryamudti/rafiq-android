@@ -2,6 +2,7 @@ package com.smiledev.rafiq_quran.data.repository
 
 import android.content.Context
 import com.google.gson.Gson
+import com.google.gson.annotations.SerializedName
 import com.google.gson.reflect.TypeToken
 import com.smiledev.rafiq_quran.core.AppError
 import com.smiledev.rafiq_quran.core.Result
@@ -50,38 +51,38 @@ class PrayerGuidanceRepositoryImpl @Inject constructor(
     }
 }
 
-private data class PrayerGuidanceRaw(
-    val id: String,
-    val nameEn: String,
-    val nameId: String,
-    val nameArabic: String,
-    val category: String,
-    val rakaat: Int?,
-    val descriptionEn: String,
-    val descriptionId: String,
-    val niyyahArabic: String?,
-    val niyyahTransliteration: String?,
-    val niyyahTranslationEn: String?,
-    val niyyahTranslationId: String?,
-    val steps: List<PrayerStepRaw>?,
-    val tipsEn: List<String>?,
-    val tipsId: List<String>?
+internal data class PrayerGuidanceRaw(
+    @SerializedName("id") val id: String?,
+    @SerializedName("nameEn") val nameEn: String?,
+    @SerializedName("nameId") val nameId: String?,
+    @SerializedName("nameArabic") val nameArabic: String?,
+    @SerializedName("category") val category: String?,
+    @SerializedName("rakaat") val rakaat: Int?,
+    @SerializedName("descriptionEn") val descriptionEn: String?,
+    @SerializedName("descriptionId") val descriptionId: String?,
+    @SerializedName("niyyahArabic") val niyyahArabic: String?,
+    @SerializedName("niyyahTransliteration") val niyyahTransliteration: String?,
+    @SerializedName("niyyahTranslationEn") val niyyahTranslationEn: String?,
+    @SerializedName("niyyahTranslationId") val niyyahTranslationId: String?,
+    @SerializedName("steps") val steps: List<PrayerStepRaw>?,
+    @SerializedName("tipsEn") val tipsEn: List<String>?,
+    @SerializedName("tipsId") val tipsId: List<String>?
 ) {
     fun toDomain(): PrayerGuidanceItem {
         val cat = try {
-            PrayerGuidanceCategory.valueOf(category)
+            if (category != null) PrayerGuidanceCategory.valueOf(category) else PrayerGuidanceCategory.OBLIGATORY
         } catch (e: Exception) {
             PrayerGuidanceCategory.OBLIGATORY
         }
         return PrayerGuidanceItem(
-            id = id,
-            nameEn = nameEn,
-            nameId = nameId,
-            nameArabic = nameArabic,
+            id = id ?: "",
+            nameEn = nameEn ?: "",
+            nameId = nameId ?: "",
+            nameArabic = nameArabic ?: "",
             category = cat,
             rakaat = rakaat,
-            descriptionEn = descriptionEn,
-            descriptionId = descriptionId,
+            descriptionEn = descriptionEn ?: "",
+            descriptionId = descriptionId ?: "",
             niyyahArabic = niyyahArabic,
             niyyahTransliteration = niyyahTransliteration,
             niyyahTranslationEn = niyyahTranslationEn,
@@ -93,24 +94,24 @@ private data class PrayerGuidanceRaw(
     }
 }
 
-private data class PrayerStepRaw(
-    val order: Int,
-    val titleEn: String,
-    val titleId: String,
-    val descriptionEn: String,
-    val descriptionId: String,
-    val arabic: String?,
-    val transliteration: String?,
-    val translationEn: String?,
-    val translationId: String?
+internal data class PrayerStepRaw(
+    @SerializedName("order") val order: Int?,
+    @SerializedName("titleEn") val titleEn: String?,
+    @SerializedName("titleId") val titleId: String?,
+    @SerializedName("descriptionEn") val descriptionEn: String?,
+    @SerializedName("descriptionId") val descriptionId: String?,
+    @SerializedName("arabic") val arabic: String?,
+    @SerializedName("transliteration") val transliteration: String?,
+    @SerializedName("translationEn") val translationEn: String?,
+    @SerializedName("translationId") val translationId: String?
 ) {
     fun toDomain(): PrayerStep {
         return PrayerStep(
-            order = order,
-            titleEn = titleEn,
-            titleId = titleId,
-            descriptionEn = descriptionEn,
-            descriptionId = descriptionId,
+            order = order ?: 0,
+            titleEn = titleEn ?: "",
+            titleId = titleId ?: "",
+            descriptionEn = descriptionEn ?: "",
+            descriptionId = descriptionId ?: "",
             arabic = arabic,
             transliteration = transliteration,
             translationEn = translationEn,

@@ -125,6 +125,11 @@ fun PrayerGuidanceDetailScreen(
                         modifier = Modifier.fillMaxSize()
                     )
                 }
+                else -> {
+                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+                    }
+                }
             }
         }
     }

@@ -20,7 +20,7 @@ import javax.inject.Inject
 @Immutable
 data class PrayerGuidanceDetailUiState(
     val item: PrayerGuidanceItem? = null,
-    val isLoading: Boolean = false,
+    val isLoading: Boolean = true,
     val error: AppError? = null
 )
 

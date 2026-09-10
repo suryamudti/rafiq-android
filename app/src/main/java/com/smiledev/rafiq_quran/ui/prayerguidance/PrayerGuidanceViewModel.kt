@@ -23,7 +23,7 @@ data class PrayerGuidanceUiState(
     val items: List<PrayerGuidanceItem> = emptyList(),
     val selectedCategory: PrayerGuidanceCategory? = null,
     val searchQuery: String = "",
-    val isLoading: Boolean = false,
+    val isLoading: Boolean = true,
     val error: AppError? = null
 )
 
