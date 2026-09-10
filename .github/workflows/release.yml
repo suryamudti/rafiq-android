@@ -41,8 +41,11 @@ jobs:
           VERSION_NAME=$(sed -n 's/.*baseVersionName = "\(.*\)".*/\1/p' app/build.gradle.kts | tr -d '[:space:]')
           echo "version=$VERSION_NAME" >> $GITHUB_OUTPUT
 
-      - name: Build Release APK & Bundle
-        run: ./gradlew assembleRelease bundleRelease -PversionCode=${{ github.run_number }} -PversionName=${{ steps.get_version.outputs.version }}.${{ github.run_number }}
+      - name: Build Release APKs
+        run: ./gradlew assembleRelease -PversionCode=${{ github.run_number }} -PversionName=${{ steps.get_version.outputs.version }}.${{ github.run_number }}
+
+      - name: Build Release Bundle
+        run: ./gradlew bundleRelease -PversionCode=${{ github.run_number }} -PversionName=${{ steps.get_version.outputs.version }}.${{ github.run_number }}
 
       - name: Gather Build Artifacts
         run: |
@@ -64,8 +67,21 @@ jobs:
 
       - name: Rename Signed Artifacts
         run: |
-          mv app/build/outputs/release/app-release-unsigned-signed.apk app/build/outputs/release/rafiq-v${{ steps.get_version.outputs.version }}.${{ github.run_number }}.apk
-          mv app/build/outputs/release/app-release.aab app/build/outputs/release/rafiq-v${{ steps.get_version.outputs.version }}.${{ github.run_number }}.aab
+          if [ -f "app/build/outputs/release/app-universal-release-unsigned-signed.apk" ]; then
+            mv app/build/outputs/release/app-universal-release-unsigned-signed.apk "app/build/outputs/release/rafiq-v${{ steps.get_version.outputs.version }}.${{ github.run_number }}-universal.apk"
+          elif [ -f "app/build/outputs/release/app-release-unsigned-signed.apk" ]; then
+            mv app/build/outputs/release/app-release-unsigned-signed.apk "app/build/outputs/release/rafiq-v${{ steps.get_version.outputs.version }}.${{ github.run_number }}.apk"
+          fi
+          for f in app/build/outputs/release/app-*-release-unsigned-signed.apk; do
+            [ -f "$f" ] || continue
+            abi=$(basename "$f" | sed -E 's/app-(.*)-release-unsigned-signed\.apk/\1/')
+            mv "$f" "app/build/outputs/release/rafiq-v${{ steps.get_version.outputs.version }}.${{ github.run_number }}-$abi.apk"
+          done
+          if [ -f "app/build/outputs/release/app-release.aab" ]; then
+            mv app/build/outputs/release/app-release.aab "app/build/outputs/release/rafiq-v${{ steps.get_version.outputs.version }}.${{ github.run_number }}.aab"
+          elif [ -f "app/build/outputs/release/app-release-signed.aab" ]; then
+            mv app/build/outputs/release/app-release-signed.aab "app/build/outputs/release/rafiq-v${{ steps.get_version.outputs.version }}.${{ github.run_number }}.aab"
+          fi
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
