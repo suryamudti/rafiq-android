@@ -23,7 +23,7 @@ class DashboardScreenTest {
 
     private fun createViewModel(): DashboardViewModel {
         val repo = mockk<PrayerTimesRepository>(relaxed = true)
-        coEvery { repo.fetchPrayerTimes(any(), any(), any(), any()) } returns Result.Success(
+        coEvery { repo.fetchPrayerTimes(any(), any(), any(), any(), any()) } returns Result.Success(
             PrayerTimesData(
                 timings = PrayerTimings("05:00", "05:30", "06:30", "12:00", "15:30", "18:00", "19:00"),
                 hijriDate = "1 Muharram 1446"

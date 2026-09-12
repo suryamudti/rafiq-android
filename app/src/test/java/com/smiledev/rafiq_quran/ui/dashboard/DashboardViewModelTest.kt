@@ -12,6 +12,7 @@ import com.smiledev.rafiq_quran.domain.repository.PrayerLogRepository
 import com.smiledev.rafiq_quran.domain.repository.PrayerTimesRepository
 import com.smiledev.rafiq_quran.domain.repository.QuranRepository
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
@@ -62,8 +63,9 @@ class DashboardViewModelTest {
         every { preferencesManager.lastReadAya } returns lastReadAyaFlow
         every { prayerLogRepository.observeAll() } returns prayerLogsFlow
 
+        coEvery { prayerTimesRepository.getCachedPrayerTimes(any(), any(), any(), any()) } returns null
         coEvery {
-            prayerTimesRepository.fetchPrayerTimes(any(), any(), any(), any())
+            prayerTimesRepository.fetchPrayerTimes(any(), any(), any(), any(), any())
         } returns Result.Success(
             PrayerTimesData(
                 timings = PrayerTimings(
@@ -200,5 +202,66 @@ class DashboardViewModelTest {
         )
         testScheduler.runCurrent()
         vm.stopCountdown()
+    }
+
+    @Test
+    fun `loadPrayerTimes uses cached data when available without setting isLoading to true`() = runTest(testDispatcher) {
+        val cachedData = PrayerTimesData(
+            timings = PrayerTimings(
+                imsak = "04:30",
+                fajr = "04:42",
+                sunrise = "05:58",
+                dhuhr = "11:58",
+                asr = "15:18",
+                maghrib = "18:02",
+                isha = "19:12"
+            ),
+            hijriDate = "Cached Hijri 1447"
+        )
+        coEvery { prayerTimesRepository.getCachedPrayerTimes(any(), any(), any(), any()) } returns cachedData
+
+        val vm = DashboardViewModel(
+            prayerTimesRepository = prayerTimesRepository,
+            preferencesManager = preferencesManager,
+            context = context,
+            dispatcherProvider = testDispatcherProvider,
+            quranRepository = quranRepository,
+            prayerLogRepository = prayerLogRepository,
+            enablePeriodicCountdown = false
+        )
+        testScheduler.runCurrent()
+
+        val state = vm.uiState.value
+        assertEquals("Cached Hijri 1447", state.hijriDate)
+        assertEquals(false, state.isLoading)
+        // fetchPrayerTimes should not have been called because cached data was returned immediately
+        coVerify(exactly = 0) { prayerTimesRepository.fetchPrayerTimes(any(), any(), any(), any(), any()) }
+    }
+
+    @Test
+    fun `refresh triggers loadPrayerTimes with forceRefresh true`() = runTest(testDispatcher) {
+        val vm = DashboardViewModel(
+            prayerTimesRepository = prayerTimesRepository,
+            preferencesManager = preferencesManager,
+            context = context,
+            dispatcherProvider = testDispatcherProvider,
+            quranRepository = quranRepository,
+            prayerLogRepository = prayerLogRepository,
+            enablePeriodicCountdown = false
+        )
+        testScheduler.runCurrent()
+
+        vm.refresh()
+        testScheduler.runCurrent()
+
+        coVerify(atLeast = 1) {
+            prayerTimesRepository.fetchPrayerTimes(
+                lat = any(),
+                lon = any(),
+                date = any(),
+                method = any(),
+                forceRefresh = true
+            )
+        }
     }
 }
