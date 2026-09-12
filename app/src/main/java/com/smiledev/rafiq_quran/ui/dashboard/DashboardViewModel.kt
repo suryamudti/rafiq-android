@@ -10,6 +10,7 @@ import com.smiledev.rafiq_quran.core.DispatcherProvider
 import com.smiledev.rafiq_quran.core.Result
 import com.smiledev.rafiq_quran.data.preferences.PreferencesManager
 import com.smiledev.rafiq_quran.domain.model.PrayerTimeEntry
+import com.smiledev.rafiq_quran.domain.model.PrayerTimesData
 import com.smiledev.rafiq_quran.domain.repository.PrayerLogRepository
 import com.smiledev.rafiq_quran.domain.repository.PrayerTimesRepository
 import com.smiledev.rafiq_quran.domain.repository.QuranRepository
@@ -255,52 +256,68 @@ class DashboardViewModel @Inject constructor(
         }
     }
 
-    fun loadPrayerTimes() {
+    fun loadPrayerTimes(forceRefresh: Boolean = false) {
         val state = _uiState.value
+        val todayStr = dateFormat.format(Date())
         viewModelScope.launch(dispatcherProvider.io) {
+            if (!forceRefresh) {
+                val cached = prayerTimesRepository.getCachedPrayerTimes(
+                    state.latitude, state.longitude, todayStr, state.calculationMethod
+                )
+                if (cached != null) {
+                    applyPrayerTimes(cached)
+                    return@launch
+                }
+            }
+
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             val result = prayerTimesRepository.fetchPrayerTimes(
                 state.latitude, state.longitude,
-                dateFormat.format(Date()), state.calculationMethod
+                todayStr, state.calculationMethod,
+                forceRefresh = forceRefresh
             )
             when (result) {
                 is Result.Success -> {
-                    val data = result.data
-                    val isIndonesian = Locale.getDefault().language == "id"
-
-                    val times = listOf(
-                        PrayerTimeEntry("Imsak", data.timings.imsak),
-                        PrayerTimeEntry("Fajr (Subuh)", data.timings.fajr),
-                        PrayerTimeEntry("Sunrise", data.timings.sunrise),
-                        PrayerTimeEntry("Dzuhur", data.timings.dhuhr),
-                        PrayerTimeEntry("Asr", data.timings.asr),
-                        PrayerTimeEntry("Maghrib", data.timings.maghrib),
-                        PrayerTimeEntry("Isya", data.timings.isha)
-                    )
-
-                    val timeline = listOf(
-                        PrayerTimeEntry(if (isIndonesian) "Subuh" else "Fajr", data.timings.fajr),
-                        PrayerTimeEntry(if (isIndonesian) "Dzuhur" else "Dhuhr", data.timings.dhuhr),
-                        PrayerTimeEntry(if (isIndonesian) "Ashar" else "Asr", data.timings.asr),
-                        PrayerTimeEntry("Maghrib", data.timings.maghrib),
-                        PrayerTimeEntry(if (isIndonesian) "Isya" else "Isha", data.timings.isha)
-                    )
-
-                    val hijri = data.hijriDate ?: ""
-                    _uiState.value = _uiState.value.copy(
-                        isLoading = false,
-                        hijriDate = hijri,
-                        prayerTimeline = timeline
-                    )
-                    updateCountdown(times, timeline)
-                    if (enablePeriodicCountdown) {
-                        startCountdown(times, timeline)
-                    }
+                    applyPrayerTimes(result.data)
                 }
                 is Result.Error -> {
                     _uiState.value = _uiState.value.copy(isLoading = false, error = result.error)
                 }
             }
+        }
+    }
+
+    private fun applyPrayerTimes(data: PrayerTimesData) {
+        val isIndonesian = Locale.getDefault().language == "id"
+
+        val times = listOf(
+            PrayerTimeEntry("Imsak", data.timings.imsak),
+            PrayerTimeEntry("Fajr (Subuh)", data.timings.fajr),
+            PrayerTimeEntry("Sunrise", data.timings.sunrise),
+            PrayerTimeEntry("Dzuhur", data.timings.dhuhr),
+            PrayerTimeEntry("Asr", data.timings.asr),
+            PrayerTimeEntry("Maghrib", data.timings.maghrib),
+            PrayerTimeEntry("Isya", data.timings.isha)
+        )
+
+        val timeline = listOf(
+            PrayerTimeEntry(if (isIndonesian) "Subuh" else "Fajr", data.timings.fajr),
+            PrayerTimeEntry(if (isIndonesian) "Dzuhur" else "Dhuhr", data.timings.dhuhr),
+            PrayerTimeEntry(if (isIndonesian) "Ashar" else "Asr", data.timings.asr),
+            PrayerTimeEntry("Maghrib", data.timings.maghrib),
+            PrayerTimeEntry(if (isIndonesian) "Isya" else "Isha", data.timings.isha)
+        )
+
+        val hijri = data.hijriDate ?: ""
+        _uiState.value = _uiState.value.copy(
+            isLoading = false,
+            error = null,
+            hijriDate = hijri,
+            prayerTimeline = timeline
+        )
+        updateCountdown(times, timeline)
+        if (enablePeriodicCountdown) {
+            startCountdown(times, timeline)
         }
     }
 
@@ -372,7 +389,7 @@ class DashboardViewModel @Inject constructor(
     }
 
     fun refresh() {
-        loadPrayerTimes()
+        loadPrayerTimes(forceRefresh = true)
     }
 
     private fun computeGreeting(): String {

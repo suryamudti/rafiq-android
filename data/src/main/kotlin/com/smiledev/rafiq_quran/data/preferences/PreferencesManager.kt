@@ -7,11 +7,30 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.google.gson.Gson
+import com.smiledev.rafiq_quran.domain.model.PrayerTimesData
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.math.abs
+
+data class CachedPrayerTimes(
+    val date: String,
+    val latitude: Double,
+    val longitude: Double,
+    val calculationMethod: Int,
+    val data: PrayerTimesData
+) {
+    fun isValidFor(reqDate: String, reqLat: Double, reqLon: Double, reqMethod: Int): Boolean {
+        return date == reqDate &&
+            calculationMethod == reqMethod &&
+            abs(latitude - reqLat) < 0.01 &&
+            abs(longitude - reqLon) < 0.01
+    }
+}
 
 private val Context.dataStore by preferencesDataStore(name = "rafiq_settings")
 
@@ -56,6 +75,16 @@ class PreferencesManager @Inject constructor(
         val FAVORITE_PROPHET_IDS = stringSetPreferencesKey("favorite_prophet_ids")
         /** Key for the Story font size in sp. */
         val STORY_FONT_SIZE = intPreferencesKey("story_font_size")
+        /** Key for cached prayer times date. */
+        val PRAYER_CACHE_DATE = stringPreferencesKey("prayer_cache_date")
+        /** Key for cached prayer times latitude. */
+        val PRAYER_CACHE_LAT = stringPreferencesKey("prayer_cache_lat")
+        /** Key for cached prayer times longitude. */
+        val PRAYER_CACHE_LON = stringPreferencesKey("prayer_cache_lon")
+        /** Key for cached prayer times calculation method. */
+        val PRAYER_CACHE_METHOD = intPreferencesKey("prayer_cache_method")
+        /** Key for cached prayer times JSON payload. */
+        val PRAYER_CACHE_DATA = stringPreferencesKey("prayer_cache_data")
     }
 
     /**
@@ -302,5 +331,56 @@ class PreferencesManager @Inject constructor(
      */
     suspend fun setStoryFontSize(size: Int) {
         context.dataStore.edit { prefs -> prefs[STORY_FONT_SIZE] = size }
+    }
+
+    private val gson = Gson()
+
+    /**
+     * Retrieves the cached prayer times if present in DataStore.
+     *
+     * @return [CachedPrayerTimes] or null if not cached or malformed
+     */
+    suspend fun getCachedPrayerTimes(): CachedPrayerTimes? {
+        val prefs = context.dataStore.data.first()
+        val date = prefs[PRAYER_CACHE_DATE] ?: return null
+        val lat = prefs[PRAYER_CACHE_LAT]?.toDoubleOrNull() ?: return null
+        val lon = prefs[PRAYER_CACHE_LON]?.toDoubleOrNull() ?: return null
+        val method = prefs[PRAYER_CACHE_METHOD] ?: return null
+        val json = prefs[PRAYER_CACHE_DATA] ?: return null
+        val data = runCatching { gson.fromJson(json, PrayerTimesData::class.java) }.getOrNull() ?: return null
+        return CachedPrayerTimes(date, lat, lon, method, data)
+    }
+
+    /**
+     * Persists prayer times for a given date, coordinates, and calculation method.
+     */
+    suspend fun saveCachedPrayerTimes(
+        date: String,
+        lat: Double,
+        lon: Double,
+        method: Int,
+        data: PrayerTimesData
+    ) {
+        val json = gson.toJson(data)
+        context.dataStore.edit { prefs ->
+            prefs[PRAYER_CACHE_DATE] = date
+            prefs[PRAYER_CACHE_LAT] = lat.toString()
+            prefs[PRAYER_CACHE_LON] = lon.toString()
+            prefs[PRAYER_CACHE_METHOD] = method
+            prefs[PRAYER_CACHE_DATA] = json
+        }
+    }
+
+    /**
+     * Clears cached prayer times.
+     */
+    suspend fun clearCachedPrayerTimes() {
+        context.dataStore.edit { prefs ->
+            prefs.remove(PRAYER_CACHE_DATE)
+            prefs.remove(PRAYER_CACHE_LAT)
+            prefs.remove(PRAYER_CACHE_LON)
+            prefs.remove(PRAYER_CACHE_METHOD)
+            prefs.remove(PRAYER_CACHE_DATA)
+        }
     }
 }
