@@ -73,6 +73,8 @@ class PreferencesManager @Inject constructor(
         val LAST_READ_AYA = intPreferencesKey("last_read_aya")
         /** Key for the set of favorite Prophet IDs as a string set. */
         val FAVORITE_PROPHET_IDS = stringSetPreferencesKey("favorite_prophet_ids")
+        /** Key for the set of favorite Asmaul Husna IDs as a string set. */
+        val FAVORITE_ASMAUL_HUSNA_IDS = stringSetPreferencesKey("favorite_asmaul_husna_ids")
         /** Key for the Story font size in sp. */
         val STORY_FONT_SIZE = intPreferencesKey("story_font_size")
         /** Key for cached prayer times date. */
@@ -189,6 +191,14 @@ class PreferencesManager @Inject constructor(
      */
     val favoriteProphetIds: Flow<Set<Int>> = context.dataStore.data.map { prefs ->
         prefs[FAVORITE_PROPHET_IDS].orEmpty().mapNotNull { it.toIntOrNull() }.toSet()
+    }
+
+    /**
+     * Returns the set of favorite Asmaul Husna IDs as a [Flow].
+     * Returns an empty set if not set. IDs are parsed from strings.
+     */
+    val favoriteAsmaulHusnaIds: Flow<Set<Int>> = context.dataStore.data.map { prefs ->
+        prefs[FAVORITE_ASMAUL_HUSNA_IDS].orEmpty().mapNotNull { it.toIntOrNull() }.toSet()
     }
 
     /**
@@ -321,6 +331,20 @@ class PreferencesManager @Inject constructor(
             val current = prefs[FAVORITE_PROPHET_IDS].orEmpty()
             val updated = if (id.toString() in current) current - id.toString() else current + id.toString()
             prefs[FAVORITE_PROPHET_IDS] = updated
+        }
+    }
+
+    /**
+     * Toggles an Asmaul Husna ID in the favorite Asmaul Husna IDs set.
+     * If the ID is already in the set, it is removed; otherwise it is added.
+     *
+     * @param id the Asmaul Husna ID to toggle
+     */
+    suspend fun toggleFavoriteAsmaulHusna(id: Int) {
+        context.dataStore.edit { prefs ->
+            val current = prefs[FAVORITE_ASMAUL_HUSNA_IDS].orEmpty()
+            val updated = if (id.toString() in current) current - id.toString() else current + id.toString()
+            prefs[FAVORITE_ASMAUL_HUSNA_IDS] = updated
         }
     }
 
