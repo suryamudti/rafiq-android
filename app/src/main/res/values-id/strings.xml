@@ -126,6 +126,20 @@
     <string name="asmaul_husna_title">99 Nama Allah</string>
     <string name="search_names">Cari nama…</string>
     <string name="no_names_found">Nama tidak ditemukan</string>
+    <string name="asmaul_husna_daily_title">Nama Hari Ini</string>
+    <string name="asmaul_husna_reflect">Renungkan &amp; Amalkan</string>
+    <string name="asmaul_husna_all">Semua</string>
+    <string name="asmaul_husna_favorites">Favorit</string>
+    <string name="asmaul_husna_benefits_title">Keutamaan &amp; Fadhilah</string>
+    <string name="asmaul_husna_dhikr_title">Lantunkan dengan Penghitung Zikir</string>
+    <string name="asmaul_husna_tap_to_count">Ketuk untuk berzikir</string>
+    <string name="asmaul_husna_random">Acak</string>
+    <string name="asmaul_husna_grid_view">Tampilan Kisi</string>
+    <string name="asmaul_husna_list_view">Tampilan Daftar</string>
+    <string name="asmaul_husna_share">Bagikan</string>
+    <string name="asmaul_husna_copy">Salin</string>
+    <string name="asmaul_husna_copied">Disalin ke papan klip</string>
+    <string name="asmaul_husna_count_format">%1$d dari %2$d nama</string>
     <!-- Tasbih -->
     <string name="tasbih_counter">Tasbih</string>
     <string name="count">Hitung</string>

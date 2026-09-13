@@ -126,6 +126,20 @@
     <string name="asmaul_husna_title">99 Names of Allah</string>
     <string name="search_names">Search names…</string>
     <string name="no_names_found">No names found</string>
+    <string name="asmaul_husna_daily_title">Name of the Day</string>
+    <string name="asmaul_husna_reflect">Reflect &amp; Recite</string>
+    <string name="asmaul_husna_all">All</string>
+    <string name="asmaul_husna_favorites">Favorites</string>
+    <string name="asmaul_husna_benefits_title">Virtues &amp; Benefits</string>
+    <string name="asmaul_husna_dhikr_title">Recite with Dhikr Counter</string>
+    <string name="asmaul_husna_tap_to_count">Tap to recite</string>
+    <string name="asmaul_husna_random">Random</string>
+    <string name="asmaul_husna_grid_view">Grid View</string>
+    <string name="asmaul_husna_list_view">List View</string>
+    <string name="asmaul_husna_share">Share</string>
+    <string name="asmaul_husna_copy">Copy</string>
+    <string name="asmaul_husna_copied">Copied to clipboard</string>
+    <string name="asmaul_husna_count_format">%1$d of %2$d names</string>
     <!-- Tasbih -->
     <string name="tasbih_counter">Tasbih Counter</string>
     <string name="count">Count</string>
