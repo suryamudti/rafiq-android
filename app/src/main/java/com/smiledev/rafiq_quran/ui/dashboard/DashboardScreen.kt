@@ -59,6 +59,7 @@ import com.smiledev.rafiq_quran.AsmaulHusna
 import com.smiledev.rafiq_quran.Ayah
 import com.smiledev.rafiq_quran.BookmarkList
 import com.smiledev.rafiq_quran.HadithBooks
+import com.smiledev.rafiq_quran.HadithDetail
 import com.smiledev.rafiq_quran.IslamicCalendar
 import com.smiledev.rafiq_quran.Mosques
 import com.smiledev.rafiq_quran.PrayerGuidance
@@ -265,7 +266,20 @@ fun DashboardScreen(
 
         Spacer(Modifier.height(16.dp))
 
-        // 6. Today's Prayer Completion Overview
+        // 6. Hadith of the Day Card
+        DailyHadithCard(
+            arabic = state.dailyHadithArabic,
+            translation = state.dailyHadithTranslation,
+            narrator = state.dailyHadithNarrator,
+            hadithRef = state.dailyHadithRef,
+            onReadClick = {
+                onNavigate(HadithDetail(hadithId = state.dailyHadithId))
+            }
+        )
+
+        Spacer(Modifier.height(16.dp))
+
+        // 7. Today's Prayer Completion Overview
         TodayPrayerStatusCard(
             completedCount = state.todayCompletedPrayersCount,
             onOpenLog = { onNavigate(PrayerLog) }
@@ -789,6 +803,116 @@ private fun DailyAyahCard(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 lineHeight = 20.sp
             )
+        }
+    }
+}
+
+@Composable
+private fun DailyHadithCard(
+    arabic: String,
+    translation: String,
+    narrator: String?,
+    hadithRef: String,
+    onReadClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(18.dp))
+            .clickable(onClick = onReadClick),
+        shape = RoundedCornerShape(18.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.45f)
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(18.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Surface(
+                    shape = RoundedCornerShape(12.dp),
+                    color = Color(0xFF00796B).copy(alpha = 0.12f)
+                ) {
+                    Text(
+                        text = stringResource(R.string.hadith_of_the_day),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = Color(0xFF00796B),
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
+                    )
+                }
+
+                Text(
+                    text = hadithRef,
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
+
+            if (arabic.isNotBlank()) {
+                Spacer(Modifier.height(14.dp))
+                // Arabic text with me_quran font
+                Text(
+                    text = arabic,
+                    style = TextStyle(
+                        fontFamily = FontFamily(Font(R.font.me_quran)),
+                        fontSize = 20.sp,
+                        lineHeight = 36.sp,
+                        textDirection = TextDirection.Rtl,
+                        textAlign = TextAlign.Right
+                    ),
+                    color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 4,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+
+            if (!narrator.isNullOrBlank()) {
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    text = narrator,
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.85f),
+                    fontWeight = FontWeight.Medium
+                )
+            }
+
+            Spacer(Modifier.height(8.dp))
+
+            // Translation text
+            Text(
+                text = "\"$translation\"",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                lineHeight = 20.sp,
+                maxLines = 4,
+                overflow = TextOverflow.Ellipsis
+            )
+
+            Spacer(Modifier.height(10.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "${stringResource(R.string.read_hadith)} →",
+                    style = MaterialTheme.typography.labelMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
         }
     }
 }

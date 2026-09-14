@@ -235,4 +235,33 @@ class HadithRepositoryImplTest {
         assertEquals(154, totalBooks.size)
         assertTrue(topics.any { it.id == "prayer" && it.bookIds.contains("bukhari.8") })
     }
+
+    @Test
+    fun `getHadithOfTheDay returns hadith for day index`() {
+        val result = repo.getHadithOfTheDay(0)
+
+        assertTrue("Expected Success but got $result", result is Result.Success)
+        val hadith = (result as Result.Success).data
+        assertEquals(1, hadith.id)
+    }
+
+    @Test
+    fun `getHadithOfTheDay falls back to first available hadith when curated id absent`() {
+        // Day index 1 maps to ID 8, which isn't in fixture db -> falls back to available hadith (1)
+        val result = repo.getHadithOfTheDay(1)
+
+        assertTrue("Expected Success but got $result", result is Result.Success)
+        val hadith = (result as Result.Success).data
+        assertEquals(1, hadith.id)
+    }
+
+    @Test
+    fun `getHadithOfTheDay returns Error when db file missing`() {
+        dbFile.delete()
+
+        val result = repo.getHadithOfTheDay(0)
+
+        assertTrue("Expected Error but got $result", result is Result.Error)
+        assertTrue((result as Result.Error).error is AppError.Database)
+    }
 }

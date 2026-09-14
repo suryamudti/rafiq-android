@@ -179,6 +179,8 @@
     <string name="continue_reading">Continue</string>
     <string name="start_reading">Start Reading</string>
     <string name="verse_of_the_day">Verse of the Day</string>
+    <string name="hadith_of_the_day">Hadith of the Day</string>
+    <string name="read_hadith">Read Hadith</string>
     <string name="today_prayers">Today\'s Prayers</string>
     <string name="quick_access">Quick Access</string>
     <string name="completed">Completed</string>

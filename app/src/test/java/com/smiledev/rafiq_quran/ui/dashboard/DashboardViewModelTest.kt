@@ -4,9 +4,11 @@ import android.content.Context
 import com.smiledev.rafiq_quran.TestDispatcherProvider
 import com.smiledev.rafiq_quran.core.Result
 import com.smiledev.rafiq_quran.data.preferences.PreferencesManager
+import com.smiledev.rafiq_quran.domain.model.Hadith
 import com.smiledev.rafiq_quran.domain.model.PrayerTimesData
 import com.smiledev.rafiq_quran.domain.model.PrayerTimings
 import com.smiledev.rafiq_quran.domain.model.Surah
+import com.smiledev.rafiq_quran.domain.repository.HadithRepository
 import com.smiledev.rafiq_quran.domain.repository.PrayerLogDay
 import com.smiledev.rafiq_quran.domain.repository.PrayerLogRepository
 import com.smiledev.rafiq_quran.domain.repository.PrayerTimesRepository
@@ -42,6 +44,7 @@ class DashboardViewModelTest {
     private val context: Context = mockk(relaxed = true)
     private val quranRepository: QuranRepository = mockk(relaxed = true)
     private val prayerLogRepository: PrayerLogRepository = mockk(relaxed = true)
+    private val hadithRepository: HadithRepository = mockk(relaxed = true)
 
     private val latFlow = MutableStateFlow("-6.2088")
     private val lonFlow = MutableStateFlow("106.8456")
@@ -119,6 +122,42 @@ class DashboardViewModelTest {
         assertTrue(state.dailyAyahArabic.isNotBlank())
         assertTrue(state.dailyAyahTranslation.isNotBlank())
         assertTrue(state.dailyAyahSurahRef.isNotBlank())
+        assertTrue(state.dailyHadithArabic.isNotBlank())
+        assertTrue(state.dailyHadithTranslation.isNotBlank())
+        assertTrue(state.dailyHadithRef.isNotBlank())
+    }
+
+    @Test
+    fun `loadHadithOfTheDay populates dailyHadith when repository returns success`() = runTest(testDispatcher) {
+        val hadith = Hadith(
+            id = 42,
+            bookId = "bukhari.1",
+            inBookNumber = 1,
+            narratorAr = "عمر بن الخطاب",
+            narratorEn = "Narrated 'Umar bin Al-Khattab",
+            textAr = "إنما الأعمال بالنيات",
+            textEn = "Actions are according to intentions",
+            textId = "Semua perbuatan tergantung niatnya"
+        )
+        every { hadithRepository.getHadithOfTheDay(any()) } returns Result.Success(hadith)
+
+        val vm = DashboardViewModel(
+            prayerTimesRepository = prayerTimesRepository,
+            preferencesManager = preferencesManager,
+            context = context,
+            dispatcherProvider = testDispatcherProvider,
+            quranRepository = quranRepository,
+            prayerLogRepository = prayerLogRepository,
+            enablePeriodicCountdown = false,
+            hadithRepository = hadithRepository
+        )
+        testScheduler.runCurrent()
+
+        val state = vm.uiState.value
+        assertEquals(42, state.dailyHadithId)
+        assertEquals("إنما الأعمال بالنيات", state.dailyHadithArabic)
+        assertTrue(state.dailyHadithRef.contains("Bukhari"))
+        assertTrue(state.dailyHadithTranslation.isNotBlank())
     }
 
     @Test
