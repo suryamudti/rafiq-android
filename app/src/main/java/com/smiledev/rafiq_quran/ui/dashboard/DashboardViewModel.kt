@@ -11,6 +11,7 @@ import com.smiledev.rafiq_quran.core.Result
 import com.smiledev.rafiq_quran.data.preferences.PreferencesManager
 import com.smiledev.rafiq_quran.domain.model.PrayerTimeEntry
 import com.smiledev.rafiq_quran.domain.model.PrayerTimesData
+import com.smiledev.rafiq_quran.domain.repository.HadithRepository
 import com.smiledev.rafiq_quran.domain.repository.PrayerLogRepository
 import com.smiledev.rafiq_quran.domain.repository.PrayerTimesRepository
 import com.smiledev.rafiq_quran.domain.repository.QuranRepository
@@ -54,6 +55,11 @@ data class DashboardUiState(
     val dailyAyahSurahRef: String = "QS. Al-Baqarah: 152",
     val dailyAyahSuraNumber: Int = 2,
     val dailyAyahNumber: Int = 152,
+    val dailyHadithId: Int = 1,
+    val dailyHadithRef: String = "HR. Bukhari No. 1",
+    val dailyHadithArabic: String = "إِنَّمَا الْأَعْمَالُ بِالنِّيَّاتِ",
+    val dailyHadithTranslation: String = "The reward of deeds depends upon the intentions and every person will get the reward according to what he has intended.",
+    val dailyHadithNarrator: String = "Umar bin Al-Khattab",
     val todayCompletedPrayersCount: Int = 0
 )
 
@@ -132,7 +138,8 @@ class DashboardViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
     private val quranRepository: QuranRepository? = null,
-    private val prayerLogRepository: PrayerLogRepository? = null
+    private val prayerLogRepository: PrayerLogRepository? = null,
+    private val hadithRepository: HadithRepository? = null
 ) : ViewModel() {
 
     var enablePeriodicCountdown: Boolean = true
@@ -145,14 +152,16 @@ class DashboardViewModel @Inject constructor(
         dispatcherProvider: DispatcherProvider,
         quranRepository: QuranRepository?,
         prayerLogRepository: PrayerLogRepository?,
-        enablePeriodicCountdown: Boolean
+        enablePeriodicCountdown: Boolean,
+        hadithRepository: HadithRepository? = null
     ) : this(
         prayerTimesRepository,
         preferencesManager,
         context,
         dispatcherProvider,
         quranRepository,
-        prayerLogRepository
+        prayerLogRepository,
+        hadithRepository
     ) {
         this.enablePeriodicCountdown = enablePeriodicCountdown
     }
@@ -173,6 +182,14 @@ class DashboardViewModel @Inject constructor(
         val dayOfYear = Calendar.getInstance().get(Calendar.DAY_OF_YEAR)
         val insp = inspirations[dayOfYear % inspirations.size]
 
+        val initialHadithRef = if (isIndonesian) "HR. Bukhari No. 1" else "Sahih al-Bukhari #1"
+        val initialHadithTranslation = if (isIndonesian) {
+            "Sesungguhnya setiap amalan tergantung pada niatnya, dan setiap orang akan mendapatkan apa yang ia niatkan."
+        } else {
+            "The reward of deeds depends upon the intentions and every person will get the reward according to what he has intended."
+        }
+        val initialHadithNarrator = if (isIndonesian) "Umar bin Khaththab" else "Umar bin Al-Khattab"
+
         _uiState.value = _uiState.value.copy(
             greeting = computeGreeting(),
             appVersion = versionName,
@@ -181,8 +198,49 @@ class DashboardViewModel @Inject constructor(
             dailyAyahTranslation = if (isIndonesian) insp.translationId else insp.translationEn,
             dailyAyahSurahRef = insp.surahRef,
             dailyAyahSuraNumber = insp.suraNumber,
-            dailyAyahNumber = insp.ayaNumber
+            dailyAyahNumber = insp.ayaNumber,
+            dailyHadithRef = initialHadithRef,
+            dailyHadithTranslation = initialHadithTranslation,
+            dailyHadithNarrator = initialHadithNarrator
         )
+
+        // Load Hadith of the Day
+        viewModelScope.launch(dispatcherProvider.io) {
+            hadithRepository?.let { repo ->
+                val result = repo.getHadithOfTheDay(dayOfYear)
+                if (result is Result.Success) {
+                    val hadith = result.data
+                    val collection = hadith.bookId.substringBefore('.')
+                    val bookName = if (collection == "bukhari") {
+                        if (isIndonesian) "HR. Bukhari" else "Sahih al-Bukhari"
+                    } else {
+                        if (isIndonesian) "HR. Muslim" else "Sahih Muslim"
+                    }
+                    val ref = if (isIndonesian) {
+                        "$bookName No. ${hadith.inBookNumber}"
+                    } else {
+                        "$bookName #${hadith.inBookNumber}"
+                    }
+                    val translation = if (isIndonesian) {
+                        hadith.textId.ifBlank { hadith.textEn }
+                    } else {
+                        hadith.textEn.ifBlank { hadith.textId }
+                    }
+                    val narrator = if (isIndonesian) {
+                        hadith.narratorEn ?: hadith.narratorAr ?: ""
+                    } else {
+                        hadith.narratorEn ?: ""
+                    }
+                    _uiState.value = _uiState.value.copy(
+                        dailyHadithId = hadith.id,
+                        dailyHadithRef = ref,
+                        dailyHadithArabic = hadith.textAr,
+                        dailyHadithTranslation = translation,
+                        dailyHadithNarrator = narrator
+                    )
+                }
+            }
+        }
 
         // Observe Coordinates & Method
         viewModelScope.launch(dispatcherProvider.io) {

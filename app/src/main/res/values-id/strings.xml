@@ -179,6 +179,8 @@
     <string name="continue_reading">Lanjutkan</string>
     <string name="start_reading">Mulai Membaca</string>
     <string name="verse_of_the_day">Ayat Hari Ini</string>
+    <string name="hadith_of_the_day">Hadis Hari Ini</string>
+    <string name="read_hadith">Baca Hadis</string>
     <string name="today_prayers">Shalat Hari Ini</string>
     <string name="quick_access">Fitur Utama</string>
     <string name="completed">Selesai</string>

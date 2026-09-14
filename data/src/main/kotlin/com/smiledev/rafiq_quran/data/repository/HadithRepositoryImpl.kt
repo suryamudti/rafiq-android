@@ -13,6 +13,7 @@ import com.smiledev.rafiq_quran.domain.model.HadithTopic
 import com.smiledev.rafiq_quran.domain.repository.HadithRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
+import java.util.Calendar
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -125,6 +126,35 @@ class HadithRepositoryImpl @Inject constructor(
         return TOPICS.asSuccess()
     }
 
+    override fun getHadithOfTheDay(dayOfYear: Int): Result<Hadith, AppError> {
+        val day = if (dayOfYear >= 0) dayOfYear else Calendar.getInstance().get(Calendar.DAY_OF_YEAR)
+        val targetId = CURATED_DAILY_HADITH_IDS[day.mod(CURATED_DAILY_HADITH_IDS.size)]
+        val result = getHadithById(targetId)
+        if (result is Result.Success) {
+            val hadith = result.data
+            if (hadith != null) {
+                return hadith.asSuccess()
+            }
+        }
+        // Fallback: in fixture databases or if targetId is absent, return any available hadith
+        return try {
+            val d = getDatabase()
+            val cursor = d.rawQuery(
+                "SELECT id, book_id, in_book_number, narrator_ar, narrator_en, text_ar, text_en, text_id FROM hadiths ORDER BY id LIMIT 1",
+                null
+            )
+            val fallback = if (cursor.moveToFirst()) cursorToHadith(cursor) else null
+            cursor.close()
+            if (fallback != null) {
+                fallback.asSuccess()
+            } else {
+                Result.Error(AppError.Database("No hadiths found in database", null))
+            }
+        } catch (e: Exception) {
+            Result.Error(AppError.Database("Failed to load hadith of the day", e))
+        }
+    }
+
     private fun escapeLike(term: String): String =
         term.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
 
@@ -165,6 +195,12 @@ class HadithRepositoryImpl @Inject constructor(
     }
 
     companion object {
+        val CURATED_DAILY_HADITH_IDS = listOf(
+            1, 8, 9, 13, 14, 16, 39, 55, 106, 938,
+            1211, 1333, 1363, 1808, 1858, 1893, 2711, 2911, 5785, 5800,
+            5862, 5882, 6018, 7356, 7434, 7435, 13714
+        )
+
         val TOPICS = listOf(
             HadithTopic(
                 id = "faith",

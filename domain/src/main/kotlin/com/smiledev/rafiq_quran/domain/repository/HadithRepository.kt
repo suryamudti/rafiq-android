@@ -12,4 +12,5 @@ interface HadithRepository {
     fun searchHadiths(query: String, limit: Int = 100): Result<List<Hadith>, AppError>
     fun getHadithById(id: Int): Result<Hadith?, AppError>
     fun getTopics(): Result<List<HadithTopic>, AppError>
+    fun getHadithOfTheDay(dayOfYear: Int = -1): Result<Hadith, AppError>
 }
