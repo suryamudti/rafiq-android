@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.RafiqApp" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.RafiqApp" parent="android:Theme.Material.NoActionBar" />
 
-    <!-- Splash screen theme using AndroidX core-splashscreen -->
+    <!-- Splash screen theme using AndroidX core-splashscreen for Night mode -->
     <style name="Theme.RafiqApp.Starting" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/splash_background</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_logo</item>
