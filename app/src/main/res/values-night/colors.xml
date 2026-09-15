@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Dark mode colors for Splash Screen -->
+    <color name="splash_background">#1C1B1F</color> <!-- DarkBackground: matching dark theme -->
+    <color name="splash_icon_tint">#80CBC4</color> <!-- Teal200: Rafiq's dark primary color -->
+</resources>
