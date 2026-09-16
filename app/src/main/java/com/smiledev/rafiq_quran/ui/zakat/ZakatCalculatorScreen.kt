@@ -75,7 +75,7 @@ fun ZakatCalculatorScreen(
                 .verticalScroll(rememberScrollState())
         ) {
             Text(
-                text = "Calculate Your Zakat",
+                text = stringResource(R.string.calculate_your_zakat),
                 style = MaterialTheme.typography.headlineSmall,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
@@ -101,7 +101,7 @@ fun ZakatCalculatorScreen(
             OutlinedTextField(
                 value = state.goldWeight,
                 onValueChange = { viewModel.updateGold(it) },
-                label = { Text("Gold (grams)") },
+                label = { Text(stringResource(R.string.zakat_gold_label)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.fillMaxWidth()
             )
@@ -109,7 +109,7 @@ fun ZakatCalculatorScreen(
             OutlinedTextField(
                 value = state.silverWeight,
                 onValueChange = { viewModel.updateSilver(it) },
-                label = { Text("Silver (grams)") },
+                label = { Text(stringResource(R.string.zakat_silver_label)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.fillMaxWidth()
             )
@@ -117,7 +117,7 @@ fun ZakatCalculatorScreen(
             OutlinedTextField(
                 value = state.cashAmount,
                 onValueChange = { viewModel.updateCash(it) },
-                label = { Text("Cash & Savings (${state.selectedCurrency})") },
+                label = { Text(stringResource(R.string.zakat_cash_label, state.selectedCurrency)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.fillMaxWidth()
             )
@@ -128,21 +128,21 @@ fun ZakatCalculatorScreen(
                 onClick = { viewModel.calculate() },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Calculate Zakat")
+                Text(stringResource(R.string.calculate_zakat))
             }
 
             Spacer(Modifier.height(16.dp))
 
             if (state.isRefreshing) {
                 Text(
-                    text = "Refreshing latest prices…",
+                    text = stringResource(R.string.zakat_refreshing_prices),
                     fontSize = 11.sp,
                     color = Color.Gray,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
             } else if (state.isUsingFallback) {
                 Text(
-                    text = "Offline — showing last known price",
+                    text = stringResource(R.string.zakat_offline_prices),
                     fontSize = 11.sp,
                     color = Color.Gray,
                     modifier = Modifier.padding(bottom = 8.dp)
@@ -155,7 +155,7 @@ fun ZakatCalculatorScreen(
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
-                        text = "Zakat Summary",
+                        text = stringResource(R.string.zakat_summary),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold
                     )
@@ -163,32 +163,32 @@ fun ZakatCalculatorScreen(
                     HorizontalDivider()
                     Spacer(Modifier.height(8.dp))
                     if (r.goldZakat > 0) {
-                        Text("Gold Zakat: ${formatVal(r.goldZakat)}")
+                        Text(stringResource(R.string.zakat_gold_due, formatVal(r.goldZakat)))
                     } else {
-                        Text("Gold: Below nisab (85g)")
+                        Text(stringResource(R.string.zakat_gold_below_nisab))
                     }
                     if (r.silverZakat > 0) {
-                        Text("Silver Zakat: ${formatVal(r.silverZakat)}")
+                        Text(stringResource(R.string.zakat_silver_due, formatVal(r.silverZakat)))
                     } else {
-                        Text("Silver: Below nisab (595g)")
+                        Text(stringResource(R.string.zakat_silver_below_nisab))
                     }
                     if (r.cashZakat > 0) {
-                        Text("Cash Zakat: ${formatVal(r.cashZakat)}")
+                        Text(stringResource(R.string.zakat_cash_due, formatVal(r.cashZakat)))
                     } else {
-                        Text("Cash: Below nisab threshold")
+                        Text(stringResource(R.string.zakat_cash_below_nisab))
                     }
                     Spacer(Modifier.height(8.dp))
                     HorizontalDivider()
                     Spacer(Modifier.height(8.dp))
                     Text(
-                        text = "Total Zakat Due: ${formatVal(r.totalZakat)}",
+                        text = stringResource(R.string.zakat_total_due, formatVal(r.totalZakat)),
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF009688)
                     )
                     if (r.goldPricePerGram > 0) {
                         Text(
-                            text = "Gold price: ${formatVal(r.goldPricePerGram)}/g | Silver: ${formatVal(r.silverPricePerGram)}/g",
+                            text = stringResource(R.string.zakat_prices_summary, formatVal(r.goldPricePerGram), formatVal(r.silverPricePerGram)),
                             fontSize = 11.sp,
                             color = Color.Gray
                         )

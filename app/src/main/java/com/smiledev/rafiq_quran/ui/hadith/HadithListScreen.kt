@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import com.smiledev.rafiq_quran.core.currentLocaleCode
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -57,7 +58,7 @@ fun HadithListScreen(
             TopAppBar(
                 title = { Text(title) },
                 navigationIcon = {
-                    Text("Back", modifier = Modifier.clickable(onClick = onBack).padding(16.dp))
+                    Text(stringResource(R.string.back), modifier = Modifier.clickable(onClick = onBack).padding(16.dp))
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surface
@@ -100,13 +101,19 @@ private fun HadithCard(hadith: Hadith, onClick: () -> Unit) {
     ) {
         Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
             Text(
-                text = "Book ${hadith.bookId.substringAfterLast('.')} · Hadith ${hadith.inBookNumber}",
+                text = stringResource(R.string.hadith_book_hadith_ref, hadith.bookId.substringAfterLast('.'), hadith.inBookNumber),
                 fontSize = 12.sp,
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold
             )
+            val isId = currentLocaleCode() == "id"
+            val previewText = if (isId) {
+                hadith.textId?.takeIf { it.isNotBlank() } ?: hadith.narratorEn ?: hadith.textEn
+            } else {
+                hadith.narratorEn ?: hadith.textEn
+            }
             Text(
-                text = hadith.narratorEn ?: hadith.textEn,
+                text = previewText,
                 fontSize = 14.sp,
                 color = Color.Gray,
                 maxLines = 1,

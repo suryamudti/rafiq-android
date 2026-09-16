@@ -22,6 +22,7 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
+import com.smiledev.rafiq_quran.R
 import com.smiledev.rafiq_quran.data.preferences.PreferencesManager
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -65,10 +66,10 @@ class PrayerNotificationWorker(
         fun createNotificationChannel(context: Context) {
             val channel = NotificationChannel(
                 CHANNEL_ID,
-                "Prayer Times",
+                context.getString(R.string.prayer_times),
                 NotificationManager.IMPORTANCE_HIGH
             ).apply {
-                description = "Notifications for prayer times"
+                description = context.getString(R.string.prayer_notification_channel_desc)
                 enableVibration(true)
                 val soundUri = Uri.parse(
                     "android.resource://${context.packageName}/raw/adzan_default"
@@ -99,10 +100,21 @@ class PrayerNotificationWorker(
                 context, 0, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
+            val localizedName = when (name.lowercase()) {
+                "imsak" -> context.getString(R.string.prayer_imsak)
+                "fajr" -> context.getString(R.string.prayer_fajr)
+                "sunrise" -> context.getString(R.string.prayer_sunrise)
+                "dhuha" -> context.getString(R.string.prayer_dhuha)
+                "dhuhr" -> context.getString(R.string.prayer_dhuhr)
+                "asr" -> context.getString(R.string.prayer_asr)
+                "maghrib" -> context.getString(R.string.prayer_maghrib)
+                "isha" -> context.getString(R.string.prayer_isha)
+                else -> name
+            }
             val notification = NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(android.R.drawable.ic_dialog_info)
-                .setContentTitle("Time for $name")
-                .setContentText("It's time to pray $name ($time)")
+                .setContentTitle(context.getString(R.string.prayer_time_for, localizedName))
+                .setContentText(context.getString(R.string.prayer_notification_body, localizedName, time))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)

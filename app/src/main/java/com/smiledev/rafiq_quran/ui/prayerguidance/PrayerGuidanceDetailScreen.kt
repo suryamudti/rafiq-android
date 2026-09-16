@@ -184,10 +184,10 @@ private fun PrayerGuidanceDetailContent(
                 // Category and Raka'at badges
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     val badgeCategoryText = when (item.category) {
-                        PrayerGuidanceCategory.OBLIGATORY -> if (isId) "Sholat Fardhu" else "Obligatory"
-                        PrayerGuidanceCategory.SUNNAH -> if (isId) "Sholat Sunnah" else "Sunnah"
-                        PrayerGuidanceCategory.PURIFICATION -> if (isId) "Thaharah" else "Purification"
-                        PrayerGuidanceCategory.POST_PRAYER -> if (isId) "Dzikir & Doa" else "Dhikr & Dua"
+                        PrayerGuidanceCategory.OBLIGATORY -> stringResource(R.string.category_fardhu)
+                        PrayerGuidanceCategory.SUNNAH -> stringResource(R.string.category_sunnah)
+                        PrayerGuidanceCategory.PURIFICATION -> stringResource(R.string.category_purification)
+                        PrayerGuidanceCategory.POST_PRAYER -> stringResource(R.string.category_post_prayer)
                     }
 
                     Surface(
@@ -210,7 +210,7 @@ private fun PrayerGuidanceDetailContent(
                             color = MaterialTheme.colorScheme.primaryContainer
                         ) {
                             Text(
-                                text = "$rakaatVal Raka'at",
+                                text = stringResource(R.string.rakaat_count, rakaatVal),
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.onPrimaryContainer,
                                 fontWeight = FontWeight.Bold,
@@ -250,7 +250,7 @@ private fun PrayerGuidanceDetailContent(
                         .padding(18.dp)
                 ) {
                     Text(
-                        text = if (isId) "Lafadz Niat" else stringResource(R.string.niyyah),
+                        text = stringResource(R.string.niyyah),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF00796B)
@@ -298,7 +298,7 @@ private fun PrayerGuidanceDetailContent(
         // 3. Step-by-Step Instructions
         if (item.steps.isNotEmpty()) {
             Text(
-                text = if (isId) "Tata Cara & Gerakan Langkah Demi Langkah" else stringResource(R.string.prayer_steps),
+                text = stringResource(R.string.prayer_steps),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface
@@ -325,7 +325,7 @@ private fun PrayerGuidanceDetailContent(
                         .padding(18.dp)
                 ) {
                     Text(
-                        text = if (isId) "Catatan Penting & Keutamaan" else stringResource(R.string.tips_and_notes),
+                        text = stringResource(R.string.tips_and_notes),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFFD97706)

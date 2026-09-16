@@ -143,6 +143,7 @@
     <!-- Tasbih -->
     <string name="tasbih_counter">Tasbih Counter</string>
     <string name="count">Count</string>
+    <string name="tap_to_count">Tap to count</string>
     <string name="subhanallah">Subhanallah</string>
     <string name="alhamdulillah">Alhamdulillah</string>
     <string name="allahu_akbar">Allahu Akbar</string>
@@ -153,10 +154,10 @@
     <string name="prayer_log_title">Prayer Log</string>
     <string name="today">Today: %s</string>
     <string name="fajr_subuh">Fajr (Subuh)</string>
-    <string name="dhuhr">Dzuhur</string>
+    <string name="dhuhr">Dhuhr</string>
     <string name="asr">Asr</string>
     <string name="maghrib">Maghrib</string>
-    <string name="isha">Isya</string>
+    <string name="isha">Isha</string>
     <!-- Settings -->
     <string name="theme">Theme</string>
     <string name="system_default">System default</string>
@@ -194,8 +195,6 @@
     <!-- Quran tabs -->
     <string name="surahs">Surahs</string>
     <string name="verses_count">%d verses</string>
-    <!-- Tasbih -->
-    <string name="tap_to_count">Tap to count</string>
     <!-- Zakat -->
     <string name="gold_weight">Gold Weight (grams)</string>
     <string name="silver_weight">Silver Weight (grams)</string>
@@ -262,4 +261,68 @@
     <string name="prayer_steps">Step-by-Step Guide</string>
     <string name="step_number">Step %d</string>
     <string name="tips_and_notes">Important Notes &amp; Virtues</string>
+    <string name="guidance_steps_count">%d Steps guide</string>
+    <string name="view_details">View Details →</string>
+    <!-- Common Actions & Dialogs -->
+    <string name="close">Close</string>
+    <string name="share">Share</string>
+    <string name="exit">Exit</string>
+    <string name="copied">Copied</string>
+    <!-- Zakat Calculator Additional -->
+    <string name="calculate_your_zakat">Calculate Your Zakat</string>
+    <string name="calculate_zakat">Calculate Zakat</string>
+    <string name="zakat_gold_label">Gold (grams)</string>
+    <string name="zakat_silver_label">Silver (grams)</string>
+    <string name="zakat_cash_label">Cash &amp; Savings (%s)</string>
+    <string name="zakat_refreshing_prices">Refreshing latest prices…</string>
+    <string name="zakat_offline_prices">Offline — showing last known price</string>
+    <string name="zakat_summary">Zakat Summary</string>
+    <string name="zakat_gold_due">Gold Zakat: %s</string>
+    <string name="zakat_gold_below_nisab">Gold: Below nisab (85g)</string>
+    <string name="zakat_silver_due">Silver Zakat: %s</string>
+    <string name="zakat_silver_below_nisab">Silver: Below nisab (595g)</string>
+    <string name="zakat_cash_due">Cash Zakat: %s</string>
+    <string name="zakat_cash_below_nisab">Cash: Below nisab threshold</string>
+    <string name="zakat_total_due">Total Zakat Due: %s</string>
+    <string name="zakat_prices_summary">Gold price: %1$s/g | Silver: %2$s/g</string>
+    <!-- Ayah & Quran Reading -->
+    <string name="copy_text">Copy Text</string>
+    <string name="copy_translation">Copy Translation</string>
+    <string name="add_bookmark">Add Bookmark</string>
+    <string name="remove_bookmark">Remove Bookmark</string>
+    <string name="jump">Jump</string>
+    <string name="jump_marker">%1$s — Ayah %2$d</string>
+    <string name="font">Font</string>
+    <string name="memorize">Memorize</string>
+    <string name="exit_memorization">Exit Memorization</string>
+    <string name="memorization_mode">Memorization Mode</string>
+    <string name="tap_to_reveal_translation">Tap to reveal translation</string>
+    <string name="translation_unavailable">Translation unavailable</string>
+    <string name="translation_unavailable_bracketed">[Translation unavailable]</string>
+    <string name="loading_tafsir">Loading tafsir…</string>
+    <string name="hide_tafsir">Hide Tafsir</string>
+    <string name="show_tafsir">Show Tafsir</string>
+    <string name="page_badge">Page %d</string>
+    <string name="juz_badge">Juz %d</string>
+    <string name="share_ayah">Share Ayah</string>
+    <string name="quran_via_rafiq">Quran via Rafiq</string>
+    <!-- Hadith Additional -->
+    <string name="hadith_book_number">Book %d</string>
+    <string name="hadith_book_hadith_ref">Book %1$s · Hadith %2$d</string>
+    <string name="collection_sahih_bukhari">Sahih al-Bukhari</string>
+    <string name="collection_sahih_muslim">Sahih Muslim</string>
+    <!-- Prophet Additional -->
+    <string name="prophet_fallback">Prophet</string>
+    <!-- Prayer Times & Notifications -->
+    <string name="prayer_time_for">Time for %s</string>
+    <string name="prayer_notification_body">It\'s time to pray %1$s (%2$s)</string>
+    <string name="prayer_notification_channel_desc">Notifications for prayer times</string>
+    <string name="prayer_imsak">Imsak</string>
+    <string name="prayer_fajr">Fajr</string>
+    <string name="prayer_sunrise">Sunrise</string>
+    <string name="prayer_dhuha">Dhuha</string>
+    <string name="prayer_dhuhr">Dhuhr</string>
+    <string name="prayer_asr">Asr</string>
+    <string name="prayer_maghrib">Maghrib</string>
+    <string name="prayer_isha">Isha</string>
 </resources>

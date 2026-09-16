@@ -251,7 +251,7 @@ fun MosquesScreen(
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Button(onClick = { viewModel.retry() }) {
-                                Text("Retry")
+                                Text(stringResource(R.string.retry))
                             }
                         }
                     }

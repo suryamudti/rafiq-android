@@ -63,7 +63,7 @@ fun HadithSearchScreen(
             TopAppBar(
                 title = { Text(stringResource(R.string.search_hadiths)) },
                 navigationIcon = {
-                    Text("Back", modifier = Modifier.clickable(onClick = onBack).padding(16.dp))
+                    Text(stringResource(R.string.back), modifier = Modifier.clickable(onClick = onBack).padding(16.dp))
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surface
@@ -154,7 +154,11 @@ private fun SearchResultCard(
                         hadith.inBookNumber
                     )
                 } else {
-                    "Book ${hadith.bookId.substringAfterLast('.')} · Hadith ${hadith.inBookNumber}"
+                    stringResource(
+                        R.string.hadith_book_hadith_ref,
+                        hadith.bookId.substringAfterLast('.'),
+                        hadith.inBookNumber
+                    )
                 },
                 fontSize = 12.sp,
                 color = MaterialTheme.colorScheme.primary,

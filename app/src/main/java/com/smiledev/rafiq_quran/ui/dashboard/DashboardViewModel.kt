@@ -5,6 +5,7 @@ import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.smiledev.rafiq_quran.core.AppError
+import com.smiledev.rafiq_quran.core.currentLocaleCode
 import com.smiledev.rafiq_quran.core.DefaultDispatcherProvider
 import com.smiledev.rafiq_quran.core.DispatcherProvider
 import com.smiledev.rafiq_quran.core.Result
@@ -279,7 +280,7 @@ class DashboardViewModel @Inject constructor(
                 Pair(sura, aya)
             }.collect { (sura, aya) ->
                 val suraName = if (sura > 0 && quranRepository != null) {
-                    val lang = if (Locale.getDefault().language == "id") "id" else "en"
+                    val lang = currentLocaleCode()
                     val chaptersResult = quranRepository.getChapters(lang)
                     if (chaptersResult is Result.Success) {
                         chaptersResult.data.find { it.chapterNumber == sura }?.nameSimple ?: "Surah $sura"
@@ -346,17 +347,29 @@ class DashboardViewModel @Inject constructor(
     }
 
     private fun applyPrayerTimes(data: PrayerTimesData) {
-        val isIndonesian = Locale.getDefault().language == "id"
+        val isIndonesian = currentLocaleCode() == "id"
 
-        val times = listOf(
-            PrayerTimeEntry("Imsak", data.timings.imsak),
-            PrayerTimeEntry("Fajr (Subuh)", data.timings.fajr),
-            PrayerTimeEntry("Sunrise", data.timings.sunrise),
-            PrayerTimeEntry("Dzuhur", data.timings.dhuhr),
-            PrayerTimeEntry("Asr", data.timings.asr),
-            PrayerTimeEntry("Maghrib", data.timings.maghrib),
-            PrayerTimeEntry("Isya", data.timings.isha)
-        )
+        val times = if (isIndonesian) {
+            listOf(
+                PrayerTimeEntry("Imsak", data.timings.imsak),
+                PrayerTimeEntry("Subuh", data.timings.fajr),
+                PrayerTimeEntry("Terbit", data.timings.sunrise),
+                PrayerTimeEntry("Dzuhur", data.timings.dhuhr),
+                PrayerTimeEntry("Ashar", data.timings.asr),
+                PrayerTimeEntry("Maghrib", data.timings.maghrib),
+                PrayerTimeEntry("Isya", data.timings.isha)
+            )
+        } else {
+            listOf(
+                PrayerTimeEntry("Imsak", data.timings.imsak),
+                PrayerTimeEntry("Fajr", data.timings.fajr),
+                PrayerTimeEntry("Sunrise", data.timings.sunrise),
+                PrayerTimeEntry("Dhuhr", data.timings.dhuhr),
+                PrayerTimeEntry("Asr", data.timings.asr),
+                PrayerTimeEntry("Maghrib", data.timings.maghrib),
+                PrayerTimeEntry("Isha", data.timings.isha)
+            )
+        }
 
         val timeline = listOf(
             PrayerTimeEntry(if (isIndonesian) "Subuh" else "Fajr", data.timings.fajr),
@@ -408,11 +421,11 @@ class DashboardViewModel @Inject constructor(
             val mins = diff % 60
 
             val activeIdx = when {
-                nextPrayer.name.contains("Fajr", ignoreCase = true) || nextPrayer.name.contains("Imsak", ignoreCase = true) -> 0
-                nextPrayer.name.contains("Dzuhur", ignoreCase = true) || nextPrayer.name.contains("Sunrise", ignoreCase = true) -> 1
-                nextPrayer.name.contains("Asr", ignoreCase = true) -> 2
+                nextPrayer.name.contains("Fajr", ignoreCase = true) || nextPrayer.name.contains("Subuh", ignoreCase = true) || nextPrayer.name.contains("Imsak", ignoreCase = true) -> 0
+                nextPrayer.name.contains("Dzuhur", ignoreCase = true) || nextPrayer.name.contains("Dhuhr", ignoreCase = true) || nextPrayer.name.contains("Sunrise", ignoreCase = true) || nextPrayer.name.contains("Terbit", ignoreCase = true) || nextPrayer.name.contains("Dhuha", ignoreCase = true) -> 1
+                nextPrayer.name.contains("Asr", ignoreCase = true) || nextPrayer.name.contains("Ashar", ignoreCase = true) -> 2
                 nextPrayer.name.contains("Maghrib", ignoreCase = true) -> 3
-                nextPrayer.name.contains("Isya", ignoreCase = true) -> 4
+                nextPrayer.name.contains("Isya", ignoreCase = true) || nextPrayer.name.contains("Isha", ignoreCase = true) -> 4
                 else -> 0
             }
 
@@ -452,7 +465,7 @@ class DashboardViewModel @Inject constructor(
 
     private fun computeGreeting(): String {
         val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
-        val isIndonesian = Locale.getDefault().language == "id"
+        val isIndonesian = currentLocaleCode() == "id"
         return when (hour) {
             in 5..11 -> if (isIndonesian) "Selamat pagi" else "Good morning"
             in 12..16 -> if (isIndonesian) "Selamat siang" else "Good afternoon"

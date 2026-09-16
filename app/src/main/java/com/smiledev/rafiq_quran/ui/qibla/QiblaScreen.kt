@@ -52,6 +52,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.smiledev.rafiq_quran.R
+import com.smiledev.rafiq_quran.core.currentLocaleCode
 import kotlin.math.*
 import java.util.Locale
 
@@ -96,7 +97,7 @@ fun QiblaScreen(
 
     val offset = normalizeAngle180((state.bearing - deviceAzimuth).toDouble())
     val isAligned = abs(offset) <= ALIGNED_THRESHOLD_DEGREES
-    val directionName = compassDirection(state.bearing)
+    val directionName = compassDirection(state.bearing, currentLocaleCode())
     val distanceFormatted = String.format(Locale.US, "%,d", state.distanceKm)
 
     Scaffold(

@@ -62,7 +62,7 @@ fun HadithDetailScreen(
             TopAppBar(
                 title = { Text(stringResource(R.string.hadiths)) },
                 navigationIcon = {
-                    Text("Back", modifier = Modifier.clickable(onClick = onBack).padding(16.dp))
+                    Text(stringResource(R.string.back), modifier = Modifier.clickable(onClick = onBack).padding(16.dp))
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surface
@@ -84,7 +84,12 @@ fun HadithDetailScreen(
             ) {
                 val collection = state.book?.collection ?: "bukhari"
                 Text(
-                    text = "Sahih ${collectionName(collection)} · Book ${hadith.bookId.substringAfterLast('.')}, Hadith ${hadith.inBookNumber}",
+                    text = stringResource(
+                        R.string.hadith_reference,
+                        collectionName(collection),
+                        hadith.bookId.substringAfterLast('.').toIntOrNull() ?: 0,
+                        hadith.inBookNumber
+                    ),
                     fontSize = 13.sp,
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Bold
@@ -157,7 +162,7 @@ private fun TranslationSection(chip: String, text: String) {
             }
             if (text.isBlank()) {
                 Text(
-                    text = "Translation unavailable",
+                    text = stringResource(R.string.translation_unavailable),
                     fontSize = 15.sp,
                     color = Color.Gray
                 )

@@ -57,15 +57,21 @@ class QiblaViewModel @Inject constructor(
 private const val DEFAULT_LAT = -6.2088
 private const val DEFAULT_LON = 106.8456
 
-private val COMPASS_POINTS = listOf(
+private val COMPASS_POINTS_EN = listOf(
     "N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE",
     "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"
 )
 
-fun compassDirection(bearing: Int): String {
+private val COMPASS_POINTS_ID = listOf(
+    "U", "UTL", "TL", "TTL", "T", "TGr", "TG", "STG",
+    "S", "SBD", "BD", "BBD", "B", "BBL", "BL", "UBL"
+)
+
+fun compassDirection(bearing: Int, localeCode: String = "en"): String {
     val normalized = ((bearing % 360) + 360) % 360
     val index = ((normalized + 11.25) / 22.5).toInt() % 16
-    return COMPASS_POINTS[index]
+    val points = if (localeCode == "id") COMPASS_POINTS_ID else COMPASS_POINTS_EN
+    return points[index]
 }
 
 fun normalizeAngle180(deg: Double): Double {

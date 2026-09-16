@@ -5,6 +5,7 @@ import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.smiledev.rafiq_quran.core.AppError
+import com.smiledev.rafiq_quran.core.currentLocaleCode
 import com.smiledev.rafiq_quran.core.DefaultDispatcherProvider
 import com.smiledev.rafiq_quran.core.DispatcherProvider
 import com.smiledev.rafiq_quran.core.Result
@@ -96,17 +97,31 @@ class PrayerTimesViewModel @Inject constructor(
             when (result) {
                 is Result.Success -> {
                     val data = result.data
+                    val isId = currentLocaleCode() == "id"
                     val dhuhaTime = addMinutes(data.timings.sunrise, 20)
-                    val times = listOf(
-                        PrayerTimeEntry("Imsak", data.timings.imsak),
-                        PrayerTimeEntry("Fajr (Subuh)", data.timings.fajr),
-                        PrayerTimeEntry("Sunrise", data.timings.sunrise),
-                        PrayerTimeEntry("Dhuha", dhuhaTime),
-                        PrayerTimeEntry("Dzuhur", data.timings.dhuhr),
-                        PrayerTimeEntry("Asr", data.timings.asr),
-                        PrayerTimeEntry("Maghrib", data.timings.maghrib),
-                        PrayerTimeEntry("Isya", data.timings.isha)
-                    )
+                    val times = if (isId) {
+                        listOf(
+                            PrayerTimeEntry("Imsak", data.timings.imsak),
+                            PrayerTimeEntry("Subuh", data.timings.fajr),
+                            PrayerTimeEntry("Terbit", data.timings.sunrise),
+                            PrayerTimeEntry("Dhuha", dhuhaTime),
+                            PrayerTimeEntry("Dzuhur", data.timings.dhuhr),
+                            PrayerTimeEntry("Ashar", data.timings.asr),
+                            PrayerTimeEntry("Maghrib", data.timings.maghrib),
+                            PrayerTimeEntry("Isya", data.timings.isha)
+                        )
+                    } else {
+                        listOf(
+                            PrayerTimeEntry("Imsak", data.timings.imsak),
+                            PrayerTimeEntry("Fajr", data.timings.fajr),
+                            PrayerTimeEntry("Sunrise", data.timings.sunrise),
+                            PrayerTimeEntry("Dhuha", dhuhaTime),
+                            PrayerTimeEntry("Dhuhr", data.timings.dhuhr),
+                            PrayerTimeEntry("Asr", data.timings.asr),
+                            PrayerTimeEntry("Maghrib", data.timings.maghrib),
+                            PrayerTimeEntry("Isha", data.timings.isha)
+                        )
+                    }
                     _uiState.value = _uiState.value.copy(
                         prayerTimes = times,
                         hijriDate = data.hijriDate ?: "",
@@ -179,7 +194,15 @@ class PrayerTimesViewModel @Inject constructor(
     }
 
     val displayDate: String
-        get() = displayDateFormat.format(_uiState.value.currentDate)
+        get() {
+            val isId = currentLocaleCode() == "id"
+            val format = if (isId) {
+                SimpleDateFormat("EEEE, d MMMM yyyy", Locale("id", "ID"))
+            } else {
+                displayDateFormat
+            }
+            return format.format(_uiState.value.currentDate)
+        }
 
     private fun addMinutes(time: String, add: Int): String {
         val parts = time.split(":")
