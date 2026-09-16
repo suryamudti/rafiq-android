@@ -1,7 +1,6 @@
 package com.smiledev.rafiq_quran.ui.prayertimes
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -9,22 +8,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -34,19 +25,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.smiledev.rafiq_quran.R
 import com.smiledev.rafiq_quran.core.displayMessage
-import java.util.Date
+import com.smiledev.rafiq_quran.theme.RafiqTheme
+import com.smiledev.rafiq_quran.ui.designsystem.appbar.RafiqTopAppBar
+import com.smiledev.rafiq_quran.ui.designsystem.badge.RafiqBadge
+import com.smiledev.rafiq_quran.ui.designsystem.card.RafiqCard
+import com.smiledev.rafiq_quran.ui.designsystem.card.RafiqHeroCard
+import com.smiledev.rafiq_quran.ui.designsystem.divider.RafiqDivider
+import com.smiledev.rafiq_quran.ui.designsystem.state.RafiqErrorState
+import com.smiledev.rafiq_quran.ui.designsystem.state.RafiqLoadingIndicator
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -59,14 +52,9 @@ fun PrayerTimesScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.prayer_times)) },
-                navigationIcon = {
-                    Text(stringResource(R.string.back), modifier = Modifier.clickable(onClick = onBack).padding(16.dp))
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                )
+            RafiqTopAppBar(
+                title = stringResource(R.string.prayer_times),
+                onBack = onBack
             )
         }
     ) { padding ->
@@ -79,114 +67,129 @@ fun PrayerTimesScreen(
         ) {
             when {
                 state.isLoading && !isRefreshing -> {
-                    CircularProgressIndicator(modifier = Modifier.fillMaxSize().semantics { contentDescription = "Loading" })
+                    RafiqLoadingIndicator()
                 }
                 state.error != null -> {
-                    Text(
-                        text = state.error?.displayMessage ?: "",
-                        modifier = Modifier.fillMaxSize().padding(16.dp),
-                        color = MaterialTheme.colorScheme.error
-                    )
+                    val err = state.error
+                    if (err != null) {
+                        RafiqErrorState(
+                            error = err,
+                            onRetry = { viewModel.refresh() }
+                        )
+                    }
                 }
                 else -> {
                     LazyColumn(
                         modifier = modifier.fillMaxSize()
                     ) {
-                    item {
-                        Card(
-                            modifier = Modifier.fillMaxWidth().padding(12.dp),
-                            shape = RoundedCornerShape(16.dp),
-                            elevation = CardDefaults.cardElevation(4.dp)
-                        ) {
-                            Box(
+                        item {
+                            RafiqHeroCard(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(24.dp),
-                                contentAlignment = Alignment.Center
+                                    .padding(
+                                        horizontal = RafiqTheme.spacing.l,
+                                        vertical = RafiqTheme.spacing.m
+                                    ),
+                                gradient = RafiqTheme.extendedColors.heroPrayerGradient
                             ) {
-                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                    Text(
-                                        text = state.currentPrayer,
-                                        fontSize = 20.sp,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                    Spacer(Modifier.height(4.dp))
-                                    Text(
-                                        text = state.currentPrayerTime,
-                                        fontSize = 35.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        color = Color(0xFF009688)
-                                    )
-                                    Spacer(Modifier.height(8.dp))
-                                    Text(
-                                        text = stringResource(R.string.next_prayer, state.countdown),
-                                        fontSize = 20.sp,
-                                        color = Color.Gray
-                                    )
-                                }
-                            }
-                        }
-                    }
-
-                    item {
-                        Card(
-                            modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp),
-                            shape = RoundedCornerShape(8.dp),
-                            colors = CardDefaults.cardColors(containerColor = Color(0xFF616161))
-                        ) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(8.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                TextButton(onClick = { viewModel.goToPreviousDay() }) {
-                                    Text("<", color = Color.White, fontSize = 20.sp)
-                                }
                                 Column(
-                                    modifier = Modifier.weight(1f),
+                                    modifier = Modifier.fillMaxWidth(),
                                     horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
                                     Text(
-                                        text = state.hijriDate,
-                                        color = Color.White,
-                                        fontSize = 14.sp
+                                        text = state.currentPrayer.uppercase(),
+                                        style = MaterialTheme.typography.titleMedium,
+                                        fontWeight = FontWeight.SemiBold,
+                                        color = Color.White.copy(alpha = 0.85f),
+                                        letterSpacing = 1.sp
                                     )
+                                    Spacer(modifier = Modifier.height(RafiqTheme.spacing.xs))
                                     Text(
-                                        text = viewModel.displayDate,
-                                        color = Color.White,
-                                        fontSize = 14.sp
+                                        text = state.currentPrayerTime,
+                                        style = MaterialTheme.typography.displayMedium,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color.White
                                     )
-                                }
-                                TextButton(onClick = { viewModel.goToNextDay() }) {
-                                    Text(">", color = Color.White, fontSize = 20.sp)
+                                    Spacer(modifier = Modifier.height(RafiqTheme.spacing.s))
+                                    RafiqBadge(
+                                        text = stringResource(R.string.next_prayer, state.countdown),
+                                        containerColor = Color.White.copy(alpha = 0.2f),
+                                        contentColor = Color.White
+                                    )
                                 }
                             }
                         }
-                    }
 
-                    item { Spacer(Modifier.height(8.dp)) }
-
-                    items(state.prayerTimes) { prayer ->
-                        Column {
-                            HorizontalDivider(color = Color.Gray.copy(alpha = 0.3f))
-                            Row(
+                        item {
+                            RafiqCard(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(horizontal = 20.dp, vertical = 12.dp),
-                                verticalAlignment = Alignment.CenterVertically
+                                    .padding(
+                                        horizontal = RafiqTheme.spacing.l,
+                                        vertical = RafiqTheme.spacing.xs
+                                    ),
+                                contentPadding = RafiqTheme.spacing.s
                             ) {
-                                Text(
-                                    text = prayer.name,
-                                    modifier = Modifier.weight(1f),
-                                    fontSize = 16.sp
-                                )
-                                Text(
-                                    text = prayer.time,
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Medium,
-                                    color = Color(0xFF009688)
-                                )
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    TextButton(onClick = { viewModel.goToPreviousDay() }) {
+                                        Text("<", style = MaterialTheme.typography.titleLarge)
+                                    }
+                                    Column(
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+                                        if (state.hijriDate.isNotBlank()) {
+                                            Text(
+                                                text = state.hijriDate,
+                                                style = MaterialTheme.typography.bodyMedium,
+                                                fontWeight = FontWeight.Medium,
+                                                color = MaterialTheme.colorScheme.onSurface
+                                            )
+                                        }
+                                        Text(
+                                            text = viewModel.displayDate,
+                                            style = MaterialTheme.typography.bodySmall,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                    }
+                                    TextButton(onClick = { viewModel.goToNextDay() }) {
+                                        Text(">", style = MaterialTheme.typography.titleLarge)
+                                    }
+                                }
+                            }
+                        }
+
+                        item { Spacer(Modifier.height(RafiqTheme.spacing.s)) }
+
+                        items(state.prayerTimes) { prayer ->
+                            Column {
+                                RafiqDivider()
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(
+                                            horizontal = RafiqTheme.spacing.xl,
+                                            vertical = RafiqTheme.spacing.m
+                                        ),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(
+                                        text = prayer.name,
+                                        modifier = Modifier.weight(1f),
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        fontWeight = FontWeight.Medium,
+                                        color = MaterialTheme.colorScheme.onSurface
+                                    )
+                                    Text(
+                                        text = prayer.time,
+                                        style = MaterialTheme.typography.titleMedium,
+                                        fontWeight = FontWeight.Bold,
+                                        color = MaterialTheme.colorScheme.primary
+                                    )
+                                }
                             }
                         }
                     }
@@ -194,5 +197,4 @@ fun PrayerTimesScreen(
             }
         }
     }
-}
 }

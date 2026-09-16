@@ -77,7 +77,7 @@ fun PrayerGuidanceScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = if (isId) "Panduan Sholat" else stringResource(R.string.prayer_guidance),
+                        text = stringResource(R.string.prayer_guidance),
                         fontWeight = FontWeight.Bold
                     )
                 },
@@ -134,10 +134,7 @@ fun PrayerGuidanceScreen(
                             value = state.searchQuery,
                             onValueChange = { viewModel.search(it) },
                             placeholder = {
-                                Text(
-                                    if (isId) "Cari panduan sholat, wudhu, dzikir…"
-                                    else stringResource(R.string.search_prayer_guide)
-                                )
+                                Text(stringResource(R.string.search_prayer_guide))
                             },
                             singleLine = true,
                             modifier = Modifier
@@ -163,7 +160,7 @@ fun PrayerGuidanceScreen(
                             FilterChip(
                                 selected = state.selectedCategory == null,
                                 onClick = { viewModel.selectCategory(null) },
-                                label = { Text(if (isId) "Semua" else stringResource(R.string.category_all)) },
+                                label = { Text(stringResource(R.string.category_all)) },
                                 shape = RoundedCornerShape(12.dp),
                                 colors = FilterChipDefaults.filterChipColors(
                                     selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -173,25 +170,25 @@ fun PrayerGuidanceScreen(
                             FilterChip(
                                 selected = state.selectedCategory == PrayerGuidanceCategory.OBLIGATORY,
                                 onClick = { viewModel.selectCategory(PrayerGuidanceCategory.OBLIGATORY) },
-                                label = { Text(if (isId) "Sholat Fardhu" else stringResource(R.string.category_fardhu)) },
+                                label = { Text(stringResource(R.string.category_fardhu)) },
                                 shape = RoundedCornerShape(12.dp)
                             )
                             FilterChip(
                                 selected = state.selectedCategory == PrayerGuidanceCategory.SUNNAH,
                                 onClick = { viewModel.selectCategory(PrayerGuidanceCategory.SUNNAH) },
-                                label = { Text(if (isId) "Sholat Sunnah" else stringResource(R.string.category_sunnah)) },
+                                label = { Text(stringResource(R.string.category_sunnah)) },
                                 shape = RoundedCornerShape(12.dp)
                             )
                             FilterChip(
                                 selected = state.selectedCategory == PrayerGuidanceCategory.PURIFICATION,
                                 onClick = { viewModel.selectCategory(PrayerGuidanceCategory.PURIFICATION) },
-                                label = { Text(if (isId) "Wudhu & Syarat" else stringResource(R.string.category_purification)) },
+                                label = { Text(stringResource(R.string.category_purification)) },
                                 shape = RoundedCornerShape(12.dp)
                             )
                             FilterChip(
                                 selected = state.selectedCategory == PrayerGuidanceCategory.POST_PRAYER,
                                 onClick = { viewModel.selectCategory(PrayerGuidanceCategory.POST_PRAYER) },
-                                label = { Text(if (isId) "Dzikir & Doa" else stringResource(R.string.category_post_prayer)) },
+                                label = { Text(stringResource(R.string.category_post_prayer)) },
                                 shape = RoundedCornerShape(12.dp)
                             )
                         }
@@ -206,7 +203,7 @@ fun PrayerGuidanceScreen(
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(
-                                    text = if (isId) "Tidak ada panduan yang sesuai" else stringResource(R.string.no_guides_found),
+                                    text = stringResource(R.string.no_guides_found),
                                     style = MaterialTheme.typography.bodyLarge,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
@@ -267,22 +264,22 @@ private fun PrayerGuidanceCard(
                 Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     val (badgeText, badgeColor, badgeTextColor) = when (item.category) {
                         PrayerGuidanceCategory.OBLIGATORY -> Triple(
-                            if (isId) "Fardhu" else "Obligatory",
+                            stringResource(R.string.category_fardhu),
                             Color(0xFF00796B).copy(alpha = 0.15f),
                             Color(0xFF00796B)
                         )
                         PrayerGuidanceCategory.SUNNAH -> Triple(
-                            "Sunnah",
+                            stringResource(R.string.category_sunnah),
                             Color(0xFFD97706).copy(alpha = 0.15f),
                             Color(0xFFD97706)
                         )
                         PrayerGuidanceCategory.PURIFICATION -> Triple(
-                            if (isId) "Thaharah" else "Purification",
+                            stringResource(R.string.category_purification),
                             Color(0xFF2563EB).copy(alpha = 0.15f),
                             Color(0xFF2563EB)
                         )
                         PrayerGuidanceCategory.POST_PRAYER -> Triple(
-                            if (isId) "Dzikir & Doa" else "Dhikr & Dua",
+                            stringResource(R.string.category_post_prayer),
                             Color(0xFF7C3AED).copy(alpha = 0.15f),
                             Color(0xFF7C3AED)
                         )
@@ -301,13 +298,14 @@ private fun PrayerGuidanceCard(
                         )
                     }
 
-                    if (item.rakaat != null) {
+                    val rakaat = item.rakaat
+                    if (rakaat != null) {
                         Surface(
                             shape = RoundedCornerShape(8.dp),
                             color = MaterialTheme.colorScheme.surfaceVariant
                         ) {
                             Text(
-                                text = "${item.rakaat} Raka'at",
+                                text = stringResource(R.string.rakaat_count, rakaat),
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 fontWeight = FontWeight.SemiBold,
@@ -356,13 +354,13 @@ private fun PrayerGuidanceCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = if (isId) "${item.steps.size} Langkah panduan" else "${item.steps.size} Steps guide",
+                    text = stringResource(R.string.guidance_steps_count, item.steps.size),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.SemiBold
                 )
                 Text(
-                    text = if (isId) "Lihat Selengkapnya →" else "View Details →",
+                    text = stringResource(R.string.view_details),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Bold

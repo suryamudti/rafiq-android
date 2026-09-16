@@ -66,8 +66,9 @@ import com.smiledev.rafiq_quran.domain.model.HadithTopic
 
 private val arabicFont = FontFamily(Font(R.font.me_quran))
 
+@Composable
 private fun collectionLabel(collection: String): String =
-    if (collection == "bukhari") "Sahih al-Bukhari" else "Sahih Muslim"
+    if (collection == "bukhari") stringResource(R.string.collection_sahih_bukhari) else stringResource(R.string.collection_sahih_muslim)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -87,7 +88,7 @@ fun HadithBooksScreen(
             TopAppBar(
                 title = { Text(stringResource(R.string.hadiths)) },
                 navigationIcon = {
-                    Text("Back", modifier = Modifier.clickable(onClick = onBack).padding(16.dp))
+                    Text(stringResource(R.string.back), modifier = Modifier.clickable(onClick = onBack).padding(16.dp))
                 },
                 actions = {
                     IconButton(onClick = onSearch) {
@@ -175,7 +176,7 @@ fun HadithBooksScreen(
                                         )
                                         Spacer(Modifier.height(4.dp))
                                         Text(
-                                            text = "${collectionLabel(book.collection)} · Book ${book.number}",
+                                            text = "${collectionLabel(book.collection)} · ${stringResource(R.string.hadith_book_number, book.number)}",
                                             fontSize = 11.sp,
                                             color = Color.LightGray,
                                             textAlign = TextAlign.Center,
@@ -318,7 +319,7 @@ private fun HadithTopicsContent(
                                                 fontWeight = FontWeight.Medium
                                             )
                                             Text(
-                                                text = "${collectionLabel(book.collection)} · Book ${book.number}",
+                                                text = "${collectionLabel(book.collection)} · ${stringResource(R.string.hadith_book_number, book.number)}",
                                                 style = MaterialTheme.typography.bodySmall,
                                                 color = Color.Gray
                                             )

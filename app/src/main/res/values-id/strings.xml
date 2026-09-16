@@ -4,7 +4,7 @@
     <string name="back">Kembali</string>
     <string name="settings">Pengaturan</string>
     <!-- Dashboard -->
-    <string name="your_islamic_companion">Komponen Islami Anda</string>
+    <string name="your_islamic_companion">Sahabat Islami Anda</string>
     <string name="quran">Al-Quran</string>
     <string name="prayer_times">Waktu Shalat</string>
     <string name="qibla">Kiblat</string>
@@ -143,6 +143,7 @@
     <!-- Tasbih -->
     <string name="tasbih_counter">Tasbih</string>
     <string name="count">Hitung</string>
+    <string name="tap_to_count">Ketuk untuk menghitung</string>
     <string name="subhanallah">Subhanallah</string>
     <string name="alhamdulillah">Alhamdulillah</string>
     <string name="allahu_akbar">Allahu Akbar</string>
@@ -194,8 +195,6 @@
     <!-- Quran tabs -->
     <string name="surahs">Surat</string>
     <string name="verses_count">%d ayat</string>
-    <!-- Tasbih -->
-    <string name="tap_to_count">Ketuk untuk menghitung</string>
     <!-- Zakat -->
     <string name="gold_weight">Berat Emas (gram)</string>
     <string name="silver_weight">Berat Perak (gram)</string>
@@ -262,4 +261,68 @@
     <string name="prayer_steps">Panduan Langkah Demi Langkah</string>
     <string name="step_number">Langkah %d</string>
     <string name="tips_and_notes">Catatan Penting &amp; Keutamaan</string>
+    <string name="guidance_steps_count">%d Langkah panduan</string>
+    <string name="view_details">Lihat Selengkapnya →</string>
+    <!-- Common Actions & Dialogs -->
+    <string name="close">Tutup</string>
+    <string name="share">Bagikan</string>
+    <string name="exit">Keluar</string>
+    <string name="copied">Disalin</string>
+    <!-- Zakat Calculator Additional -->
+    <string name="calculate_your_zakat">Hitung Zakat Anda</string>
+    <string name="calculate_zakat">Hitung Zakat</string>
+    <string name="zakat_gold_label">Emas (gram)</string>
+    <string name="zakat_silver_label">Perak (gram)</string>
+    <string name="zakat_cash_label">Uang Tunai &amp; Tabungan (%s)</string>
+    <string name="zakat_refreshing_prices">Memperbarui harga terkini…</string>
+    <string name="zakat_offline_prices">Offline — menampilkan harga terakhir</string>
+    <string name="zakat_summary">Ringkasan Zakat</string>
+    <string name="zakat_gold_due">Zakat Emas: %s</string>
+    <string name="zakat_gold_below_nisab">Emas: Belum mencapai nisab (85g)</string>
+    <string name="zakat_silver_due">Zakat Perak: %s</string>
+    <string name="zakat_silver_below_nisab">Perak: Belum mencapai nisab (595g)</string>
+    <string name="zakat_cash_due">Zakat Tunai: %s</string>
+    <string name="zakat_cash_below_nisab">Tunai: Belum mencapai batas nisab</string>
+    <string name="zakat_total_due">Total Zakat yang Harus Dibayar: %s</string>
+    <string name="zakat_prices_summary">Harga emas: %1$s/g | Perak: %2$s/g</string>
+    <!-- Ayah & Quran Reading -->
+    <string name="copy_text">Salin Teks</string>
+    <string name="copy_translation">Salin Terjemahan</string>
+    <string name="add_bookmark">Tambah Bookmark</string>
+    <string name="remove_bookmark">Hapus Bookmark</string>
+    <string name="jump">Lompat</string>
+    <string name="jump_marker">%1$s — Ayat %2$d</string>
+    <string name="font">Huruf</string>
+    <string name="memorize">Hafalan</string>
+    <string name="exit_memorization">Keluar Mode Hafalan</string>
+    <string name="memorization_mode">Mode Hafalan</string>
+    <string name="tap_to_reveal_translation">Ketuk untuk melihat terjemahan</string>
+    <string name="translation_unavailable">Terjemahan tidak tersedia</string>
+    <string name="translation_unavailable_bracketed">[Terjemahan tidak tersedia]</string>
+    <string name="loading_tafsir">Memuat tafsir…</string>
+    <string name="hide_tafsir">Sembunyikan Tafsir</string>
+    <string name="show_tafsir">Tampilkan Tafsir</string>
+    <string name="page_badge">Halaman %d</string>
+    <string name="juz_badge">Juz %d</string>
+    <string name="share_ayah">Bagikan Ayat</string>
+    <string name="quran_via_rafiq">Al-Quran via Rafiq</string>
+    <!-- Hadith Additional -->
+    <string name="hadith_book_number">Kitab %d</string>
+    <string name="hadith_book_hadith_ref">Kitab %1$s · Hadis %2$d</string>
+    <string name="collection_sahih_bukhari">Shahih al-Bukhari</string>
+    <string name="collection_sahih_muslim">Shahih Muslim</string>
+    <!-- Prophet Additional -->
+    <string name="prophet_fallback">Nabi</string>
+    <!-- Prayer Times & Notifications -->
+    <string name="prayer_time_for">Waktunya Shalat %s</string>
+    <string name="prayer_notification_body">Waktunya shalat %1$s (%2$s)</string>
+    <string name="prayer_notification_channel_desc">Pemberitahuan waktu shalat</string>
+    <string name="prayer_imsak">Imsak</string>
+    <string name="prayer_fajr">Subuh</string>
+    <string name="prayer_sunrise">Terbit</string>
+    <string name="prayer_dhuha">Dhuha</string>
+    <string name="prayer_dhuhr">Dzuhur</string>
+    <string name="prayer_asr">Ashar</string>
+    <string name="prayer_maghrib">Maghrib</string>
+    <string name="prayer_isha">Isya</string>
 </resources>

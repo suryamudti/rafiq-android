@@ -77,13 +77,14 @@ fun ProphetDetailScreen(
         topBar = {
             TopAppBar(
                 title = {
+                    val fallback = stringResource(R.string.prophet_fallback)
                     Text(
-                        if (localeCode == "id") prophet?.nameId ?: "Prophet"
-                        else prophet?.nameEn ?: "Prophet"
+                        if (localeCode == "id") prophet?.nameId ?: fallback
+                        else prophet?.nameEn ?: fallback
                     )
                 },
                 navigationIcon = {
-                    Text("Back", modifier = Modifier.clickable(onClick = onBack).padding(16.dp))
+                    Text(stringResource(R.string.back), modifier = Modifier.clickable(onClick = onBack).padding(16.dp))
                 },
                 actions = {
                     Text(
@@ -316,7 +317,7 @@ fun ProphetDetailScreen(
                     onClick = { showFontSizeSheet = false },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Close", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(stringResource(R.string.close), color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
         }

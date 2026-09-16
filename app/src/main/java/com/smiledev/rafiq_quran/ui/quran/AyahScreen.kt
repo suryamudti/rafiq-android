@@ -180,7 +180,7 @@ fun AyahScreen(
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Copy Text")
+                    Text(stringResource(R.string.copy_text))
                 }
                 TextButton(
                     onClick = {
@@ -192,7 +192,7 @@ fun AyahScreen(
                     modifier = Modifier.fillMaxWidth(),
                     enabled = translationText != null
                 ) {
-                    Text("Copy Translation")
+                    Text(stringResource(R.string.copy_translation))
                 }
                 TextButton(
                     onClick = {
@@ -201,7 +201,7 @@ fun AyahScreen(
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Share")
+                    Text(stringResource(R.string.share))
                 }
                 TextButton(
                     onClick = {
@@ -210,13 +210,13 @@ fun AyahScreen(
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(if (isBookmarked) "Remove Bookmark" else "Add Bookmark")
+                    Text(if (isBookmarked) stringResource(R.string.remove_bookmark) else stringResource(R.string.add_bookmark))
                 }
                 TextButton(
                     onClick = { actionAyah = null },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Close", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(stringResource(R.string.close), color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
         }
@@ -280,7 +280,7 @@ fun AyahScreen(
                     onClick = { showFontSizeSheet = false },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Close", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(stringResource(R.string.close), color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
         }
@@ -304,7 +304,7 @@ fun AyahScreen(
                         },
                         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
                     ) {
-                        Text("${marker.label} — Ayah ${marker.ayahNumber}")
+                        Text(stringResource(R.string.jump_marker, marker.label, marker.ayahNumber))
                     }
                 }
             }
@@ -317,7 +317,7 @@ fun AyahScreen(
             TopAppBar(
                 title = { Text("$suraNumber. $suraName") },
                 navigationIcon = {
-                    Text("Back", modifier = Modifier.clickable(onClick = onBack).padding(16.dp))
+                    Text(stringResource(R.string.back), modifier = Modifier.clickable(onClick = onBack).padding(16.dp))
                 },
                 actions = {
                     Box {
@@ -329,14 +329,14 @@ fun AyahScreen(
                             onDismissRequest = { showOverflowMenu = false }
                         ) {
                             DropdownMenuItem(
-                                text = { Text("Jump") },
+                                text = { Text(stringResource(R.string.jump)) },
                                 onClick = {
                                     showOverflowMenu = false
                                     showJumpSheet = true
                                 }
                             )
                             DropdownMenuItem(
-                                text = { Text("Font") },
+                                text = { Text(stringResource(R.string.font)) },
                                 onClick = {
                                     showOverflowMenu = false
                                     showFontSizeSheet = true
@@ -344,7 +344,7 @@ fun AyahScreen(
                             )
                             DropdownMenuItem(
                                 text = {
-                                    Text(if (state.memorizationMode) "Exit Memorization" else "Memorize")
+                                    Text(if (state.memorizationMode) stringResource(R.string.exit_memorization) else stringResource(R.string.memorize))
                                 },
                                 onClick = {
                                     showOverflowMenu = false
@@ -431,9 +431,9 @@ fun AyahScreen(
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("Memorization Mode", fontSize = 14.sp, fontWeight = FontWeight.Medium)
+                    Text(stringResource(R.string.memorization_mode), fontSize = 14.sp, fontWeight = FontWeight.Medium)
                     TextButton(onClick = { viewModel.toggleMemorizationMode() }) {
-                        Text("Exit", color = MaterialTheme.colorScheme.error)
+                        Text(stringResource(R.string.exit), color = MaterialTheme.colorScheme.error)
                     }
                 }
             }
@@ -583,7 +583,7 @@ private fun VerseCell(
                 modifier = Modifier.fillMaxWidth().padding(top = 6.dp)
             ) {
                 Text(
-                    text = "Tap to reveal translation",
+                    text = stringResource(R.string.tap_to_reveal_translation),
                     fontSize = 14.sp,
                     color = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f)
                 )
@@ -616,7 +616,7 @@ private fun VerseCell(
                         )
                     } else {
                         Text(
-                            text = "[Translation unavailable]",
+                            text = stringResource(R.string.translation_unavailable_bracketed),
                             fontSize = 14.sp,
                             color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
                             modifier = Modifier.fillMaxWidth().padding(top = 6.dp)
@@ -640,7 +640,7 @@ private fun VerseCell(
                         )
                     } else {
                         Text(
-                            text = "[Translation unavailable]",
+                            text = stringResource(R.string.translation_unavailable_bracketed),
                             fontSize = 14.sp,
                             color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
                             modifier = Modifier.fillMaxWidth().padding(top = 6.dp)
@@ -708,7 +708,7 @@ private fun VerseCell(
                         }
                         if (!hasId && !hasEn) {
                             Text(
-                                text = "[Translation unavailable]",
+                                text = stringResource(R.string.translation_unavailable_bracketed),
                                 fontSize = 14.sp,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
                                 modifier = Modifier.fillMaxWidth()
@@ -735,7 +735,7 @@ private fun VerseCell(
             ) {
                 Icon(
                     imageVector = if (showTafsir) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
-                    contentDescription = if (showTafsir) "Hide Tafsir" else "Show Tafsir",
+                    contentDescription = if (showTafsir) stringResource(R.string.hide_tafsir) else stringResource(R.string.show_tafsir),
                     tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f)
                 )
             }
@@ -744,7 +744,7 @@ private fun VerseCell(
             when {
                 tafsirLoading -> {
                     Text(
-                        text = "Loading tafsir...",
+                        text = stringResource(R.string.loading_tafsir),
                         fontSize = 14.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
                         modifier = Modifier.fillMaxWidth().padding(top = 4.dp)
@@ -776,7 +776,7 @@ private fun BadgesRow(ayah: Ayah) {
     ) {
         if (ayah.isFirstAyaOfJuz) {
             BadgeChip(
-                label = "Juz ${ayah.juz}",
+                label = stringResource(R.string.juz_badge, ayah.juz),
                 bgColor = Color(0xFF009688).copy(alpha = 0.1f),
                 textColor = Color(0xFF009688)
             )
@@ -786,7 +786,7 @@ private fun BadgesRow(ayah: Ayah) {
         }
         if (ayah.isFirstAyaOfPage) {
             BadgeChip(
-                label = "Page ${ayah.page}",
+                label = stringResource(R.string.page_badge, ayah.page),
                 bgColor = Color(0xFF607D8B).copy(alpha = 0.1f),
                 textColor = Color(0xFF607D8B)
             )
@@ -815,7 +815,7 @@ private fun copyToClipboard(context: Context, label: String, text: String) {
     val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
     val clip = ClipData.newPlainText(label, text)
     clipboard.setPrimaryClip(clip)
-    Toast.makeText(context, "Copied", Toast.LENGTH_SHORT).show()
+    Toast.makeText(context, context.getString(R.string.copied), Toast.LENGTH_SHORT).show()
 }
 
 private fun shareAyah(context: Context, suraNumber: Int, ayaNumber: Int, arabicText: String, translation: String?) {
@@ -826,11 +826,11 @@ private fun shareAyah(context: Context, suraNumber: Int, ayaNumber: Int, arabicT
             append(translation)
         }
         appendLine()
-        append("$suraNumber:$ayaNumber — Quran via Rafiq")
+        append(context.getString(R.string.quran_via_rafiq, suraNumber, ayaNumber))
     }
     val intent = Intent(Intent.ACTION_SEND).apply {
         type = "text/plain"
         putExtra(Intent.EXTRA_TEXT, text)
     }
-    context.startActivity(Intent.createChooser(intent, "Share Ayah"))
+    context.startActivity(Intent.createChooser(intent, context.getString(R.string.share_ayah)))
 }

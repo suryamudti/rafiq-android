@@ -8,6 +8,7 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
@@ -60,5 +61,27 @@ fun RafiqAppTheme(
             else -> LightColorScheme
         }
 
-    MaterialTheme(colorScheme = colorScheme, typography = Typography, content = content)
+    val extendedColors = if (darkTheme) DarkRafiqExtendedColors else LightRafiqExtendedColors
+    val spacing = RafiqSpacing()
+    val iconSizes = RafiqIconSizes()
+    val cornerRadius = RafiqCornerRadius()
+    val elevation = RafiqElevation()
+    val arabicTypography = RafiqArabicTypography()
+    val customShapes = RafiqCustomShapes()
+
+    CompositionLocalProvider(
+        LocalSpacing provides spacing,
+        LocalIconSizes provides iconSizes,
+        LocalCornerRadius provides cornerRadius,
+        LocalElevation provides elevation,
+        LocalRafiqExtendedColors provides extendedColors,
+        LocalRafiqArabicTypography provides arabicTypography,
+        LocalRafiqShapes provides customShapes
+    ) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography = Typography,
+            content = content
+        )
+    }
 }

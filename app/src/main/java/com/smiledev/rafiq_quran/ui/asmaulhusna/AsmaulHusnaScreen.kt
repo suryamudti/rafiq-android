@@ -76,8 +76,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.smiledev.rafiq_quran.R
 import com.smiledev.rafiq_quran.core.displayMessage
 import com.smiledev.rafiq_quran.domain.model.AsmaulHusna
+import com.smiledev.rafiq_quran.theme.ArabicFontFamily
+import com.smiledev.rafiq_quran.theme.RafiqTheme
+import com.smiledev.rafiq_quran.ui.designsystem.appbar.RafiqTopAppBar
+import com.smiledev.rafiq_quran.ui.designsystem.input.RafiqSearchBar
+import com.smiledev.rafiq_quran.ui.designsystem.state.RafiqErrorState
+import com.smiledev.rafiq_quran.ui.designsystem.state.RafiqLoadingIndicator
 
-private val arabicFont = FontFamily(Font(R.font.me_quran))
+private val arabicFont = ArabicFontFamily
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -101,16 +107,9 @@ fun AsmaulHusnaScreen(
     Scaffold(
         modifier = modifier,
         topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.asmaul_husna_title)) },
-                navigationIcon = {
-                    Text(
-                        stringResource(R.string.back),
-                        modifier = Modifier
-                            .clickable(onClick = onBack)
-                            .padding(16.dp)
-                    )
-                },
+            RafiqTopAppBar(
+                title = stringResource(R.string.asmaul_husna_title),
+                onBack = onBack,
                 actions = {
                     TextButton(
                         onClick = {
@@ -132,38 +131,20 @@ fun AsmaulHusnaScreen(
                             color = MaterialTheme.colorScheme.primary
                         )
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                )
+                }
             )
         }
     ) { padding ->
         when {
             state.isLoading && state.names.isEmpty() -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(padding),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.semantics { contentDescription = "Loading" }
-                    )
-                }
+                RafiqLoadingIndicator(modifier = Modifier.padding(padding))
             }
             state.error != null && state.names.isEmpty() -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(padding)
-                        .padding(16.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = state.error?.displayMessage ?: "",
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodyLarge
+                val err = state.error
+                if (err != null) {
+                    RafiqErrorState(
+                        error = err,
+                        modifier = Modifier.padding(padding)
                     )
                 }
             }
@@ -174,39 +155,13 @@ fun AsmaulHusnaScreen(
                         .padding(padding)
                 ) {
                     // Search Bar
-                    TextField(
-                        value = state.searchQuery,
-                        onValueChange = { viewModel.search(it) },
-                        placeholder = { Text(stringResource(R.string.search_names)) },
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Filled.Search,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        },
-                        trailingIcon = {
-                            if (state.searchQuery.isNotEmpty()) {
-                                Text(
-                                    text = "✕",
-                                    modifier = Modifier
-                                        .clickable { viewModel.search("") }
-                                        .padding(12.dp),
-                                    fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            }
-                        },
-                        singleLine = true,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 6.dp),
-                        shape = RoundedCornerShape(16.dp),
-                        colors = TextFieldDefaults.colors(
-                            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                            focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                            unfocusedIndicatorColor = Color.Transparent,
-                            focusedIndicatorColor = Color.Transparent
+                    RafiqSearchBar(
+                        query = state.searchQuery,
+                        onQueryChange = { viewModel.search(it) },
+                        placeholder = stringResource(R.string.search_names),
+                        modifier = Modifier.padding(
+                            horizontal = RafiqTheme.spacing.l,
+                            vertical = RafiqTheme.spacing.xs
                         )
                     )
 
