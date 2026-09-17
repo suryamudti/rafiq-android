@@ -11,7 +11,13 @@ data class PrayerLogDay(
     val asr: Boolean = false,
     val maghrib: Boolean = false,
     val isha: Boolean = false
-)
+) {
+    val completedCount: Int
+        get() = listOf(fajr, dhuhr, asr, maghrib, isha).count { it }
+
+    val isAllCompleted: Boolean
+        get() = fajr && dhuhr && asr && maghrib && isha
+}
 
 interface PrayerLogRepository {
     fun observeAll(): Flow<List<PrayerLogDay>>
