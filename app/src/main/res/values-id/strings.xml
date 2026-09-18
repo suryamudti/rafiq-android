@@ -147,6 +147,25 @@
     <string name="subhanallah">Subhanallah</string>
     <string name="alhamdulillah">Alhamdulillah</string>
     <string name="allahu_akbar">Allahu Akbar</string>
+    <string name="tasbih_target">Target</string>
+    <string name="tasbih_lap">Putaran</string>
+    <string name="tasbih_total">Total</string>
+    <string name="tasbih_undo">Kurang</string>
+    <string name="tasbih_free_target">Bebas</string>
+    <string name="tasbih_select_dhikr">Pilih Dzikir</string>
+    <string name="tasbih_custom_dhikr">Dzikir Bebas / Kustom</string>
+    <string name="tasbih_change_dhikr">Ganti</string>
+    <string name="tasbih_reset_title">Reset Hitungan</string>
+    <string name="tasbih_reset_message">Pilih cara mereset sesi tasbih Anda.</string>
+    <string name="tasbih_reset_current">Reset Putaran Ini</string>
+    <string name="tasbih_reset_all">Reset Semua (Termasuk Putaran)</string>
+    <string name="tasbih_custom_target">Kustom</string>
+    <string name="tasbih_custom_target_title">Atur Target Hitungan</string>
+    <string name="tasbih_target_completed">Target tercapai! Alhamdulillah.</string>
+    <string name="tasbih_sound">Suara</string>
+    <string name="tasbih_vibration">Getar</string>
+    <string name="cancel">Batal</string>
+    <string name="confirm">Simpan</string>
     <!-- Bookmarks -->
     <string name="no_bookmarks_yet">Belum ada bookmark</string>
     <string name="delete">Hapus</string>

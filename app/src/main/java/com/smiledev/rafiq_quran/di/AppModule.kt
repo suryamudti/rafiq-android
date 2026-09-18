@@ -27,6 +27,7 @@ import com.smiledev.rafiq_quran.data.repository.PrayerTimesRepositoryImpl
 import com.smiledev.rafiq_quran.data.repository.ProphetRepositoryImpl
 import com.smiledev.rafiq_quran.data.repository.QuranRepositoryImpl
 import com.smiledev.rafiq_quran.data.repository.ReciterRepositoryImpl
+import com.smiledev.rafiq_quran.data.repository.TasbihRepositoryImpl
 import com.smiledev.rafiq_quran.domain.repository.AsmaulHusnaRepository
 import com.smiledev.rafiq_quran.domain.repository.BookmarkRepository
 import com.smiledev.rafiq_quran.domain.repository.HadithRepository
@@ -39,6 +40,7 @@ import com.smiledev.rafiq_quran.domain.repository.PrayerTimesRepository
 import com.smiledev.rafiq_quran.domain.repository.ProphetRepository
 import com.smiledev.rafiq_quran.domain.repository.QuranRepository
 import com.smiledev.rafiq_quran.domain.repository.ReciterRepository
+import com.smiledev.rafiq_quran.domain.repository.TasbihRepository
 import com.smiledev.rafiq_quran.domain.util.SystemTodayProvider
 import com.smiledev.rafiq_quran.domain.util.TodayProvider
 import com.smiledev.rafiq_quran.domain.usecase.CalculateQiblaUseCase
@@ -80,6 +82,7 @@ abstract class RepositoryModule {
     @Binds @Singleton abstract fun bindMosqueRepository(impl: MosqueRepositoryImpl): MosqueRepository
     @Binds @Singleton abstract fun bindLocationProvider(impl: LocationProviderImpl): LocationProvider
     @Binds @Singleton abstract fun bindPrayerGuidanceRepository(impl: com.smiledev.rafiq_quran.data.repository.PrayerGuidanceRepositoryImpl): com.smiledev.rafiq_quran.domain.repository.PrayerGuidanceRepository
+    @Binds @Singleton abstract fun bindTasbihRepository(impl: TasbihRepositoryImpl): TasbihRepository
 }
 
 @Module
