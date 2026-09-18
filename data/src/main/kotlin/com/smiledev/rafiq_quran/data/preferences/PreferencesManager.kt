@@ -87,6 +87,20 @@ class PreferencesManager @Inject constructor(
         val PRAYER_CACHE_METHOD = intPreferencesKey("prayer_cache_method")
         /** Key for cached prayer times JSON payload. */
         val PRAYER_CACHE_DATA = stringPreferencesKey("prayer_cache_data")
+        /** Key for the selected Tasbih dhikr ID. */
+        val TASBIH_SELECTED_ID = intPreferencesKey("tasbih_selected_id")
+        /** Key for the current Tasbih count. */
+        val TASBIH_COUNT = intPreferencesKey("tasbih_count")
+        /** Key for the current Tasbih lap/round. */
+        val TASBIH_LAP = intPreferencesKey("tasbih_lap")
+        /** Key for the total Tasbih count in the session. */
+        val TASBIH_TOTAL = intPreferencesKey("tasbih_total")
+        /** Key for the Tasbih target count. */
+        val TASBIH_TARGET = intPreferencesKey("tasbih_target")
+        /** Key for whether Tasbih vibration is enabled. */
+        val TASBIH_VIBRATION = booleanPreferencesKey("tasbih_vibration")
+        /** Key for whether Tasbih sound is enabled. */
+        val TASBIH_SOUND = booleanPreferencesKey("tasbih_sound")
     }
 
     /**
@@ -207,6 +221,62 @@ class PreferencesManager @Inject constructor(
      */
     val storyFontSize: Flow<Int> = context.dataStore.data.map { prefs ->
         prefs[STORY_FONT_SIZE] ?: 16
+    }
+
+    /**
+     * Returns the selected Tasbih dhikr ID as a [Flow].
+     * Defaults to 1 if not set.
+     */
+    val tasbihSelectedId: Flow<Int> = context.dataStore.data.map { prefs ->
+        prefs[TASBIH_SELECTED_ID] ?: 1
+    }
+
+    /**
+     * Returns the current Tasbih count as a [Flow].
+     * Defaults to 0 if not set.
+     */
+    val tasbihCount: Flow<Int> = context.dataStore.data.map { prefs ->
+        prefs[TASBIH_COUNT] ?: 0
+    }
+
+    /**
+     * Returns the current Tasbih lap as a [Flow].
+     * Defaults to 1 if not set.
+     */
+    val tasbihLap: Flow<Int> = context.dataStore.data.map { prefs ->
+        prefs[TASBIH_LAP] ?: 1
+    }
+
+    /**
+     * Returns the total Tasbih count as a [Flow].
+     * Defaults to 0 if not set.
+     */
+    val tasbihTotal: Flow<Int> = context.dataStore.data.map { prefs ->
+        prefs[TASBIH_TOTAL] ?: 0
+    }
+
+    /**
+     * Returns the Tasbih target count as a [Flow].
+     * Defaults to 33 if not set.
+     */
+    val tasbihTarget: Flow<Int> = context.dataStore.data.map { prefs ->
+        prefs[TASBIH_TARGET] ?: 33
+    }
+
+    /**
+     * Returns whether Tasbih vibration is enabled as a [Flow].
+     * Defaults to true if not set.
+     */
+    val tasbihVibrationEnabled: Flow<Boolean> = context.dataStore.data.map { prefs ->
+        prefs[TASBIH_VIBRATION] ?: true
+    }
+
+    /**
+     * Returns whether Tasbih click sound is enabled as a [Flow].
+     * Defaults to false if not set.
+     */
+    val tasbihSoundEnabled: Flow<Boolean> = context.dataStore.data.map { prefs ->
+        prefs[TASBIH_SOUND] ?: false
     }
 
     /**
@@ -405,6 +475,79 @@ class PreferencesManager @Inject constructor(
             prefs.remove(PRAYER_CACHE_LON)
             prefs.remove(PRAYER_CACHE_METHOD)
             prefs.remove(PRAYER_CACHE_DATA)
+        }
+    }
+
+    /**
+     * Sets the selected Tasbih dhikr ID.
+     */
+    suspend fun setTasbihSelectedId(id: Int) {
+        context.dataStore.edit { prefs -> prefs[TASBIH_SELECTED_ID] = id }
+    }
+
+    /**
+     * Sets the current Tasbih count.
+     */
+    suspend fun setTasbihCount(count: Int) {
+        context.dataStore.edit { prefs -> prefs[TASBIH_COUNT] = count }
+    }
+
+    /**
+     * Sets the current Tasbih lap count.
+     */
+    suspend fun setTasbihLap(lap: Int) {
+        context.dataStore.edit { prefs -> prefs[TASBIH_LAP] = lap }
+    }
+
+    /**
+     * Sets the total Tasbih count in the session.
+     */
+    suspend fun setTasbihTotal(total: Int) {
+        context.dataStore.edit { prefs -> prefs[TASBIH_TOTAL] = total }
+    }
+
+    /**
+     * Sets the Tasbih target count.
+     */
+    suspend fun setTasbihTarget(target: Int) {
+        context.dataStore.edit { prefs -> prefs[TASBIH_TARGET] = target }
+    }
+
+    /**
+     * Sets whether Tasbih vibration is enabled.
+     */
+    suspend fun setTasbihVibration(enabled: Boolean) {
+        context.dataStore.edit { prefs -> prefs[TASBIH_VIBRATION] = enabled }
+    }
+
+    /**
+     * Sets whether Tasbih click sound is enabled.
+     */
+    suspend fun setTasbihSound(enabled: Boolean) {
+        context.dataStore.edit { prefs -> prefs[TASBIH_SOUND] = enabled }
+    }
+
+    /**
+     * Updates the full Tasbih session counts (count, lap, total).
+     */
+    suspend fun updateTasbihSession(count: Int, lap: Int, total: Int) {
+        context.dataStore.edit { prefs ->
+            prefs[TASBIH_COUNT] = count
+            prefs[TASBIH_LAP] = lap
+            prefs[TASBIH_TOTAL] = total
+        }
+    }
+
+    /**
+     * Resets the Tasbih count. If [resetAll] is true, also resets lap to 1 and total to 0.
+     */
+    suspend fun resetTasbih(resetAll: Boolean = false) {
+        context.dataStore.edit { prefs ->
+            prefs[TASBIH_COUNT] = 0
+            if (resetAll) {
+                prefs[TASBIH_LAP] = 1
+                prefs[TASBIH_TOTAL] = 0
+            }
         }
     }
 }

@@ -147,6 +147,25 @@
     <string name="subhanallah">Subhanallah</string>
     <string name="alhamdulillah">Alhamdulillah</string>
     <string name="allahu_akbar">Allahu Akbar</string>
+    <string name="tasbih_target">Target</string>
+    <string name="tasbih_lap">Lap</string>
+    <string name="tasbih_total">Total</string>
+    <string name="tasbih_undo">Undo</string>
+    <string name="tasbih_free_target">Free</string>
+    <string name="tasbih_select_dhikr">Select Dhikr</string>
+    <string name="tasbih_custom_dhikr">Free / Custom Dhikr</string>
+    <string name="tasbih_change_dhikr">Change</string>
+    <string name="tasbih_reset_title">Reset Counter</string>
+    <string name="tasbih_reset_message">Choose how you want to reset your tasbih session.</string>
+    <string name="tasbih_reset_current">Reset Current Lap</string>
+    <string name="tasbih_reset_all">Reset All (Laps &amp; Total)</string>
+    <string name="tasbih_custom_target">Custom</string>
+    <string name="tasbih_custom_target_title">Set Target Count</string>
+    <string name="tasbih_target_completed">Target completed! Alhamdulillah.</string>
+    <string name="tasbih_sound">Sound</string>
+    <string name="tasbih_vibration">Vibration</string>
+    <string name="cancel">Cancel</string>
+    <string name="confirm">Confirm</string>
     <!-- Bookmarks -->
     <string name="no_bookmarks_yet">No bookmarks yet</string>
     <string name="delete">Delete</string>

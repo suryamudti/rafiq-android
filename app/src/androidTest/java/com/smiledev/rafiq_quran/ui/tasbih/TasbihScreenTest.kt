@@ -53,6 +53,7 @@ class TasbihScreenTest {
         composeTestRule.onNodeWithText("2").assertIsDisplayed()
 
         composeTestRule.onNodeWithText("Reset").performClick()
+        composeTestRule.onNodeWithText("Reset Current Lap").performClick()
         composeTestRule.onNodeWithText("0").assertIsDisplayed()
     }
 }
