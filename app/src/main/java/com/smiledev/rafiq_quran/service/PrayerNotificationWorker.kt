@@ -86,7 +86,38 @@ class PrayerNotificationWorker(
             manager.createNotificationChannel(channel)
         }
 
-        fun postPrayerNotification(context: Context, name: String, time: String) {
+        fun getLocalizedPrayerName(
+            context: Context,
+            name: String,
+            calendar: Calendar = Calendar.getInstance()
+        ): String {
+            val isFriday = calendar.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY
+            return when (name.lowercase()) {
+                "imsak" -> context.getString(R.string.prayer_imsak)
+                "fajr", "subuh" -> context.getString(R.string.prayer_fajr)
+                "sunrise", "terbit" -> context.getString(R.string.prayer_sunrise)
+                "dhuha" -> context.getString(R.string.prayer_dhuha)
+                "dhuhr", "dzuhur" -> if (isFriday) {
+                    context.getString(R.string.prayer_friday)
+                } else {
+                    context.getString(R.string.prayer_dhuhr)
+                }
+                "friday", "friday prayer", "friday_prayer", "jumat", "jum'at", "jumuah", "jumu'ah" ->
+                    context.getString(R.string.prayer_friday)
+                "asr", "ashar" -> context.getString(R.string.prayer_asr)
+                "maghrib" -> context.getString(R.string.prayer_maghrib)
+                "isha", "isya" -> context.getString(R.string.prayer_isha)
+                else -> name
+            }
+        }
+
+        @JvmOverloads
+        fun postPrayerNotification(
+            context: Context,
+            name: String,
+            time: String,
+            calendar: Calendar = Calendar.getInstance()
+        ) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
                 ContextCompat.checkSelfPermission(
                     context,
@@ -95,28 +126,24 @@ class PrayerNotificationWorker(
             ) {
                 return
             }
-            val intent = context.packageManager.getLaunchIntentForPackage(context.packageName)
-            val pendingIntent = PendingIntent.getActivity(
-                context, 0, intent,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-            )
-            val localizedName = when (name.lowercase()) {
-                "imsak" -> context.getString(R.string.prayer_imsak)
-                "fajr" -> context.getString(R.string.prayer_fajr)
-                "sunrise" -> context.getString(R.string.prayer_sunrise)
-                "dhuha" -> context.getString(R.string.prayer_dhuha)
-                "dhuhr" -> context.getString(R.string.prayer_dhuhr)
-                "asr" -> context.getString(R.string.prayer_asr)
-                "maghrib" -> context.getString(R.string.prayer_maghrib)
-                "isha" -> context.getString(R.string.prayer_isha)
-                else -> name
+            val intent = context.packageManager?.getLaunchIntentForPackage(context.packageName)
+            val pendingIntent = intent?.let {
+                PendingIntent.getActivity(
+                    context, 0, it,
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                )
             }
+            val localizedName = getLocalizedPrayerName(context, name, calendar)
             val notification = NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(android.R.drawable.ic_dialog_info)
                 .setContentTitle(context.getString(R.string.prayer_time_for, localizedName))
                 .setContentText(context.getString(R.string.prayer_notification_body, localizedName, time))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setContentIntent(pendingIntent)
+                .apply {
+                    if (pendingIntent != null) {
+                        setContentIntent(pendingIntent)
+                    }
+                }
                 .setAutoCancel(true)
                 .build()
             NotificationManagerCompat.from(context).notify(PRAYER_NOTIFICATION_ID + name.hashCode(), notification)
@@ -159,6 +186,7 @@ class PrayerNotificationWorker(
         val alarmManager = applicationContext.getSystemService(AlarmManager::class.java)
         var scheduled = 0
 
+        val isTodayFriday = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY
         for (name in PRAYER_NAMES) {
             val time = timings.optString(name, "")
             if (time.isBlank()) continue
@@ -167,6 +195,7 @@ class PrayerNotificationWorker(
             val intent = Intent(applicationContext, PrayerAlarmReceiver::class.java).apply {
                 putExtra("name", name)
                 putExtra("time", time)
+                putExtra("isFriday", isTodayFriday)
             }
             val pi = PendingIntent.getBroadcast(
                 applicationContext,
