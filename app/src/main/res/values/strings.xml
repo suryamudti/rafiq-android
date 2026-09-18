@@ -363,6 +363,7 @@
     <string name="prayer_sunrise">Sunrise</string>
     <string name="prayer_dhuha">Dhuha</string>
     <string name="prayer_dhuhr">Dhuhr</string>
+    <string name="prayer_friday">Friday prayer</string>
     <string name="prayer_asr">Asr</string>
     <string name="prayer_maghrib">Maghrib</string>
     <string name="prayer_isha">Isha</string>
