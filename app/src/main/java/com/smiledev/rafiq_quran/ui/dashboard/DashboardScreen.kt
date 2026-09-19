@@ -71,6 +71,7 @@ import com.smiledev.rafiq_quran.Quran
 import com.smiledev.rafiq_quran.R
 import com.smiledev.rafiq_quran.Recitation
 import com.smiledev.rafiq_quran.Settings
+import com.smiledev.rafiq_quran.SunnahGuidance
 import com.smiledev.rafiq_quran.Tasbih
 import com.smiledev.rafiq_quran.ZakatCalculator
 import com.smiledev.rafiq_quran.core.displayMessage
@@ -180,6 +181,13 @@ private val quickServices = listOf(
         iconResId = R.drawable.ic_prayer_guide,
         tintColor = Color(0xFF00796B),
         containerColor = Color(0xFFE0F2F1)
+    ),
+    QuickServiceItem(
+        labelResId = R.string.sunnah_guidance,
+        navKey = SunnahGuidance,
+        iconResId = R.drawable.ic_sunnah,
+        tintColor = Color(0xFFD97706),
+        containerColor = Color(0xFFFEF3C7)
     )
 )
 

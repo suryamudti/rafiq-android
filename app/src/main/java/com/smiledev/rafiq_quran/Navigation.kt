@@ -29,6 +29,8 @@ import com.smiledev.rafiq_quran.ui.bookmarks.BookmarkListFullScreen
 import com.smiledev.rafiq_quran.ui.prayerlog.PrayerLogScreen
 import com.smiledev.rafiq_quran.ui.prayerguidance.PrayerGuidanceScreen
 import com.smiledev.rafiq_quran.ui.prayerguidance.PrayerGuidanceDetailScreen
+import com.smiledev.rafiq_quran.ui.sunnahguidance.SunnahGuidanceScreen
+import com.smiledev.rafiq_quran.ui.sunnahguidance.SunnahGuidanceDetailScreen
 
 import com.smiledev.rafiq_quran.ui.settings.SettingsScreen
 import com.smiledev.rafiq_quran.ui.sources.SourcesScreen
@@ -189,12 +191,27 @@ fun MainNavigation() {
           PrayerGuidanceScreen(
             onGuidanceClick = { guidanceId -> backStack.add(PrayerGuidanceDetail(guidanceId)) },
             onBack = { backStack.removeLastOrNull() },
+            onExploreSunnahClick = { backStack.add(SunnahGuidance) },
             modifier = Modifier.safeDrawingPadding()
           )
         }
         entry<PrayerGuidanceDetail> { key ->
           PrayerGuidanceDetailScreen(
             guidanceId = key.guidanceId,
+            onBack = { backStack.removeLastOrNull() },
+            modifier = Modifier.safeDrawingPadding()
+          )
+        }
+        entry<SunnahGuidance> {
+          SunnahGuidanceScreen(
+            onSunnahClick = { sunnahId -> backStack.add(SunnahGuidanceDetail(sunnahId)) },
+            onBack = { backStack.removeLastOrNull() },
+            modifier = Modifier.safeDrawingPadding()
+          )
+        }
+        entry<SunnahGuidanceDetail> { key ->
+          SunnahGuidanceDetailScreen(
+            sunnahId = key.sunnahId,
             onBack = { backStack.removeLastOrNull() },
             modifier = Modifier.safeDrawingPadding()
           )

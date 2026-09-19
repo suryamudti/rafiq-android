@@ -304,6 +304,26 @@
     <string name="tips_and_notes">Important Notes &amp; Virtues</string>
     <string name="guidance_steps_count">%d Steps guide</string>
     <string name="view_details">View Details →</string>
+    <!-- Sunnah Guidance -->
+    <string name="sunnah_guidance">Sunnah Guidance</string>
+    <string name="sunnah_guidance_desc">Authentic Prophetic practices with Hadith &amp; Surah evidence</string>
+    <string name="category_sunnah_prayer">Sunnah Prayers</string>
+    <string name="category_daily_lifestyle">Daily Habits</string>
+    <string name="category_friday">Friday Sunnahs</string>
+    <string name="category_fasting">Sunnah Fasting</string>
+    <string name="category_dhikr_dua">Dhikr &amp; Du\'a</string>
+    <string name="search_sunnah_guide">Search Sunnah practices &amp; guides…</string>
+    <string name="no_sunnah_found">No Sunnah guidance found</string>
+    <string name="dalil_and_evidence">Dalil &amp; Evidence</string>
+    <string name="virtues_and_rewards">Virtues &amp; Rewards (Fadhilah)</string>
+    <string name="sunnah_tips">Sunnah Etiquette &amp; Tips</string>
+    <string name="authentic_sunnah_source">Authentic Sunnah</string>
+    <string name="explore_sunnah_guidance">Explore Sunnah Guidance</string>
+    <string name="explore_sunnah_desc">Discover authentic voluntary prayers, daily habits, and Prophetic sunnahs with hadith &amp; surah references.</string>
+    <string name="prophetic_sunnah_note">According to Prophetic Sunnah, the intention (Niyyah) resides silently in the heart and the prayer commences immediately with Takbir (\"Allahu Akbar\").</string>
+    <string name="hadith_dalil_label">Hadith Reference: %s</string>
+    <string name="surah_dalil_label">Quran Reference: %s</string>
+    <string name="sunnah_steps_count">%d Sunnah steps</string>
     <!-- Common Actions & Dialogs -->
     <string name="close">Close</string>
     <string name="share">Share</string>
