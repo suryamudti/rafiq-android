@@ -1,4 +1,4 @@
-package com.smiledev.rafiq_quran.ui.prayerguidance
+package com.smiledev.rafiq_quran.ui.sunnahguidance
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -11,10 +11,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
@@ -26,6 +24,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -49,27 +48,28 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.smiledev.rafiq_quran.R
 import com.smiledev.rafiq_quran.core.displayMessage
-import com.smiledev.rafiq_quran.domain.model.PrayerGuidanceCategory
-import com.smiledev.rafiq_quran.domain.model.PrayerGuidanceItem
-import com.smiledev.rafiq_quran.domain.model.PrayerStep
+import com.smiledev.rafiq_quran.domain.model.SunnahCategory
+import com.smiledev.rafiq_quran.domain.model.SunnahGuidanceItem
+import com.smiledev.rafiq_quran.domain.model.SunnahStep
 
 private val arabicFont = FontFamily(Font(R.font.me_quran))
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PrayerGuidanceDetailScreen(
-    guidanceId: String,
+fun SunnahGuidanceDetailScreen(
+    sunnahId: String,
     onBack: () -> Unit,
-    viewModel: PrayerGuidanceDetailViewModel = hiltViewModel(),
+    viewModel: SunnahGuidanceDetailViewModel = hiltViewModel(),
     modifier: Modifier = Modifier
 ) {
-    LaunchedEffect(guidanceId) {
-        viewModel.loadDetail(guidanceId)
-    }
-
     val state by viewModel.uiState.collectAsState()
     val isId = viewModel.localeCode == "id"
-    val item = state.item
+
+    LaunchedEffect(sunnahId) {
+        viewModel.loadDetail(sunnahId)
+    }
+
+    val currentItem = state.item
 
     Scaffold(
         modifier = modifier,
@@ -77,7 +77,11 @@ fun PrayerGuidanceDetailScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = if (item != null) (if (isId) item.nameId else item.nameEn) else "",
+                        text = if (currentItem != null) {
+                            if (isId) currentItem.titleId else currentItem.titleEn
+                        } else {
+                            stringResource(R.string.sunnah_guidance)
+                        },
                         fontWeight = FontWeight.Bold,
                         maxLines = 1
                     )
@@ -104,31 +108,35 @@ fun PrayerGuidanceDetailScreen(
                 .padding(padding)
         ) {
             when {
-                state.isLoading && item == null -> {
+                state.isLoading && currentItem == null -> {
                     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                     }
                 }
-                state.error != null && item == null -> {
-                    Box(Modifier.fillMaxSize().padding(24.dp), contentAlignment = Alignment.Center) {
+                state.error != null && currentItem == null -> {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
                         Text(
                             text = state.error?.displayMessage ?: "",
                             color = MaterialTheme.colorScheme.error,
                             textAlign = TextAlign.Center
                         )
+                        Spacer(Modifier.height(12.dp))
+                        TextButton(onClick = { viewModel.loadDetail(sunnahId) }) {
+                            Text(stringResource(R.string.retry))
+                        }
                     }
                 }
-                item != null -> {
-                    PrayerGuidanceDetailContent(
-                        item = item,
-                        isId = isId,
-                        modifier = Modifier.fillMaxSize()
+                currentItem != null -> {
+                    SunnahGuidanceDetailContent(
+                        item = currentItem,
+                        isId = isId
                     )
-                }
-                else -> {
-                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
-                    }
                 }
             }
         }
@@ -136,8 +144,8 @@ fun PrayerGuidanceDetailScreen(
 }
 
 @Composable
-private fun PrayerGuidanceDetailContent(
-    item: PrayerGuidanceItem,
+private fun SunnahGuidanceDetailContent(
+    item: SunnahGuidanceItem,
     isId: Boolean,
     modifier: Modifier = Modifier
 ) {
@@ -163,60 +171,78 @@ private fun PrayerGuidanceDetailContent(
             ) {
                 // Calligraphy
                 Text(
-                    text = item.nameArabic,
+                    text = item.titleArabic,
                     fontFamily = arabicFont,
-                    fontSize = 28.sp,
-                    color = Color(0xFF00796B),
+                    fontSize = 26.sp,
+                    color = MaterialTheme.colorScheme.primary,
                     style = TextStyle(textDirection = TextDirection.Rtl),
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                Spacer(Modifier.height(8.dp))
+                Spacer(Modifier.height(10.dp))
 
                 Text(
-                    text = if (isId) item.nameId else item.nameEn,
+                    text = if (isId) item.titleId else item.titleEn,
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold
                 )
 
                 Spacer(Modifier.height(8.dp))
 
-                // Category and Raka'at badges
+                // Badges
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    val badgeCategoryText = when (item.category) {
-                        PrayerGuidanceCategory.OBLIGATORY -> stringResource(R.string.category_fardhu)
-                        PrayerGuidanceCategory.SUNNAH -> stringResource(R.string.category_sunnah)
-                        PrayerGuidanceCategory.PURIFICATION -> stringResource(R.string.category_purification)
-                        PrayerGuidanceCategory.POST_PRAYER -> stringResource(R.string.category_post_prayer)
+                    val (badgeCategoryText, badgeColor, badgeTextColor) = when (item.category) {
+                        SunnahCategory.PRAYER -> Triple(
+                            stringResource(R.string.category_sunnah_prayer),
+                            Color(0xFF0D9488).copy(alpha = 0.15f),
+                            Color(0xFF0D9488)
+                        )
+                        SunnahCategory.DAILY_LIFESTYLE -> Triple(
+                            stringResource(R.string.category_daily_lifestyle),
+                            Color(0xFF2563EB).copy(alpha = 0.15f),
+                            Color(0xFF2563EB)
+                        )
+                        SunnahCategory.FRIDAY -> Triple(
+                            stringResource(R.string.category_friday),
+                            Color(0xFF16A34A).copy(alpha = 0.15f),
+                            Color(0xFF16A34A)
+                        )
+                        SunnahCategory.FASTING -> Triple(
+                            stringResource(R.string.category_fasting),
+                            Color(0xFFD97706).copy(alpha = 0.15f),
+                            Color(0xFFD97706)
+                        )
+                        SunnahCategory.DHIKR_DUA -> Triple(
+                            stringResource(R.string.category_dhikr_dua),
+                            Color(0xFF7C3AED).copy(alpha = 0.15f),
+                            Color(0xFF7C3AED)
+                        )
                     }
 
                     Surface(
                         shape = RoundedCornerShape(8.dp),
-                        color = Color(0xFF00796B).copy(alpha = 0.15f)
+                        color = badgeColor
                     ) {
                         Text(
                             text = badgeCategoryText,
                             style = MaterialTheme.typography.labelSmall,
-                            color = Color(0xFF00796B),
+                            color = badgeTextColor,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
                         )
                     }
 
-                    val rakaatVal = item.rakaat
-                    if (rakaatVal != null) {
-                        Surface(
-                            shape = RoundedCornerShape(8.dp),
-                            color = MaterialTheme.colorScheme.primaryContainer
-                        ) {
-                            Text(
-                                text = stringResource(R.string.rakaat_count, rakaatVal),
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
-                            )
-                        }
+                    Surface(
+                        shape = RoundedCornerShape(8.dp),
+                        color = MaterialTheme.colorScheme.primaryContainer
+                    ) {
+                        Text(
+                            text = stringResource(R.string.sunnah_steps_count, item.steps.size),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
+                        )
                     }
                 }
 
@@ -242,7 +268,7 @@ private fun PrayerGuidanceDetailContent(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(18.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = Color(0xFF00796B).copy(alpha = 0.08f)
+                    containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.08f)
                 ),
                 elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
             ) {
@@ -260,23 +286,24 @@ private fun PrayerGuidanceDetailContent(
                             text = stringResource(R.string.dalil_and_evidence),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF00796B)
+                            color = MaterialTheme.colorScheme.primary
                         )
 
                         Surface(
                             shape = RoundedCornerShape(6.dp),
-                            color = Color(0xFF00796B)
+                            color = MaterialTheme.colorScheme.primary
                         ) {
                             Text(
                                 text = stringResource(R.string.authentic_sunnah_source),
                                 style = MaterialTheme.typography.labelSmall,
-                                color = Color.White,
+                                color = MaterialTheme.colorScheme.onPrimary,
                                 fontWeight = FontWeight.Bold,
                                 modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
                             )
                         }
                     }
 
+                    // References chips
                     Spacer(Modifier.height(8.dp))
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -290,7 +317,7 @@ private fun PrayerGuidanceDetailContent(
                                 Text(
                                     text = surahRef,
                                     style = MaterialTheme.typography.labelSmall,
-                                    color = Color(0xFF00796B),
+                                    color = MaterialTheme.colorScheme.primary,
                                     fontWeight = FontWeight.SemiBold,
                                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
                                 )
@@ -304,7 +331,7 @@ private fun PrayerGuidanceDetailContent(
                                 Text(
                                     text = hadithRef,
                                     style = MaterialTheme.typography.labelSmall,
-                                    color = Color(0xFF00796B),
+                                    color = MaterialTheme.colorScheme.primary,
                                     fontWeight = FontWeight.SemiBold,
                                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
                                 )
@@ -313,12 +340,12 @@ private fun PrayerGuidanceDetailContent(
                     }
 
                     if (dalilAr != null) {
-                        Spacer(Modifier.height(12.dp))
+                        Spacer(Modifier.height(14.dp))
                         Text(
                             text = dalilAr,
                             fontFamily = arabicFont,
                             fontSize = 20.sp,
-                            lineHeight = 34.sp,
+                            lineHeight = 36.sp,
                             style = TextStyle(textDirection = TextDirection.Rtl),
                             color = MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier.fillMaxWidth()
@@ -326,36 +353,34 @@ private fun PrayerGuidanceDetailContent(
                     }
 
                     if (dalilTrans != null) {
-                        Spacer(Modifier.height(8.dp))
+                        Spacer(Modifier.height(10.dp))
                         HorizontalDivider(
-                            color = Color(0xFF00796B).copy(alpha = 0.2f),
+                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
                             thickness = 1.dp
                         )
-                        Spacer(Modifier.height(8.dp))
+                        Spacer(Modifier.height(10.dp))
                         Text(
                             text = "\"$dalilTrans\"",
                             style = MaterialTheme.typography.bodyMedium,
                             fontStyle = FontStyle.Italic,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            lineHeight = 20.sp
+                            lineHeight = 22.sp
                         )
                     }
                 }
             }
         }
 
-        // 3. Niyyah Card (if available)
-        val niyyahAr = item.niyyahArabic
-        if (niyyahAr != null) {
-            val translit = item.niyyahTransliteration
-            val translation = if (isId) item.niyyahTranslationId else item.niyyahTranslationEn
-
+        // 3. Virtues & Rewards (Fadhilah) Card
+        val virtues = if (isId) item.virtuesId else item.virtuesEn
+        if (virtues.isNotEmpty()) {
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(18.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = Color(0xFF00796B).copy(alpha = 0.08f)
-                )
+                    containerColor = Color(0xFFD97706).copy(alpha = 0.08f)
+                ),
+                elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
             ) {
                 Column(
                     modifier = Modifier
@@ -363,69 +388,40 @@ private fun PrayerGuidanceDetailContent(
                         .padding(18.dp)
                 ) {
                     Text(
-                        text = stringResource(R.string.niyyah),
+                        text = stringResource(R.string.virtues_and_rewards),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF00796B)
+                        color = Color(0xFFD97706)
                     )
 
-                    Spacer(Modifier.height(8.dp))
+                    Spacer(Modifier.height(10.dp))
 
-                    // Prophetic Sunnah clarification note
-                    Surface(
-                        shape = RoundedCornerShape(8.dp),
-                        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.8f),
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(
-                            text = stringResource(R.string.prophetic_sunnah_note),
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.padding(8.dp),
-                            lineHeight = 16.sp
-                        )
-                    }
-
-                    Spacer(Modifier.height(12.dp))
-
-                    Text(
-                        text = niyyahAr,
-                        fontFamily = arabicFont,
-                        fontSize = 22.sp,
-                        lineHeight = 36.sp,
-                        style = TextStyle(textDirection = TextDirection.Rtl),
-                        color = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-
-                    if (translit != null) {
-                        Spacer(Modifier.height(10.dp))
-                        Text(
-                            text = translit,
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontStyle = FontStyle.Italic,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-
-                    if (translation != null) {
-                        Spacer(Modifier.height(8.dp))
-                        HorizontalDivider(
-                            color = Color(0xFF00796B).copy(alpha = 0.2f),
-                            thickness = 1.dp
-                        )
-                        Spacer(Modifier.height(8.dp))
-                        Text(
-                            text = translation,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
+                    virtues.forEach { virtue ->
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 4.dp),
+                            verticalAlignment = Alignment.Top
+                        ) {
+                            Text(
+                                text = "★ ",
+                                color = Color(0xFFD97706),
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 14.sp
+                            )
+                            Text(
+                                text = virtue,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                lineHeight = 20.sp
+                            )
+                        }
                     }
                 }
             }
         }
 
-        // 3. Step-by-Step Instructions
+        // 4. Step-by-Step Guidance
         if (item.steps.isNotEmpty()) {
             Text(
                 text = stringResource(R.string.prayer_steps),
@@ -435,18 +431,18 @@ private fun PrayerGuidanceDetailContent(
             )
 
             item.steps.forEach { step ->
-                StepCard(step = step, isId = isId)
+                SunnahStepCard(step = step, isId = isId)
             }
         }
 
-        // 4. Important Notes / Tips (if available)
+        // 5. Practical Tips & Etiquette
         val tips = if (isId) item.tipsId else item.tipsEn
         if (tips.isNotEmpty()) {
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(18.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = Color(0xFFD97706).copy(alpha = 0.08f)
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)
                 )
             ) {
                 Column(
@@ -455,10 +451,10 @@ private fun PrayerGuidanceDetailContent(
                         .padding(18.dp)
                 ) {
                     Text(
-                        text = stringResource(R.string.tips_and_notes),
+                        text = stringResource(R.string.sunnah_tips),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFFD97706)
+                        color = MaterialTheme.colorScheme.primary
                     )
 
                     Spacer(Modifier.height(10.dp))
@@ -472,14 +468,14 @@ private fun PrayerGuidanceDetailContent(
                         ) {
                             Text(
                                 text = "• ",
-                                color = Color(0xFFD97706),
+                                color = MaterialTheme.colorScheme.primary,
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 16.sp
                             )
                             Text(
                                 text = tip,
                                 style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurface,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 lineHeight = 20.sp
                             )
                         }
@@ -493,8 +489,8 @@ private fun PrayerGuidanceDetailContent(
 }
 
 @Composable
-private fun StepCard(
-    step: PrayerStep,
+private fun SunnahStepCard(
+    step: SunnahStep,
     isId: Boolean,
     modifier: Modifier = Modifier
 ) {
@@ -502,7 +498,7 @@ private fun StepCard(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.45f)
+            containerColor = MaterialTheme.colorScheme.surface
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
@@ -511,110 +507,107 @@ private fun StepCard(
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            // Header with step number bubble & title
+            // Step Number and Title
             Row(
                 modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Box(
-                    modifier = Modifier
-                        .size(32.dp)
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.primary),
-                    contentAlignment = Alignment.Center
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.weight(1f)
                 ) {
+                    Surface(
+                        shape = RoundedCornerShape(8.dp),
+                        color = MaterialTheme.colorScheme.primary
+                    ) {
+                        Text(
+                            text = "${step.order}",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+                        )
+                    }
+
                     Text(
-                        text = step.order.toString(),
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        style = MaterialTheme.typography.labelMedium,
-                        fontWeight = FontWeight.Bold
+                        text = if (isId) step.titleId else step.titleEn,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
 
-                Spacer(Modifier.width(12.dp))
-
-                Text(
-                    text = if (isId) step.titleId else step.titleEn,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
+                val hadithRef = step.hadithReference
+                val surahRef = step.surahReference
+                val ref = surahRef ?: hadithRef
+                if (ref != null) {
+                    Surface(
+                        shape = RoundedCornerShape(6.dp),
+                        color = MaterialTheme.colorScheme.surfaceVariant
+                    ) {
+                        Text(
+                            text = ref,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                        )
+                    }
+                }
             }
 
-            Spacer(Modifier.height(10.dp))
+            Spacer(Modifier.height(8.dp))
 
-            // Step Description
+            // Description
             Text(
                 text = if (isId) step.descriptionId else step.descriptionEn,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                lineHeight = 22.sp
+                lineHeight = 20.sp
             )
 
-            // Arabic recitation if present
-            val stepArabic = step.arabic
-            if (stepArabic != null) {
+            // Arabic text (if present)
+            val ar = step.arabic
+            if (ar != null) {
                 Spacer(Modifier.height(12.dp))
-
                 Surface(
+                    modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(12.dp),
-                    color = MaterialTheme.colorScheme.surface,
-                    modifier = Modifier.fillMaxWidth()
+                    color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
                 ) {
-                    Column(modifier = Modifier.padding(14.dp)) {
+                    Column(modifier = Modifier.padding(12.dp)) {
                         Text(
-                            text = stepArabic,
+                            text = ar,
                             fontFamily = arabicFont,
                             fontSize = 20.sp,
                             lineHeight = 34.sp,
                             style = TextStyle(textDirection = TextDirection.Rtl),
-                            color = Color(0xFF00796B),
+                            color = MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier.fillMaxWidth()
                         )
 
                         val translit = step.transliteration
                         if (translit != null) {
-                            Spacer(Modifier.height(8.dp))
+                            Spacer(Modifier.height(6.dp))
                             Text(
                                 text = translit,
                                 style = MaterialTheme.typography.bodySmall,
                                 fontStyle = FontStyle.Italic,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        }
+
+                        val trans = if (isId) step.translationId else step.translationEn
+                        if (trans != null) {
+                            Spacer(Modifier.height(4.dp))
+                            Text(
+                                text = trans,
+                                style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
-
-                        val stepTrans = if (isId) step.translationId else step.translationEn
-                        if (stepTrans != null) {
-                            Spacer(Modifier.height(6.dp))
-                            Text(
-                                text = stepTrans,
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurface,
-                                lineHeight = 18.sp
-                            )
-                        }
                     }
-                }
-            }
-
-            // Step dalil citation if present
-            val stepHadith = step.hadithReference
-            val stepSurah = step.surahReference
-
-            if (stepHadith != null || stepSurah != null) {
-                Spacer(Modifier.height(8.dp))
-                val refText = listOfNotNull(stepSurah, stepHadith).joinToString(" • ")
-                Surface(
-                    shape = RoundedCornerShape(8.dp),
-                    color = Color(0xFF00796B).copy(alpha = 0.08f)
-                ) {
-                    Text(
-                        text = "📖 $refText",
-                        style = MaterialTheme.typography.labelSmall,
-                        fontWeight = FontWeight.Medium,
-                        color = Color(0xFF00796B),
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
-                    )
                 }
             }
         }

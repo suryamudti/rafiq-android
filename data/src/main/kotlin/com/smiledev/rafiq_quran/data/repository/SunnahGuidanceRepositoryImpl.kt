@@ -7,37 +7,37 @@ import com.google.gson.reflect.TypeToken
 import com.smiledev.rafiq_quran.core.AppError
 import com.smiledev.rafiq_quran.core.Result
 import com.smiledev.rafiq_quran.data.asSuccess
-import com.smiledev.rafiq_quran.domain.model.PrayerGuidanceCategory
-import com.smiledev.rafiq_quran.domain.model.PrayerGuidanceItem
-import com.smiledev.rafiq_quran.domain.model.PrayerStep
-import com.smiledev.rafiq_quran.domain.repository.PrayerGuidanceRepository
+import com.smiledev.rafiq_quran.domain.model.SunnahCategory
+import com.smiledev.rafiq_quran.domain.model.SunnahGuidanceItem
+import com.smiledev.rafiq_quran.domain.model.SunnahStep
+import com.smiledev.rafiq_quran.domain.repository.SunnahGuidanceRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class PrayerGuidanceRepositoryImpl @Inject constructor(
+class SunnahGuidanceRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context
-) : PrayerGuidanceRepository {
+) : SunnahGuidanceRepository {
     private val gson = Gson()
-    private var cachedItems: List<PrayerGuidanceItem>? = null
+    private var cachedItems: List<SunnahGuidanceItem>? = null
 
-    override fun getGuidanceList(): Result<List<PrayerGuidanceItem>, AppError> {
+    override fun getSunnahList(): Result<List<SunnahGuidanceItem>, AppError> {
         cachedItems?.let { return it.asSuccess() }
         return try {
-            val json = context.assets.open("quran-data/prayer_guidance.json").bufferedReader().use { it.readText() }
-            val type = object : TypeToken<List<PrayerGuidanceRaw>>() {}.type
-            val raw: List<PrayerGuidanceRaw>? = gson.fromJson(json, type)
+            val json = context.assets.open("quran-data/sunnah_guidance.json").bufferedReader().use { it.readText() }
+            val type = object : TypeToken<List<SunnahGuidanceRaw>>() {}.type
+            val raw: List<SunnahGuidanceRaw>? = gson.fromJson(json, type)
             val items = raw?.map { it.toDomain() } ?: emptyList()
             cachedItems = items
             items.asSuccess()
         } catch (e: Throwable) {
-            Result.Error(AppError.Database("Failed to load prayer guidance", e))
+            Result.Error(AppError.Database("Failed to load sunnah guidance", e))
         }
     }
 
-    override fun getGuidanceById(id: String): Result<PrayerGuidanceItem, AppError> {
-        return when (val listResult = getGuidanceList()) {
+    override fun getSunnahById(id: String): Result<SunnahGuidanceItem, AppError> {
+        return when (val listResult = getSunnahList()) {
             is Result.Success -> {
                 val item = listResult.data.find { it.id == id }
                 if (item != null) {
@@ -49,54 +49,61 @@ class PrayerGuidanceRepositoryImpl @Inject constructor(
             is Result.Error -> Result.Error(listResult.error)
         }
     }
+
+    override fun getSunnahByCategory(category: SunnahCategory): Result<List<SunnahGuidanceItem>, AppError> {
+        return when (val listResult = getSunnahList()) {
+            is Result.Success -> {
+                listResult.data.filter { it.category == category }.asSuccess()
+            }
+            is Result.Error -> Result.Error(listResult.error)
+        }
+    }
 }
 
-internal data class PrayerGuidanceRaw(
+internal data class SunnahGuidanceRaw(
     @SerializedName("id") val id: String?,
-    @SerializedName("nameEn") val nameEn: String?,
-    @SerializedName("nameId") val nameId: String?,
-    @SerializedName("nameArabic") val nameArabic: String?,
+    @SerializedName("titleEn") val titleEn: String?,
+    @SerializedName("titleId") val titleId: String?,
+    @SerializedName("titleArabic") val titleArabic: String?,
     @SerializedName("category") val category: String?,
-    @SerializedName("rakaat") val rakaat: Int?,
+    @SerializedName("summaryEn") val summaryEn: String?,
+    @SerializedName("summaryId") val summaryId: String?,
     @SerializedName("descriptionEn") val descriptionEn: String?,
     @SerializedName("descriptionId") val descriptionId: String?,
-    @SerializedName("niyyahArabic") val niyyahArabic: String?,
-    @SerializedName("niyyahTransliteration") val niyyahTransliteration: String?,
-    @SerializedName("niyyahTranslationEn") val niyyahTranslationEn: String?,
-    @SerializedName("niyyahTranslationId") val niyyahTranslationId: String?,
     @SerializedName("hadithReference") val hadithReference: String?,
     @SerializedName("surahReference") val surahReference: String?,
     @SerializedName("dalilArabic") val dalilArabic: String?,
     @SerializedName("dalilTranslationEn") val dalilTranslationEn: String?,
     @SerializedName("dalilTranslationId") val dalilTranslationId: String?,
-    @SerializedName("steps") val steps: List<PrayerStepRaw>?,
+    @SerializedName("virtuesEn") val virtuesEn: List<String>?,
+    @SerializedName("virtuesId") val virtuesId: List<String>?,
+    @SerializedName("steps") val steps: List<SunnahStepRaw>?,
     @SerializedName("tipsEn") val tipsEn: List<String>?,
     @SerializedName("tipsId") val tipsId: List<String>?
 ) {
-    fun toDomain(): PrayerGuidanceItem {
+    fun toDomain(): SunnahGuidanceItem {
         val cat = try {
-            if (category != null) PrayerGuidanceCategory.valueOf(category) else PrayerGuidanceCategory.OBLIGATORY
+            if (category != null) SunnahCategory.valueOf(category) else SunnahCategory.PRAYER
         } catch (e: Exception) {
-            PrayerGuidanceCategory.OBLIGATORY
+            SunnahCategory.PRAYER
         }
-        return PrayerGuidanceItem(
+        return SunnahGuidanceItem(
             id = id ?: "",
-            nameEn = nameEn ?: "",
-            nameId = nameId ?: "",
-            nameArabic = nameArabic ?: "",
+            titleEn = titleEn ?: "",
+            titleId = titleId ?: "",
+            titleArabic = titleArabic ?: "",
             category = cat,
-            rakaat = rakaat,
+            summaryEn = summaryEn ?: "",
+            summaryId = summaryId ?: "",
             descriptionEn = descriptionEn ?: "",
             descriptionId = descriptionId ?: "",
-            niyyahArabic = niyyahArabic,
-            niyyahTransliteration = niyyahTransliteration,
-            niyyahTranslationEn = niyyahTranslationEn,
-            niyyahTranslationId = niyyahTranslationId,
             hadithReference = hadithReference,
             surahReference = surahReference,
             dalilArabic = dalilArabic,
             dalilTranslationEn = dalilTranslationEn,
             dalilTranslationId = dalilTranslationId,
+            virtuesEn = virtuesEn ?: emptyList(),
+            virtuesId = virtuesId ?: emptyList(),
             steps = steps?.map { it.toDomain() } ?: emptyList(),
             tipsEn = tipsEn ?: emptyList(),
             tipsId = tipsId ?: emptyList()
@@ -104,7 +111,7 @@ internal data class PrayerGuidanceRaw(
     }
 }
 
-internal data class PrayerStepRaw(
+internal data class SunnahStepRaw(
     @SerializedName("order") val order: Int?,
     @SerializedName("titleEn") val titleEn: String?,
     @SerializedName("titleId") val titleId: String?,
@@ -117,8 +124,8 @@ internal data class PrayerStepRaw(
     @SerializedName("hadithReference") val hadithReference: String?,
     @SerializedName("surahReference") val surahReference: String?
 ) {
-    fun toDomain(): PrayerStep {
-        return PrayerStep(
+    fun toDomain(): SunnahStep {
+        return SunnahStep(
             order = order ?: 0,
             titleEn = titleEn ?: "",
             titleId = titleId ?: "",

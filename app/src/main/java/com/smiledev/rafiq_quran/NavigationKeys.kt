@@ -24,6 +24,8 @@ import kotlinx.serialization.Serializable
 @Serializable data object PrayerLog : NavKey
 @Serializable data object PrayerGuidance : NavKey
 @Serializable data class PrayerGuidanceDetail(val guidanceId: String) : NavKey
+@Serializable data object SunnahGuidance : NavKey
+@Serializable data class SunnahGuidanceDetail(val sunnahId: String) : NavKey
 
 @Serializable data object Settings : NavKey
 @Serializable data object Sources : NavKey

@@ -82,6 +82,7 @@ abstract class RepositoryModule {
     @Binds @Singleton abstract fun bindMosqueRepository(impl: MosqueRepositoryImpl): MosqueRepository
     @Binds @Singleton abstract fun bindLocationProvider(impl: LocationProviderImpl): LocationProvider
     @Binds @Singleton abstract fun bindPrayerGuidanceRepository(impl: com.smiledev.rafiq_quran.data.repository.PrayerGuidanceRepositoryImpl): com.smiledev.rafiq_quran.domain.repository.PrayerGuidanceRepository
+    @Binds @Singleton abstract fun bindSunnahGuidanceRepository(impl: com.smiledev.rafiq_quran.data.repository.SunnahGuidanceRepositoryImpl): com.smiledev.rafiq_quran.domain.repository.SunnahGuidanceRepository
     @Binds @Singleton abstract fun bindTasbihRepository(impl: TasbihRepositoryImpl): TasbihRepository
 }
 
@@ -345,4 +346,8 @@ object AppModule {
     @Provides @Singleton
     fun provideGetPrayerGuidanceUseCase(repo: com.smiledev.rafiq_quran.domain.repository.PrayerGuidanceRepository): com.smiledev.rafiq_quran.domain.usecase.GetPrayerGuidanceUseCase =
         com.smiledev.rafiq_quran.domain.usecase.GetPrayerGuidanceUseCase(repo)
+
+    @Provides @Singleton
+    fun provideGetSunnahGuidanceUseCase(repo: com.smiledev.rafiq_quran.domain.repository.SunnahGuidanceRepository): com.smiledev.rafiq_quran.domain.usecase.GetSunnahGuidanceUseCase =
+        com.smiledev.rafiq_quran.domain.usecase.GetSunnahGuidanceUseCase(repo)
 }

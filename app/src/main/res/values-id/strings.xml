@@ -304,6 +304,26 @@
     <string name="tips_and_notes">Catatan Penting &amp; Keutamaan</string>
     <string name="guidance_steps_count">%d Langkah panduan</string>
     <string name="view_details">Lihat Selengkapnya →</string>
+    <!-- Panduan Sunnah -->
+    <string name="sunnah_guidance">Panduan Sunnah</string>
+    <string name="sunnah_guidance_desc">Panduan amalan sunnah shahihah berdasar dalil Al-Qur\'an &amp; Hadits</string>
+    <string name="category_sunnah_prayer">Shalat Sunnah</string>
+    <string name="category_daily_lifestyle">Adab Harian</string>
+    <string name="category_friday">Sunnah Jumat</string>
+    <string name="category_fasting">Puasa Sunnah</string>
+    <string name="category_dhikr_dua">Dzikir &amp; Doa</string>
+    <string name="search_sunnah_guide">Cari panduan sunnah, amalan harian…</string>
+    <string name="no_sunnah_found">Tidak ada panduan sunnah yang sesuai</string>
+    <string name="dalil_and_evidence">Dalil &amp; Rujukan Shahih</string>
+    <string name="virtues_and_rewards">Keutamaan &amp; Fadhilah Amalan</string>
+    <string name="sunnah_tips">Adab Sunnah &amp; Tips Praktis</string>
+    <string name="authentic_sunnah_source">Sunnah Shahihah</string>
+    <string name="explore_sunnah_guidance">Jelajahi Panduan Sunnah</string>
+    <string name="explore_sunnah_desc">Pelajari shalat sunnah, adab harian, dan sunnah Nabi dengan dalil hadits &amp; surah shahih.</string>
+    <string name="prophetic_sunnah_note">Menurut Sunnah Rasulullah ﷺ, niat bertempat di dalam hati dan shalat dimulai langsung dengan Takbir (\"Allahu Akbar\").</string>
+    <string name="hadith_dalil_label">Rujukan Hadits: %s</string>
+    <string name="surah_dalil_label">Rujukan Al-Qur\'an: %s</string>
+    <string name="sunnah_steps_count">%d Langkah sunnah</string>
     <!-- Common Actions & Dialogs -->
     <string name="close">Tutup</string>
     <string name="share">Bagikan</string>
