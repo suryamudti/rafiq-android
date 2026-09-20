@@ -1,4 +1,4 @@
-﻿package com.smiledev.rafiq_quran.ui.tasbih
+package com.smiledev.rafiq_quran.ui.tasbih
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
@@ -75,6 +75,7 @@ import com.smiledev.rafiq_quran.ui.designsystem.button.RafiqButton
 import com.smiledev.rafiq_quran.ui.designsystem.button.RafiqOutlinedButton
 import com.smiledev.rafiq_quran.ui.designsystem.card.RafiqCard
 import com.smiledev.rafiq_quran.ui.designsystem.chip.RafiqFilterChip
+import com.smiledev.rafiq_quran.core.currentLocaleCode
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -85,7 +86,7 @@ fun TasbihScreen(
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.uiState.collectAsState()
-    val isIndonesian = Locale.getDefault().language == "id"
+    val isIndonesian = currentLocaleCode() == "id"
 
     Scaffold(
         topBar = {

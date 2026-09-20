@@ -64,7 +64,6 @@ class AyahViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(AyahUiState())
     val uiState: StateFlow<AyahUiState> = _uiState
 
-    private val localeCode = currentLocaleCode()
     private var cachedSurahs: List<Surah> = emptyList()
     private var lastReadSura: Int = 0
     private var lastReadAya: Int = 0
@@ -92,11 +91,15 @@ class AyahViewModel @Inject constructor(
             ) { lang, ayahSize, transSize, readSura, readAya ->
                 lastReadSura = readSura
                 lastReadAya = readAya
+                val prevLang = _uiState.value.translationLanguage
                 _uiState.value = _uiState.value.copy(
                     translationLanguage = lang,
                     ayahFontSize = ayahSize,
                     translationFontSize = transSize
                 )
+                if (prevLang != lang) {
+                    loadSurahs(lang)
+                }
             }.collect()
         }
         viewModelScope.launch(dispatcherProvider.io) {
@@ -110,11 +113,17 @@ class AyahViewModel @Inject constructor(
         }
     }
 
-    private fun loadSurahs() {
+    private fun loadSurahs(lang: String = currentLocaleCode()) {
         viewModelScope.launch(dispatcherProvider.io) {
-            val result = quranRepository.getChapters(localeCode)
+            val chapterLang = if (lang == "both" || lang == "system") currentLocaleCode() else lang
+            val result = quranRepository.getChapters(chapterLang)
             if (result is Result.Success) {
                 cachedSurahs = result.data
+                val suraNumber = _uiState.value.suraNumber
+                if (suraNumber > 0) {
+                    val surah = cachedSurahs.find { it.chapterNumber == suraNumber }
+                    _uiState.value = _uiState.value.copy(currentSurah = surah)
+                }
             }
         }
     }
@@ -122,7 +131,8 @@ class AyahViewModel @Inject constructor(
     fun loadAyahs(surahNumber: Int) {
         viewModelScope.launch(dispatcherProvider.io) {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
-            val result = quranRepository.getAyahsWithTranslation(surahNumber, localeCode)
+            val lang = if (_uiState.value.translationLanguage == "id") "id" else if (_uiState.value.translationLanguage == "en") "en" else currentLocaleCode()
+            val result = quranRepository.getAyahsWithTranslation(surahNumber, lang)
             when (result) {
                 is Result.Success -> {
                     val surah = cachedSurahs.find { it.chapterNumber == surahNumber }

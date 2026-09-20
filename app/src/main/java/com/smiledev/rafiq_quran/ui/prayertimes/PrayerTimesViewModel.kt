@@ -84,7 +84,15 @@ class PrayerTimesViewModel @Inject constructor(
                 loadPrayerTimes()
             }
         }
+
+        viewModelScope.launch(dispatcherProvider.io) {
+            preferencesManager.translationLanguage.collect {
+                lastPrayerData?.let { applyPrayerTimes(it) }
+            }
+        }
     }
+
+    private var lastPrayerData: com.smiledev.rafiq_quran.domain.model.PrayerTimesData? = null
 
     fun loadPrayerTimes() {
         val state = _uiState.value
@@ -96,45 +104,49 @@ class PrayerTimesViewModel @Inject constructor(
             )
             when (result) {
                 is Result.Success -> {
-                    val data = result.data
-                    val isId = currentLocaleCode() == "id"
-                    val dhuhaTime = addMinutes(data.timings.sunrise, 20)
-                    val times = if (isId) {
-                        listOf(
-                            PrayerTimeEntry("Imsak", data.timings.imsak),
-                            PrayerTimeEntry("Subuh", data.timings.fajr),
-                            PrayerTimeEntry("Terbit", data.timings.sunrise),
-                            PrayerTimeEntry("Dhuha", dhuhaTime),
-                            PrayerTimeEntry("Dzuhur", data.timings.dhuhr),
-                            PrayerTimeEntry("Ashar", data.timings.asr),
-                            PrayerTimeEntry("Maghrib", data.timings.maghrib),
-                            PrayerTimeEntry("Isya", data.timings.isha)
-                        )
-                    } else {
-                        listOf(
-                            PrayerTimeEntry("Imsak", data.timings.imsak),
-                            PrayerTimeEntry("Fajr", data.timings.fajr),
-                            PrayerTimeEntry("Sunrise", data.timings.sunrise),
-                            PrayerTimeEntry("Dhuha", dhuhaTime),
-                            PrayerTimeEntry("Dhuhr", data.timings.dhuhr),
-                            PrayerTimeEntry("Asr", data.timings.asr),
-                            PrayerTimeEntry("Maghrib", data.timings.maghrib),
-                            PrayerTimeEntry("Isha", data.timings.isha)
-                        )
-                    }
-                    _uiState.value = _uiState.value.copy(
-                        prayerTimes = times,
-                        hijriDate = data.hijriDate ?: "",
-                        isLoading = false
-                    )
-                    startCountdown(times)
-                    PrayerNotificationWorker.scheduleNow(appContext)
+                    applyPrayerTimes(result.data)
                 }
                 is Result.Error -> {
                     _uiState.value = _uiState.value.copy(isLoading = false, error = result.error)
                 }
             }
         }
+    }
+
+    private fun applyPrayerTimes(data: com.smiledev.rafiq_quran.domain.model.PrayerTimesData) {
+        lastPrayerData = data
+        val isId = currentLocaleCode() == "id"
+        val dhuhaTime = addMinutes(data.timings.sunrise, 20)
+        val times = if (isId) {
+            listOf(
+                PrayerTimeEntry("Imsak", data.timings.imsak),
+                PrayerTimeEntry("Subuh", data.timings.fajr),
+                PrayerTimeEntry("Terbit", data.timings.sunrise),
+                PrayerTimeEntry("Dhuha", dhuhaTime),
+                PrayerTimeEntry("Dzuhur", data.timings.dhuhr),
+                PrayerTimeEntry("Ashar", data.timings.asr),
+                PrayerTimeEntry("Maghrib", data.timings.maghrib),
+                PrayerTimeEntry("Isya", data.timings.isha)
+            )
+        } else {
+            listOf(
+                PrayerTimeEntry("Imsak", data.timings.imsak),
+                PrayerTimeEntry("Fajr", data.timings.fajr),
+                PrayerTimeEntry("Sunrise", data.timings.sunrise),
+                PrayerTimeEntry("Dhuha", dhuhaTime),
+                PrayerTimeEntry("Dhuhr", data.timings.dhuhr),
+                PrayerTimeEntry("Asr", data.timings.asr),
+                PrayerTimeEntry("Maghrib", data.timings.maghrib),
+                PrayerTimeEntry("Isha", data.timings.isha)
+            )
+        }
+        _uiState.value = _uiState.value.copy(
+            prayerTimes = times,
+            hijriDate = data.hijriDate ?: "",
+            isLoading = false
+        )
+        startCountdown(times)
+        PrayerNotificationWorker.scheduleNow(appContext)
     }
 
     private fun startCountdown(times: List<PrayerTimeEntry>) {

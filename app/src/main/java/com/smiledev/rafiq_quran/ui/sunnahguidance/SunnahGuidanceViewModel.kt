@@ -35,7 +35,8 @@ class SunnahGuidanceViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(SunnahGuidanceUiState())
     val uiState: StateFlow<SunnahGuidanceUiState> = _uiState.asStateFlow()
 
-    val localeCode: String = currentLocaleCode()
+    val localeCode: String
+        get() = currentLocaleCode()
 
     init {
         loadSunnahGuidance()

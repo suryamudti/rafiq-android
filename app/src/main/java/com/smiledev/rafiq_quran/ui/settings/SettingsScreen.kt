@@ -29,7 +29,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.activity.ComponentActivity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -89,10 +88,8 @@ fun SettingsScreen(
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(bottom = 12.dp)
             )
-            val activity = LocalContext.current as? ComponentActivity
             val onLanguageSelected: (String) -> Unit = { lang ->
                 viewModel.setTranslationLanguage(lang)
-                activity?.recreate()
             }
             RadioButtonOption("system", R.string.system_default, state.translationLanguage, onLanguageSelected)
             RadioButtonOption("id", R.string.bahasa_indonesia, state.translationLanguage, onLanguageSelected)

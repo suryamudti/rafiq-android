@@ -36,7 +36,8 @@ class PrayerGuidanceViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(PrayerGuidanceUiState())
     val uiState: StateFlow<PrayerGuidanceUiState> = _uiState
 
-    val localeCode: String = currentLocaleCode()
+    val localeCode: String
+        get() = currentLocaleCode()
 
     init {
         loadGuidance()

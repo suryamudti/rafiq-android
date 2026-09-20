@@ -42,7 +42,8 @@ class AsmaulHusnaViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(AsmaulHusnaUiState())
     val uiState: StateFlow<AsmaulHusnaUiState> = _uiState
 
-    val localeCode = currentLocaleCode()
+    val localeCode: String
+        get() = currentLocaleCode()
 
     init {
         load()

@@ -45,14 +45,13 @@ class QuranViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(QuranUiState())
     val uiState: StateFlow<QuranUiState> = _uiState
 
-    private val localeCode = currentLocaleCode()
     private var searchJob: Job? = null
 
     init {
-        loadSurahs()
         viewModelScope.launch(dispatcherProvider.io) {
             preferencesManager.translationLanguage.collect { lang ->
                 _uiState.value = _uiState.value.copy(translationLanguage = lang)
+                loadSurahs()
             }
         }
     }
@@ -60,7 +59,9 @@ class QuranViewModel @Inject constructor(
     fun loadSurahs() {
         viewModelScope.launch(dispatcherProvider.io) {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
-            val result = quranRepository.getChapters(localeCode)
+            val lang = resolvedLanguage()
+            val chapterLang = if (lang == "both") currentLocaleCode() else lang
+            val result = quranRepository.getChapters(chapterLang)
             when (result) {
                 is Result.Success -> {
                     _uiState.value = _uiState.value.copy(surahs = result.data, isLoading = false)
