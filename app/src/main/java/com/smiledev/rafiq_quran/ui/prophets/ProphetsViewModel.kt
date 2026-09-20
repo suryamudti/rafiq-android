@@ -41,7 +41,8 @@ class ProphetsViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(ProphetsUiState())
     val uiState: StateFlow<ProphetsUiState> = _uiState
 
-    val localeCode = currentLocaleCode()
+    val localeCode: String
+        get() = currentLocaleCode()
 
     init {
         loadProphets()

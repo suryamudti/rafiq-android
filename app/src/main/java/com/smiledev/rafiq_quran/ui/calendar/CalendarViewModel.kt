@@ -53,7 +53,8 @@ class CalendarViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(CalendarUiState())
     val uiState: StateFlow<CalendarUiState> = _uiState
 
-    val localeCode = currentLocaleCode()
+    val localeCode: String
+        get() = currentLocaleCode()
 
     val monthNames: List<String>
         get() = if (localeCode == "id") repository.islamicMonthNamesId else repository.islamicMonthNames

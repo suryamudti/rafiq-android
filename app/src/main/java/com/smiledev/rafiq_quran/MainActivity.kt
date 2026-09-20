@@ -11,6 +11,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.Modifier
 import com.smiledev.rafiq_quran.data.preferences.PreferencesManager
 import com.smiledev.rafiq_quran.theme.RafiqAppTheme
@@ -46,7 +50,26 @@ class MainActivity : ComponentActivity() {
     enableEdgeToEdge()
     setContent {
       val themeMode by preferencesManager.themeMode.collectAsState(initial = "system")
-      RafiqAppTheme(themeMode = themeMode) { Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) { MainNavigation() } }
+      val translationLanguage by preferencesManager.translationLanguage.collectAsState(initial = "system")
+
+      val context = LocalContext.current
+      val localizedContext = remember(translationLanguage, context) {
+          context.wrapLocale(translationLanguage)
+      }
+      val localizedConfiguration = remember(translationLanguage, localizedContext) {
+          localizedContext.resources.configuration
+      }
+
+      CompositionLocalProvider(
+          LocalContext provides localizedContext,
+          LocalConfiguration provides localizedConfiguration
+      ) {
+          RafiqAppTheme(themeMode = themeMode) {
+              Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+                  MainNavigation()
+              }
+          }
+      }
     }
   }
 }

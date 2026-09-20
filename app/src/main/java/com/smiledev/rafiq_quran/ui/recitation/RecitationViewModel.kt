@@ -7,6 +7,7 @@ import com.smiledev.rafiq_quran.core.AppError
 import com.smiledev.rafiq_quran.core.DefaultDispatcherProvider
 import com.smiledev.rafiq_quran.core.DispatcherProvider
 import com.smiledev.rafiq_quran.core.Result
+import com.smiledev.rafiq_quran.core.currentLocaleCode
 import com.smiledev.rafiq_quran.domain.model.Reciter
 import com.smiledev.rafiq_quran.domain.model.Surah
 import com.smiledev.rafiq_quran.domain.repository.QuranRepository
@@ -76,7 +77,7 @@ class RecitationViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(selectedReciter = reciter, currentSurah = null)
         viewModelScope.launch(dispatcherProvider.io) {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
-            val result = quranRepository.getChapters()
+            val result = quranRepository.getChapters(currentLocaleCode())
             when (result) {
                 is Result.Success -> {
                     _uiState.value = _uiState.value.copy(surahs = result.data, isLoading = false)

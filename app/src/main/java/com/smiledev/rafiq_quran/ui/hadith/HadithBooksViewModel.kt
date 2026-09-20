@@ -37,7 +37,8 @@ class HadithBooksViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(HadithBooksUiState())
     val uiState: StateFlow<HadithBooksUiState> = _uiState
 
-    val localeCode = currentLocaleCode()
+    val localeCode: String
+        get() = currentLocaleCode()
 
     init {
         viewModelScope.launch(dispatcherProvider.io) {

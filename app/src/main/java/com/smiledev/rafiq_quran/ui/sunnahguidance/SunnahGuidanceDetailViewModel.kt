@@ -34,7 +34,8 @@ class SunnahGuidanceDetailViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(SunnahGuidanceDetailUiState())
     val uiState: StateFlow<SunnahGuidanceDetailUiState> = _uiState.asStateFlow()
 
-    val localeCode: String = currentLocaleCode()
+    val localeCode: String
+        get() = currentLocaleCode()
 
     fun loadDetail(sunnahId: String) {
         _uiState.update { it.copy(isLoading = true, error = null) }

@@ -33,7 +33,8 @@ class PrayerGuidanceDetailViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(PrayerGuidanceDetailUiState())
     val uiState: StateFlow<PrayerGuidanceDetailUiState> = _uiState
 
-    val localeCode: String = currentLocaleCode()
+    val localeCode: String
+        get() = currentLocaleCode()
 
     fun loadDetail(guidanceId: String) {
         _uiState.update { it.copy(isLoading = true, error = null) }

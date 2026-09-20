@@ -172,13 +172,14 @@ class DashboardViewModel @Inject constructor(
 
     private val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.US)
     private var countdownJob: Job? = null
+    private var lastPrayerTimesData: PrayerTimesData? = null
 
     init {
         val versionName = runCatching {
             context.packageManager.getPackageInfo(context.packageName, 0).versionName ?: ""
         }.getOrDefault("")
 
-        val isIndonesian = Locale.getDefault().language == "id"
+        val isIndonesian = currentLocaleCode() == "id"
         val gregorianFormat = SimpleDateFormat("EEEE, d MMMM yyyy", Locale.getDefault())
         val dayOfYear = Calendar.getInstance().get(Calendar.DAY_OF_YEAR)
         val insp = inspirations[dayOfYear % inspirations.size]
@@ -313,6 +314,79 @@ class DashboardViewModel @Inject constructor(
                 _uiState.value = _uiState.value.copy(todayCompletedPrayersCount = count)
             }
         }
+
+        // Observe Translation Language for dynamic localization
+        viewModelScope.launch(dispatcherProvider.io) {
+            preferencesManager.translationLanguage.collect {
+                updateLocalizedContent()
+            }
+        }
+    }
+
+    private fun updateLocalizedContent() {
+        val isIndonesian = currentLocaleCode() == "id"
+        val gregorianFormat = SimpleDateFormat("EEEE, d MMMM yyyy", Locale.getDefault())
+        val dayOfYear = Calendar.getInstance().get(Calendar.DAY_OF_YEAR)
+        val insp = inspirations[dayOfYear % inspirations.size]
+
+        _uiState.value = _uiState.value.copy(
+            greeting = computeGreeting(),
+            gregorianDate = gregorianFormat.format(Date()),
+            dailyAyahTranslation = if (isIndonesian) insp.translationId else insp.translationEn
+        )
+
+        viewModelScope.launch(dispatcherProvider.io) {
+            hadithRepository?.let { repo ->
+                val result = repo.getHadithOfTheDay(dayOfYear)
+                if (result is Result.Success) {
+                    val hadith = result.data
+                    val collection = hadith.bookId.substringBefore('.')
+                    val bookName = if (collection == "bukhari") {
+                        if (isIndonesian) "HR. Bukhari" else "Sahih al-Bukhari"
+                    } else {
+                        if (isIndonesian) "HR. Muslim" else "Sahih Muslim"
+                    }
+                    val ref = if (isIndonesian) {
+                        "$bookName No. ${hadith.inBookNumber}"
+                    } else {
+                        "$bookName #${hadith.inBookNumber}"
+                    }
+                    val translation = if (isIndonesian) {
+                        hadith.textId.ifBlank { hadith.textEn }
+                    } else {
+                        hadith.textEn.ifBlank { hadith.textId }
+                    }
+                    val narrator = if (isIndonesian) {
+                        hadith.narratorEn ?: hadith.narratorAr ?: ""
+                    } else {
+                        hadith.narratorEn ?: ""
+                    }
+                    _uiState.value = _uiState.value.copy(
+                        dailyHadithId = hadith.id,
+                        dailyHadithRef = ref,
+                        dailyHadithArabic = hadith.textAr,
+                        dailyHadithTranslation = translation,
+                        dailyHadithNarrator = narrator
+                    )
+                }
+            }
+        }
+
+        val sura = _uiState.value.lastReadSura
+        if (sura > 0 && quranRepository != null) {
+            viewModelScope.launch(dispatcherProvider.io) {
+                val lang = currentLocaleCode()
+                val chaptersResult = quranRepository.getChapters(lang)
+                val suraName = if (chaptersResult is Result.Success) {
+                    chaptersResult.data.find { it.chapterNumber == sura }?.nameSimple ?: "Surah $sura"
+                } else {
+                    "Surah $sura"
+                }
+                _uiState.value = _uiState.value.copy(lastReadSuraName = suraName)
+            }
+        }
+
+        lastPrayerTimesData?.let { applyPrayerTimes(it) }
     }
 
     fun loadPrayerTimes(forceRefresh: Boolean = false) {
@@ -347,6 +421,7 @@ class DashboardViewModel @Inject constructor(
     }
 
     private fun applyPrayerTimes(data: PrayerTimesData) {
+        lastPrayerTimesData = data
         val isIndonesian = currentLocaleCode() == "id"
 
         val times = if (isIndonesian) {
