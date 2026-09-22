@@ -84,6 +84,7 @@ abstract class RepositoryModule {
     @Binds @Singleton abstract fun bindPrayerGuidanceRepository(impl: com.smiledev.rafiq_quran.data.repository.PrayerGuidanceRepositoryImpl): com.smiledev.rafiq_quran.domain.repository.PrayerGuidanceRepository
     @Binds @Singleton abstract fun bindSunnahGuidanceRepository(impl: com.smiledev.rafiq_quran.data.repository.SunnahGuidanceRepositoryImpl): com.smiledev.rafiq_quran.domain.repository.SunnahGuidanceRepository
     @Binds @Singleton abstract fun bindTasbihRepository(impl: TasbihRepositoryImpl): TasbihRepository
+    @Binds @Singleton abstract fun bindTasbihHistoryRepository(impl: com.smiledev.rafiq_quran.data.repository.TasbihHistoryRepositoryImpl): com.smiledev.rafiq_quran.domain.repository.TasbihHistoryRepository
 }
 
 @Module
@@ -124,6 +125,17 @@ object AppModule {
     @Provides
     fun providePrayerLogDao(database: PrayerLogDatabase): PrayerLogDao {
         return database.prayerLogDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideTasbihDatabase(@ApplicationContext context: Context): com.smiledev.rafiq_quran.data.local.TasbihDatabase {
+        return com.smiledev.rafiq_quran.data.local.TasbihDatabase.getInstance(context)
+    }
+
+    @Provides
+    fun provideTasbihDao(database: com.smiledev.rafiq_quran.data.local.TasbihDatabase): com.smiledev.rafiq_quran.data.local.TasbihDao {
+        return database.tasbihDao()
     }
 
     @Provides

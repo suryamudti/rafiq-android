@@ -164,6 +164,16 @@
     <string name="tasbih_target_completed">Target tercapai! Alhamdulillah.</string>
     <string name="tasbih_sound">Suara</string>
     <string name="tasbih_vibration">Getar</string>
+    <string name="tasbih_history">Riwayat Dzikir</string>
+    <string name="tasbih_history_empty">Belum ada riwayat dzikir</string>
+    <string name="tasbih_history_empty_desc">Catatan dzikir harian Anda akan muncul di sini saat Anda berdzikir.</string>
+    <string name="tasbih_total_all_time">Total Keseluruhan</string>
+    <string name="tasbih_active_days">Hari Aktif</string>
+    <string name="tasbih_today_count">Hari Ini</string>
+    <string name="tasbih_clear_history">Hapus Riwayat</string>
+    <string name="tasbih_clear_confirm">Apakah Anda yakin ingin menghapus semua riwayat dzikir?</string>
+    <string name="tasbih_delete_day">Hapus riwayat hari</string>
+    <string name="tasbih_delete_day_confirm">Hapus riwayat dzikir untuk %s?</string>
     <string name="cancel">Batal</string>
     <string name="confirm">Simpan</string>
     <!-- Bookmarks -->

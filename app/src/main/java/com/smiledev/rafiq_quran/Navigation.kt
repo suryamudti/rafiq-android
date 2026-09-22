@@ -25,6 +25,7 @@ import com.smiledev.rafiq_quran.ui.hadith.HadithDetailScreen
 import com.smiledev.rafiq_quran.ui.zakat.ZakatCalculatorScreen
 import com.smiledev.rafiq_quran.ui.asmaulhusna.AsmaulHusnaScreen
 import com.smiledev.rafiq_quran.ui.tasbih.TasbihScreen
+import com.smiledev.rafiq_quran.ui.tasbih.history.TasbihHistoryScreen
 import com.smiledev.rafiq_quran.ui.bookmarks.BookmarkListFullScreen
 import com.smiledev.rafiq_quran.ui.prayerlog.PrayerLogScreen
 import com.smiledev.rafiq_quran.ui.prayerguidance.PrayerGuidanceScreen
@@ -168,6 +169,13 @@ fun MainNavigation() {
         }
         entry<Tasbih> {
           TasbihScreen(
+            onBack = { backStack.removeLastOrNull() },
+            onNavigateToHistory = { backStack.add(TasbihHistory) },
+            modifier = Modifier.safeDrawingPadding()
+          )
+        }
+        entry<TasbihHistory> {
+          TasbihHistoryScreen(
             onBack = { backStack.removeLastOrNull() },
             modifier = Modifier.safeDrawingPadding()
           )

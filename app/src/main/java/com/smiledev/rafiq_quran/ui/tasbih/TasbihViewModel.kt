@@ -1,4 +1,4 @@
-﻿package com.smiledev.rafiq_quran.ui.tasbih
+package com.smiledev.rafiq_quran.ui.tasbih
 
 import android.content.Context
 import android.media.AudioManager
@@ -22,6 +22,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import com.smiledev.rafiq_quran.domain.model.TasbihHistoryItem
+import com.smiledev.rafiq_quran.domain.repository.TasbihHistoryRepository
+import com.smiledev.rafiq_quran.domain.util.SystemTodayProvider
+import com.smiledev.rafiq_quran.domain.util.TodayProvider
+import java.util.Locale
 import javax.inject.Inject
 
 @Immutable
@@ -37,7 +42,8 @@ data class TasbihUiState(
     val showDhikrPicker: Boolean = false,
     val showResetDialog: Boolean = false,
     val showCustomTargetDialog: Boolean = false,
-    val isTargetReachedNotice: Boolean = false
+    val isTargetReachedNotice: Boolean = false,
+    val todayDhikrCount: Int = 0
 ) {
     val progress: Float
         get() = if (target > 0) (count.toFloat() / target.toFloat()).coerceIn(0f, 1f) else 0f
@@ -48,6 +54,8 @@ class TasbihViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val repository: TasbihRepository,
     private val preferencesManager: PreferencesManager,
+    private val tasbihHistoryRepository: TasbihHistoryRepository,
+    private val todayProvider: TodayProvider = SystemTodayProvider,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider
 ) : ViewModel() {
 
@@ -58,14 +66,56 @@ class TasbihViewModel @Inject constructor(
             override fun getTasbihItems(): Result<List<TasbihItem>, com.smiledev.rafiq_quran.core.AppError> =
                 Result.Success(emptyList())
         },
-        preferencesManager: PreferencesManager = PreferencesManager(context)
-    ) : this(context, repository, preferencesManager, DefaultDispatcherProvider)
+        preferencesManager: PreferencesManager = PreferencesManager(context),
+        tasbihHistoryRepository: TasbihHistoryRepository = object : TasbihHistoryRepository {
+            override fun observeAllRecords() = kotlinx.coroutines.flow.flowOf(emptyList<TasbihHistoryItem>())
+            override fun observeDayRecords(date: String) = kotlinx.coroutines.flow.flowOf(emptyList<TasbihHistoryItem>())
+            override suspend fun addOrUpdateCount(date: String, dhikrId: Int, dhikrName: String, arabic: String, delta: Int) = Result.Success(Unit)
+            override suspend fun deleteDay(date: String) = Result.Success(Unit)
+            override suspend fun clearAll() = Result.Success(Unit)
+        },
+        todayProvider: TodayProvider = SystemTodayProvider
+    ) : this(context, repository, preferencesManager, tasbihHistoryRepository, todayProvider, DefaultDispatcherProvider)
 
     private val _uiState = MutableStateFlow(TasbihUiState())
     val uiState: StateFlow<TasbihUiState> = _uiState
 
     init {
         loadData()
+        observeTodayHistory()
+    }
+
+    private fun getTodayDateString(): String {
+        val today = todayProvider.today()
+        return String.format(Locale.US, "%04d-%02d-%02d", today.year, today.month, today.day)
+    }
+
+    private fun observeTodayHistory() {
+        viewModelScope.launch(dispatcherProvider.io) {
+            tasbihHistoryRepository.observeDayRecords(getTodayDateString()).collect { records ->
+                val totalToday = records.sumOf { it.count }
+                _uiState.update { it.copy(todayDhikrCount = totalToday) }
+            }
+        }
+    }
+
+    private fun updateDailyHistory(delta: Int) {
+        val current = _uiState.value
+        val todayStr = getTodayDateString()
+        val item = current.selectedItem
+        val dhikrId = item?.id ?: 0
+        val dhikrName = item?.transliteration ?: "Custom"
+        val arabic = item?.arabic ?: ""
+
+        viewModelScope.launch(dispatcherProvider.io) {
+            tasbihHistoryRepository.addOrUpdateCount(
+                date = todayStr,
+                dhikrId = dhikrId,
+                dhikrName = dhikrName,
+                arabic = arabic,
+                delta = delta
+            )
+        }
     }
 
     private fun loadData() {
@@ -129,6 +179,7 @@ class TasbihViewModel @Inject constructor(
         }
 
         persistSession(nextCount, nextLap, nextTotal)
+        updateDailyHistory(delta = 1)
     }
 
     fun decrement() {
@@ -151,6 +202,7 @@ class TasbihViewModel @Inject constructor(
         }
 
         persistSession(nextCount, current.lap, nextTotal)
+        updateDailyHistory(delta = -1)
     }
 
     fun reset(resetAll: Boolean = false) {
