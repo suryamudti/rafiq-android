@@ -1,12 +1,17 @@
-﻿package com.smiledev.rafiq_quran.ui.tasbih
+package com.smiledev.rafiq_quran.ui.tasbih
 
 import android.content.Context
 import android.os.Vibrator
 import com.smiledev.rafiq_quran.TestDispatcherProvider
 import com.smiledev.rafiq_quran.core.Result
 import com.smiledev.rafiq_quran.data.preferences.PreferencesManager
+import com.smiledev.rafiq_quran.domain.model.GregorianDate
 import com.smiledev.rafiq_quran.domain.model.TasbihItem
+import com.smiledev.rafiq_quran.domain.repository.TasbihHistoryRepository
 import com.smiledev.rafiq_quran.domain.repository.TasbihRepository
+import com.smiledev.rafiq_quran.domain.util.TodayProvider
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -33,6 +38,8 @@ class TasbihViewModelTest {
 
     private val repository: TasbihRepository = mockk()
     private val preferencesManager: PreferencesManager = mockk(relaxed = true)
+    private val tasbihHistoryRepository: TasbihHistoryRepository = mockk(relaxed = true)
+    private val todayProvider: TodayProvider = mockk()
 
     private val sampleItems = listOf(
         TasbihItem(1, "سُبْحَانَ اللّهُ", "Subhanallah", "Glory be to Allah", "Maha Suci Allah", 33),
@@ -42,6 +49,9 @@ class TasbihViewModelTest {
 
     @Before
     fun setup() {
+        every { todayProvider.today() } returns GregorianDate(2026, 9, 22)
+        every { tasbihHistoryRepository.observeDayRecords(any()) } returns flowOf(emptyList())
+        coEvery { tasbihHistoryRepository.addOrUpdateCount(any(), any(), any(), any(), any()) } returns Result.Success(Unit)
         every { repository.getTasbihItems() } returns Result.Success(sampleItems)
         every { preferencesManager.tasbihSelectedId } returns flowOf(1)
         every { preferencesManager.tasbihCount } returns flowOf(0)
@@ -57,6 +67,8 @@ class TasbihViewModelTest {
             context = context,
             repository = repository,
             preferencesManager = preferencesManager,
+            tasbihHistoryRepository = tasbihHistoryRepository,
+            todayProvider = todayProvider,
             dispatcherProvider = testDispatcherProvider
         )
     }
@@ -247,5 +259,45 @@ class TasbihViewModelTest {
         assertFalse(vm.uiState.value.showCustomTargetDialog)
         vm.setShowCustomTargetDialog(true)
         assertTrue(vm.uiState.value.showCustomTargetDialog)
+    }
+
+    @Test
+    fun `increment records count in daily history`() = runTest(testDispatcher) {
+        val vm = createViewModel()
+        advanceUntilIdle()
+
+        vm.increment()
+        advanceUntilIdle()
+
+        coVerify {
+            tasbihHistoryRepository.addOrUpdateCount(
+                date = "2026-09-22",
+                dhikrId = 1,
+                dhikrName = "Subhanallah",
+                arabic = "سُبْحَانَ اللّهُ",
+                delta = 1
+            )
+        }
+    }
+
+    @Test
+    fun `decrement records negative delta in daily history`() = runTest(testDispatcher) {
+        val vm = createViewModel()
+        advanceUntilIdle()
+
+        vm.increment()
+        advanceUntilIdle()
+        vm.decrement()
+        advanceUntilIdle()
+
+        coVerify {
+            tasbihHistoryRepository.addOrUpdateCount(
+                date = "2026-09-22",
+                dhikrId = 1,
+                dhikrName = "Subhanallah",
+                arabic = "سُبْحَانَ اللّهُ",
+                delta = -1
+            )
+        }
     }
 }

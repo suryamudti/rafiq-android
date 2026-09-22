@@ -164,6 +164,16 @@
     <string name="tasbih_target_completed">Target completed! Alhamdulillah.</string>
     <string name="tasbih_sound">Sound</string>
     <string name="tasbih_vibration">Vibration</string>
+    <string name="tasbih_history">Dhikr History</string>
+    <string name="tasbih_history_empty">No dhikr history yet</string>
+    <string name="tasbih_history_empty_desc">Your daily dhikr counts will appear here as you practice.</string>
+    <string name="tasbih_total_all_time">All-Time Total</string>
+    <string name="tasbih_active_days">Active Days</string>
+    <string name="tasbih_today_count">Today</string>
+    <string name="tasbih_clear_history">Clear History</string>
+    <string name="tasbih_clear_confirm">Are you sure you want to clear all dhikr history?</string>
+    <string name="tasbih_delete_day">Delete day history</string>
+    <string name="tasbih_delete_day_confirm">Delete dhikr history for %s?</string>
     <string name="cancel">Cancel</string>
     <string name="confirm">Confirm</string>
     <!-- Bookmarks -->

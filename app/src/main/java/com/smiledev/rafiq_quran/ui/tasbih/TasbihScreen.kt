@@ -31,6 +31,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -82,6 +83,7 @@ import java.util.Locale
 @Composable
 fun TasbihScreen(
     onBack: () -> Unit,
+    onNavigateToHistory: () -> Unit = {},
     viewModel: TasbihViewModel = hiltViewModel(),
     modifier: Modifier = Modifier
 ) {
@@ -94,6 +96,13 @@ fun TasbihScreen(
                 title = stringResource(R.string.tasbih_counter),
                 onBack = onBack,
                 actions = {
+                    IconButton(onClick = onNavigateToHistory) {
+                        Icon(
+                            imageVector = Icons.Default.DateRange,
+                            contentDescription = stringResource(R.string.tasbih_history),
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
                     IconButton(onClick = { viewModel.toggleSound() }) {
                         Icon(
                             painter = painterResource(
@@ -145,11 +154,11 @@ fun TasbihScreen(
 
             Spacer(modifier = Modifier.height(RafiqTheme.spacing.m))
 
-            // 3. Stats row (Lap, Target, Total)
+            // 3. Stats row (Lap, Target, Today)
             StatsRow(
                 lap = state.lap,
                 target = state.target,
-                total = state.totalCount,
+                todayTotal = state.todayDhikrCount,
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -370,7 +379,7 @@ private fun TargetPresetRow(
 private fun StatsRow(
     lap: Int,
     target: Int,
-    total: Int,
+    todayTotal: Int,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -389,7 +398,7 @@ private fun StatsRow(
             contentColor = MaterialTheme.colorScheme.onSecondaryContainer
         )
         RafiqBadge(
-            text = "${stringResource(R.string.tasbih_total)}: $total",
+            text = "${stringResource(R.string.tasbih_today_count)}: $todayTotal",
             containerColor = MaterialTheme.colorScheme.surfaceVariant,
             contentColor = MaterialTheme.colorScheme.onSurfaceVariant
         )
