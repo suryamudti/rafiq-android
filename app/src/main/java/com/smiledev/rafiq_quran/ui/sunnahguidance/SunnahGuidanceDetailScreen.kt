@@ -160,7 +160,7 @@ private fun SunnahGuidanceDetailContent(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(18.dp),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                containerColor = MaterialTheme.colorScheme.surface
             ),
             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
         ) {
@@ -269,8 +269,7 @@ private fun SunnahGuidanceDetailContent(
                 shape = RoundedCornerShape(18.dp),
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.08f)
-                ),
-                elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+                )
             ) {
                 Column(
                     modifier = Modifier
@@ -379,8 +378,7 @@ private fun SunnahGuidanceDetailContent(
                 shape = RoundedCornerShape(18.dp),
                 colors = CardDefaults.cardColors(
                     containerColor = Color(0xFFD97706).copy(alpha = 0.08f)
-                ),
-                elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+                )
             ) {
                 Column(
                     modifier = Modifier
@@ -442,8 +440,9 @@ private fun SunnahGuidanceDetailContent(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(18.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)
-                )
+                    containerColor = MaterialTheme.colorScheme.surface
+                ),
+                elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
             ) {
                 Column(
                     modifier = Modifier
