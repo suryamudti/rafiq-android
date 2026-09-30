@@ -30,6 +30,7 @@ import com.smiledev.rafiq_quran.R
 @Composable
 fun SourcesScreen(onBack: () -> Unit, modifier: Modifier = Modifier) {
     val context = LocalContext.current
+    val linkErrorMessage = stringResource(R.string.link_error)
     Scaffold(
         topBar = {
             TopAppBar(
@@ -64,7 +65,7 @@ fun SourcesScreen(onBack: () -> Unit, modifier: Modifier = Modifier) {
                             }.onFailure {
                                 Toast.makeText(
                                     context,
-                                    context.getString(R.string.link_error),
+                                    linkErrorMessage,
                                     Toast.LENGTH_SHORT
                                 ).show()
                             }

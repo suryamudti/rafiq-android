@@ -6,9 +6,13 @@ on:
       - main
       - master
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
-    name: Run Unit Tests
+    name: Test & Lint
     runs-on: ubuntu-latest
 
     steps:
@@ -25,5 +29,26 @@ jobs:
       - name: Grant Execute Permission to Gradlew
         run: chmod +x gradlew
 
+      - name: Build Debug APK
+        run: ./gradlew assembleDebug
+
       - name: Run Unit Tests
         run: ./gradlew testDebug
+
+      - name: Run Android Lint
+        if: success() || failure()
+        run: ./gradlew lintDebug
+
+      - name: Upload Lint Report
+        if: success() || failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lint-reports
+          path: '**/build/reports/lint-results-debug.html'
+
+      - name: Upload Test Results
+        if: success() || failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: '**/build/test-results/**/*.xml'

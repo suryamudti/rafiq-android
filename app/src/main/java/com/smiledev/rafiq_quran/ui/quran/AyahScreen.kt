@@ -826,7 +826,7 @@ private fun shareAyah(context: Context, suraNumber: Int, ayaNumber: Int, arabicT
             append(translation)
         }
         appendLine()
-        append(context.getString(R.string.quran_via_rafiq, suraNumber, ayaNumber))
+        append("(QS $suraNumber:$ayaNumber) — ${context.getString(R.string.quran_via_rafiq)}")
     }
     val intent = Intent(Intent.ACTION_SEND).apply {
         type = "text/plain"

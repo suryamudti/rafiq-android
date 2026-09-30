@@ -11,6 +11,7 @@ import com.smiledev.rafiq_quran.R
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
+@androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
 class AudioRecitationService : MediaSessionService() {
 
     private var mediaSession: MediaSession? = null
