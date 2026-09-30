@@ -12,7 +12,7 @@ import com.smiledev.rafiq_quran.domain.model.Ayah
 import com.smiledev.rafiq_quran.domain.model.Surah
 import com.smiledev.rafiq_quran.domain.repository.BookmarkRepository
 import com.smiledev.rafiq_quran.domain.repository.QuranRepository
-import android.text.Html
+import androidx.core.text.HtmlCompat
 import com.smiledev.rafiq_quran.data.preferences.PreferencesManager
 import com.smiledev.rafiq_quran.data.remote.EQuranApiService
 import com.smiledev.rafiq_quran.data.remote.IslamicAppApiService
@@ -270,7 +270,7 @@ class AyahViewModel @Inject constructor(
                         (match ?: tafsirs.firstOrNull())?.text
                     } else null
                     val plainText = if (tafsirText != null) {
-                        Html.fromHtml(tafsirText, Html.FROM_HTML_MODE_COMPACT).toString()
+                        HtmlCompat.fromHtml(tafsirText, HtmlCompat.FROM_HTML_MODE_COMPACT).toString()
                     } else "Tafsir not available"
                     _uiState.value = _uiState.value.copy(
                         tafsirCache = _uiState.value.tafsirCache + (key to plainText),

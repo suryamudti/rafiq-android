@@ -659,11 +659,13 @@ fun AsmaulHusnaScreen(
                 Spacer(Modifier.height(20.dp))
 
                 // Actions: Copy and Share
+                val benefitsTitle = stringResource(R.string.asmaul_husna_benefits_title)
+                val copiedToast = stringResource(R.string.asmaul_husna_copied)
                 val shareFormattedText = buildString {
                     append("${selected.id}. ${selected.arabic} (${selected.transliteration})\n")
                     append("$meaning\n\n")
                     if (benefit.isNotBlank()) {
-                        append("${context.getString(R.string.asmaul_husna_benefits_title)}:\n$benefit\n\n")
+                        append("$benefitsTitle:\n$benefit\n\n")
                     }
                     append("Shared via Rafiq App")
                 }
@@ -678,7 +680,7 @@ fun AsmaulHusnaScreen(
                             clipboardManager.setText(AnnotatedString(shareFormattedText))
                             Toast.makeText(
                                 context,
-                                context.getString(R.string.asmaul_husna_copied),
+                                copiedToast,
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
