@@ -1,5 +1,6 @@
 package com.smiledev.rafiq_quran.data.repository
 
+import android.annotation.SuppressLint
 import android.content.Context
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.Tasks
@@ -20,6 +21,7 @@ class LocationProviderImpl @Inject constructor(
     private val preferencesManager: PreferencesManager
 ) : LocationProvider {
 
+    @SuppressLint("MissingPermission") // Permission checked at call site (UI layer)
     override suspend fun getLastLocation(): Result<GeoLocation, AppError> {
         return retryIO {
             try {
