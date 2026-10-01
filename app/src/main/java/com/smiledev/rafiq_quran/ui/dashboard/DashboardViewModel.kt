@@ -31,6 +31,26 @@ import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
 
+internal val KNOWN_DASHBOARD_KEYS: Set<String> = setOf(
+    "quran",
+    "prayer_times",
+    "qibla",
+    "tasbih",
+    "hadith",
+    "prophets",
+    "asmaul_husna",
+    "recitation",
+    "mosques",
+    "calendar",
+    "zakat",
+    "prayer_log",
+    "prayer_guidance",
+    "sunnah_guidance",
+    "hifz"
+)
+
+internal fun sanitizeHiddenKeys(raw: Set<String>): Set<String> = raw.intersect(KNOWN_DASHBOARD_KEYS)
+
 @Immutable
 data class DashboardUiState(
     val isLoading: Boolean = false,
