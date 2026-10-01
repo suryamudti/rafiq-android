@@ -84,4 +84,27 @@ class PrayerNotificationWorkerTest {
         assertEquals("Friday prayer", PrayerNotificationWorker.getLocalizedPrayerName(context, "Friday prayer", wednesdayCalendar))
         assertEquals("Friday prayer", PrayerNotificationWorker.getLocalizedPrayerName(context, "Jumat", wednesdayCalendar))
     }
+
+    @Test
+    fun triggerParsesValidTime() {
+        // Real Worker instance: relaxed mockk<PrayerNotificationWorker> would stub
+        // prayerTriggerMillisPublic to 0L and never exercise parsing.
+        val worker = PrayerNotificationWorker(
+            mockk<Context>(relaxed = true),
+            mockk<androidx.work.WorkerParameters>(relaxed = true)
+        )
+        val millis = worker.prayerTriggerMillisPublic("05:30")
+        val cal = java.util.Calendar.getInstance().apply { timeInMillis = millis }
+        org.junit.Assert.assertEquals(5, cal.get(java.util.Calendar.HOUR_OF_DAY))
+        org.junit.Assert.assertEquals(30, cal.get(java.util.Calendar.MINUTE))
+    }
+
+    @Test
+    fun triggerRejectsMalformedTime() {
+        val worker = PrayerNotificationWorker(
+            mockk<Context>(relaxed = true),
+            mockk<androidx.work.WorkerParameters>(relaxed = true)
+        )
+        org.junit.Assert.assertEquals(0L, worker.prayerTriggerMillisPublic("bad"))
+    }
 }

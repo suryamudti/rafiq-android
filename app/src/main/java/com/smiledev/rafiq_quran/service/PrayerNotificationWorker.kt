@@ -47,9 +47,18 @@ class PrayerNotificationWorker(
         private val PRAYER_NAMES = listOf("Fajr", "Dhuhr", "Asr", "Maghrib", "Isha")
 
         fun schedule(context: Context) {
-            val request = PeriodicWorkRequestBuilder<PrayerNotificationWorker>(
-                1, TimeUnit.DAYS
-            ).build()
+            val now = java.util.Calendar.getInstance()
+            val midnight = (now.clone() as java.util.Calendar).apply {
+                add(java.util.Calendar.DAY_OF_YEAR, 1)
+                set(java.util.Calendar.HOUR_OF_DAY, 0)
+                set(java.util.Calendar.MINUTE, 5)
+                set(java.util.Calendar.SECOND, 0)
+                set(java.util.Calendar.MILLISECOND, 0)
+            }
+            val delayMs = (midnight.timeInMillis - System.currentTimeMillis()).coerceAtLeast(0L)
+            val request = PeriodicWorkRequestBuilder<PrayerNotificationWorker>(1, TimeUnit.DAYS)
+                .setInitialDelay(delayMs, TimeUnit.MILLISECONDS)
+                .build()
             WorkManager.getInstance(context).enqueueUniquePeriodicWork(
                 WORK_NAME,
                 ExistingPeriodicWorkPolicy.UPDATE,
@@ -161,32 +170,57 @@ class PrayerNotificationWorker(
         }
 
         val prefs = PreferencesManager(applicationContext)
-        val lat = runBlocking { prefs.latitude.first() }.toDoubleOrNull() ?: -6.2088
-        val lon = runBlocking { prefs.longitude.first() }.toDoubleOrNull() ?: 106.8456
-        val method = runBlocking { prefs.prayerCalculationMethod.first() }
+        val (latStr, lonStr, method) = runBlocking {
+            kotlinx.coroutines.flow.combine(
+                prefs.latitude,
+                prefs.longitude,
+                prefs.prayerCalculationMethod
+            ) { lat, lon, m -> Triple(lat, lon, m) }.first()
+        }
+        val lat = latStr.toDoubleOrNull() ?: -6.2088
+        val lon = lonStr.toDoubleOrNull() ?: 106.8456
 
         val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.US)
         val today = dateFormat.format(Date())
 
         val timings = try {
-            val client = OkHttpClient.Builder()
-                .connectTimeout(10, TimeUnit.SECONDS)
-                .readTimeout(10, TimeUnit.SECONDS)
-                .build()
-            val url = "https://api.aladhan.com/v1/timings/$today?latitude=$lat&longitude=$lon&method=$method"
-            val request = Request.Builder().url(url).build()
-            val response = client.newCall(request).execute()
-            val json = JSONObject(response.body?.string() ?: "")
-            json.getJSONObject("data").getJSONObject("timings")
+            val fetchResult = runBlocking {
+                com.smiledev.rafiq_quran.core.retryIO(times = 3, initialDelay = 200) {
+                    try {
+                        val client = okhttp3.OkHttpClient.Builder()
+                            .connectTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+                            .readTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+                            .writeTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+                            .build()
+                        val url = "https://api.aladhan.com/v1/timings/$today?latitude=$lat&longitude=$lon&method=$method"
+                        val request = okhttp3.Request.Builder().url(url).build()
+                        val response = client.newCall(request).execute()
+                        if (!response.isSuccessful) throw java.io.IOException("HTTP ${response.code}")
+                        val json = org.json.JSONObject(response.body?.string() ?: "")
+                        com.smiledev.rafiq_quran.core.Result.Success(json.getJSONObject("data").getJSONObject("timings"))
+                    } catch (e: java.io.IOException) {
+                        com.smiledev.rafiq_quran.core.Result.Error(
+                            com.smiledev.rafiq_quran.core.AppError.Network(e.message ?: "network error", e)
+                        )
+                    } catch (e: Exception) {
+                        com.smiledev.rafiq_quran.core.Result.Error(
+                            com.smiledev.rafiq_quran.core.AppError.Network(e.message ?: "network error", e)
+                        )
+                    }
+                }
+            }
+            when (fetchResult) {
+                is com.smiledev.rafiq_quran.core.Result.Success -> fetchResult.data
+                is com.smiledev.rafiq_quran.core.Result.Error -> return androidx.work.ListenableWorker.Result.retry()
+            }
         } catch (e: Exception) {
-            return Result.retry()
+            return androidx.work.ListenableWorker.Result.retry()
         }
 
         val now = System.currentTimeMillis()
         val alarmManager = applicationContext.getSystemService(AlarmManager::class.java)
         var scheduled = 0
 
-        val isTodayFriday = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY
         for (name in PRAYER_NAMES) {
             val time = timings.optString(name, "")
             if (time.isBlank()) continue
@@ -195,7 +229,6 @@ class PrayerNotificationWorker(
             val intent = Intent(applicationContext, PrayerAlarmReceiver::class.java).apply {
                 putExtra("name", name)
                 putExtra("time", time)
-                putExtra("isFriday", isTodayFriday)
             }
             val pi = PendingIntent.getBroadcast(
                 applicationContext,
@@ -225,7 +258,7 @@ class PrayerNotificationWorker(
         return Result.success()
     }
 
-    private fun prayerTriggerMillis(time: String): Long {
+    internal fun prayerTriggerMillis(time: String): Long {
         val parts = time.split(":")
         if (parts.size != 2) return 0L
         val hour = parts[0].toIntOrNull() ?: return 0L
@@ -238,4 +271,7 @@ class PrayerNotificationWorker(
         }
         return cal.timeInMillis
     }
+
+    // Test-only alias kept stable for JVM tests without Worker params.
+    internal fun prayerTriggerMillisPublic(time: String): Long = prayerTriggerMillis(time)
 }

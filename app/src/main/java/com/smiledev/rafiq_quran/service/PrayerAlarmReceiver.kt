@@ -10,15 +10,7 @@ class PrayerAlarmReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val name = intent.getStringExtra("name") ?: "Prayer"
         val time = intent.getStringExtra("time") ?: ""
-        val cal = Calendar.getInstance()
-        if (intent.hasExtra("isFriday")) {
-            val isFriday = intent.getBooleanExtra("isFriday", false)
-            if (isFriday) {
-                cal.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY)
-            } else if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY) {
-                cal.set(Calendar.DAY_OF_WEEK, Calendar.THURSDAY)
-            }
-        }
+        val cal = java.util.Calendar.getInstance()
         PrayerNotificationWorker.postPrayerNotification(context, name, time, cal)
     }
 }
