@@ -44,10 +44,6 @@ class AudioPlayerController @Inject constructor(
     private val _playbackState = MutableStateFlow(PlaybackState())
     val playbackState: StateFlow<PlaybackState> = _playbackState
 
-    init {
-        connect()
-    }
-
     fun play(url: String, title: String, artist: String) {
         completionListener = null
         val mediaItem = MediaItem.Builder()

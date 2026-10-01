@@ -45,7 +45,47 @@ class AudioRecitationService : MediaSessionService() {
             .setChannelName(R.string.notification_channel_name)
             .build()
         notificationProvider.setSmallIcon(R.drawable.ic_play)
-        setMediaNotificationProvider(notificationProvider)
+        val baseProvider = notificationProvider
+        setMediaNotificationProvider(
+            object : androidx.media3.session.MediaNotification.Provider {
+                override fun createNotification(
+                    mediaSession: MediaSession,
+                    customLayout: com.google.common.collect.ImmutableList<androidx.media3.session.CommandButton>,
+                    actionFactory: androidx.media3.session.MediaNotification.ActionFactory,
+                    onNotificationChangedCallback: androidx.media3.session.MediaNotification.Provider.Callback
+                ): androidx.media3.session.MediaNotification {
+                    val base = baseProvider.createNotification(mediaSession, customLayout, actionFactory, onNotificationChangedCallback)
+                    val notif = base.notification
+                    val ongoing = MediaNotificationPolicy.shouldBeOngoing(player.isPlaying)
+                    if (!ongoing) {
+                        notif.flags = notif.flags and android.app.Notification.FLAG_ONGOING_EVENT.inv()
+                    }
+                    val deleteIntent = android.app.PendingIntent.getService(
+                        this@AudioRecitationService,
+                        0,
+                        android.content.Intent(this@AudioRecitationService, AudioRecitationService::class.java).setAction(ACTION_STOP_FROM_DISMISS),
+                        android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_IMMUTABLE
+                    )
+                    notif.deleteIntent = deleteIntent
+                    return base
+                }
+                override fun handleCustomCommand(
+                    session: MediaSession,
+                    action: String,
+                    extras: android.os.Bundle
+                ): Boolean = baseProvider.handleCustomCommand(session, action, extras)
+            }
+        )
+    }
+
+    override fun onStartCommand(intent: android.content.Intent?, flags: Int, startId: Int): Int {
+        if (intent?.action == ACTION_STOP_FROM_DISMISS) {
+            player.stop()
+            player.clearMediaItems()
+            stopSelf()
+            return START_NOT_STICKY
+        }
+        return super.onStartCommand(intent, flags, startId)
     }
 
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession? {
@@ -65,5 +105,6 @@ class AudioRecitationService : MediaSessionService() {
     companion object {
         const val CHANNEL_ID = "media_playback"
         const val STOP_DELAY_MS = 3000L
+        const val ACTION_STOP_FROM_DISMISS = "com.smiledev.rafiq_quran.action.STOP_FROM_DISMISS"
     }
 }
