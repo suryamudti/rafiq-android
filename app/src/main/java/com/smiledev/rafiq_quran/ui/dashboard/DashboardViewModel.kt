@@ -81,7 +81,8 @@ data class DashboardUiState(
     val dailyHadithArabic: String = "إِنَّمَا الْأَعْمَالُ بِالنِّيَّاتِ",
     val dailyHadithTranslation: String = "The reward of deeds depends upon the intentions and every person will get the reward according to what he has intended.",
     val dailyHadithNarrator: String = "Umar bin Al-Khattab",
-    val todayCompletedPrayersCount: Int = 0
+    val todayCompletedPrayersCount: Int = 0,
+    val hiddenKeys: Set<String> = emptySet()
 )
 
 private data class DailyInspiration(
@@ -289,6 +290,13 @@ class DashboardViewModel @Inject constructor(
             preferencesManager.cityName.collect { city ->
                 val displayCity = if (city.isNotBlank()) city else "Jakarta, ID"
                 _uiState.value = _uiState.value.copy(cityName = displayCity)
+            }
+        }
+
+        // Observe Hidden Dashboard Keys
+        viewModelScope.launch(dispatcherProvider.io) {
+            preferencesManager.hiddenDashboardKeys.collect { raw ->
+                _uiState.value = _uiState.value.copy(hiddenKeys = sanitizeHiddenKeys(raw))
             }
         }
 

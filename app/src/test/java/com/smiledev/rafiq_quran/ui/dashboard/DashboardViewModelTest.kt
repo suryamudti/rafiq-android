@@ -53,6 +53,7 @@ class DashboardViewModelTest {
     private val lastReadSuraFlow = MutableStateFlow(2)
     private val lastReadAyaFlow = MutableStateFlow(255)
     private val prayerLogsFlow = MutableStateFlow<List<PrayerLogDay>>(emptyList())
+    private val hiddenKeysFlow = MutableStateFlow<Set<String>>(emptySet())
 
     @Before
     fun setUp() {
@@ -64,6 +65,7 @@ class DashboardViewModelTest {
         every { preferencesManager.cityName } returns cityFlow
         every { preferencesManager.lastReadSura } returns lastReadSuraFlow
         every { preferencesManager.lastReadAya } returns lastReadAyaFlow
+        every { preferencesManager.hiddenDashboardKeys } returns hiddenKeysFlow
         every { prayerLogRepository.observeAll() } returns prayerLogsFlow
 
         coEvery { prayerTimesRepository.getCachedPrayerTimes(any(), any(), any(), any()) } returns null
@@ -303,4 +305,24 @@ class DashboardViewModelTest {
             )
         }
     }
+
+    @Test
+    fun `hidden dashboard keys flow into ui state sanitized`() = runTest(testDispatcher) {
+        hiddenKeysFlow.value = setOf("zakat", "bogus-key")
+
+        val vm = DashboardViewModel(
+            prayerTimesRepository = prayerTimesRepository,
+            preferencesManager = preferencesManager,
+            context = context,
+            dispatcherProvider = testDispatcherProvider,
+            quranRepository = quranRepository,
+            prayerLogRepository = prayerLogRepository,
+            hadithRepository = hadithRepository,
+            enablePeriodicCountdown = false
+        )
+        testScheduler.runCurrent()
+
+        assertEquals(setOf("zakat"), vm.uiState.value.hiddenKeys)
+    }
 }
+
