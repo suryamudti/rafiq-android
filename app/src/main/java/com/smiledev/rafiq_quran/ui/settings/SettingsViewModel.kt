@@ -18,7 +18,8 @@ import javax.inject.Inject
 @Immutable
 data class SettingsUiState(
     val themeMode: String = "system",
-    val translationLanguage: String = "system"
+    val translationLanguage: String = "system",
+    val hiddenKeys: Set<String> = emptySet()
 )
 
 @HiltViewModel
@@ -34,11 +35,13 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch(dispatcherProvider.io) {
             combine(
                 preferencesManager.themeMode,
-                preferencesManager.translationLanguage
-            ) { theme, lang ->
+                preferencesManager.translationLanguage,
+                preferencesManager.hiddenDashboardKeys
+            ) { theme, lang, hidden ->
                 _uiState.value = _uiState.value.copy(
                     themeMode = theme,
-                    translationLanguage = lang
+                    translationLanguage = lang,
+                    hiddenKeys = hidden
                 )
             }.collect()
         }
@@ -53,6 +56,18 @@ class SettingsViewModel @Inject constructor(
     fun setTranslationLanguage(lang: String) {
         viewModelScope.launch(dispatcherProvider.io) {
             preferencesManager.setTranslationLanguage(lang)
+        }
+    }
+
+    fun toggleDashboardKey(key: String) {
+        viewModelScope.launch(dispatcherProvider.io) {
+            preferencesManager.toggleDashboardKey(key)
+        }
+    }
+
+    fun resetDashboard() {
+        viewModelScope.launch(dispatcherProvider.io) {
+            preferencesManager.setDashboardHidden(emptySet())
         }
     }
 }

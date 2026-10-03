@@ -16,6 +16,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -95,6 +96,30 @@ fun SettingsScreen(
             RadioButtonOption("id", R.string.bahasa_indonesia, state.translationLanguage, onLanguageSelected)
             RadioButtonOption("en", R.string.english, state.translationLanguage, onLanguageSelected)
             RadioButtonOption("both", R.string.both_bahasa_english, state.translationLanguage, onLanguageSelected)
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Text(
+                text = stringResource(R.string.dashboard_customize_title),
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(bottom = 4.dp)
+            )
+
+            dashboardToggleItems.forEach { (key, labelResId) ->
+                DashboardToggleRow(
+                    labelResId = labelResId,
+                    checked = key !in state.hiddenKeys,
+                    onCheckedChange = { viewModel.toggleDashboardKey(key) }
+                )
+            }
+
+            Text(
+                text = stringResource(R.string.reset_defaults),
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.primary,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.clickable { viewModel.resetDashboard() }.padding(vertical = 12.dp, horizontal = 8.dp)
+            )
 
             Spacer(modifier = Modifier.height(24.dp))
             HorizontalDivider()
@@ -182,3 +207,40 @@ private fun RadioButtonOption(
         )
     }
 }
+
+private val dashboardToggleItems: List<Pair<String, Int>> = listOf(
+    "quran" to R.string.quran,
+    "prayer_times" to R.string.prayer_times,
+    "qibla" to R.string.qibla,
+    "tasbih" to R.string.tasbih,
+    "hadith" to R.string.hadiths,
+    "prophets" to R.string.prophets,
+    "asmaul_husna" to R.string.asmaul_husna,
+    "recitation" to R.string.recitations,
+    "mosques" to R.string.mosques,
+    "calendar" to R.string.calendar,
+    "zakat" to R.string.zakat,
+    "prayer_log" to R.string.prayer_log,
+    "prayer_guidance" to R.string.prayer_guidance,
+    "sunnah_guidance" to R.string.sunnah_guidance
+)
+
+@Composable
+private fun DashboardToggleRow(
+    labelResId: Int,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp, horizontal = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = stringResource(labelResId),
+            style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier.weight(1f)
+        )
+        Switch(checked = checked, onCheckedChange = onCheckedChange)
+    }
+}
+
