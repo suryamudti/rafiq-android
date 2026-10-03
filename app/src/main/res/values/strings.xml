@@ -397,4 +397,9 @@
     <string name="prayer_asr">Asr</string>
     <string name="prayer_maghrib">Maghrib</string>
     <string name="prayer_isha">Isha</string>
+    <!-- Dashboard Customization -->
+    <string name="dashboard_empty_title">No shortcuts shown</string>
+    <string name="dashboard_empty_action">Customize dashboard</string>
+    <string name="dashboard_customize_title">Dashboard shortcuts</string>
+    <string name="reset_defaults">Reset to defaults</string>
 </resources>

@@ -397,4 +397,9 @@
     <string name="prayer_asr">Ashar</string>
     <string name="prayer_maghrib">Maghrib</string>
     <string name="prayer_isha">Isya</string>
+    <!-- Dashboard Customization -->
+    <string name="dashboard_empty_title">Tidak ada pintasan yang ditampilkan</string>
+    <string name="dashboard_empty_action">Sesuaikan dasbor</string>
+    <string name="dashboard_customize_title">Pintasan dasbor</string>
+    <string name="reset_defaults">Kembalikan ke bawaan</string>
 </resources>

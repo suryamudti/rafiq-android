@@ -77,7 +77,8 @@ import com.smiledev.rafiq_quran.ZakatCalculator
 import com.smiledev.rafiq_quran.core.displayMessage
 import com.smiledev.rafiq_quran.domain.model.PrayerTimeEntry
 
-private data class QuickServiceItem(
+internal data class QuickServiceItem(
+    val key: String,
     val labelResId: Int,
     val navKey: NavKey,
     val iconResId: Int,
@@ -88,6 +89,7 @@ private data class QuickServiceItem(
 private val quickServices = listOf(
     // Row 1: Core Daily Features
     QuickServiceItem(
+        key = "quran",
         labelResId = R.string.quran,
         navKey = Quran(),
         iconResId = R.drawable.ic_quran,
@@ -95,6 +97,7 @@ private val quickServices = listOf(
         containerColor = Color(0xFFE0F2F1)
     ),
     QuickServiceItem(
+        key = "prayer_times",
         labelResId = R.string.prayer_times,
         navKey = PrayerTimes,
         iconResId = R.drawable.ic_calendar,
@@ -102,6 +105,7 @@ private val quickServices = listOf(
         containerColor = Color(0xFFE0F2F1)
     ),
     QuickServiceItem(
+        key = "qibla",
         labelResId = R.string.qibla,
         navKey = Qibla,
         iconResId = R.drawable.ic_qibla,
@@ -109,6 +113,7 @@ private val quickServices = listOf(
         containerColor = Color(0xFFFEF3C7)
     ),
     QuickServiceItem(
+        key = "tasbih",
         labelResId = R.string.tasbih,
         navKey = Tasbih,
         iconResId = R.drawable.ic_tasbih,
@@ -118,6 +123,7 @@ private val quickServices = listOf(
 
     // Row 2: Knowledge & Stories
     QuickServiceItem(
+        key = "hadith",
         labelResId = R.string.hadiths,
         navKey = HadithBooks,
         iconResId = R.drawable.ic_hadith,
@@ -125,6 +131,7 @@ private val quickServices = listOf(
         containerColor = Color(0xFFFDE68A).copy(alpha = 0.5f)
     ),
     QuickServiceItem(
+        key = "prophets",
         labelResId = R.string.prophets,
         navKey = Prophets,
         iconResId = R.drawable.ic_prophet,
@@ -132,6 +139,7 @@ private val quickServices = listOf(
         containerColor = Color(0xFFFDE68A)
     ),
     QuickServiceItem(
+        key = "asmaul_husna",
         labelResId = R.string.asmaul_husna,
         navKey = AsmaulHusna,
         iconResId = R.drawable.ic_asmaul_husna,
@@ -139,6 +147,7 @@ private val quickServices = listOf(
         containerColor = Color(0xFFDCFCE7)
     ),
     QuickServiceItem(
+        key = "recitation",
         labelResId = R.string.recitations,
         navKey = Recitation,
         iconResId = R.drawable.ic_play,
@@ -148,6 +157,7 @@ private val quickServices = listOf(
 
     // Row 3: Islamic Community & Tools
     QuickServiceItem(
+        key = "mosques",
         labelResId = R.string.mosques,
         navKey = Mosques,
         iconResId = R.drawable.ic_mosque,
@@ -155,6 +165,7 @@ private val quickServices = listOf(
         containerColor = Color(0xFFDCFCE7)
     ),
     QuickServiceItem(
+        key = "calendar",
         labelResId = R.string.calendar,
         navKey = IslamicCalendar,
         iconResId = R.drawable.ic_calendar,
@@ -162,6 +173,7 @@ private val quickServices = listOf(
         containerColor = Color(0xFFCCFBF1)
     ),
     QuickServiceItem(
+        key = "zakat",
         labelResId = R.string.zakat,
         navKey = ZakatCalculator,
         iconResId = R.drawable.ic_zakat,
@@ -169,6 +181,7 @@ private val quickServices = listOf(
         containerColor = Color(0xFFFFEDD5)
     ),
     QuickServiceItem(
+        key = "prayer_log",
         labelResId = R.string.prayer_log,
         navKey = PrayerLog,
         iconResId = R.drawable.ic_prayer_log,
@@ -176,6 +189,7 @@ private val quickServices = listOf(
         containerColor = Color(0xFFEEF2FF)
     ),
     QuickServiceItem(
+        key = "prayer_guidance",
         labelResId = R.string.prayer_guidance,
         navKey = PrayerGuidance,
         iconResId = R.drawable.ic_prayer_guide,
@@ -183,6 +197,7 @@ private val quickServices = listOf(
         containerColor = Color(0xFFE0F2F1)
     ),
     QuickServiceItem(
+        key = "sunnah_guidance",
         labelResId = R.string.sunnah_guidance,
         navKey = SunnahGuidance,
         iconResId = R.drawable.ic_sunnah,
@@ -251,10 +266,41 @@ fun DashboardScreen(
 
         Spacer(Modifier.height(8.dp))
 
-        QuickServicesGrid(
-            items = quickServices,
-            onServiceClick = { onNavigate(it) }
-        )
+        val visibleServices = quickServices.filter { it.key !in state.hiddenKeys }
+        if (visibleServices.isEmpty()) {
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surface
+                ),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+            ) {
+                Column(
+                    modifier = Modifier.fillMaxWidth().padding(18.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = stringResource(R.string.dashboard_empty_title),
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Spacer(Modifier.height(4.dp))
+                    TextButton(onClick = { onNavigate(Settings) }) {
+                        Text(
+                            text = stringResource(R.string.dashboard_empty_action),
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+            }
+        } else {
+            QuickServicesGrid(
+                items = visibleServices,
+                onServiceClick = { onNavigate(it) }
+            )
+        }
 
         Spacer(Modifier.height(20.dp))
 
