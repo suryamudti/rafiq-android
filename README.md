@@ -3,7 +3,7 @@
 <p align="center">
   <a href="https://github.com/suryamudti/rafiq-android/actions/workflows/pr-check.yml"><img src="https://github.com/suryamudti/rafiq-android/actions/workflows/pr-check.yml/badge.svg" alt="PR Check"/></a>
   <a href="https://github.com/suryamudti/rafiq-android/actions/workflows/release.yml"><img src="https://github.com/suryamudti/rafiq-android/actions/workflows/release.yml/badge.svg" alt="Release"/></a>
-  <a href="https://kotlinlang.org"><img src="https://img.shields.io/badge/Kotlin-2.0.0-blue.svg?style=flat&logo=kotlin" alt="Kotlin"/></a>
+  <a href="https://kotlinlang.org"><img src="https://img.shields.io/badge/Kotlin-2.1.20-blue.svg?style=flat&logo=kotlin" alt="Kotlin"/></a>
   <a href="https://developer.android.com/about/versions/marshmallow"><img src="https://img.shields.io/badge/Min%20SDK-23%2B-brightgreen.svg" alt="Min SDK"/></a>
   <a href="https://developer.android.com/jetpack/compose"><img src="https://img.shields.io/badge/Jetpack-Compose%20(M3)-4285F4.svg?style=flat&logo=android" alt="Jetpack Compose"/></a>
   <a href="https://dagger.dev/hilt/"><img src="https://img.shields.io/badge/Hilt-2.56.2-orange.svg" alt="Hilt"/></a>
@@ -35,6 +35,10 @@ Go to the [Releases](https://github.com/suryamudti/rafiq-android/releases) secti
 | :---: | :---: | :---: | :---: |
 | <img src="figure/mosques.png" width="220"/> | <img src="figure/hadith.png" width="220"/> | <img src="figure/prophets.png" width="220"/> | <img src="figure/calendar.png" width="220"/> |
 
+| Prayer Guidance | Sunnah Guidance |
+| :---: | :---: |
+| <img src="figure/prayerguidance.png" width="220"/> | <img src="figure/sunnahguidance.png" width="220"/> |
+
 ---
 
 ## 🌟 Key Features
@@ -50,10 +54,13 @@ Go to the [Releases](https://github.com/suryamudti/rafiq-android/releases) secti
 | **📜 Prophet Stories** | Biographies of 25 Prophets with facts, key events, lessons, and verse references; Arabic/Latin search, favorites filter, share, adjustable story font size, and prev/next navigation. |
 | **📚 Hadith Library** | Full Sahih Bukhari and Sahih Muslim corpus (Arabic + Indonesian/English translations) with books, per-book hadith lists, detail view, and global hadith search with highlighted results. |
 | **💰 Zakat Calculator** | Nisab threshold logic with instant results computed locally while gold/silver prices refresh in the background from the Metals.live API (in-memory cache). |
-| **📿 Tasbih Counter** | Digital zikr counter with haptic feedback and target goals. |
+| **📿 Tasbih Counter & History** | Digital zikr counter with haptic feedback, customizable targets, and daily worship history log. |
 | **🗺️ Nearby Mosques** | Location-aware MapLibre view (no Play Services) with nearby mosque discovery via a reliable Overpass POST API with mirror failover. |
+| **📖 Prayer Guidance** | Step-by-step guidance for obligatory prayers (Subuh, Dzuhur, Ashar, Maghrib, Isya) with authentic hadith/verse dalil, Arabic recitation, translation, and movement illustrations. |
+| **🤲 Sunnah Guidance** | Comprehensive guide for recommended prayers (Tahajjud, Dhuha, Rawatib, Witr, Eid, etc.) with procedures, intentions, and virtues. |
 | **🔖 Bookmarked Verses** | Bookmark favorite verses saved locally in Room database. |
 | **📊 Prayer Tracker** | Daily prayer log screen with toggle switches to track daily worship. |
+| **📚 Sources & Authenticity** | Full attribution and authenticity details for Quranic text, translations, hadith collections, and prayer time calculations. |
 | **🔔 Notifications** | Background prayer alarm notifications scheduled via WorkManager. |
 | **⚙️ Settings** | Language preference (Bahasa Indonesia / English), theme mode, and user preferences stored in DataStore. |
 
@@ -62,7 +69,8 @@ Go to the [Releases](https://github.com/suryamudti/rafiq-android/releases) secti
 ## 🛠️ Tech Stack & Open-Source Libraries
 
 ### Architecture & Core
-- **[Kotlin](https://kotlinlang.org/)** (2.0.0): Modern, expressive, and concise programming language.
+- **[Kotlin](https://kotlinlang.org/)** (2.1.20): Modern, expressive, and concise programming language.
+- **[Android Gradle Plugin](https://developer.android.com/build)** (8.9.2): Modern Android build pipeline.
 - **[Coroutines](https://github.com/Kotlin/kotlinx.coroutines)** + **[Flow](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/)**: Asynchronous and reactive programming streams.
 - **[Hilt](https://dagger.dev/hilt/)** (2.56.2): Standard dependency injection library for Android (KAPT).
 - **[Navigation3](https://developer.android.com/guide/navigation)**: Type-safe Compose navigation using Kotlin `@Serializable` data tokens.
