@@ -72,3 +72,10 @@ Nearby Mosque uses `MapLibre Native 13.5.1` (`org.maplibre.gl:android-sdk`, styl
 - Theme palette (`Color.kt`) uses Islamic-inspired colors: Teal500, Gold700, DeepBlue, WarmBrown, Cream/Sand backgrounds. On Android 12+, dynamic color takes priority.
 - Room `room-runtime` MUST be `api` (not `implementation`) in library modules (`:data`) because `:app` accesses types (like `BookmarkDatabase`) whose supertype `RoomDatabase` must be transitively visible.
 - Cross-module smart casts from nullable don't work. When accessing nullable `String?` properties from another module, use `!!` (if guarded) or `?:` / local `val` instead of relying on smart-cast via `if` checks.
+
+## Architecture & README Synchronization
+
+- **Mandatory Trigger**: Whenever there is a code structure change (adding/removing/refactoring modules in `settings.gradle.kts`), architectural refactoring (layer boundaries, Room DBs, DataStore, Retrofit services, repository pattern), dependency/tech stack update in `gradle/libs.versions.toml`, or new navigation routes/screens in `NavigationKeys.kt` / `Navigation.kt`, trigger and follow the **`update-readme`** skill (`.agents/skills/update-readme/SKILL.md`).
+- Run `.agents/skills/update-readme/scripts/audit-readme-architecture.ps1` to detect discrepancies in modules, versions, and routes.
+- Update `README.md` (badges, tech stack versions, key features, module tree, Mermaid diagram).
+- Update and sync screenshots in `figure/` and the screenshot gallery table in `README.md` for new or modified screens.
