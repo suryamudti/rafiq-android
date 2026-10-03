@@ -101,6 +101,8 @@ class PreferencesManager @Inject constructor(
         val TASBIH_VIBRATION = booleanPreferencesKey("tasbih_vibration")
         /** Key for whether Tasbih sound is enabled. */
         val TASBIH_SOUND = booleanPreferencesKey("tasbih_sound")
+        /** Key for the set of hidden dashboard shortcut keys. Empty means all visible. */
+        val HIDDEN_DASHBOARD_KEYS = stringSetPreferencesKey("hidden_dashboard_keys")
     }
 
     /**
@@ -277,6 +279,14 @@ class PreferencesManager @Inject constructor(
      */
     val tasbihSoundEnabled: Flow<Boolean> = context.dataStore.data.map { prefs ->
         prefs[TASBIH_SOUND] ?: false
+    }
+
+    /**
+     * Returns the set of hidden dashboard shortcut keys as a [Flow].
+     * Defaults to empty (all shortcuts visible) if not set.
+     */
+    val hiddenDashboardKeys: Flow<Set<String>> = context.dataStore.data.map { prefs ->
+        prefs[HIDDEN_DASHBOARD_KEYS].orEmpty()
     }
 
     /**
@@ -548,6 +558,28 @@ class PreferencesManager @Inject constructor(
                 prefs[TASBIH_LAP] = 1
                 prefs[TASBIH_TOTAL] = 0
             }
+        }
+    }
+
+    /**
+     * Replaces the full set of hidden dashboard shortcut keys.
+     *
+     * @param keys the keys to hide; empty means show all
+     */
+    suspend fun setDashboardHidden(keys: Set<String>) {
+        context.dataStore.edit { prefs -> prefs[HIDDEN_DASHBOARD_KEYS] = keys }
+    }
+
+    /**
+     * Toggles one dashboard shortcut key in the hidden set.
+     * If the key is hidden it becomes visible, otherwise it becomes hidden.
+     *
+     * @param key the dashboard shortcut key to toggle
+     */
+    suspend fun toggleDashboardKey(key: String) {
+        context.dataStore.edit { prefs ->
+            val current = prefs[HIDDEN_DASHBOARD_KEYS].orEmpty()
+            prefs[HIDDEN_DASHBOARD_KEYS] = if (key in current) current - key else current + key
         }
     }
 }

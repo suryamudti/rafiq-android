@@ -31,6 +31,26 @@ import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
 
+internal val KNOWN_DASHBOARD_KEYS: Set<String> = setOf(
+    "quran",
+    "prayer_times",
+    "qibla",
+    "tasbih",
+    "hadith",
+    "prophets",
+    "asmaul_husna",
+    "recitation",
+    "mosques",
+    "calendar",
+    "zakat",
+    "prayer_log",
+    "prayer_guidance",
+    "sunnah_guidance",
+    "hifz"
+)
+
+internal fun sanitizeHiddenKeys(raw: Set<String>): Set<String> = raw.intersect(KNOWN_DASHBOARD_KEYS)
+
 @Immutable
 data class DashboardUiState(
     val isLoading: Boolean = false,
@@ -61,7 +81,8 @@ data class DashboardUiState(
     val dailyHadithArabic: String = "إِنَّمَا الْأَعْمَالُ بِالنِّيَّاتِ",
     val dailyHadithTranslation: String = "The reward of deeds depends upon the intentions and every person will get the reward according to what he has intended.",
     val dailyHadithNarrator: String = "Umar bin Al-Khattab",
-    val todayCompletedPrayersCount: Int = 0
+    val todayCompletedPrayersCount: Int = 0,
+    val hiddenKeys: Set<String> = emptySet()
 )
 
 private data class DailyInspiration(
@@ -269,6 +290,13 @@ class DashboardViewModel @Inject constructor(
             preferencesManager.cityName.collect { city ->
                 val displayCity = if (city.isNotBlank()) city else "Jakarta, ID"
                 _uiState.value = _uiState.value.copy(cityName = displayCity)
+            }
+        }
+
+        // Observe Hidden Dashboard Keys
+        viewModelScope.launch(dispatcherProvider.io) {
+            preferencesManager.hiddenDashboardKeys.collect { raw ->
+                _uiState.value = _uiState.value.copy(hiddenKeys = sanitizeHiddenKeys(raw))
             }
         }
 
