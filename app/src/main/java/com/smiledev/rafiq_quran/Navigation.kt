@@ -77,6 +77,9 @@ fun MainNavigation() {
         entry<PrayerTimes> {
           PrayerTimesScreen(
             onBack = { backStack.removeLastOrNull() },
+            onNavigateToQibla = { backStack.add(Qibla) },
+            onNavigateToPrayerLog = { backStack.add(PrayerLog) },
+            onNavigateToPrayerGuidance = { backStack.add(PrayerGuidance) },
             modifier = Modifier.safeDrawingPadding()
           )
         }

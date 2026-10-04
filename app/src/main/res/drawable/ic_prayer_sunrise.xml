@@ -1,0 +1,30 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Rising Sun Circle -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M12,7c-2.76,0 -5,2.24 -5,5s2.24,5 5,5 5,-2.24 5,-5 -2.24,-5 -5,-5z" />
+    <!-- Horizon -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M2,20h20v2H2z" />
+    <!-- Rays -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M11,1h2v4h-2z" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M3.51,6.51l1.41,-1.41 2.83,2.83 -1.41,1.41z" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M17.66,7.93l2.83,-2.83 1.41,1.41 -2.83,2.83z" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M1,11h4v2H1z" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M19,11h4v2h-4z" />
+</vector>
