@@ -1,0 +1,34 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Big noon sun -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M12,6.5c-3.04,0 -5.5,2.46 -5.5,5.5s2.46,5.5 5.5,5.5 5.5,-2.46 5.5,-5.5 -2.46,-5.5 -5.5,-5.5z" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M11,1h2v3.5h-2z" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M11,19.5h2V23h-2z" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M1,11h3.5v2H1z" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M19.5,11H23v2h-3.5z" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M4.93,4.93l1.41,-1.41 2.47,2.47 -1.41,1.41z" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M16.6,16.6l1.41,-1.41 2.47,2.47 -1.41,1.41z" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M19.07,4.93l-1.41,-1.41 -2.47,2.47 1.41,1.41z" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M7.4,16.6l-1.41,-1.41 -2.47,2.47 1.41,1.41z" />
+</vector>

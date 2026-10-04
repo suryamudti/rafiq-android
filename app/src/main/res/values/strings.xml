@@ -28,6 +28,12 @@
     <!-- Prayer Times -->
     <string name="next_prayer">Next: %s</string>
     <string name="hijri_date">Hijri: %s</string>
+    <string name="upcoming_prayer">Next Prayer</string>
+    <string name="status_passed">Passed</string>
+    <string name="status_upcoming">Upcoming</string>
+    <string name="status_now">Active</string>
+    <string name="default_city_jakarta">Jakarta, ID</string>
+    <string name="prayer_notifications">Prayer Reminders</string>
     <!-- Qibla -->
     <string name="qibla_compass">Qibla Compass</string>
     <string name="qibla_direction">Qibla Direction</string>

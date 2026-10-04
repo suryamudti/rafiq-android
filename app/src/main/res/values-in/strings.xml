@@ -28,6 +28,12 @@
     <!-- Prayer Times -->
     <string name="next_prayer">Selanjutnya: %s</string>
     <string name="hijri_date">Hijri: %s</string>
+    <string name="upcoming_prayer">Shalat Berikutnya</string>
+    <string name="status_passed">Sudah lewat</string>
+    <string name="status_upcoming">Mendatang</string>
+    <string name="status_now">Sekarang</string>
+    <string name="default_city_jakarta">Jakarta, ID</string>
+    <string name="prayer_notifications">Pengingat Shalat</string>
     <!-- Qibla -->
     <string name="qibla_compass">Kompas Kiblat</string>
     <string name="qibla_direction">Arah Kiblat</string>
