@@ -29,3 +29,6 @@ __pycache__/
 
 # Graphify
 graphify-out/
+
+# Firebase config (per-environment)
+app/google-services.json
