@@ -87,7 +87,17 @@ configurations.all {
     }
 }
 
+// Firebase plugins require google-services.json; apply only when present so builds work without it.
+if (file("google-services.json").exists()) {
+    apply(plugin = "com.google.gms.google-services")
+    apply(plugin = "com.google.firebase.crashlytics")
+}
+
 dependencies {
+  // Firebase Crashlytics
+  implementation(platform(libs.firebase.bom))
+  implementation(libs.firebase.crashlytics)
+
   val composeBom = platform(libs.androidx.compose.bom)
   implementation(composeBom)
   androidTestImplementation(composeBom)

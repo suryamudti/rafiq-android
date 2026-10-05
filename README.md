@@ -91,6 +91,7 @@ Go to the [Releases](https://github.com/suryamudti/rafiq-android/releases) secti
 - **[Media3 ExoPlayer](https://developer.android.com/guide/topics/media/media3)**: Audio playback engine for streaming recitations.
 - **[Google Play Services Location](https://developers.google.com/android/reference/com/google/android/gms/location/package-summary)**: Fused location provider for nearby mosques.
 - **[MapLibre Native](https://maplibre.org/)** (13.5.1): MapLibre rendering with GeoJson clustering for nearby mosques (BSD-2, no API key/billing).
+- **[Firebase Crashlytics](https://firebase.google.com/docs/crashlytics)** (BoM 34.4.0): Crash reporting for release/staging builds; requires `app/google-services.json` (gitignored, plugins applied only when present).
 - **[WorkManager](https://developer.android.com/topic/libraries/architecture/workmanager)**: Deferrable background task management for notifications.
 
 ---
