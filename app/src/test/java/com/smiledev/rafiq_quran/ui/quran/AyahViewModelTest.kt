@@ -40,13 +40,16 @@ class AyahViewModelTest {
         Ayah(sura = 1, aya = 2, text = "الْحَمْدُ", bismillah = null, translation = "Praise")
     )
 
-    private fun createVm(playbackStateFlow: MutableStateFlow<PlaybackState> = MutableStateFlow(PlaybackState())): AyahViewModel {
+    private fun createVm(
+        playbackStateFlow: MutableStateFlow<PlaybackState> = MutableStateFlow(PlaybackState()),
+        chapters: List<Surah> = listOf(surah)
+    ): AyahViewModel {
         every { preferencesManager.translationLanguage } returns MutableStateFlow("system")
         every { preferencesManager.ayahFontSize } returns MutableStateFlow(22)
         every { preferencesManager.translationFontSize } returns MutableStateFlow(15)
         every { preferencesManager.lastReadSura } returns MutableStateFlow(0)
         every { preferencesManager.lastReadAya } returns MutableStateFlow(0)
-        every { quranRepository.getChapters(any()) } returns Result.Success(listOf(surah))
+        every { quranRepository.getChapters(any()) } returns Result.Success(chapters)
         every { bookmarkRepository.observeAll() } returns MutableStateFlow(emptyList())
         every { audioPlayer.playbackState } returns playbackStateFlow
         return AyahViewModel(
@@ -133,5 +136,71 @@ class AyahViewModelTest {
         assertEquals(5000L, vm.uiState.value.positionMs)
         assertEquals(60000L, vm.uiState.value.durationMs)
         assertEquals(true, vm.uiState.value.isPlaying)
+    }
+
+    @Test
+    fun `search query filters displayedAyahs correctly`() = runTest(testDispatcher) {
+        every { quranRepository.getAyahsWithTranslation(1, "en") } returns Result.Success(ayahs)
+        val vm = createVm()
+        vm.loadAyahs(1)
+        advanceUntilIdle()
+
+        assertEquals(2, vm.uiState.value.displayedAyahs.size)
+
+        vm.setSearchQuery("Praise")
+        assertEquals(1, vm.uiState.value.displayedAyahs.size)
+        assertEquals(2, vm.uiState.value.displayedAyahs.first().aya)
+
+        vm.setSearchQuery("1")
+        assertEquals(1, vm.uiState.value.displayedAyahs.size)
+        assertEquals(1, vm.uiState.value.displayedAyahs.first().aya)
+
+        vm.clearSearchQuery()
+        assertEquals(2, vm.uiState.value.displayedAyahs.size)
+    }
+
+    @Test
+    fun `playNextAyah and playPreviousAyah advance and step back`() = runTest(testDispatcher) {
+        every { quranRepository.getAyahsWithTranslation(1, "en") } returns Result.Success(ayahs)
+        every { audioPlayer.playAyah(any(), any(), any(), any()) } returns Unit
+        every { audioPlayer.stop() } returns Unit
+
+        val vm = createVm()
+        vm.loadAyahs(1)
+        advanceUntilIdle()
+
+        vm.toggleAyahAudio(1)
+        advanceUntilIdle()
+        assertEquals(1, vm.uiState.value.currentPlayingAyah)
+
+        vm.playNextAyah()
+        advanceUntilIdle()
+        assertEquals(2, vm.uiState.value.currentPlayingAyah)
+
+        vm.playPreviousAyah()
+        advanceUntilIdle()
+        assertEquals(1, vm.uiState.value.currentPlayingAyah)
+
+        vm.stopAudio()
+        assertEquals(false, vm.uiState.value.isPlaying)
+        assertEquals(null, vm.uiState.value.currentPlayingAyah)
+    }
+
+    @Test
+    fun `loadAyahs sets previousSurah and nextSurah when available`() = runTest(testDispatcher) {
+        val surah1 = Surah(1, 1, "الفاتحة", "Al-Fatihah", "The Opening", 7, "Meccan")
+        val surah2 = Surah(2, 2, "البقرة", "Al-Baqarah", "The Cow", 286, "Medinan")
+        val surah3 = Surah(3, 3, "آل عمران", "Ali 'Imran", "Family of Imran", 200, "Medinan")
+
+        val vm = createVm(chapters = listOf(surah1, surah2, surah3))
+        advanceUntilIdle()
+
+        every { quranRepository.getAyahsWithTranslation(2, any()) } returns Result.Success(emptyList())
+        vm.loadAyahs(2)
+        advanceUntilIdle()
+
+        assertEquals(surah2, vm.uiState.value.currentSurah)
+        assertEquals(surah1, vm.uiState.value.previousSurah)
+        assertEquals(surah3, vm.uiState.value.nextSurah)
     }
 }
