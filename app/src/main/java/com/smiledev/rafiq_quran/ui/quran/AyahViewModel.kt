@@ -31,7 +31,10 @@ data class NavMarker(val type: String, val label: String, val ayahNumber: Int)
 data class AyahUiState(
     val ayahs: List<Ayah> = emptyList(),
     val currentSurah: Surah? = null,
+    val previousSurah: Surah? = null,
+    val nextSurah: Surah? = null,
     val suraNumber: Int = -1,
+    val searchQuery: String = "",
     val isLoading: Boolean = false,
     val error: AppError? = null,
     val bookmarkedAyahs: Set<Int> = emptySet(),
@@ -48,7 +51,21 @@ data class AyahUiState(
     val tafsirCache: Map<String, String> = emptyMap(),
     val tafsirLoadingAyah: Int? = null,
     val tafsirErrors: Set<Int> = emptySet()
-)
+) {
+    val displayedAyahs: List<Ayah>
+        get() {
+            val q = searchQuery.trim()
+            if (q.isEmpty()) return ayahs
+            val qLower = q.lowercase()
+            return ayahs.filter { ayah ->
+                ayah.aya.toString() == q ||
+                ayah.text.contains(q, ignoreCase = true) ||
+                (ayah.translation?.contains(qLower, ignoreCase = true) == true) ||
+                (ayah.translationId?.contains(qLower, ignoreCase = true) == true) ||
+                (ayah.translationEn?.contains(qLower, ignoreCase = true) == true)
+            }
+        }
+}
 
 @HiltViewModel
 class AyahViewModel @Inject constructor(
@@ -122,7 +139,13 @@ class AyahViewModel @Inject constructor(
                 val suraNumber = _uiState.value.suraNumber
                 if (suraNumber > 0) {
                     val surah = cachedSurahs.find { it.chapterNumber == suraNumber }
-                    _uiState.value = _uiState.value.copy(currentSurah = surah)
+                    val prev = cachedSurahs.find { it.chapterNumber == suraNumber - 1 }
+                    val next = cachedSurahs.find { it.chapterNumber == suraNumber + 1 }
+                    _uiState.value = _uiState.value.copy(
+                        currentSurah = surah,
+                        previousSurah = prev,
+                        nextSurah = next
+                    )
                 }
             }
         }
@@ -130,15 +153,19 @@ class AyahViewModel @Inject constructor(
 
     fun loadAyahs(surahNumber: Int) {
         viewModelScope.launch(dispatcherProvider.io) {
-            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+            _uiState.value = _uiState.value.copy(isLoading = true, error = null, searchQuery = "")
             val lang = if (_uiState.value.translationLanguage == "id") "id" else if (_uiState.value.translationLanguage == "en") "en" else currentLocaleCode()
             val result = quranRepository.getAyahsWithTranslation(surahNumber, lang)
             when (result) {
                 is Result.Success -> {
                     val surah = cachedSurahs.find { it.chapterNumber == surahNumber }
+                    val prev = cachedSurahs.find { it.chapterNumber == surahNumber - 1 }
+                    val next = cachedSurahs.find { it.chapterNumber == surahNumber + 1 }
                     _uiState.value = _uiState.value.copy(
                         ayahs = result.data,
                         currentSurah = surah,
+                        previousSurah = prev,
+                        nextSurah = next,
                         suraNumber = surahNumber,
                         bookmarkedAyahs = bookmarkedBySura[surahNumber] ?: emptySet(),
                         isLoading = false
@@ -210,6 +237,44 @@ class AyahViewModel @Inject constructor(
 
     fun seekTo(positionMs: Long) {
         audioPlayer.seekTo(positionMs)
+    }
+
+    fun stopAudio() {
+        audioPlayer.stop()
+        _uiState.value = _uiState.value.copy(isPlaying = false, currentPlayingAyah = null)
+    }
+
+    fun togglePlayPause() {
+        val currentAyah = _uiState.value.currentPlayingAyah
+        if (currentAyah != null) {
+            audioPlayer.toggle()
+        } else if (_uiState.value.ayahs.isNotEmpty()) {
+            playAyahAudio(_uiState.value.ayahs.first().aya)
+        }
+    }
+
+    fun playNextAyah() {
+        val current = _uiState.value.currentPlayingAyah ?: return
+        val next = current + 1
+        if (next <= _uiState.value.ayahs.size) {
+            playAyahAudio(next)
+        }
+    }
+
+    fun playPreviousAyah() {
+        val current = _uiState.value.currentPlayingAyah ?: return
+        val prev = current - 1
+        if (prev >= 1) {
+            playAyahAudio(prev)
+        }
+    }
+
+    fun setSearchQuery(query: String) {
+        _uiState.value = _uiState.value.copy(searchQuery = query)
+    }
+
+    fun clearSearchQuery() {
+        _uiState.value = _uiState.value.copy(searchQuery = "")
     }
 
     fun toggleMemorizationMode() {

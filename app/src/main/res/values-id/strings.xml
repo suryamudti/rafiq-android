@@ -383,6 +383,24 @@
     <string name="juz_badge">Juz %d</string>
     <string name="share_ayah">Bagikan Ayat</string>
     <string name="quran_via_rafiq">Al-Quran via Rafiq</string>
+    <string name="search_in_surah">Cari di Surah ini</string>
+    <string name="search_surah_hint">Cari ayat atau terjemahan…</string>
+    <string name="no_ayahs_match_query">Tidak ada ayat yang cocok dengan \"%s\"</string>
+    <string name="jump_to_ayah">Lompat ke Ayat</string>
+    <string name="jump_to_marker">Lompat ke Penanda</string>
+    <string name="ayah_number_label">Ayat %d</string>
+    <string name="previous_surah">Surah Sebelumnya</string>
+    <string name="next_surah">Surah Berikutnya</string>
+    <string name="back_to_top">Kembali ke Atas</string>
+    <string name="end_of_surah">Akhir Surah %s</string>
+    <string name="tafsir">Tafsir</string>
+    <string name="preview">Pratinjau</string>
+    <string name="sajda_badge">Sajdah</string>
+    <string name="sajda_obligatory">Sajdah (Wajib)</string>
+    <string name="sajda_recommended">Sajdah (Sunnah)</string>
+    <string name="bismillah_full">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</string>
+    <string name="playing_ayah_title">%1$s • Ayat %2$d</string>
+    <string name="stop_audio">Hentikan Audio</string>
     <!-- Hadith Additional -->
     <string name="hadith_book_number">Kitab %d</string>
     <string name="hadith_book_hadith_ref">Kitab %1$s · Hadis %2$d</string>

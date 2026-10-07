@@ -71,6 +71,10 @@ fun MainNavigation() {
             suraName = key.suraName,
             scrollToAya = key.scrollToAya,
             onBack = { backStack.removeLastOrNull() },
+            onNavigateSurah = { nextSura, nextName ->
+              backStack.removeLastOrNull()
+              backStack.add(Ayah(suraNumber = nextSura, suraName = nextName))
+            },
             modifier = Modifier.safeDrawingPadding()
           )
         }
