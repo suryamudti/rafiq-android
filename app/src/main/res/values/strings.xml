@@ -426,4 +426,14 @@
     <string name="dashboard_empty_action">Customize dashboard</string>
     <string name="dashboard_customize_title">Dashboard shortcuts</string>
     <string name="reset_defaults">Reset to defaults</string>
+    <!-- Surah List Enhancements -->
+    <string name="revelation_all">All</string>
+    <string name="revelation_meccan">Meccan</string>
+    <string name="revelation_medinan">Medinan</string>
+    <string name="search_mode_surahs">Surahs</string>
+    <string name="search_mode_ayahs">Verses</string>
+    <string name="no_surahs_found">No surahs match your search</string>
+    <string name="clear_search">Clear Search</string>
+    <string name="last_read_surah_badge">Last Read</string>
+    <string name="continue_from_ayah">Continue from Ayah %d</string>
 </resources>

@@ -16,6 +16,8 @@ import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -27,12 +29,25 @@ class QuranViewModelTest {
     private val quranRepository: QuranRepository = mockk()
     private val preferencesManager: PreferencesManager = mockk(relaxed = true)
 
-    private val surah = Surah(1, 1, "الفاتحة", "Al-Fatiha", "Al-Fatiha", 7, "meccan")
-    private val ayah = Ayah(sura = 1, aya = 1, text = "بِسْمِ ٱللَّهِ", bismillah = null,
-        translation = "In the name of Allah")
+    private val lastReadSuraFlow = MutableStateFlow(0)
+    private val lastReadAyaFlow = MutableStateFlow(0)
+
+    private val surah1 = Surah(1, 1, "الفاتحة", "Al-Fatihah", "The Opening", 7, "makkah")
+    private val surah2 = Surah(2, 2, "البقرة", "Al-Baqarah", "The Cow", 286, "madinah")
+    private val surah36 = Surah(36, 36, "يس", "Ya-Sin", "Ya Sin", 83, "meccan")
+
+    private val ayah = Ayah(
+        sura = 1,
+        aya = 1,
+        text = "بِسْمِ ٱللَّهِ",
+        bismillah = null,
+        translation = "In the name of Allah"
+    )
 
     private fun createVm(): QuranViewModel {
         every { preferencesManager.translationLanguage } returns MutableStateFlow("system")
+        every { preferencesManager.lastReadSura } returns lastReadSuraFlow
+        every { preferencesManager.lastReadAya } returns lastReadAyaFlow
         every { quranRepository.getChapters(any()) } returns Result.Success(emptyList())
         return QuranViewModel(quranRepository, preferencesManager, testDispatcherProvider)
     }
@@ -40,12 +55,12 @@ class QuranViewModelTest {
     @Test
     fun `load surahs success`() = runTest(testDispatcher) {
         val vm = createVm()
-        every { quranRepository.getChapters(any()) } returns Result.Success(listOf(surah))
+        every { quranRepository.getChapters(any()) } returns Result.Success(listOf(surah1))
         vm.loadSurahs()
         advanceUntilIdle()
 
         assertEquals(1, vm.uiState.value.surahs.size)
-        assertEquals("Al-Fatiha", vm.uiState.value.surahs[0].translatedName)
+        assertEquals("The Opening", vm.uiState.value.surahs[0].translatedName)
     }
 
     @Test
@@ -56,6 +71,95 @@ class QuranViewModelTest {
         advanceUntilIdle()
 
         assertEquals(0, vm.uiState.value.surahs.size)
+    }
+
+    @Test
+    fun `revelation filter correctly filters surahs and counts`() = runTest(testDispatcher) {
+        val vm = createVm()
+        every { quranRepository.getChapters(any()) } returns Result.Success(listOf(surah1, surah2, surah36))
+        vm.loadSurahs()
+        advanceUntilIdle()
+
+        assertEquals(3, vm.uiState.value.surahs.size)
+        assertEquals(2, vm.uiState.value.meccanCount) // surah1 (makkah), surah36 (meccan)
+        assertEquals(1, vm.uiState.value.medinanCount) // surah2 (madinah)
+
+        // ALL
+        assertEquals(3, vm.uiState.value.filteredSurahs.size)
+
+        // MECCAN
+        vm.setRevelationFilter(RevelationFilter.MECCAN)
+        assertEquals(2, vm.uiState.value.filteredSurahs.size)
+        assertTrue(vm.uiState.value.filteredSurahs.contains(surah1))
+        assertTrue(vm.uiState.value.filteredSurahs.contains(surah36))
+
+        // MEDINAN
+        vm.setRevelationFilter(RevelationFilter.MEDINAN)
+        assertEquals(1, vm.uiState.value.filteredSurahs.size)
+        assertEquals(surah2, vm.uiState.value.filteredSurahs[0])
+    }
+
+    @Test
+    fun `filteredSurahs matches by chapter number, name, arabic, or translated name`() = runTest(testDispatcher) {
+        every { quranRepository.searchAyahs(any(), any(), any()) } returns Result.Success(emptyList())
+        val vm = createVm()
+        every { quranRepository.getChapters(any()) } returns Result.Success(listOf(surah1, surah2, surah36))
+        vm.loadSurahs()
+        advanceUntilIdle()
+
+        // Match by number
+        vm.search("36")
+        assertEquals(1, vm.uiState.value.filteredSurahs.size)
+        assertEquals(36, vm.uiState.value.filteredSurahs[0].chapterNumber)
+
+        // Match by simple name
+        vm.search("baqarah")
+        assertEquals(1, vm.uiState.value.filteredSurahs.size)
+        assertEquals("Al-Baqarah", vm.uiState.value.filteredSurahs[0].nameSimple)
+
+        // Match by arabic
+        vm.search("الفاتحة")
+        assertEquals(1, vm.uiState.value.filteredSurahs.size)
+        assertEquals(surah1, vm.uiState.value.filteredSurahs[0])
+
+        // Match by translated name
+        vm.search("opening")
+        assertEquals(1, vm.uiState.value.filteredSurahs.size)
+        assertEquals(surah1, vm.uiState.value.filteredSurahs[0])
+    }
+
+    @Test
+    fun `lastRead updates correctly and computes lastReadSurah`() = runTest(testDispatcher) {
+        val vm = createVm()
+        every { quranRepository.getChapters(any()) } returns Result.Success(listOf(surah1, surah2))
+        vm.loadSurahs()
+        advanceUntilIdle()
+
+        assertNull(vm.uiState.value.lastReadSurah)
+
+        lastReadSuraFlow.value = 2
+        lastReadAyaFlow.value = 255
+        advanceUntilIdle()
+
+        assertEquals(2, vm.uiState.value.lastReadSura)
+        assertEquals(255, vm.uiState.value.lastReadAya)
+        assertNotNull(vm.uiState.value.lastReadSurah)
+        assertEquals(surah2, vm.uiState.value.lastReadSurah)
+    }
+
+    @Test
+    fun `searchTab switching and clearSearch`() = runTest(testDispatcher) {
+        every { quranRepository.searchAyahs(any(), any(), any()) } returns Result.Success(emptyList())
+        val vm = createVm()
+        vm.setSearchTab(QuranSearchTab.AYAHS)
+        assertEquals(QuranSearchTab.AYAHS, vm.uiState.value.searchTab)
+
+        vm.search("Allah")
+        assertEquals("Allah", vm.uiState.value.searchQuery)
+
+        vm.clearSearch()
+        assertEquals("", vm.uiState.value.searchQuery)
+        assertTrue(vm.uiState.value.searchResults.isEmpty())
     }
 
     @Test

@@ -426,4 +426,14 @@
     <string name="dashboard_empty_action">Sesuaikan dasbor</string>
     <string name="dashboard_customize_title">Pintasan dasbor</string>
     <string name="reset_defaults">Kembalikan ke bawaan</string>
+    <!-- Surah List Enhancements -->
+    <string name="revelation_all">Semua</string>
+    <string name="revelation_meccan">Makkiyah</string>
+    <string name="revelation_medinan">Madaniyah</string>
+    <string name="search_mode_surahs">Surat</string>
+    <string name="search_mode_ayahs">Ayat</string>
+    <string name="no_surahs_found">Tidak ada surat yang cocok</string>
+    <string name="clear_search">Hapus Pencarian</string>
+    <string name="last_read_surah_badge">Terakhir Dibaca</string>
+    <string name="continue_from_ayah">Lanjutkan dari Ayat %d</string>
 </resources>
