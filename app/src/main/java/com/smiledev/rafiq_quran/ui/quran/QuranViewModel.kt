@@ -23,6 +23,17 @@ import javax.inject.Inject
 private const val SEARCH_DEBOUNCE_MS = 250L
 private const val SEARCH_LIMIT = 100
 
+enum class RevelationFilter {
+    ALL,
+    MECCAN,
+    MEDINAN
+}
+
+enum class QuranSearchTab {
+    SURAHS,
+    AYAHS
+}
+
 @Immutable
 data class QuranUiState(
     val surahs: List<Surah> = emptyList(),
@@ -32,8 +43,50 @@ data class QuranUiState(
     val searchResults: List<Ayah> = emptyList(),
     val searchLoading: Boolean = false,
     val searchError: AppError? = null,
-    val translationLanguage: String = "system"
-)
+    val translationLanguage: String = "system",
+    val lastReadSura: Int = 0,
+    val lastReadAya: Int = 0,
+    val revelationFilter: RevelationFilter = RevelationFilter.ALL,
+    val searchTab: QuranSearchTab = QuranSearchTab.SURAHS
+) {
+    val lastReadSurah: Surah?
+        get() = if (lastReadSura > 0) surahs.find { it.chapterNumber == lastReadSura } else null
+
+    val meccanCount: Int
+        get() = surahs.count {
+            it.revelationPlace.equals("makkah", ignoreCase = true) ||
+                it.revelationPlace.equals("meccan", ignoreCase = true)
+        }
+
+    val medinanCount: Int
+        get() = surahs.count {
+            it.revelationPlace.equals("madinah", ignoreCase = true) ||
+                it.revelationPlace.equals("medinan", ignoreCase = true)
+        }
+
+    val filteredSurahs: List<Surah>
+        get() {
+            val byRevelation = when (revelationFilter) {
+                RevelationFilter.ALL -> surahs
+                RevelationFilter.MECCAN -> surahs.filter {
+                    it.revelationPlace.equals("makkah", ignoreCase = true) ||
+                        it.revelationPlace.equals("meccan", ignoreCase = true)
+                }
+                RevelationFilter.MEDINAN -> surahs.filter {
+                    it.revelationPlace.equals("madinah", ignoreCase = true) ||
+                        it.revelationPlace.equals("medinan", ignoreCase = true)
+                }
+            }
+            val query = searchQuery.trim().lowercase()
+            if (query.isEmpty()) return byRevelation
+            return byRevelation.filter { surah ->
+                surah.chapterNumber.toString() == query ||
+                    surah.nameSimple.lowercase().contains(query) ||
+                    surah.nameArabic.contains(query) ||
+                    surah.translatedName.lowercase().contains(query)
+            }
+        }
+}
 
 @HiltViewModel
 class QuranViewModel @Inject constructor(
@@ -54,6 +107,34 @@ class QuranViewModel @Inject constructor(
                 loadSurahs()
             }
         }
+        viewModelScope.launch(dispatcherProvider.io) {
+            preferencesManager.lastReadSura.collect { sura ->
+                _uiState.value = _uiState.value.copy(lastReadSura = sura)
+            }
+        }
+        viewModelScope.launch(dispatcherProvider.io) {
+            preferencesManager.lastReadAya.collect { aya ->
+                _uiState.value = _uiState.value.copy(lastReadAya = aya)
+            }
+        }
+    }
+
+    fun setRevelationFilter(filter: RevelationFilter) {
+        _uiState.value = _uiState.value.copy(revelationFilter = filter)
+    }
+
+    fun setSearchTab(tab: QuranSearchTab) {
+        _uiState.value = _uiState.value.copy(searchTab = tab)
+    }
+
+    fun clearSearch() {
+        searchJob?.cancel()
+        _uiState.value = _uiState.value.copy(
+            searchQuery = "",
+            searchResults = emptyList(),
+            searchLoading = false,
+            searchError = null
+        )
     }
 
     fun loadSurahs() {
