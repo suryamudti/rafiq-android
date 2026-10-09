@@ -436,4 +436,18 @@
     <string name="clear_search">Hapus Pencarian</string>
     <string name="last_read_surah_badge">Terakhir Dibaca</string>
     <string name="continue_from_ayah">Lanjutkan dari Ayat %d</string>
+    <!-- App Update -->
+    <string name="app_version">Versi Aplikasi</string>
+    <string name="check_for_updates">Periksa Pembaruan</string>
+    <string name="checking_updates">Memeriksa pembaruan…</string>
+    <string name="update_available">Pembaruan Tersedia</string>
+    <string name="update_available_desc">Versi baru Rafiq (%1$s) telah tersedia. Anda saat ini menggunakan versi %2$s.</string>
+    <string name="up_to_date">Rafiq sudah versi terbaru</string>
+    <string name="up_to_date_desc">Anda sudah menggunakan versi terbaru (%1$s).</string>
+    <string name="update_now">Perbarui Sekarang</string>
+    <string name="update_later">Nanti</string>
+    <string name="view_on_play_store">Google Play</string>
+    <string name="update_check_failed">Gagal memeriksa pembaruan. Silakan periksa koneksi internet Anda.</string>
+    <string name="whats_new">Yang Baru</string>
+    <string name="about_app">Tentang Rafiq</string>
 </resources>
