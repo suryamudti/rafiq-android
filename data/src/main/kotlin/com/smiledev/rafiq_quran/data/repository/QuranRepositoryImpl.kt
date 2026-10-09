@@ -12,7 +12,6 @@ import com.smiledev.rafiq_quran.domain.model.Ayah
 import com.smiledev.rafiq_quran.domain.model.Surah
 import com.smiledev.rafiq_quran.domain.repository.QuranRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
-import org.json.JSONArray
 import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.File
@@ -227,7 +226,6 @@ class QuranRepositoryImpl @Inject constructor(
         return try {
             val db = SQLiteDatabase.openDatabase(dbFile.absolutePath, null, SQLiteDatabase.OPEN_READONLY)
             if (isId) translationIdDb = db else translationEnDb = db
-            android.util.Log.i("QuranRepository", "Opened translation DB: $fileKey")
             db
         } catch (e: Exception) {
             android.util.Log.e("QuranRepository", "Error opening translation database: ${dbFile.absolutePath}", e)

@@ -35,7 +35,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.smiledev.rafiq_quran.R
 import com.smiledev.rafiq_quran.core.displayMessage
 import com.smiledev.rafiq_quran.domain.model.Hadith
-import com.smiledev.rafiq_quran.domain.model.HadithBook
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

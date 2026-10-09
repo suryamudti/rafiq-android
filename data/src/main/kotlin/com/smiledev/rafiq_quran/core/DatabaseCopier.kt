@@ -51,7 +51,6 @@ class DatabaseCopier @Inject constructor(private val context: Context) {
         val assetPath = "quran-data/$dbName"
         val dbFile = context.translationDbFile(flatName)
 
-        android.util.Log.i("DatabaseCopier", "Copying: asset=$assetPath -> $flatName")
         copyDatabaseIfNeeded(dbName)
 
         if (!dbFile.exists()) {
@@ -63,11 +62,9 @@ class DatabaseCopier @Inject constructor(private val context: Context) {
             dbFile.delete()
             return false
         }
-        android.util.Log.i("DatabaseCopier", "File size: ${dbFile.length()} bytes for $flatName")
 
         return try {
             val db = SQLiteDatabase.openDatabase(dbFile.absolutePath, null, SQLiteDatabase.OPEN_READONLY)
-            android.util.Log.i("DatabaseCopier", "Successfully opened DB: $flatName")
             val cursor = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='verses'", null)
             val hasVersesTable = cursor.moveToFirst()
             cursor.close()
@@ -77,7 +74,6 @@ class DatabaseCopier @Inject constructor(private val context: Context) {
                 dbFile.delete()
                 return false
             }
-            android.util.Log.i("DatabaseCopier", "Verification passed for $flatName")
             db.close()
             true
         } catch (e: Exception) {

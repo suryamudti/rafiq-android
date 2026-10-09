@@ -8,7 +8,6 @@ import com.smiledev.rafiq_quran.data.remote.PrayerTimings as DataPrayerTimings
 import com.smiledev.rafiq_quran.domain.model.Ayah
 import com.smiledev.rafiq_quran.domain.model.PrayerTimings
 import com.smiledev.rafiq_quran.domain.model.PrayerTimesData
-import com.smiledev.rafiq_quran.domain.model.Surah
 
 fun AyahData.toDomain() = Ayah(
     sura = sura, aya = aya, text = text, bismillah = bismillah,

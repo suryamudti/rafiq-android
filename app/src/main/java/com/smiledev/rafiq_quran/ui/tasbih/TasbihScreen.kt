@@ -77,7 +77,6 @@ import com.smiledev.rafiq_quran.ui.designsystem.button.RafiqOutlinedButton
 import com.smiledev.rafiq_quran.ui.designsystem.card.RafiqCard
 import com.smiledev.rafiq_quran.ui.designsystem.chip.RafiqFilterChip
 import com.smiledev.rafiq_quran.core.currentLocaleCode
-import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
