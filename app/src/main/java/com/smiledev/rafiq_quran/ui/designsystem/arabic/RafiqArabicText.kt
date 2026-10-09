@@ -11,7 +11,6 @@ import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import com.smiledev.rafiq_quran.theme.ArabicFontFamily
-import com.smiledev.rafiq_quran.theme.RafiqTheme
 
 @Composable
 fun RafiqArabicText(

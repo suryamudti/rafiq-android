@@ -32,3 +32,6 @@ graphify-out/
 
 # Firebase config (per-environment)
 app/google-services.json
+
+# Logs
+*.log

@@ -1,8 +1,5 @@
 package com.smiledev.rafiq_quran.ui.prayerlog
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -43,11 +40,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -55,7 +50,6 @@ import com.smiledev.rafiq_quran.R
 import com.smiledev.rafiq_quran.domain.repository.PrayerLogDay
 import com.smiledev.rafiq_quran.theme.RafiqTheme
 import com.smiledev.rafiq_quran.ui.designsystem.appbar.RafiqTopAppBar
-import com.smiledev.rafiq_quran.ui.designsystem.badge.RafiqBadge
 import com.smiledev.rafiq_quran.ui.designsystem.card.RafiqCard
 import com.smiledev.rafiq_quran.ui.designsystem.card.RafiqStatCard
 import com.smiledev.rafiq_quran.ui.designsystem.list.RafiqSectionHeader

@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.smiledev.rafiq_quran.core.DefaultDispatcherProvider
 import com.smiledev.rafiq_quran.core.DispatcherProvider
 import com.smiledev.rafiq_quran.domain.model.TasbihDayHistory
-import com.smiledev.rafiq_quran.domain.model.TasbihHistoryItem
 import com.smiledev.rafiq_quran.domain.repository.TasbihHistoryRepository
 import com.smiledev.rafiq_quran.domain.util.SystemTodayProvider
 import com.smiledev.rafiq_quran.domain.util.TodayProvider
