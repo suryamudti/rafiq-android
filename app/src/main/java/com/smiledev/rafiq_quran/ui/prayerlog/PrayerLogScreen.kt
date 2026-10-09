@@ -88,6 +88,7 @@ fun PrayerLogScreen(
     val state by viewModel.uiState.collectAsState()
 
     Scaffold(
+        modifier = modifier,
         topBar = {
             RafiqTopAppBar(
                 title = stringResource(R.string.prayer_log_title),
@@ -101,7 +102,7 @@ fun PrayerLogScreen(
         PullToRefreshBox(
             isRefreshing = isRefreshing,
             onRefresh = { isRefreshing = true; viewModel.refresh() },
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
         ) {

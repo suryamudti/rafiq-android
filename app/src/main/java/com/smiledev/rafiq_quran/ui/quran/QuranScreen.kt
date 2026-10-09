@@ -85,6 +85,7 @@ fun QuranScreen(
     var showSearch by remember { mutableStateOf(false) }
 
     Scaffold(
+        modifier = modifier,
         topBar = {
             Column {
                 RafiqTopAppBar(
@@ -122,7 +123,7 @@ fun QuranScreen(
             }
         }
     ) { padding ->
-        Column(modifier = modifier.fillMaxSize().padding(padding)) {
+        Column(modifier = Modifier.fillMaxSize().padding(padding)) {
             if (showSearch) {
                 // Scope tabs: Surahs vs Verses
                 TabRow(selectedTabIndex = state.searchTab.ordinal) {
