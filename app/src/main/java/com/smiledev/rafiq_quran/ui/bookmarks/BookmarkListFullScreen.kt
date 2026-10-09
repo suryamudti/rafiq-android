@@ -46,6 +46,7 @@ fun BookmarkListFullScreen(
     val state by viewModel.uiState.collectAsState()
 
     Scaffold(
+        modifier = modifier,
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(R.string.bookmarks)) },
@@ -58,7 +59,7 @@ fun BookmarkListFullScreen(
             )
         }
     ) { padding ->
-        Box(modifier = modifier.fillMaxSize().padding(padding)) {
+        Box(modifier = Modifier.fillMaxSize().padding(padding)) {
             when {
                 state.isLoading -> {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center).semantics { contentDescription = "Loading" })
