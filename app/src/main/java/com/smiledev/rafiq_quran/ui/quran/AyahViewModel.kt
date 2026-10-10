@@ -190,10 +190,6 @@ class AyahViewModel @Inject constructor(
         }
     }
 
-    fun clearAyahs() {
-        _uiState.value = _uiState.value.copy(ayahs = emptyList(), currentSurah = null)
-    }
-
     fun saveLastReadPosition(sura: Int, aya: Int) {
         viewModelScope.launch(dispatcherProvider.io) {
             preferencesManager.setLastReadPosition(sura, aya)
@@ -288,10 +284,6 @@ class AyahViewModel @Inject constructor(
 
     fun revealTranslation(ayahNumber: Int) {
         _uiState.value = _uiState.value.copy(memorizationRevealedAyah = ayahNumber)
-    }
-
-    fun hideTranslation() {
-        _uiState.value = _uiState.value.copy(memorizationRevealedAyah = null)
     }
 
     private fun shouldUseIndonesianTafsir(): Boolean {

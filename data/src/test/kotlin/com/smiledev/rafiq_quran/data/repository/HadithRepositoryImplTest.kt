@@ -5,7 +5,6 @@ import androidx.test.core.app.ApplicationProvider
 import com.smiledev.rafiq_quran.core.AppError
 import com.smiledev.rafiq_quran.core.DatabaseCopier
 import com.smiledev.rafiq_quran.core.Result
-import io.mockk.every
 import io.mockk.mockk
 import org.junit.After
 import org.junit.Assert.assertEquals

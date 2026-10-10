@@ -28,13 +28,9 @@ class PrayerGuidanceRepositoryImplTest {
         val repo = PrayerGuidanceRepositoryImpl(context)
         val result = repo.getGuidanceList()
 
-        if (result is Result.Error) {
-            println("Error message: ${result.error}")
-        }
         assertTrue("Expected Success but got $result", result is Result.Success)
         val items = (result as Result.Success).data
         assertEquals(19, items.size)
-        println("Loaded ${items.size} items successfully!")
     }
 
     @Test

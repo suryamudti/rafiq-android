@@ -62,7 +62,7 @@ Go to the [Releases](https://github.com/suryamudti/rafiq-android/releases) secti
 | **📊 Prayer Tracker** | Daily prayer log screen with toggle switches to track daily worship. |
 | **📚 Sources & Authenticity** | Full attribution and authenticity details for Quranic text, translations, hadith collections, and prayer time calculations. |
 | **🔔 Notifications** | Background prayer alarm notifications scheduled via WorkManager. |
-| **⚙️ Settings** | Language preference (Bahasa Indonesia / English), theme mode, and user preferences stored in DataStore. |
+| **⚙️ Settings & Updates** | Language preference (Bahasa Indonesia / English), theme mode, dashboard customization, and in-app update checking via GitHub Releases & Google Play. |
 
 ---
 

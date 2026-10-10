@@ -19,20 +19,12 @@
     <string name="prayer_log">Catatan Shalat</string>
     <!-- Quran -->
     <string name="select_surah">Pilih Surah</string>
-    <string name="search_chapters">Cari surat…</string>
-    <string name="no_chapters_found">Tidak ada surat yang cocok</string>
     <string name="loading">Memuat…</string>
-    <string name="no_ayahs_loaded">Tidak ada ayat</string>
-    <string name="bookmark_ayah_bookmarked">Bookmark ayat ini (sudah dibookmark)</string>
-    <string name="bookmark_ayah">Bookmark ayat ini</string>
     <!-- Prayer Times -->
     <string name="next_prayer">Selanjutnya: %s</string>
-    <string name="hijri_date">Hijri: %s</string>
     <string name="upcoming_prayer">Shalat Berikutnya</string>
     <string name="status_passed">Sudah lewat</string>
-    <string name="status_upcoming">Mendatang</string>
     <string name="status_now">Sekarang</string>
-    <string name="default_city_jakarta">Jakarta, ID</string>
     <string name="prayer_notifications">Pengingat Shalat</string>
     <!-- Qibla -->
     <string name="qibla_compass">Kompas Kiblat</string>
@@ -57,8 +49,6 @@
     <!-- Mosques -->
     <string name="nearby_mosques">Masjid Terdekat</string>
     <string name="grant_location_permission">Izinkan Akses Lokasi</string>
-    <string name="your_location">Lokasi Anda</string>
-    <string name="tap_for_details">Ketuk untuk detail</string>
     <string name="fallback_location">Lokasi cadangan</string>
     <string name="search_this_area">Cari di area ini</string>
     <string name="recenter_location">Lokasi Saya</string>
@@ -97,12 +87,10 @@
     <string name="now_playing">Sedang Diputar</string>
     <string name="play">Putar</string>
     <string name="pause">Jeda</string>
-    <string name="stop">Berhenti</string>
     <string name="notification_channel_name">Pemutaran Media</string>
     <!-- Calendar -->
     <string name="islamic_calendar">Kalender Islam</string>
     <string name="todays_events">Acara Hari Ini</string>
-    <string name="no_events_this_month">Tidak ada acara bulan ini</string>
     <string name="today_button">Hari Ini</string>
     <string name="hijri_header_prefix">Kita berada di %1$s</string>
     <string name="hijri_year_suffix">H</string>
@@ -118,16 +106,7 @@
     </string-array>
     <!-- Zakat -->
     <string name="zakat_calculator">Kalkulator Zakat</string>
-    <string name="calculate">Hitung</string>
     <string name="reset">Reset</string>
-    <string name="gold">Emas</string>
-    <string name="silver">Perak</string>
-    <string name="cash">Tunai</string>
-    <string name="total_zakat">Total Zakat</string>
-    <string name="grams">gram</string>
-    <string name="nisab">Nisab: %s</string>
-    <string name="you_are_obligated">Anda wajib membayar zakat</string>
-    <string name="you_are_not_obligated">Anda tidak wajib membayar zakat</string>
     <!-- Asmaul Husna -->
     <string name="asmaul_husna_title">99 Nama Allah</string>
     <string name="search_names">Cari nama…</string>
@@ -140,8 +119,6 @@
     <string name="asmaul_husna_dhikr_title">Lantunkan dengan Penghitung Zikir</string>
     <string name="asmaul_husna_tap_to_count">Ketuk untuk berzikir</string>
     <string name="asmaul_husna_random">Acak</string>
-    <string name="asmaul_husna_grid_view">Tampilan Kisi</string>
-    <string name="asmaul_husna_list_view">Tampilan Daftar</string>
     <string name="asmaul_husna_share">Bagikan</string>
     <string name="asmaul_husna_copy">Salin</string>
     <string name="asmaul_husna_copied">Disalin ke papan klip</string>
@@ -150,12 +127,8 @@
     <string name="tasbih_counter">Tasbih</string>
     <string name="count">Hitung</string>
     <string name="tap_to_count">Ketuk untuk menghitung</string>
-    <string name="subhanallah">Subhanallah</string>
-    <string name="alhamdulillah">Alhamdulillah</string>
-    <string name="allahu_akbar">Allahu Akbar</string>
     <string name="tasbih_target">Target</string>
     <string name="tasbih_lap">Putaran</string>
-    <string name="tasbih_total">Total</string>
     <string name="tasbih_undo">Kurang</string>
     <string name="tasbih_free_target">Bebas</string>
     <string name="tasbih_select_dhikr">Pilih Dzikir</string>
@@ -187,7 +160,6 @@
     <string name="delete">Hapus</string>
     <!-- Prayer Log -->
     <string name="prayer_log_title">Catatan Shalat</string>
-    <string name="today">Hari Ini: %s</string>
     <string name="fajr_subuh">Fajr (Subuh)</string>
     <string name="dhuhr">Dzuhur</string>
     <string name="asr">Asar</string>
@@ -228,10 +200,6 @@
     <string name="ayah_font_size">Ukuran Huruf Ayat: %dsp</string>
     <string name="translation_font_size">Ukuran Huruf Terjemahan: %dsp</string>
     <!-- Dashboard Greetings & Revamp -->
-    <string name="greeting_morning">Selamat pagi</string>
-    <string name="greeting_afternoon">Selamat siang</string>
-    <string name="greeting_evening">Selamat sore</string>
-    <string name="greeting_night">Selamat malam</string>
     <string name="greeting_assalamualaikum">السلام عليكم</string>
     <string name="last_read">Terakhir Dibaca</string>
     <string name="continue_reading">Lanjutkan</string>
@@ -248,24 +216,16 @@
     <string name="more_features">Fitur Lainnya</string>
     <string name="retry">Coba lagi</string>
     <!-- Bookmark Details -->
-    <string name="bookmark_sura_aya">%1$s %2$d:%3$d</string>
     <!-- Quran tabs -->
     <string name="surahs">Surat</string>
     <string name="verses_count">%d ayat</string>
     <!-- Zakat -->
-    <string name="gold_weight">Berat Emas (gram)</string>
-    <string name="silver_weight">Berat Perak (gram)</string>
-    <string name="cash_amount">Jumlah Tunai</string>
-    <string name="currency">Mata Uang</string>
-    <string name="zakat_due">Zakat: %s</string>
-    <string name="zakat_not_due">Zakat Tidak Wajib</string>
     <!-- Hadith -->
     <string name="hadiths">Hadis</string>
     <string name="hadith_tab_books">Kitab</string>
     <string name="hadith_tab_topics">Topik</string>
     <string name="hadith_topic_books_count">%1$d Kitab</string>
     <string name="hadith_reference">Shahih %1$s · Kitab %2$d, Hadis %3$d</string>
-    <string name="hadith_no_arabic">[Tidak ada teks Arab]</string>
     <string name="search_hadiths">Cari hadis…</string>
     <string name="search_hadiths_hint">Ketik untuk mencari seluruh koleksi hadis</string>
     <string name="no_hadiths_match">Tidak ada hadis yang cocok dengan \"%s\"</string>
@@ -305,7 +265,6 @@
     <string name="link_error">Tidak dapat membuka tautan</string>
     <!-- Panduan Sholat -->
     <string name="prayer_guidance">Panduan Sholat</string>
-    <string name="prayer_guidance_desc">Panduan lengkap sholat fardhu, sunnah, tata cara wudhu, dan dzikir</string>
     <string name="category_all">Semua</string>
     <string name="category_fardhu">Sholat Fardhu</string>
     <string name="category_sunnah">Sholat Sunnah</string>
@@ -316,7 +275,6 @@
     <string name="rakaat_count">%d Raka\'at</string>
     <string name="niyyah">Niat Sholat</string>
     <string name="prayer_steps">Panduan Langkah Demi Langkah</string>
-    <string name="step_number">Langkah %d</string>
     <string name="tips_and_notes">Catatan Penting &amp; Keutamaan</string>
     <string name="guidance_steps_count">%d Langkah panduan</string>
     <string name="view_details">Lihat Selengkapnya →</string>
@@ -334,15 +292,10 @@
     <string name="virtues_and_rewards">Keutamaan &amp; Fadhilah Amalan</string>
     <string name="sunnah_tips">Adab Sunnah &amp; Tips Praktis</string>
     <string name="authentic_sunnah_source">Sunnah Shahihah</string>
-    <string name="explore_sunnah_guidance">Jelajahi Panduan Sunnah</string>
-    <string name="explore_sunnah_desc">Pelajari shalat sunnah, adab harian, dan sunnah Nabi dengan dalil hadits &amp; surah shahih.</string>
     <string name="prophetic_sunnah_note">Menurut Sunnah Rasulullah ﷺ, niat bertempat di dalam hati dan shalat dimulai langsung dengan Takbir (\"Allahu Akbar\").</string>
-    <string name="hadith_dalil_label">Rujukan Hadits: %s</string>
-    <string name="surah_dalil_label">Rujukan Al-Qur\'an: %s</string>
     <string name="sunnah_steps_count">%d Langkah sunnah</string>
     <!-- Common Actions & Dialogs -->
     <string name="close">Tutup</string>
-    <string name="share">Bagikan</string>
     <string name="exit">Keluar</string>
     <string name="copied">Disalin</string>
     <!-- Zakat Calculator Additional -->
@@ -368,7 +321,6 @@
     <string name="add_bookmark">Tambah Bookmark</string>
     <string name="remove_bookmark">Hapus Bookmark</string>
     <string name="jump">Lompat</string>
-    <string name="jump_marker">%1$s — Ayat %2$d</string>
     <string name="font">Huruf</string>
     <string name="memorize">Hafalan</string>
     <string name="exit_memorization">Keluar Mode Hafalan</string>
@@ -389,18 +341,13 @@
     <string name="jump_to_ayah">Lompat ke Ayat</string>
     <string name="jump_to_marker">Lompat ke Penanda</string>
     <string name="ayah_number_label">Ayat %d</string>
-    <string name="previous_surah">Surah Sebelumnya</string>
-    <string name="next_surah">Surah Berikutnya</string>
     <string name="back_to_top">Kembali ke Atas</string>
     <string name="end_of_surah">Akhir Surah %s</string>
     <string name="tafsir">Tafsir</string>
     <string name="preview">Pratinjau</string>
-    <string name="sajda_badge">Sajdah</string>
     <string name="sajda_obligatory">Sajdah (Wajib)</string>
     <string name="sajda_recommended">Sajdah (Sunnah)</string>
     <string name="bismillah_full">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</string>
-    <string name="playing_ayah_title">%1$s • Ayat %2$d</string>
-    <string name="stop_audio">Hentikan Audio</string>
     <!-- Hadith Additional -->
     <string name="hadith_book_number">Kitab %d</string>
     <string name="hadith_book_hadith_ref">Kitab %1$s · Hadis %2$d</string>
@@ -433,7 +380,20 @@
     <string name="search_mode_surahs">Surat</string>
     <string name="search_mode_ayahs">Ayat</string>
     <string name="no_surahs_found">Tidak ada surat yang cocok</string>
-    <string name="clear_search">Hapus Pencarian</string>
     <string name="last_read_surah_badge">Terakhir Dibaca</string>
     <string name="continue_from_ayah">Lanjutkan dari Ayat %d</string>
+    <!-- App Update -->
+    <string name="app_version">Versi Aplikasi</string>
+    <string name="check_for_updates">Periksa Pembaruan</string>
+    <string name="checking_updates">Memeriksa pembaruan…</string>
+    <string name="update_available">Pembaruan Tersedia</string>
+    <string name="update_available_desc">Versi baru Rafiq (%1$s) telah tersedia. Anda saat ini menggunakan versi %2$s.</string>
+    <string name="up_to_date">Rafiq sudah versi terbaru</string>
+    <string name="up_to_date_desc">Anda sudah menggunakan versi terbaru (%1$s).</string>
+    <string name="update_now">Perbarui Sekarang</string>
+    <string name="update_later">Nanti</string>
+    <string name="view_on_play_store">Google Play</string>
+    <string name="update_check_failed">Gagal memeriksa pembaruan. Silakan periksa koneksi internet Anda.</string>
+    <string name="whats_new">Yang Baru</string>
+    <string name="about_app">Tentang Rafiq</string>
 </resources>

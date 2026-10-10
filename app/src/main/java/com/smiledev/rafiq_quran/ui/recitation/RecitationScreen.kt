@@ -50,7 +50,6 @@ import com.smiledev.rafiq_quran.core.displayMessage
 import com.smiledev.rafiq_quran.ui.common.formatDuration
 import com.smiledev.rafiq_quran.ui.common.rememberNotificationPermissionRequester
 import androidx.compose.ui.res.stringResource
-import com.smiledev.rafiq_quran.domain.model.Surah
 
 private val arabicFont = FontFamily(Font(R.font.me_quran))
 

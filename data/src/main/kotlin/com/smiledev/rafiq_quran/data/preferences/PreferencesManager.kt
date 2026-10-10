@@ -103,6 +103,8 @@ class PreferencesManager @Inject constructor(
         val TASBIH_SOUND = booleanPreferencesKey("tasbih_sound")
         /** Key for the set of hidden dashboard shortcut keys. Empty means all visible. */
         val HIDDEN_DASHBOARD_KEYS = stringSetPreferencesKey("hidden_dashboard_keys")
+        /** Key for the last dismissed update version tag. */
+        val LAST_DISMISSED_UPDATE_VERSION = stringPreferencesKey("last_dismissed_update_version")
     }
 
     /**
@@ -580,6 +582,22 @@ class PreferencesManager @Inject constructor(
         context.dataStore.edit { prefs ->
             val current = prefs[HIDDEN_DASHBOARD_KEYS].orEmpty()
             prefs[HIDDEN_DASHBOARD_KEYS] = if (key in current) current - key else current + key
+        }
+    }
+
+    /**
+     * Returns the version tag that the user last dismissed from update prompt.
+     */
+    val lastDismissedUpdateVersion: Flow<String?> = context.dataStore.data.map { prefs ->
+        prefs[LAST_DISMISSED_UPDATE_VERSION]
+    }
+
+    /**
+     * Records the dismissed update version to prevent recurring popups.
+     */
+    suspend fun setLastDismissedUpdateVersion(version: String) {
+        context.dataStore.edit { prefs ->
+            prefs[LAST_DISMISSED_UPDATE_VERSION] = version
         }
     }
 }

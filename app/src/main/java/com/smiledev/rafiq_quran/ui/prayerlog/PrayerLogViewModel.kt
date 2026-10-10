@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.smiledev.rafiq_quran.core.DefaultDispatcherProvider
 import com.smiledev.rafiq_quran.core.DispatcherProvider
-import com.smiledev.rafiq_quran.core.Result
 import com.smiledev.rafiq_quran.domain.repository.PrayerLogDay
 import com.smiledev.rafiq_quran.domain.repository.PrayerLogRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
