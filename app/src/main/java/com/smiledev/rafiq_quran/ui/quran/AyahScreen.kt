@@ -1141,7 +1141,7 @@ private fun AyahActionsBottomSheet(
                     fontFamily = ArabicFontFamily,
                     fontSize = 20.sp,
                     textDirection = TextDirection.Rtl,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.End
                 ),
                 modifier = Modifier
                     .fillMaxWidth()

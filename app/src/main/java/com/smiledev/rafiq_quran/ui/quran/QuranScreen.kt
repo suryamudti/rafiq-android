@@ -663,7 +663,8 @@ private fun QuranSearchResultCard(
                 style = MaterialTheme.typography.bodyMedium.copy(
                     fontFamily = ArabicFontFamily,
                     fontSize = 18.sp,
-                    textDirection = TextDirection.Rtl
+                    textDirection = TextDirection.Rtl,
+                    textAlign = TextAlign.End
                 ),
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
