@@ -39,6 +39,7 @@ data class AyahUiState(
     val error: AppError? = null,
     val bookmarkedAyahs: Set<Int> = emptySet(),
     val translationLanguage: String = "system",
+    val showTranslation: Boolean = true,
     val ayahFontSize: Int = 22,
     val translationFontSize: Int = 15,
     val memorizationMode: Boolean = false,
@@ -126,6 +127,11 @@ class AyahViewModel @Inject constructor(
                 if (sura > 0) {
                     _uiState.value = _uiState.value.copy(bookmarkedAyahs = bookmarkedBySura[sura] ?: emptySet())
                 }
+            }
+        }
+        viewModelScope.launch(dispatcherProvider.io) {
+            preferencesManager.showAyahTranslation.collect { show ->
+                _uiState.value = _uiState.value.copy(showTranslation = show)
             }
         }
     }
@@ -358,6 +364,19 @@ class AyahViewModel @Inject constructor(
     fun setTranslationFontSize(size: Int) {
         viewModelScope.launch(dispatcherProvider.io) {
             preferencesManager.setTranslationFontSize(size)
+        }
+    }
+
+    fun toggleShowTranslation() {
+        viewModelScope.launch(dispatcherProvider.io) {
+            val next = !_uiState.value.showTranslation
+            preferencesManager.setShowAyahTranslation(next)
+        }
+    }
+
+    fun setShowTranslation(show: Boolean) {
+        viewModelScope.launch(dispatcherProvider.io) {
+            preferencesManager.setShowAyahTranslation(show)
         }
     }
 

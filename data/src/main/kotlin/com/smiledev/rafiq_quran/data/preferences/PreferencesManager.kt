@@ -103,6 +103,8 @@ class PreferencesManager @Inject constructor(
         val TASBIH_SOUND = booleanPreferencesKey("tasbih_sound")
         /** Key for the set of hidden dashboard shortcut keys. Empty means all visible. */
         val HIDDEN_DASHBOARD_KEYS = stringSetPreferencesKey("hidden_dashboard_keys")
+        /** Key for whether Ayah translation is visible. */
+        val SHOW_AYAH_TRANSLATION = booleanPreferencesKey("show_ayah_translation")
         /** Key for the last dismissed update version tag. */
         val LAST_DISMISSED_UPDATE_VERSION = stringPreferencesKey("last_dismissed_update_version")
     }
@@ -185,6 +187,14 @@ class PreferencesManager @Inject constructor(
      */
     val translationFontSize: Flow<Int> = context.dataStore.data.map { prefs ->
         prefs[TRANSLATION_FONT_SIZE] ?: 15
+    }
+
+    /**
+     * Returns whether Ayah translation is shown as a [Flow].
+     * Defaults to true if not set.
+     */
+    val showAyahTranslation: Flow<Boolean> = context.dataStore.data.map { prefs ->
+        prefs[SHOW_AYAH_TRANSLATION] ?: true
     }
 
     /**
@@ -387,6 +397,15 @@ class PreferencesManager @Inject constructor(
      */
     suspend fun setTranslationFontSize(size: Int) {
         context.dataStore.edit { prefs -> prefs[TRANSLATION_FONT_SIZE] = size }
+    }
+
+    /**
+     * Sets whether Ayah translation is visible.
+     *
+     * @param show true to show translation, false to hide
+     */
+    suspend fun setShowAyahTranslation(show: Boolean) {
+        context.dataStore.edit { prefs -> prefs[SHOW_AYAH_TRANSLATION] = show }
     }
 
     /**

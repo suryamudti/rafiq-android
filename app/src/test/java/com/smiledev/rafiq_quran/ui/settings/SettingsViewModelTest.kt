@@ -37,6 +37,7 @@ class SettingsViewModelTest {
     private val themeFlow = MutableStateFlow("system")
     private val langFlow = MutableStateFlow("system")
     private val hiddenFlow = MutableStateFlow(setOf("zakat"))
+    private val showTranslationFlow = MutableStateFlow(true)
 
     @Before
     fun setUp() {
@@ -44,6 +45,7 @@ class SettingsViewModelTest {
         every { preferencesManager.themeMode } returns themeFlow
         every { preferencesManager.translationLanguage } returns langFlow
         every { preferencesManager.hiddenDashboardKeys } returns hiddenFlow
+        every { preferencesManager.showAyahTranslation } returns showTranslationFlow
     }
 
     @After
@@ -83,6 +85,25 @@ class SettingsViewModelTest {
         advanceUntilIdle()
 
         coVerify { preferencesManager.setDashboardHidden(emptySet()) }
+    }
+
+    @Test
+    fun `setShowAyahTranslation delegates to preferences`() = runTest(testDispatcher) {
+        coEvery { preferencesManager.setShowAyahTranslation(any()) } returns Unit
+
+        val vm = SettingsViewModel(preferencesManager, testDispatcherProvider)
+        advanceUntilIdle()
+
+        assertEquals(true, vm.uiState.value.showAyahTranslation)
+
+        vm.setShowAyahTranslation(false)
+        advanceUntilIdle()
+
+        coVerify { preferencesManager.setShowAyahTranslation(false) }
+
+        showTranslationFlow.value = false
+        advanceUntilIdle()
+        assertEquals(false, vm.uiState.value.showAyahTranslation)
     }
 
     @Test

@@ -29,6 +29,7 @@ enum class UpdateCheckStatus {
 data class SettingsUiState(
     val themeMode: String = "system",
     val translationLanguage: String = "system",
+    val showAyahTranslation: Boolean = true,
     val hiddenKeys: Set<String> = emptySet(),
     val appVersion: String = "",
     val isCheckingUpdate: Boolean = false,
@@ -66,12 +67,14 @@ class SettingsViewModel @Inject constructor(
             combine(
                 preferencesManager.themeMode,
                 preferencesManager.translationLanguage,
-                preferencesManager.hiddenDashboardKeys
-            ) { theme, lang, hidden ->
+                preferencesManager.hiddenDashboardKeys,
+                preferencesManager.showAyahTranslation
+            ) { theme, lang, hidden, showTrans ->
                 _uiState.value = _uiState.value.copy(
                     themeMode = theme,
                     translationLanguage = lang,
-                    hiddenKeys = hidden
+                    hiddenKeys = hidden,
+                    showAyahTranslation = showTrans
                 )
             }.collect()
         }
@@ -86,6 +89,12 @@ class SettingsViewModel @Inject constructor(
     fun setTranslationLanguage(lang: String) {
         viewModelScope.launch(dispatcherProvider.io) {
             preferencesManager.setTranslationLanguage(lang)
+        }
+    }
+
+    fun setShowAyahTranslation(show: Boolean) {
+        viewModelScope.launch(dispatcherProvider.io) {
+            preferencesManager.setShowAyahTranslation(show)
         }
     }
 

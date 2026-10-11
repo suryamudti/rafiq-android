@@ -118,8 +118,26 @@ fun SettingsScreen(
             Text(
                 text = stringResource(R.string.quran_translation),
                 style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(bottom = 12.dp)
+                modifier = Modifier.padding(bottom = 8.dp)
             )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp, horizontal = 8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = stringResource(R.string.show_translation),
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.weight(1f)
+                )
+                Switch(
+                    checked = state.showAyahTranslation,
+                    onCheckedChange = viewModel::setShowAyahTranslation
+                )
+            }
+            Spacer(modifier = Modifier.height(8.dp))
             val onLanguageSelected: (String) -> Unit = { lang ->
                 viewModel.setTranslationLanguage(lang)
             }
