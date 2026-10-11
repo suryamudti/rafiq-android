@@ -331,6 +331,8 @@
     <string name="loading_tafsir">Memuat tafsir…</string>
     <string name="hide_tafsir">Sembunyikan Tafsir</string>
     <string name="show_tafsir">Tampilkan Tafsir</string>
+    <string name="hide_translation">Sembunyikan Terjemahan</string>
+    <string name="show_translation">Tampilkan Terjemahan</string>
     <string name="page_badge">Halaman %d</string>
     <string name="juz_badge">Juz %d</string>
     <string name="share_ayah">Bagikan Ayat</string>

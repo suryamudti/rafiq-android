@@ -48,6 +48,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -167,8 +168,10 @@ fun AyahScreen(
         FontSizeBottomSheet(
             ayahFontSize = state.ayahFontSize,
             translationFontSize = state.translationFontSize,
+            showTranslation = state.showTranslation,
             onAyahFontSizeChange = viewModel::setAyahFontSize,
             onTranslationFontSizeChange = viewModel::setTranslationFontSize,
+            onToggleShowTranslation = viewModel::setShowTranslation,
             onDismiss = { showFontSizeSheet = false }
         )
     }
@@ -242,6 +245,18 @@ fun AyahScreen(
                                     onClick = {
                                         showOverflowMenu = false
                                         showFontSizeSheet = true
+                                    }
+                                )
+                                DropdownMenuItem(
+                                    text = {
+                                        Text(
+                                            if (state.showTranslation) stringResource(R.string.hide_translation)
+                                            else stringResource(R.string.show_translation)
+                                        )
+                                    },
+                                    onClick = {
+                                        showOverflowMenu = false
+                                        viewModel.toggleShowTranslation()
                                     }
                                 )
                                 DropdownMenuItem(
@@ -390,6 +405,7 @@ fun AyahScreen(
                                     }
                                 },
                                 onOpenActions = { actionAyah = ayah },
+                                showTranslation = state.showTranslation,
                                 memorizationMode = state.memorizationMode,
                                 memorizationRevealed = state.memorizationRevealedAyah == ayah.aya,
                                 onRevealTranslation = { viewModel.revealTranslation(ayah.aya) },
@@ -535,6 +551,7 @@ private fun VerseCard(
     onToggleBookmark: () -> Unit,
     onToggleTafsir: () -> Unit,
     onOpenActions: () -> Unit,
+    showTranslation: Boolean = true,
     memorizationMode: Boolean,
     memorizationRevealed: Boolean,
     onRevealTranslation: () -> Unit,
@@ -669,117 +686,119 @@ private fun VerseCard(
             modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(modifier = Modifier.height(RafiqTheme.spacing.m))
-
         // Translation section
-        if (memorizationMode && !memorizationRevealed) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RafiqTheme.customShapes.small)
-                    .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.25f))
-                    .clickable(onClick = onRevealTranslation)
-                    .padding(RafiqTheme.spacing.m),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = stringResource(R.string.tap_to_reveal_translation),
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colorScheme.primary
-                )
-            }
-        } else {
-            val resolvedLang = if (translationLanguage == "system") currentLocaleCode() else translationLanguage
-            val hasId = !ayah.translationId.isNullOrBlank()
-            val hasEn = !ayah.translationEn.isNullOrBlank()
-            val localTransId = ayah.translationId
-            val localTransEn = ayah.translationEn
+        if (showTranslation) {
+            Spacer(modifier = Modifier.height(RafiqTheme.spacing.m))
 
-            val containerModifier = if (memorizationRevealed) {
-                Modifier
-                    .fillMaxWidth()
-                    .background(
-                        RafiqTheme.extendedColors.goldContainer,
-                        RafiqTheme.customShapes.small
+            if (memorizationMode && !memorizationRevealed) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RafiqTheme.customShapes.small)
+                        .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.25f))
+                        .clickable(onClick = onRevealTranslation)
+                        .padding(RafiqTheme.spacing.m),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = stringResource(R.string.tap_to_reveal_translation),
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colorScheme.primary
                     )
-                    .padding(RafiqTheme.spacing.m)
+                }
             } else {
-                Modifier.fillMaxWidth()
-            }
+                val resolvedLang = if (translationLanguage == "system") currentLocaleCode() else translationLanguage
+                val hasId = !ayah.translationId.isNullOrBlank()
+                val hasEn = !ayah.translationEn.isNullOrBlank()
+                val localTransId = ayah.translationId
+                val localTransEn = ayah.translationEn
 
-            Column(modifier = containerModifier) {
-                when (resolvedLang) {
-                    "id" -> {
-                        val text = if (hasId) localTransId else if (hasEn) localTransEn else null
-                        if (text != null) {
-                            Text(
-                                text = "${ayah.aya}. $text",
-                                fontSize = translationFontSize.sp,
-                                fontWeight = FontWeight.Normal,
-                                lineHeight = (translationFontSize * 1.6).sp,
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
-                        } else {
-                            Text(
-                                text = stringResource(R.string.translation_unavailable_bracketed),
-                                fontSize = 14.sp,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
-                            )
-                        }
-                    }
-                    "en" -> {
-                        val text = if (hasEn) localTransEn else if (hasId) localTransId else null
-                        if (text != null) {
-                            Text(
-                                text = "${ayah.aya}. $text",
-                                fontSize = translationFontSize.sp,
-                                fontWeight = FontWeight.Normal,
-                                lineHeight = (translationFontSize * 1.6).sp,
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
-                        } else {
-                            Text(
-                                text = stringResource(R.string.translation_unavailable_bracketed),
-                                fontSize = 14.sp,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
-                            )
-                        }
-                    }
-                    "both" -> {
-                        Column(verticalArrangement = Arrangement.spacedBy(RafiqTheme.spacing.s)) {
-                            if (hasId && localTransId != null) {
-                                Row(verticalAlignment = Alignment.Top) {
-                                    RafiqBadge(
-                                        text = "ID",
-                                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                                        contentColor = MaterialTheme.colorScheme.primary
-                                    )
-                                    Spacer(modifier = Modifier.width(RafiqTheme.spacing.s))
-                                    Text(
-                                        text = localTransId,
-                                        fontSize = translationFontSize.sp,
-                                        lineHeight = (translationFontSize * 1.6).sp,
-                                        color = MaterialTheme.colorScheme.onSurface,
-                                        modifier = Modifier.weight(1f)
-                                    )
-                                }
+                val containerModifier = if (memorizationRevealed) {
+                    Modifier
+                        .fillMaxWidth()
+                        .background(
+                            RafiqTheme.extendedColors.goldContainer,
+                            RafiqTheme.customShapes.small
+                        )
+                        .padding(RafiqTheme.spacing.m)
+                } else {
+                    Modifier.fillMaxWidth()
+                }
+
+                Column(modifier = containerModifier) {
+                    when (resolvedLang) {
+                        "id" -> {
+                            val text = if (hasId) localTransId else if (hasEn) localTransEn else null
+                            if (text != null) {
+                                Text(
+                                    text = "${ayah.aya}. $text",
+                                    fontSize = translationFontSize.sp,
+                                    fontWeight = FontWeight.Normal,
+                                    lineHeight = (translationFontSize * 1.6).sp,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                            } else {
+                                Text(
+                                    text = stringResource(R.string.translation_unavailable_bracketed),
+                                    fontSize = 14.sp,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+                                )
                             }
-                            if (hasEn && localTransEn != null) {
-                                Row(verticalAlignment = Alignment.Top) {
-                                    RafiqBadge(
-                                        text = "EN",
-                                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                                        contentColor = MaterialTheme.colorScheme.secondary
-                                    )
-                                    Spacer(modifier = Modifier.width(RafiqTheme.spacing.s))
-                                    Text(
-                                        text = localTransEn,
-                                        fontSize = translationFontSize.sp,
-                                        lineHeight = (translationFontSize * 1.6).sp,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                        modifier = Modifier.weight(1f)
-                                    )
+                        }
+                        "en" -> {
+                            val text = if (hasEn) localTransEn else if (hasId) localTransId else null
+                            if (text != null) {
+                                Text(
+                                    text = "${ayah.aya}. $text",
+                                    fontSize = translationFontSize.sp,
+                                    fontWeight = FontWeight.Normal,
+                                    lineHeight = (translationFontSize * 1.6).sp,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                            } else {
+                                Text(
+                                    text = stringResource(R.string.translation_unavailable_bracketed),
+                                    fontSize = 14.sp,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+                                )
+                            }
+                        }
+                        "both" -> {
+                            Column(verticalArrangement = Arrangement.spacedBy(RafiqTheme.spacing.s)) {
+                                if (hasId && localTransId != null) {
+                                    Row(verticalAlignment = Alignment.Top) {
+                                        RafiqBadge(
+                                            text = "ID",
+                                            containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                            contentColor = MaterialTheme.colorScheme.primary
+                                        )
+                                        Spacer(modifier = Modifier.width(RafiqTheme.spacing.s))
+                                        Text(
+                                            text = localTransId,
+                                            fontSize = translationFontSize.sp,
+                                            lineHeight = (translationFontSize * 1.6).sp,
+                                            color = MaterialTheme.colorScheme.onSurface,
+                                            modifier = Modifier.weight(1f)
+                                        )
+                                    }
+                                }
+                                if (hasEn && localTransEn != null) {
+                                    Row(verticalAlignment = Alignment.Top) {
+                                        RafiqBadge(
+                                            text = "EN",
+                                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                            contentColor = MaterialTheme.colorScheme.secondary
+                                        )
+                                        Spacer(modifier = Modifier.width(RafiqTheme.spacing.s))
+                                        Text(
+                                            text = localTransEn,
+                                            fontSize = translationFontSize.sp,
+                                            lineHeight = (translationFontSize * 1.6).sp,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                            modifier = Modifier.weight(1f)
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -1201,8 +1220,10 @@ private fun AyahActionsBottomSheet(
 private fun FontSizeBottomSheet(
     ayahFontSize: Int,
     translationFontSize: Int,
+    showTranslation: Boolean,
     onAyahFontSizeChange: (Int) -> Unit,
     onTranslationFontSizeChange: (Int) -> Unit,
+    onToggleShowTranslation: (Boolean) -> Unit,
     onDismiss: () -> Unit
 ) {
     ModalBottomSheet(
@@ -1219,6 +1240,25 @@ private fun FontSizeBottomSheet(
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
+
+            Spacer(modifier = Modifier.height(RafiqTheme.spacing.m))
+
+            // Show translation toggle
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = stringResource(R.string.show_translation),
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Switch(
+                    checked = showTranslation,
+                    onCheckedChange = onToggleShowTranslation
+                )
+            }
 
             Spacer(modifier = Modifier.height(RafiqTheme.spacing.m))
 
@@ -1248,15 +1288,17 @@ private fun FontSizeBottomSheet(
                     ),
                     modifier = Modifier.fillMaxWidth()
                 )
-                Spacer(modifier = Modifier.height(RafiqTheme.spacing.xs))
-                Text(
-                    text = "In the name of Allah, the Entirely Merciful, the Especially Merciful.",
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        fontSize = translationFontSize.sp,
-                        lineHeight = (translationFontSize * 1.5).sp
-                    ),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                if (showTranslation) {
+                    Spacer(modifier = Modifier.height(RafiqTheme.spacing.xs))
+                    Text(
+                        text = "In the name of Allah, the Entirely Merciful, the Especially Merciful.",
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            fontSize = translationFontSize.sp,
+                            lineHeight = (translationFontSize * 1.5).sp
+                        ),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(RafiqTheme.spacing.l))
@@ -1284,29 +1326,31 @@ private fun FontSizeBottomSheet(
                 Text("40", fontSize = 12.sp)
             }
 
-            Spacer(modifier = Modifier.height(RafiqTheme.spacing.m))
+            if (showTranslation) {
+                Spacer(modifier = Modifier.height(RafiqTheme.spacing.m))
 
-            // Translation Font Size Slider
-            Text(
-                text = stringResource(R.string.translation_font_size, translationFontSize),
-                style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.SemiBold
-            )
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("10", fontSize = 12.sp)
-                Slider(
-                    value = translationFontSize.toFloat(),
-                    onValueChange = { onTranslationFontSizeChange(it.toInt()) },
-                    valueRange = 10f..28f,
-                    steps = 17,
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(horizontal = RafiqTheme.spacing.s)
+                // Translation Font Size Slider
+                Text(
+                    text = stringResource(R.string.translation_font_size, translationFontSize),
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold
                 )
-                Text("28", fontSize = 12.sp)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("10", fontSize = 12.sp)
+                    Slider(
+                        value = translationFontSize.toFloat(),
+                        onValueChange = { onTranslationFontSizeChange(it.toInt()) },
+                        valueRange = 10f..28f,
+                        steps = 17,
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(horizontal = RafiqTheme.spacing.s)
+                    )
+                    Text("28", fontSize = 12.sp)
+                }
             }
 
             Spacer(modifier = Modifier.height(RafiqTheme.spacing.l))

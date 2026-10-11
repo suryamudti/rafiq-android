@@ -331,6 +331,8 @@
     <string name="loading_tafsir">Loading tafsir…</string>
     <string name="hide_tafsir">Hide Tafsir</string>
     <string name="show_tafsir">Show Tafsir</string>
+    <string name="hide_translation">Hide Translation</string>
+    <string name="show_translation">Show Translation</string>
     <string name="page_badge">Page %d</string>
     <string name="juz_badge">Juz %d</string>
     <string name="share_ayah">Share Ayah</string>
