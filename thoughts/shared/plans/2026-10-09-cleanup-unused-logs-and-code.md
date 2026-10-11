@@ -22,7 +22,7 @@ Over the development of Rafiq Quran Android, various debug log statements, root 
 - **Unused Imports**:
   - 50 confirmed unused imports across 27 files in `app`, `data`, and `domain` modules (e.g. 12 unused imports in [`AsmaulHusnaScreen.kt`](file:///c:/Flutter/rafiq-app-android/app/src/main/java/com/smiledev/rafiq_quran/ui/asmaulhusna/AsmaulHusnaScreen.kt)).
 - **Unused String Resources**:
-  - 54 string resources in [`strings.xml`](file:///c:/Flutter/rafiq-app-android/app/src/main/res/values/strings.xml) and [`values-id/strings.xml`](file:///c:/Flutter/rafiq-app-android/app/src/main/res/values-id/strings.xml) that are no longer referenced in code or XML layouts.
+  - 54 string resources in [`strings.xml`](file:///c:/Flutter/rafiq-app-android/app/src/main/res/values/strings.xml), [`values-id/strings.xml`](file:///c:/Flutter/rafiq-app-android/app/src/main/res/values-id/strings.xml), and [`values-in/strings.xml`](file:///c:/Flutter/rafiq-app-android/app/src/main/res/values-in/strings.xml) that are no longer referenced in code or XML layouts.
 
 ---
 
@@ -32,7 +32,7 @@ Over the development of Rafiq Quran Android, various debug log statements, root 
 2. **Production Logging**: Informational log noise is removed from production code; essential warning and error diagnostics (`Log.w`, `Log.e`) are retained for critical failure cases (database corruptions or copy errors).
 3. **Dead Code Removed**: Unreferenced methods in ViewModels and UseCases are eliminated without breaking compilation or tests.
 4. **Clean Imports**: All 50 unused imports across the 27 source files are removed.
-5. **Cleaned Resources**: Obsolete strings in `values/strings.xml` and `values-id/strings.xml` are pruned, reducing resource bloat.
+5. **Cleaned Resources**: Obsolete strings in `values/strings.xml`, `values-id/strings.xml`, and `values-in/strings.xml` are pruned, reducing resource bloat.
 6. **Design System Kept Intact**: Foundational UI components in `ui/designsystem/` remain preserved for future feature additions.
 
 ### Key Discoveries & Constraints:
@@ -192,7 +192,7 @@ Remove confirmed unused imports in:
 ## Phase 4: Unused String Resources Cleanup
 
 ### Overview
-Prune the 54 obsolete, unreferenced string resources from both `values/strings.xml` and `values-id/strings.xml` to prevent dead strings from accumulating.
+Prune the 54 obsolete, unreferenced string resources from `values/strings.xml`, `values-id/strings.xml`, and `values-in/strings.xml` to prevent dead strings from accumulating.
 
 ### Changes Required:
 
@@ -220,8 +220,10 @@ Prune the 54 obsolete, unreferenced string resources from both `values/strings.x
 - `total_zakat`, `you_are_not_obligated`, `you_are_obligated`, `your_location`, `zakat_due`, `zakat_not_due`
 
 #### 2. Indonesian Strings
-**File**: [`app/src/main/res/values-id/strings.xml`](file:///c:/Flutter/rafiq-app-android/app/src/main/res/values-id/strings.xml)
-**Changes**: Mirror removals for the exact matching keys to maintain resource synchronization.
+**Files**:
+- [`app/src/main/res/values-id/strings.xml`](file:///c:/Flutter/rafiq-app-android/app/src/main/res/values-id/strings.xml)
+- [`app/src/main/res/values-in/strings.xml`](file:///c:/Flutter/rafiq-app-android/app/src/main/res/values-in/strings.xml)
+**Changes**: Mirror removals for the exact matching keys across both `values-id` and `values-in` (legacy AAPT ISO code mirror) to maintain resource synchronization and pass Android lint `ExtraTranslation` checks.
 
 ### Success Criteria:
 
