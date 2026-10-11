@@ -45,6 +45,7 @@ fun ZakatCalculatorScreen(
     val state by viewModel.uiState.collectAsState()
 
     Scaffold(
+        modifier = modifier,
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(R.string.zakat_calculator)) },
@@ -67,7 +68,7 @@ fun ZakatCalculatorScreen(
         }
 
         Column(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
                 .padding(16.dp)

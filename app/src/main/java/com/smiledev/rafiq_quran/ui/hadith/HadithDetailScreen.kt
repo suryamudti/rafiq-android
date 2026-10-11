@@ -58,6 +58,7 @@ fun HadithDetailScreen(
     val resolvedLang = viewModel.resolvedLanguage()
 
     Scaffold(
+        modifier = modifier,
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(R.string.hadiths)) },
@@ -76,7 +77,7 @@ fun HadithDetailScreen(
             }
         } else {
             Column(
-                modifier = modifier
+                modifier = Modifier
                     .fillMaxSize()
                     .padding(padding)
                     .verticalScroll(rememberScrollState())

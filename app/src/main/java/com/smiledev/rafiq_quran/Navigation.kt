@@ -61,8 +61,7 @@ fun MainNavigation() {
             onSearchResultClick = { sura, name, aya ->
               backStack.add(Ayah(suraNumber = sura, suraName = name, scrollToAya = aya))
             },
-            onBack = { backStack.removeLastOrNull() },
-            modifier = Modifier.safeDrawingPadding()
+            onBack = { backStack.removeLastOrNull() }
           )
         }
         entry<Ayah> { key ->
@@ -146,8 +145,7 @@ fun MainNavigation() {
         entry<HadithDetail> { key ->
           HadithDetailScreen(
             hadithId = key.hadithId,
-            onBack = { backStack.removeLastOrNull() },
-            modifier = Modifier.safeDrawingPadding()
+            onBack = { backStack.removeLastOrNull() }
           )
         }
         entry<Recitation> {
@@ -164,8 +162,7 @@ fun MainNavigation() {
         }
         entry<ZakatCalculator> {
           ZakatCalculatorScreen(
-            onBack = { backStack.removeLastOrNull() },
-            modifier = Modifier.safeDrawingPadding()
+            onBack = { backStack.removeLastOrNull() }
           )
         }
         entry<AsmaulHusna> {
@@ -192,14 +189,12 @@ fun MainNavigation() {
             onBack = { backStack.removeLastOrNull() },
             onBookmarkClick = { sura, name, aya ->
               backStack.add(Ayah(suraNumber = sura, suraName = name, scrollToAya = aya))
-            },
-            modifier = Modifier.safeDrawingPadding()
+            }
           )
         }
         entry<PrayerLog> {
           PrayerLogScreen(
-            onBack = { backStack.removeLastOrNull() },
-            modifier = Modifier.safeDrawingPadding()
+            onBack = { backStack.removeLastOrNull() }
           )
         }
         entry<PrayerGuidance> {

@@ -4,6 +4,7 @@ import android.content.Context
 import com.smiledev.rafiq_quran.TestDispatcherProvider
 import com.smiledev.rafiq_quran.core.Result
 import com.smiledev.rafiq_quran.data.preferences.PreferencesManager
+import com.smiledev.rafiq_quran.domain.model.AppUpdateInfo
 import com.smiledev.rafiq_quran.domain.model.Hadith
 import com.smiledev.rafiq_quran.domain.model.PrayerTimesData
 import com.smiledev.rafiq_quran.domain.model.PrayerTimings
@@ -13,6 +14,7 @@ import com.smiledev.rafiq_quran.domain.repository.PrayerLogDay
 import com.smiledev.rafiq_quran.domain.repository.PrayerLogRepository
 import com.smiledev.rafiq_quran.domain.repository.PrayerTimesRepository
 import com.smiledev.rafiq_quran.domain.repository.QuranRepository
+import com.smiledev.rafiq_quran.domain.usecase.CheckAppUpdateUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -26,6 +28,7 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -45,6 +48,7 @@ class DashboardViewModelTest {
     private val quranRepository: QuranRepository = mockk(relaxed = true)
     private val prayerLogRepository: PrayerLogRepository = mockk(relaxed = true)
     private val hadithRepository: HadithRepository = mockk(relaxed = true)
+    private val checkAppUpdateUseCase: CheckAppUpdateUseCase = mockk(relaxed = true)
 
     private val latFlow = MutableStateFlow("-6.2088")
     private val lonFlow = MutableStateFlow("106.8456")
@@ -54,6 +58,7 @@ class DashboardViewModelTest {
     private val lastReadAyaFlow = MutableStateFlow(255)
     private val prayerLogsFlow = MutableStateFlow<List<PrayerLogDay>>(emptyList())
     private val hiddenKeysFlow = MutableStateFlow<Set<String>>(emptySet())
+    private val lastDismissedVersionFlow = MutableStateFlow<String?>(null)
 
     @Before
     fun setUp() {
@@ -66,6 +71,7 @@ class DashboardViewModelTest {
         every { preferencesManager.lastReadSura } returns lastReadSuraFlow
         every { preferencesManager.lastReadAya } returns lastReadAyaFlow
         every { preferencesManager.hiddenDashboardKeys } returns hiddenKeysFlow
+        every { preferencesManager.lastDismissedUpdateVersion } returns lastDismissedVersionFlow
         every { prayerLogRepository.observeAll() } returns prayerLogsFlow
 
         coEvery { prayerTimesRepository.getCachedPrayerTimes(any(), any(), any(), any()) } returns null
@@ -323,6 +329,68 @@ class DashboardViewModelTest {
         testScheduler.runCurrent()
 
         assertEquals(setOf("zakat"), vm.uiState.value.hiddenKeys)
+    }
+
+    @Test
+    fun `silent update check populates updateInfo when available and not dismissed`() = runTest(testDispatcher) {
+        val updateInfo = AppUpdateInfo(
+            currentVersion = "1.0",
+            latestVersion = "1.0.74",
+            isUpdateAvailable = true,
+            releaseName = "Release v1.0.74",
+            releaseUrl = "https://github.com/suryamudti/rafiq-android/releases/tag/v1.0.74"
+        )
+        coEvery { checkAppUpdateUseCase(any()) } returns Result.Success(updateInfo)
+
+        val vm = DashboardViewModel(
+            prayerTimesRepository = prayerTimesRepository,
+            preferencesManager = preferencesManager,
+            context = context,
+            dispatcherProvider = testDispatcherProvider,
+            quranRepository = quranRepository,
+            prayerLogRepository = prayerLogRepository,
+            enablePeriodicCountdown = false,
+            hadithRepository = hadithRepository,
+            checkAppUpdateUseCase = checkAppUpdateUseCase
+        )
+        testScheduler.runCurrent()
+
+        assertEquals(updateInfo, vm.uiState.value.updateInfo)
+
+        coEvery { preferencesManager.setLastDismissedUpdateVersion("1.0.74") } returns Unit
+        vm.dismissUpdateDialog()
+        testScheduler.runCurrent()
+
+        assertNull(vm.uiState.value.updateInfo)
+        coVerify { preferencesManager.setLastDismissedUpdateVersion("1.0.74") }
+    }
+
+    @Test
+    fun `silent update check ignores when already dismissed`() = runTest(testDispatcher) {
+        lastDismissedVersionFlow.value = "1.0.74"
+        val updateInfo = AppUpdateInfo(
+            currentVersion = "1.0",
+            latestVersion = "1.0.74",
+            isUpdateAvailable = true,
+            releaseName = "Release v1.0.74",
+            releaseUrl = "https://github.com/suryamudti/rafiq-android/releases/tag/v1.0.74"
+        )
+        coEvery { checkAppUpdateUseCase(any()) } returns Result.Success(updateInfo)
+
+        val vm = DashboardViewModel(
+            prayerTimesRepository = prayerTimesRepository,
+            preferencesManager = preferencesManager,
+            context = context,
+            dispatcherProvider = testDispatcherProvider,
+            quranRepository = quranRepository,
+            prayerLogRepository = prayerLogRepository,
+            enablePeriodicCountdown = false,
+            hadithRepository = hadithRepository,
+            checkAppUpdateUseCase = checkAppUpdateUseCase
+        )
+        testScheduler.runCurrent()
+
+        assertNull(vm.uiState.value.updateInfo)
     }
 }
 

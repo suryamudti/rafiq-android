@@ -85,6 +85,7 @@ fun QuranScreen(
     var showSearch by remember { mutableStateOf(false) }
 
     Scaffold(
+        modifier = modifier,
         topBar = {
             Column {
                 RafiqTopAppBar(
@@ -122,7 +123,7 @@ fun QuranScreen(
             }
         }
     ) { padding ->
-        Column(modifier = modifier.fillMaxSize().padding(padding)) {
+        Column(modifier = Modifier.fillMaxSize().padding(padding)) {
             if (showSearch) {
                 // Scope tabs: Surahs vs Verses
                 TabRow(selectedTabIndex = state.searchTab.ordinal) {
@@ -662,7 +663,8 @@ private fun QuranSearchResultCard(
                 style = MaterialTheme.typography.bodyMedium.copy(
                     fontFamily = ArabicFontFamily,
                     fontSize = 18.sp,
-                    textDirection = TextDirection.Rtl
+                    textDirection = TextDirection.Rtl,
+                    textAlign = TextAlign.End
                 ),
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,

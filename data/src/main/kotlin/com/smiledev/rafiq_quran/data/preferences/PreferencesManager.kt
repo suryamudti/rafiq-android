@@ -103,6 +103,10 @@ class PreferencesManager @Inject constructor(
         val TASBIH_SOUND = booleanPreferencesKey("tasbih_sound")
         /** Key for the set of hidden dashboard shortcut keys. Empty means all visible. */
         val HIDDEN_DASHBOARD_KEYS = stringSetPreferencesKey("hidden_dashboard_keys")
+        /** Key for whether Ayah translation is visible. */
+        val SHOW_AYAH_TRANSLATION = booleanPreferencesKey("show_ayah_translation")
+        /** Key for the last dismissed update version tag. */
+        val LAST_DISMISSED_UPDATE_VERSION = stringPreferencesKey("last_dismissed_update_version")
     }
 
     /**
@@ -183,6 +187,14 @@ class PreferencesManager @Inject constructor(
      */
     val translationFontSize: Flow<Int> = context.dataStore.data.map { prefs ->
         prefs[TRANSLATION_FONT_SIZE] ?: 15
+    }
+
+    /**
+     * Returns whether Ayah translation is shown as a [Flow].
+     * Defaults to true if not set.
+     */
+    val showAyahTranslation: Flow<Boolean> = context.dataStore.data.map { prefs ->
+        prefs[SHOW_AYAH_TRANSLATION] ?: true
     }
 
     /**
@@ -388,6 +400,15 @@ class PreferencesManager @Inject constructor(
     }
 
     /**
+     * Sets whether Ayah translation is visible.
+     *
+     * @param show true to show translation, false to hide
+     */
+    suspend fun setShowAyahTranslation(show: Boolean) {
+        context.dataStore.edit { prefs -> prefs[SHOW_AYAH_TRANSLATION] = show }
+    }
+
+    /**
      * Sets the last read position (Surah and Ayah).
      *
      * @param sura the Surah number
@@ -580,6 +601,22 @@ class PreferencesManager @Inject constructor(
         context.dataStore.edit { prefs ->
             val current = prefs[HIDDEN_DASHBOARD_KEYS].orEmpty()
             prefs[HIDDEN_DASHBOARD_KEYS] = if (key in current) current - key else current + key
+        }
+    }
+
+    /**
+     * Returns the version tag that the user last dismissed from update prompt.
+     */
+    val lastDismissedUpdateVersion: Flow<String?> = context.dataStore.data.map { prefs ->
+        prefs[LAST_DISMISSED_UPDATE_VERSION]
+    }
+
+    /**
+     * Records the dismissed update version to prevent recurring popups.
+     */
+    suspend fun setLastDismissedUpdateVersion(version: String) {
+        context.dataStore.edit { prefs ->
+            prefs[LAST_DISMISSED_UPDATE_VERSION] = version
         }
     }
 }

@@ -11,6 +11,8 @@ import com.smiledev.rafiq_quran.domain.repository.BookmarkRepository
 import com.smiledev.rafiq_quran.domain.repository.QuranRepository
 import com.smiledev.rafiq_quran.service.AudioPlayerController
 import com.smiledev.rafiq_quran.service.PlaybackState
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -42,13 +44,15 @@ class AyahViewModelTest {
 
     private fun createVm(
         playbackStateFlow: MutableStateFlow<PlaybackState> = MutableStateFlow(PlaybackState()),
-        chapters: List<Surah> = listOf(surah)
+        chapters: List<Surah> = listOf(surah),
+        showTranslationFlow: MutableStateFlow<Boolean> = MutableStateFlow(true)
     ): AyahViewModel {
         every { preferencesManager.translationLanguage } returns MutableStateFlow("system")
         every { preferencesManager.ayahFontSize } returns MutableStateFlow(22)
         every { preferencesManager.translationFontSize } returns MutableStateFlow(15)
         every { preferencesManager.lastReadSura } returns MutableStateFlow(0)
         every { preferencesManager.lastReadAya } returns MutableStateFlow(0)
+        every { preferencesManager.showAyahTranslation } returns showTranslationFlow
         every { quranRepository.getChapters(any()) } returns Result.Success(chapters)
         every { bookmarkRepository.observeAll() } returns MutableStateFlow(emptyList())
         every { audioPlayer.playbackState } returns playbackStateFlow
@@ -202,5 +206,25 @@ class AyahViewModelTest {
         assertEquals(surah2, vm.uiState.value.currentSurah)
         assertEquals(surah1, vm.uiState.value.previousSurah)
         assertEquals(surah3, vm.uiState.value.nextSurah)
+    }
+
+    @Test
+    fun `toggleShowTranslation delegates to preferencesManager`() = runTest(testDispatcher) {
+        val showFlow = MutableStateFlow(true)
+        coEvery { preferencesManager.setShowAyahTranslation(any()) } returns Unit
+
+        val vm = createVm(showTranslationFlow = showFlow)
+        advanceUntilIdle()
+
+        assertEquals(true, vm.uiState.value.showTranslation)
+
+        vm.toggleShowTranslation()
+        advanceUntilIdle()
+
+        coVerify { preferencesManager.setShowAyahTranslation(false) }
+
+        showFlow.value = false
+        advanceUntilIdle()
+        assertEquals(false, vm.uiState.value.showTranslation)
     }
 }

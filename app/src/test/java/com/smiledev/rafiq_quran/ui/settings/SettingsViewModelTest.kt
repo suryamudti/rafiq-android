@@ -1,7 +1,11 @@
 package com.smiledev.rafiq_quran.ui.settings
 
 import com.smiledev.rafiq_quran.TestDispatcherProvider
+import com.smiledev.rafiq_quran.core.AppError
+import com.smiledev.rafiq_quran.core.Result
 import com.smiledev.rafiq_quran.data.preferences.PreferencesManager
+import com.smiledev.rafiq_quran.domain.model.AppUpdateInfo
+import com.smiledev.rafiq_quran.domain.usecase.CheckAppUpdateUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -16,6 +20,9 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
@@ -25,10 +32,12 @@ class SettingsViewModelTest {
     private val testDispatcher = StandardTestDispatcher()
     private val testDispatcherProvider = TestDispatcherProvider(testDispatcher)
     private val preferencesManager: PreferencesManager = mockk(relaxed = true)
+    private val checkAppUpdateUseCase: CheckAppUpdateUseCase = mockk(relaxed = true)
 
     private val themeFlow = MutableStateFlow("system")
     private val langFlow = MutableStateFlow("system")
     private val hiddenFlow = MutableStateFlow(setOf("zakat"))
+    private val showTranslationFlow = MutableStateFlow(true)
 
     @Before
     fun setUp() {
@@ -36,6 +45,7 @@ class SettingsViewModelTest {
         every { preferencesManager.themeMode } returns themeFlow
         every { preferencesManager.translationLanguage } returns langFlow
         every { preferencesManager.hiddenDashboardKeys } returns hiddenFlow
+        every { preferencesManager.showAyahTranslation } returns showTranslationFlow
     }
 
     @After
@@ -75,5 +85,102 @@ class SettingsViewModelTest {
         advanceUntilIdle()
 
         coVerify { preferencesManager.setDashboardHidden(emptySet()) }
+    }
+
+    @Test
+    fun `setShowAyahTranslation delegates to preferences`() = runTest(testDispatcher) {
+        coEvery { preferencesManager.setShowAyahTranslation(any()) } returns Unit
+
+        val vm = SettingsViewModel(preferencesManager, testDispatcherProvider)
+        advanceUntilIdle()
+
+        assertEquals(true, vm.uiState.value.showAyahTranslation)
+
+        vm.setShowAyahTranslation(false)
+        advanceUntilIdle()
+
+        coVerify { preferencesManager.setShowAyahTranslation(false) }
+
+        showTranslationFlow.value = false
+        advanceUntilIdle()
+        assertEquals(false, vm.uiState.value.showAyahTranslation)
+    }
+
+    @Test
+    fun `checkForUpdate when update available sets updateInfo`() = runTest(testDispatcher) {
+        val updateInfo = AppUpdateInfo(
+            currentVersion = "1.0",
+            latestVersion = "1.0.74",
+            isUpdateAvailable = true,
+            releaseName = "Release v1.0.74",
+            releaseUrl = "https://github.com/suryamudti/rafiq-android/releases/tag/v1.0.74"
+        )
+        coEvery { checkAppUpdateUseCase(any()) } returns Result.Success(updateInfo)
+
+        val vm = SettingsViewModel(
+            preferencesManager = preferencesManager,
+            checkAppUpdateUseCase = checkAppUpdateUseCase,
+            context = null,
+            dispatcherProvider = testDispatcherProvider
+        )
+        advanceUntilIdle()
+
+        vm.checkForUpdate()
+        advanceUntilIdle()
+
+        assertEquals(updateInfo, vm.uiState.value.updateInfo)
+        assertFalse(vm.uiState.value.isCheckingUpdate)
+        assertNull(vm.uiState.value.updateStatus)
+
+        vm.dismissUpdateDialog()
+        assertNull(vm.uiState.value.updateInfo)
+    }
+
+    @Test
+    fun `checkForUpdate when up to date sets UP_TO_DATE status`() = runTest(testDispatcher) {
+        val updateInfo = AppUpdateInfo(
+            currentVersion = "1.0.74",
+            latestVersion = "1.0.74",
+            isUpdateAvailable = false,
+            releaseName = "Release v1.0.74",
+            releaseUrl = "https://github.com/suryamudti/rafiq-android/releases/tag/v1.0.74"
+        )
+        coEvery { checkAppUpdateUseCase(any()) } returns Result.Success(updateInfo)
+
+        val vm = SettingsViewModel(
+            preferencesManager = preferencesManager,
+            checkAppUpdateUseCase = checkAppUpdateUseCase,
+            context = null,
+            dispatcherProvider = testDispatcherProvider
+        )
+        advanceUntilIdle()
+
+        vm.checkForUpdate()
+        advanceUntilIdle()
+
+        assertNull(vm.uiState.value.updateInfo)
+        assertEquals(UpdateCheckStatus.UP_TO_DATE, vm.uiState.value.updateStatus)
+
+        vm.clearUpdateStatus()
+        assertNull(vm.uiState.value.updateStatus)
+    }
+
+    @Test
+    fun `checkForUpdate when error sets ERROR status`() = runTest(testDispatcher) {
+        coEvery { checkAppUpdateUseCase(any()) } returns Result.Error(AppError.Network("Network failed"))
+
+        val vm = SettingsViewModel(
+            preferencesManager = preferencesManager,
+            checkAppUpdateUseCase = checkAppUpdateUseCase,
+            context = null,
+            dispatcherProvider = testDispatcherProvider
+        )
+        advanceUntilIdle()
+
+        vm.checkForUpdate()
+        advanceUntilIdle()
+
+        assertNull(vm.uiState.value.updateInfo)
+        assertEquals(UpdateCheckStatus.ERROR, vm.uiState.value.updateStatus)
     }
 }

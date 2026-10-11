@@ -21,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
+import com.smiledev.rafiq_quran.ui.components.AppUpdateDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -209,6 +210,13 @@ fun DashboardScreen(
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.uiState.collectAsState()
+
+    if (state.updateInfo != null) {
+        AppUpdateDialog(
+            updateInfo = state.updateInfo!!,
+            onDismiss = viewModel::dismissUpdateDialog
+        )
+    }
 
     Column(
         modifier = modifier

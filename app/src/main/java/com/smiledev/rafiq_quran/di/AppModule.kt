@@ -52,6 +52,10 @@ import com.smiledev.rafiq_quran.domain.usecase.GetPrayerTimesUseCase
 import com.smiledev.rafiq_quran.domain.usecase.GetProphetsUseCase
 import com.smiledev.rafiq_quran.domain.usecase.GetRecitersUseCase
 import com.smiledev.rafiq_quran.domain.usecase.GetSurahsUseCase
+import com.smiledev.rafiq_quran.data.remote.GithubReleaseApiService
+import com.smiledev.rafiq_quran.data.repository.AppUpdateRepositoryImpl
+import com.smiledev.rafiq_quran.domain.repository.AppUpdateRepository
+import com.smiledev.rafiq_quran.domain.usecase.CheckAppUpdateUseCase
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -85,6 +89,7 @@ abstract class RepositoryModule {
     @Binds @Singleton abstract fun bindSunnahGuidanceRepository(impl: com.smiledev.rafiq_quran.data.repository.SunnahGuidanceRepositoryImpl): com.smiledev.rafiq_quran.domain.repository.SunnahGuidanceRepository
     @Binds @Singleton abstract fun bindTasbihRepository(impl: TasbihRepositoryImpl): TasbihRepository
     @Binds @Singleton abstract fun bindTasbihHistoryRepository(impl: com.smiledev.rafiq_quran.data.repository.TasbihHistoryRepositoryImpl): com.smiledev.rafiq_quran.domain.repository.TasbihHistoryRepository
+    @Binds @Singleton abstract fun bindAppUpdateRepository(impl: AppUpdateRepositoryImpl): AppUpdateRepository
 }
 
 @Module
@@ -362,4 +367,29 @@ object AppModule {
     @Provides @Singleton
     fun provideGetSunnahGuidanceUseCase(repo: com.smiledev.rafiq_quran.domain.repository.SunnahGuidanceRepository): com.smiledev.rafiq_quran.domain.usecase.GetSunnahGuidanceUseCase =
         com.smiledev.rafiq_quran.domain.usecase.GetSunnahGuidanceUseCase(repo)
+
+    @Provides
+    @Singleton
+    @Named("github")
+    fun provideGithubRetrofit(
+        client: OkHttpClient,
+        gson: GsonConverterFactory
+    ): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl("https://api.github.com/")
+            .client(client)
+            .addConverterFactory(gson)
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideGithubReleaseApiService(@Named("github") retrofit: Retrofit): GithubReleaseApiService {
+        return retrofit.create(GithubReleaseApiService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCheckAppUpdateUseCase(repo: AppUpdateRepository): CheckAppUpdateUseCase =
+        CheckAppUpdateUseCase(repo)
 }

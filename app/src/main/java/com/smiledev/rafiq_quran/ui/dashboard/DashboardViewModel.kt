@@ -10,12 +10,14 @@ import com.smiledev.rafiq_quran.core.DefaultDispatcherProvider
 import com.smiledev.rafiq_quran.core.DispatcherProvider
 import com.smiledev.rafiq_quran.core.Result
 import com.smiledev.rafiq_quran.data.preferences.PreferencesManager
+import com.smiledev.rafiq_quran.domain.model.AppUpdateInfo
 import com.smiledev.rafiq_quran.domain.model.PrayerTimeEntry
 import com.smiledev.rafiq_quran.domain.model.PrayerTimesData
 import com.smiledev.rafiq_quran.domain.repository.HadithRepository
 import com.smiledev.rafiq_quran.domain.repository.PrayerLogRepository
 import com.smiledev.rafiq_quran.domain.repository.PrayerTimesRepository
 import com.smiledev.rafiq_quran.domain.repository.QuranRepository
+import com.smiledev.rafiq_quran.domain.usecase.CheckAppUpdateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Job
@@ -23,6 +25,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -82,7 +85,8 @@ data class DashboardUiState(
     val dailyHadithTranslation: String = "The reward of deeds depends upon the intentions and every person will get the reward according to what he has intended.",
     val dailyHadithNarrator: String = "Umar bin Al-Khattab",
     val todayCompletedPrayersCount: Int = 0,
-    val hiddenKeys: Set<String> = emptySet()
+    val hiddenKeys: Set<String> = emptySet(),
+    val updateInfo: AppUpdateInfo? = null
 )
 
 private data class DailyInspiration(
@@ -161,7 +165,8 @@ class DashboardViewModel @Inject constructor(
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
     private val quranRepository: QuranRepository? = null,
     private val prayerLogRepository: PrayerLogRepository? = null,
-    private val hadithRepository: HadithRepository? = null
+    private val hadithRepository: HadithRepository? = null,
+    private val checkAppUpdateUseCase: CheckAppUpdateUseCase? = null
 ) : ViewModel() {
 
     var enablePeriodicCountdown: Boolean = true
@@ -175,7 +180,8 @@ class DashboardViewModel @Inject constructor(
         quranRepository: QuranRepository?,
         prayerLogRepository: PrayerLogRepository?,
         enablePeriodicCountdown: Boolean,
-        hadithRepository: HadithRepository? = null
+        hadithRepository: HadithRepository? = null,
+        checkAppUpdateUseCase: CheckAppUpdateUseCase? = null
     ) : this(
         prayerTimesRepository,
         preferencesManager,
@@ -183,7 +189,8 @@ class DashboardViewModel @Inject constructor(
         dispatcherProvider,
         quranRepository,
         prayerLogRepository,
-        hadithRepository
+        hadithRepository,
+        checkAppUpdateUseCase
     ) {
         this.enablePeriodicCountdown = enablePeriodicCountdown
     }
@@ -349,6 +356,35 @@ class DashboardViewModel @Inject constructor(
                 updateLocalizedContent()
             }
         }
+
+        // Silent update check on app launch
+        checkAppUpdateUseCase?.let { checkUpdate ->
+            viewModelScope.launch(dispatcherProvider.io) {
+                try {
+                    val lastDismissed = preferencesManager.lastDismissedUpdateVersion.firstOrNull()
+                    when (val result = checkUpdate(versionName)) {
+                        is Result.Success -> {
+                            val info = result.data
+                            if (info.isUpdateAvailable && info.latestVersion != lastDismissed) {
+                                _uiState.value = _uiState.value.copy(updateInfo = info)
+                            }
+                        }
+                        is Result.Error -> {
+                            // Silent check: fail silently
+                        }
+                    }
+                } catch (_: Exception) {
+                }
+            }
+        }
+    }
+
+    fun dismissUpdateDialog() {
+        val info = _uiState.value.updateInfo ?: return
+        viewModelScope.launch(dispatcherProvider.io) {
+            preferencesManager.setLastDismissedUpdateVersion(info.latestVersion)
+        }
+        _uiState.value = _uiState.value.copy(updateInfo = null)
     }
 
     private fun updateLocalizedContent() {
