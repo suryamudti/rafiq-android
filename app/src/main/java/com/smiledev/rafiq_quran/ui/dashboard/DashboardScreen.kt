@@ -33,6 +33,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -40,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -49,6 +51,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -839,18 +842,21 @@ private fun DailyAyahCard(
             Spacer(Modifier.height(14.dp))
 
             // Arabic text with me_quran font
-            Text(
-                text = arabic,
-                style = TextStyle(
-                    fontFamily = FontFamily(Font(R.font.me_quran)),
-                    fontSize = 20.sp,
-                    lineHeight = 36.sp,
-                    textDirection = TextDirection.Rtl,
-                    textAlign = TextAlign.Right
-                ),
-                color = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.fillMaxWidth()
-            )
+            CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+                Text(
+                    text = arabic,
+                    textAlign = TextAlign.Start,
+                    style = TextStyle(
+                        fontFamily = FontFamily(Font(R.font.me_quran)),
+                        fontSize = 20.sp,
+                        lineHeight = 36.sp,
+                        textDirection = TextDirection.Rtl,
+                        textAlign = TextAlign.Start
+                    ),
+                    color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
 
             Spacer(Modifier.height(10.dp))
 
@@ -919,20 +925,23 @@ private fun DailyHadithCard(
             if (arabic.isNotBlank()) {
                 Spacer(Modifier.height(14.dp))
                 // Arabic text with me_quran font
-                Text(
-                    text = arabic,
-                    style = TextStyle(
-                        fontFamily = FontFamily(Font(R.font.me_quran)),
-                        fontSize = 20.sp,
-                        lineHeight = 36.sp,
-                        textDirection = TextDirection.Rtl,
-                        textAlign = TextAlign.Right
-                    ),
-                    color = MaterialTheme.colorScheme.onSurface,
-                    maxLines = 4,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.fillMaxWidth()
-                )
+                CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+                    Text(
+                        text = arabic,
+                        textAlign = TextAlign.Start,
+                        style = TextStyle(
+                            fontFamily = FontFamily(Font(R.font.me_quran)),
+                            fontSize = 20.sp,
+                            lineHeight = 36.sp,
+                            textDirection = TextDirection.Rtl,
+                            textAlign = TextAlign.Start
+                        ),
+                        color = MaterialTheme.colorScheme.onSurface,
+                        maxLines = 4,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
             }
 
             if (!narrator.isNullOrBlank()) {

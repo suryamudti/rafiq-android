@@ -34,6 +34,7 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -42,6 +43,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -51,6 +53,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -364,14 +367,18 @@ private fun LastReadHeroBanner(
             Spacer(modifier = Modifier.width(RafiqTheme.spacing.s))
 
             Column(horizontalAlignment = Alignment.End) {
-                Text(
-                    text = surah.nameArabic,
-                    style = MaterialTheme.typography.titleLarge.copy(
-                        fontFamily = ArabicFontFamily,
-                        textDirection = TextDirection.Rtl
-                    ),
-                    color = MaterialTheme.colorScheme.primary
-                )
+                CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+                    Text(
+                        text = surah.nameArabic,
+                        textAlign = TextAlign.Start,
+                        style = MaterialTheme.typography.titleLarge.copy(
+                            fontFamily = ArabicFontFamily,
+                            textDirection = TextDirection.Rtl,
+                            textAlign = TextAlign.Start
+                        ),
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
                 Surface(
                     shape = RafiqTheme.customShapes.pill,
                     color = MaterialTheme.colorScheme.primary,
@@ -579,15 +586,18 @@ private fun SurahCard(
             Spacer(modifier = Modifier.width(RafiqTheme.spacing.m))
 
             Column(horizontalAlignment = Alignment.End) {
-                Text(
-                    text = surah.nameArabic,
-                    style = MaterialTheme.typography.titleLarge.copy(
-                        fontFamily = ArabicFontFamily,
-                        textDirection = TextDirection.Rtl
-                    ),
-                    textAlign = TextAlign.End,
-                    color = MaterialTheme.colorScheme.primary
-                )
+                CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+                    Text(
+                        text = surah.nameArabic,
+                        textAlign = TextAlign.Start,
+                        style = MaterialTheme.typography.titleLarge.copy(
+                            fontFamily = ArabicFontFamily,
+                            textDirection = TextDirection.Rtl,
+                            textAlign = TextAlign.Start
+                        ),
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
             }
         }
     }
@@ -658,18 +668,21 @@ private fun QuranSearchResultCard(
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold
             )
-            Text(
-                text = highlightMatches(ayah.text, query),
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    fontFamily = ArabicFontFamily,
-                    fontSize = 18.sp,
-                    textDirection = TextDirection.Rtl,
-                    textAlign = TextAlign.End
-                ),
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.fillMaxWidth().padding(top = RafiqTheme.spacing.xs)
-            )
+            CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+                Text(
+                    text = highlightMatches(ayah.text, query),
+                    textAlign = TextAlign.Start,
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontFamily = ArabicFontFamily,
+                        fontSize = 18.sp,
+                        textDirection = TextDirection.Rtl,
+                        textAlign = TextAlign.Start
+                    ),
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.fillMaxWidth().padding(top = RafiqTheme.spacing.xs)
+                )
+            }
             val translation = ayah.translation
             if (!translation.isNullOrBlank()) {
                 Text(

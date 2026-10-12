@@ -116,6 +116,10 @@ class DesignSystemTest {
         assertEquals(TextDirection.Rtl, arabic.title.textDirection)
         assertEquals(TextDirection.Rtl, arabic.body.textDirection)
         assertEquals(TextDirection.Rtl, arabic.bismillah.textDirection)
+        assertEquals(TextAlign.Start, arabic.display.textAlign)
+        assertEquals(TextAlign.Start, arabic.headline.textAlign)
+        assertEquals(TextAlign.Start, arabic.title.textAlign)
+        assertEquals(TextAlign.Start, arabic.body.textAlign)
         assertEquals(TextAlign.Center, arabic.bismillah.textAlign)
 
         assertEquals(32.sp, arabic.display.fontSize)

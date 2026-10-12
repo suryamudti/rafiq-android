@@ -3,11 +3,14 @@ package com.smiledev.rafiq_quran.ui.designsystem.arabic
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDirection
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import com.smiledev.rafiq_quran.theme.ArabicFontFamily
@@ -18,7 +21,7 @@ fun RafiqArabicText(
     modifier: Modifier = Modifier,
     fontSize: TextUnit = 22.sp,
     color: Color = MaterialTheme.colorScheme.onSurface,
-    textAlign: TextAlign = TextAlign.End,
+    textAlign: TextAlign = TextAlign.Start,
     lineHeight: TextUnit = (fontSize.value * 1.7f).sp,
     style: TextStyle = TextStyle(
         fontFamily = ArabicFontFamily,
@@ -29,14 +32,17 @@ fun RafiqArabicText(
         color = color
     )
 ) {
-    Text(
-        text = text,
-        style = style.copy(
-            fontFamily = ArabicFontFamily,
-            textDirection = TextDirection.Rtl,
+    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+        Text(
+            text = text,
             textAlign = textAlign,
-            color = color
-        ),
-        modifier = modifier
-    )
+            style = style.copy(
+                fontFamily = ArabicFontFamily,
+                textDirection = TextDirection.Rtl,
+                textAlign = textAlign,
+                color = color
+            ),
+            modifier = modifier
+        )
+    }
 }
