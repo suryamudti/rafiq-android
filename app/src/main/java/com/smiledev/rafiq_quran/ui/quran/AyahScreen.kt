@@ -53,6 +53,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -67,11 +68,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDirection
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -475,14 +478,18 @@ private fun SurahHeroHeaderCard(
 
             if (surah != null) {
                 Spacer(modifier = Modifier.height(RafiqTheme.spacing.xs))
-                Text(
-                    text = surah.nameArabic,
-                    style = MaterialTheme.typography.titleLarge.copy(
-                        fontFamily = ArabicFontFamily,
-                        textDirection = TextDirection.Rtl
-                    ),
-                    color = RafiqTheme.extendedColors.goldAccent
-                )
+                CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+                    Text(
+                        text = surah.nameArabic,
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.titleLarge.copy(
+                            fontFamily = ArabicFontFamily,
+                            textDirection = TextDirection.Rtl,
+                            textAlign = TextAlign.Center
+                        ),
+                        color = RafiqTheme.extendedColors.goldAccent
+                    )
+                }
                 Text(
                     text = surah.translatedName,
                     style = MaterialTheme.typography.bodyMedium,
@@ -521,15 +528,18 @@ private fun SurahHeroHeaderCard(
                         .padding(vertical = RafiqTheme.spacing.m, horizontal = RafiqTheme.spacing.l),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = stringResource(R.string.bismillah_full),
-                        style = MaterialTheme.typography.titleLarge.copy(
-                            fontFamily = ArabicFontFamily,
-                            textDirection = TextDirection.Rtl,
-                            textAlign = TextAlign.Center
-                        ),
-                        color = Color.White
-                    )
+                    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+                        Text(
+                            text = stringResource(R.string.bismillah_full),
+                            textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.titleLarge.copy(
+                                fontFamily = ArabicFontFamily,
+                                textDirection = TextDirection.Rtl,
+                                textAlign = TextAlign.Center
+                            ),
+                            color = Color.White
+                        )
+                    }
                 }
             }
         }
@@ -674,17 +684,20 @@ private fun VerseCard(
         Spacer(modifier = Modifier.height(RafiqTheme.spacing.m))
 
         // Arabic Verse Text
-        Text(
-            text = ayah.text,
-            style = MaterialTheme.typography.bodyLarge.copy(
-                fontSize = ayahFontSize.sp,
-                fontFamily = ArabicFontFamily,
-                textDirection = TextDirection.Rtl,
-                lineHeight = (ayahFontSize * 1.85).sp,
-                textAlign = TextAlign.End
-            ),
-            modifier = Modifier.fillMaxWidth()
-        )
+        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+            Text(
+                text = ayah.text,
+                textAlign = TextAlign.Start,
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontSize = ayahFontSize.sp,
+                    fontFamily = ArabicFontFamily,
+                    textDirection = TextDirection.Rtl,
+                    lineHeight = (ayahFontSize * 1.85).sp,
+                    textAlign = TextAlign.Start
+                ),
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
 
         // Translation section
         if (showTranslation) {
@@ -1135,18 +1148,21 @@ private fun AyahActionsBottomSheet(
 
             Spacer(modifier = Modifier.height(RafiqTheme.spacing.s))
 
-            Text(
-                text = ayah.text,
-                style = MaterialTheme.typography.bodyLarge.copy(
-                    fontFamily = ArabicFontFamily,
-                    fontSize = 20.sp,
-                    textDirection = TextDirection.Rtl,
-                    textAlign = TextAlign.End
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = RafiqTheme.spacing.s)
-            )
+            CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+                Text(
+                    text = ayah.text,
+                    textAlign = TextAlign.Start,
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        fontFamily = ArabicFontFamily,
+                        fontSize = 20.sp,
+                        textDirection = TextDirection.Rtl,
+                        textAlign = TextAlign.Start
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = RafiqTheme.spacing.s)
+                )
+            }
 
             if (!translationText.isNullOrBlank()) {
                 Text(
@@ -1277,17 +1293,20 @@ private fun FontSizeBottomSheet(
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(modifier = Modifier.height(RafiqTheme.spacing.xs))
-                Text(
-                    text = stringResource(R.string.bismillah_full),
-                    style = MaterialTheme.typography.bodyLarge.copy(
-                        fontFamily = ArabicFontFamily,
-                        fontSize = ayahFontSize.sp,
-                        textDirection = TextDirection.Rtl,
-                        lineHeight = (ayahFontSize * 1.8).sp,
-                        textAlign = TextAlign.Center
-                    ),
-                    modifier = Modifier.fillMaxWidth()
-                )
+                CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+                    Text(
+                        text = stringResource(R.string.bismillah_full),
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.bodyLarge.copy(
+                            fontFamily = ArabicFontFamily,
+                            fontSize = ayahFontSize.sp,
+                            textDirection = TextDirection.Rtl,
+                            lineHeight = (ayahFontSize * 1.8).sp,
+                            textAlign = TextAlign.Center
+                        ),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
                 if (showTranslation) {
                     Spacer(modifier = Modifier.height(RafiqTheme.spacing.xs))
                     Text(
