@@ -370,11 +370,11 @@ private fun LastReadHeroBanner(
                 CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
                     Text(
                         text = surah.nameArabic,
-                        textAlign = TextAlign.Start,
+                        textAlign = TextAlign.Right,
                         style = MaterialTheme.typography.titleLarge.copy(
                             fontFamily = ArabicFontFamily,
                             textDirection = TextDirection.Rtl,
-                            textAlign = TextAlign.Start
+                            textAlign = TextAlign.Right
                         ),
                         color = MaterialTheme.colorScheme.primary
                     )
@@ -589,11 +589,11 @@ private fun SurahCard(
                 CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
                     Text(
                         text = surah.nameArabic,
-                        textAlign = TextAlign.Start,
+                        textAlign = TextAlign.Right,
                         style = MaterialTheme.typography.titleLarge.copy(
                             fontFamily = ArabicFontFamily,
                             textDirection = TextDirection.Rtl,
-                            textAlign = TextAlign.Start
+                            textAlign = TextAlign.Right
                         ),
                         color = MaterialTheme.colorScheme.primary
                     )
@@ -671,12 +671,12 @@ private fun QuranSearchResultCard(
             CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
                 Text(
                     text = highlightMatches(ayah.text, query),
-                    textAlign = TextAlign.Start,
+                    textAlign = TextAlign.Right,
                     style = MaterialTheme.typography.bodyMedium.copy(
                         fontFamily = ArabicFontFamily,
                         fontSize = 18.sp,
                         textDirection = TextDirection.Rtl,
-                        textAlign = TextAlign.Start
+                        textAlign = TextAlign.Right
                     ),
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,

@@ -21,7 +21,7 @@ data class RafiqArabicTypography(
         fontSize = 32.sp,
         lineHeight = 52.sp,
         textDirection = TextDirection.Rtl,
-        textAlign = TextAlign.Start
+        textAlign = TextAlign.Right
     ),
     val headline: TextStyle = TextStyle(
         fontFamily = ArabicFontFamily,
@@ -29,7 +29,7 @@ data class RafiqArabicTypography(
         fontSize = 26.sp,
         lineHeight = 44.sp,
         textDirection = TextDirection.Rtl,
-        textAlign = TextAlign.Start
+        textAlign = TextAlign.Right
     ),
     val title: TextStyle = TextStyle(
         fontFamily = ArabicFontFamily,
@@ -37,7 +37,7 @@ data class RafiqArabicTypography(
         fontSize = 22.sp,
         lineHeight = 38.sp,
         textDirection = TextDirection.Rtl,
-        textAlign = TextAlign.Start
+        textAlign = TextAlign.Right
     ),
     val body: TextStyle = TextStyle(
         fontFamily = ArabicFontFamily,
@@ -45,7 +45,7 @@ data class RafiqArabicTypography(
         fontSize = 18.sp,
         lineHeight = 32.sp,
         textDirection = TextDirection.Rtl,
-        textAlign = TextAlign.Start
+        textAlign = TextAlign.Right
     ),
     val bismillah: TextStyle = TextStyle(
         fontFamily = ArabicFontFamily,

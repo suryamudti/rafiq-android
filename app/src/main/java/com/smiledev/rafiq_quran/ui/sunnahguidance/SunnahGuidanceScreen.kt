@@ -333,7 +333,8 @@ private fun SunnahGuidanceCard(
                 fontFamily = arabicFont,
                 fontSize = 20.sp,
                 color = MaterialTheme.colorScheme.primary,
-                style = TextStyle(textDirection = TextDirection.Rtl),
+                textAlign = TextAlign.Right,
+                style = TextStyle(textDirection = TextDirection.Rtl, textAlign = TextAlign.Right),
                 modifier = Modifier.fillMaxWidth()
             )
 

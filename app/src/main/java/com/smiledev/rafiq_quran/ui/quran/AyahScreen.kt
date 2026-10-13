@@ -687,13 +687,13 @@ private fun VerseCard(
         CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
             Text(
                 text = ayah.text,
-                textAlign = TextAlign.Start,
+                textAlign = TextAlign.Right,
                 style = MaterialTheme.typography.bodyLarge.copy(
                     fontSize = ayahFontSize.sp,
                     fontFamily = ArabicFontFamily,
                     textDirection = TextDirection.Rtl,
                     lineHeight = (ayahFontSize * 1.85).sp,
-                    textAlign = TextAlign.Start
+                    textAlign = TextAlign.Right
                 ),
                 modifier = Modifier.fillMaxWidth()
             )
@@ -1151,12 +1151,12 @@ private fun AyahActionsBottomSheet(
             CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
                 Text(
                     text = ayah.text,
-                    textAlign = TextAlign.Start,
+                    textAlign = TextAlign.Right,
                     style = MaterialTheme.typography.bodyLarge.copy(
                         fontFamily = ArabicFontFamily,
                         fontSize = 20.sp,
                         textDirection = TextDirection.Rtl,
-                        textAlign = TextAlign.Start
+                        textAlign = TextAlign.Right
                     ),
                     modifier = Modifier
                         .fillMaxWidth()

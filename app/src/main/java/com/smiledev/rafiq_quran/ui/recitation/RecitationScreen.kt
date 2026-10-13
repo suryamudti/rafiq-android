@@ -217,10 +217,10 @@ private fun SurahListContent(
                                         text = surah.nameArabic,
                                         fontFamily = arabicFont,
                                         fontSize = 16.sp,
-                                        textAlign = TextAlign.Start,
+                                        textAlign = TextAlign.Right,
                                         style = TextStyle(
                                             textDirection = TextDirection.Rtl,
-                                            textAlign = TextAlign.Start
+                                            textAlign = TextAlign.Right
                                         )
                                     )
                                 }
@@ -319,10 +319,10 @@ private fun SurahListContent(
                             text = surah.nameArabic,
                             fontFamily = arabicFont,
                             fontSize = 16.sp,
-                            textAlign = TextAlign.Start,
+                            textAlign = TextAlign.Right,
                             style = TextStyle(
                                 textDirection = TextDirection.Rtl,
-                                textAlign = TextAlign.Start
+                                textAlign = TextAlign.Right
                             )
                         )
                     }
