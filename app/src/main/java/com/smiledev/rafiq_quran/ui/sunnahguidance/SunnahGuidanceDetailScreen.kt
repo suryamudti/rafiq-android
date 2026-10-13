@@ -172,7 +172,8 @@ private fun SunnahGuidanceDetailContent(
                     fontFamily = arabicFont,
                     fontSize = 26.sp,
                     color = MaterialTheme.colorScheme.primary,
-                    style = TextStyle(textDirection = TextDirection.Rtl),
+                    textAlign = TextAlign.Right,
+                    style = TextStyle(textDirection = TextDirection.Rtl, textAlign = TextAlign.Right),
                     modifier = Modifier.fillMaxWidth()
                 )
 
@@ -342,7 +343,8 @@ private fun SunnahGuidanceDetailContent(
                             fontFamily = arabicFont,
                             fontSize = 20.sp,
                             lineHeight = 36.sp,
-                            style = TextStyle(textDirection = TextDirection.Rtl),
+                            textAlign = TextAlign.Right,
+                            style = TextStyle(textDirection = TextDirection.Rtl, textAlign = TextAlign.Right),
                             color = MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier.fillMaxWidth()
                         )
@@ -578,7 +580,8 @@ private fun SunnahStepCard(
                             fontFamily = arabicFont,
                             fontSize = 20.sp,
                             lineHeight = 34.sp,
-                            style = TextStyle(textDirection = TextDirection.Rtl),
+                            textAlign = TextAlign.Right,
+                            style = TextStyle(textDirection = TextDirection.Rtl, textAlign = TextAlign.Right),
                             color = MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier.fillMaxWidth()
                         )

@@ -845,13 +845,13 @@ private fun DailyAyahCard(
             CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
                 Text(
                     text = arabic,
-                    textAlign = TextAlign.Start,
+                    textAlign = TextAlign.Right,
                     style = TextStyle(
                         fontFamily = FontFamily(Font(R.font.me_quran)),
                         fontSize = 20.sp,
                         lineHeight = 36.sp,
                         textDirection = TextDirection.Rtl,
-                        textAlign = TextAlign.Start
+                        textAlign = TextAlign.Right
                     ),
                     color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.fillMaxWidth()
@@ -928,13 +928,13 @@ private fun DailyHadithCard(
                 CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
                     Text(
                         text = arabic,
-                        textAlign = TextAlign.Start,
+                        textAlign = TextAlign.Right,
                         style = TextStyle(
                             fontFamily = FontFamily(Font(R.font.me_quran)),
                             fontSize = 20.sp,
                             lineHeight = 36.sp,
                             textDirection = TextDirection.Rtl,
-                            textAlign = TextAlign.Start
+                            textAlign = TextAlign.Right
                         ),
                         color = MaterialTheme.colorScheme.onSurface,
                         maxLines = 4,

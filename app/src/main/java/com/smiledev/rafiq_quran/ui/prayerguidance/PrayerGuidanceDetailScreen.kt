@@ -167,7 +167,8 @@ private fun PrayerGuidanceDetailContent(
                     fontFamily = arabicFont,
                     fontSize = 28.sp,
                     color = Color(0xFF00796B),
-                    style = TextStyle(textDirection = TextDirection.Rtl),
+                    textAlign = TextAlign.Right,
+                    style = TextStyle(textDirection = TextDirection.Rtl, textAlign = TextAlign.Right),
                     modifier = Modifier.fillMaxWidth()
                 )
 
@@ -318,7 +319,8 @@ private fun PrayerGuidanceDetailContent(
                             fontFamily = arabicFont,
                             fontSize = 20.sp,
                             lineHeight = 34.sp,
-                            style = TextStyle(textDirection = TextDirection.Rtl),
+                            textAlign = TextAlign.Right,
+                            style = TextStyle(textDirection = TextDirection.Rtl, textAlign = TextAlign.Right),
                             color = MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier.fillMaxWidth()
                         )
@@ -392,7 +394,8 @@ private fun PrayerGuidanceDetailContent(
                         fontFamily = arabicFont,
                         fontSize = 22.sp,
                         lineHeight = 36.sp,
-                        style = TextStyle(textDirection = TextDirection.Rtl),
+                        textAlign = TextAlign.Right,
+                        style = TextStyle(textDirection = TextDirection.Rtl, textAlign = TextAlign.Right),
                         color = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -566,7 +569,8 @@ private fun StepCard(
                             fontFamily = arabicFont,
                             fontSize = 20.sp,
                             lineHeight = 34.sp,
-                            style = TextStyle(textDirection = TextDirection.Rtl),
+                            textAlign = TextAlign.Right,
+                            style = TextStyle(textDirection = TextDirection.Rtl, textAlign = TextAlign.Right),
                             color = Color(0xFF00796B),
                             modifier = Modifier.fillMaxWidth()
                         )

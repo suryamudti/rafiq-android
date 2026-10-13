@@ -21,7 +21,7 @@ fun RafiqArabicText(
     modifier: Modifier = Modifier,
     fontSize: TextUnit = 22.sp,
     color: Color = MaterialTheme.colorScheme.onSurface,
-    textAlign: TextAlign = TextAlign.Start,
+    textAlign: TextAlign = TextAlign.Right,
     lineHeight: TextUnit = (fontSize.value * 1.7f).sp,
     style: TextStyle = TextStyle(
         fontFamily = ArabicFontFamily,
