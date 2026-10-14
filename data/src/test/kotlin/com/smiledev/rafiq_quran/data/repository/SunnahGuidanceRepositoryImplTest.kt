@@ -32,7 +32,11 @@ class SunnahGuidanceRepositoryImplTest {
 
         assertTrue("Expected Success but got $result", result is Result.Success)
         val items = (result as Result.Success).data
-        assertEquals(17, items.size)
+        assertEquals(23, items.size)
+
+        // Verify all IDs are unique
+        val ids = items.map { it.id }
+        assertEquals("All IDs should be unique", ids.size, ids.toSet().size)
 
         // Verify that all items have required fields including Hadith/Surah dalil
         items.forEach { item ->
@@ -70,6 +74,39 @@ class SunnahGuidanceRepositoryImplTest {
     }
 
     @Test
+    fun `getSunnahById returns each new daily routine entry`() {
+        val file = File("../app/src/main/assets/quran-data/sunnah_guidance.json")
+        every { context.assets } returns assetManager
+        every { assetManager.open("quran-data/sunnah_guidance.json") } answers { file.inputStream() }
+
+        val repo = SunnahGuidanceRepositoryImpl(context)
+        val newDailyRoutines = listOf(
+            "sunnah_masuk_keluar_rumah",
+            "sunnah_toilet",
+            "sunnah_berpakaian_cermin",
+            "sunnah_masuk_keluar_masjid",
+            "sunnah_safar",
+            "sunnah_wudhu_adab"
+        )
+
+        for (id in newDailyRoutines) {
+            val result = repo.getSunnahById(id)
+            assertTrue("Expected item $id to be found", result is Result.Success)
+            val item = (result as Result.Success).data
+            assertEquals(id, item.id)
+            assertEquals(SunnahCategory.DAILY_LIFESTYLE, item.category)
+            assertTrue(item.steps.isNotEmpty())
+            assertTrue(item.virtuesEn.isNotEmpty())
+            assertTrue(item.virtuesId.isNotEmpty())
+            assertTrue(item.tipsEn.isNotEmpty())
+            assertTrue(item.tipsId.isNotEmpty())
+            assertNotNull(item.dalilArabic)
+            assertNotNull(item.dalilTranslationEn)
+            assertNotNull(item.dalilTranslationId)
+        }
+    }
+
+    @Test
     fun `getSunnahByCategory filters items correctly`() {
         val file = File("../app/src/main/assets/quran-data/sunnah_guidance.json")
         every { context.assets } returns assetManager
@@ -81,6 +118,11 @@ class SunnahGuidanceRepositoryImplTest {
         val prayerItems = (prayerResult as Result.Success).data
         assertTrue(prayerItems.isNotEmpty())
         assertTrue(prayerItems.all { it.category == SunnahCategory.PRAYER })
+
+        val lifestyleResult = repo.getSunnahByCategory(SunnahCategory.DAILY_LIFESTYLE)
+        assertTrue(lifestyleResult is Result.Success)
+        val lifestyleItems = (lifestyleResult as Result.Success).data
+        assertEquals(10, lifestyleItems.size) // 4 existing + 6 new
 
         val fridayResult = repo.getSunnahByCategory(SunnahCategory.FRIDAY)
         assertTrue(fridayResult is Result.Success)
