@@ -1603,5 +1603,480 @@
       "Bacalah dengan menghayati maknanya, bukan sekadar melafalkan secara terburu-buru.",
       "Dapat dibaca saat dalam perjalanan, beristirahat, atau sebelum memulai aktivitas."
     ]
+  },
+  {
+    "id": "sunnah_masuk_keluar_rumah",
+    "titleEn": "Entering & Leaving the Home",
+    "titleId": "Adab Masuk & Keluar Rumah",
+    "titleArabic": "آدَابُ الدُّخُولِ إِلَى الْبَيْتِ وَالْخُرُوجِ مِنْهُ",
+    "category": "DAILY_LIFESTYLE",
+    "summaryEn": "Prophetic duas and manners when entering and leaving home for divine protection and blessing.",
+    "summaryId": "Doa dan adab sunnah ketika masuk dan keluar rumah agar mendapat perlindungan dan keberkahan Allah.",
+    "descriptionEn": "The Prophet Muhammad ﷺ taught specific remembrances when entering and leaving the home. Entering with salam brings blessing upon the household; leaving with tawakkul brings guidance, sufficiency, and protection.",
+    "descriptionId": "Rasulullah ﷺ mengajarkan dzikir khusus saat masuk dan keluar rumah. Masuk dengan salam mendatangkan berkah bagi penghuni rumah; keluar dengan tawakal mendatangkan petunjuk, kecukupan, dan perlindungan.",
+    "surahReference": "QS. An-Nur [24:61]",
+    "hadithReference": "HR. Abu Dawood no. 5095, 5096 & At-Tirmidhi no. 3426",
+    "dalilArabic": "بِسْمِ اللَّهِ وَلَجْنَا، وَبِسْمِ اللَّهِ خَرَجْنَا، وَعَلَى اللَّهِ رَبِّنَا تَوَكَّلْنَا",
+    "dalilTranslationEn": "In the name of Allah we enter, in the name of Allah we leave, and upon Allah our Lord we rely.",
+    "dalilTranslationId": "Dengan nama Allah kami masuk, dengan nama Allah kami keluar, dan kepada Allah Rabb kami, kami bertawakal.",
+    "virtuesEn": [
+      "Leaving with tawakkul brings guidance, sufficiency, and protection (Abu Dawood 5095)",
+      "Shaytan says: how can you prevail against one who is guided, sufficed, and protected (Tirmidhi 3426)",
+      "Entering with salam brings blessing upon you and your household (An-Nur 61)"
+    ],
+    "virtuesId": [
+      "Keluar dengan tawakal mendatangkan petunjuk, kecukupan, dan perlindungan (HR. Abu Dawood no. 5095)",
+      "Syaitan berkata: bagaimana mungkin mengganggu orang yang telah diberi petunjuk, kecukupan, dan perlindungan (HR. Tirmidzi no. 3426)",
+      "Masuk dengan salam mendatangkan berkah bagi rumah dan penghuninya (QS. An-Nur: 61)"
+    ],
+    "steps": [
+      {
+        "order": 1,
+        "titleEn": "Entering: Salam & Remembrance",
+        "titleId": "Masuk: Salam & Dzikir",
+        "descriptionEn": "Enter with the right foot, greet with salam even if the house is empty, and recite the entering dua.",
+        "descriptionId": "Masuk dengan kaki kanan, mengucapkan salam meski rumah kosong, lalu membaca doa masuk rumah.",
+        "arabic": "بِسْمِ اللَّهِ وَلَجْنَا، وَبِسْمِ اللَّهِ خَرَجْنَا، وَعَلَى اللَّهِ رَبِّنَا تَوَكَّلْنَا",
+        "transliteration": "Bismillaahi walajnaa, wa bismillaahi kharajnaa, wa 'alallaahi rabbinaa tawakkalnaa.",
+        "translationEn": "In the name of Allah we enter, in the name of Allah we leave, and upon Allah our Lord we rely.",
+        "translationId": "Dengan nama Allah kami masuk, dengan nama Allah kami keluar, dan kepada Allah Rabb kami, kami bertawakal.",
+        "hadithReference": "HR. Abu Dawood no. 5096",
+        "surahReference": null
+      },
+      {
+        "order": 2,
+        "titleEn": "Leaving: Tawakkul Dua",
+        "titleId": "Keluar: Doa Tawakal",
+        "descriptionEn": "Step out with the left foot and recite the leaving dua with full reliance upon Allah.",
+        "descriptionId": "Keluar dengan kaki kiri dan membaca doa keluar rumah dengan penuh tawakal kepada Allah.",
+        "arabic": "بِسْمِ اللَّهِ تَوَكَّلْتُ عَلَى اللَّهِ، وَلَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ",
+        "transliteration": "Bismillaahi tawakkaltu 'alallaah, wa laa hawla wa laa quwwata illaa billaah.",
+        "translationEn": "In the name of Allah, I place my trust in Allah, and there is no power nor strength except with Allah.",
+        "translationId": "Dengan nama Allah, aku bertawakal kepada Allah, tiada daya dan kekuatan kecuali dengan Allah.",
+        "hadithReference": "HR. Abu Dawood no. 5095 & At-Tirmidhi no. 3426",
+        "surahReference": null
+      },
+      {
+        "order": 3,
+        "titleEn": "Raising the Gaze to the Sky",
+        "titleId": "Menengadahkan Pandangan ke Langit",
+        "descriptionEn": "When leaving, it is sunnah to raise your gaze toward the sky while reciting the leaving supplication.",
+        "descriptionId": "Saat keluar rumah disunnahkan menengadahkan pandangan ke langit sambil membaca doa keluar rumah.",
+        "arabic": "اللَّهُمَّ أَعُوذُ بِكَ أَنْ أَضِلَّ أَوْ أُضَلَّ، أَوْ أَزِلَّ أَوْ أُزَلَّ، أَوْ أَظْلِمَ أَوْ أُظْلَمَ، أَوْ أَجْهَلَ أَوْ يُجْهَلَ عَلَيَّ",
+        "transliteration": "Allaahumma a'uudzu bika an adhilla aw udhalla, aw azilla aw uzalla, aw azhlima aw uzhlama, aw ajhala aw yujhala 'alayya.",
+        "translationEn": "O Allah, I seek refuge in You from misleading or being misled, slipping or being made to slip, wronging or being wronged, acting ignorantly or being treated ignorantly.",
+        "translationId": "Ya Allah, aku berlindung kepada-Mu dari tersesat atau disesatkan, tergelincir atau digelincirkan, menzalimi atau dizalimi, berbuat bodoh atau diperlakukan bodoh.",
+        "hadithReference": "HR. Abu Dawood no. 5094 & An-Nasa'i no. 5486 (Shahih)",
+        "surahReference": null
+      }
+    ],
+    "tipsEn": [
+      "Always knock and greet even when family members are home.",
+      "Teach children the short leaving dua for school and travel.",
+      "Keep shoes and entrance tidy as part of honoring the home."
+    ],
+    "tipsId": [
+      "Ketuk pintu dan ucapkan salam meski hanya bertemu keluarga di rumah.",
+      "Ajarkan anak doa keluar rumah yang pendek untuk sekolah dan bepergian.",
+      "Jaga kerapian pintu masuk dan alas kaki sebagai bagian memuliakan rumah."
+    ]
+  },
+  {
+    "id": "sunnah_toilet",
+    "titleEn": "Toilet Manners (Adab al-Khala')",
+    "titleId": "Adab Buang Hajat (Istinja')",
+    "titleArabic": "آدَابُ الْخَلَاءِ وَالِاسْتِنْجَاءِ",
+    "category": "DAILY_LIFESTYLE",
+    "summaryEn": "Prophetic etiquette before, during, and after using the toilet for purity and modesty.",
+    "summaryId": "Adab sunnah sebelum, selama, dan setelah buang hajat demi kesucian dan rasa malu.",
+    "descriptionEn": "Islam honors purity and modesty even in private moments. The Sunnah teaches entering supplication, concealment, avoiding qibla direction, silence, left-hand cleansing, and exit supplication.",
+    "descriptionId": "Islam memuliakan kesucian bahkan di saat yang tersembunyi. Sunnah mengajarkan doa masuk, menutup aurat, tidak menghadap kiblat, diam, beristinja dengan tangan kiri, dan doa keluar.",
+    "surahReference": "QS. Al-Baqarah [2:222]",
+    "hadithReference": "HR. Bukhari no. 142, 394 & Muslim no. 375",
+    "dalilArabic": "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْخُبُثِ وَالْخَبَائِثِ",
+    "dalilTranslationEn": "O Allah, I seek refuge in You from the male and female devils.",
+    "dalilTranslationId": "Ya Allah, aku berlindung kepada-Mu dari godaan syaitan laki-laki dan perempuan.",
+    "virtuesEn": [
+      "Protection from impurity and devils in vulnerable places (Bukhari 142)",
+      "Allah loves those who purify themselves (Al-Baqarah 222)",
+      "Modesty and cleanliness are branches of faith (Muslim 35)"
+    ],
+    "virtuesId": [
+      "Perlindungan dari najis dan gangguan syaitan di tempat yang rentan (HR. Bukhari no. 142)",
+      "Allah mencintai orang-orang yang menyucikan diri (QS. Al-Baqarah: 222)",
+      "Malu dan kebersihan adalah cabang keimanan (HR. Muslim no. 35)"
+    ],
+    "steps": [
+      {
+        "order": 1,
+        "titleEn": "Entering with Left Foot & Dua",
+        "titleId": "Masuk dengan Kaki Kiri & Doa",
+        "descriptionEn": "Enter with the left foot, cover the head if possible, and recite the entering dua before sitting.",
+        "descriptionId": "Masuk dengan kaki kiri, menutup kepala bila memungkinkan, dan membaca doa sebelum duduk.",
+        "arabic": "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْخُبُثِ وَالْخَبَائِثِ",
+        "transliteration": "Allaahumma innii a'uudzu bika minal-khubutsi walkhabaa-its.",
+        "translationEn": "O Allah, I seek refuge in You from the male and female devils.",
+        "translationId": "Ya Allah, aku berlindung kepada-Mu dari godaan syaitan laki-laki dan perempuan.",
+        "hadithReference": "HR. Bukhari no. 142 & Muslim no. 375",
+        "surahReference": null
+      },
+      {
+        "order": 2,
+        "titleEn": "Concealment, Direction & Silence",
+        "titleId": "Menutup Aurat, Arah & Diam",
+        "descriptionEn": "Conceal yourself fully, do not face or turn your back toward the qibla in open land, and avoid talking.",
+        "descriptionId": "Menutup diri dengan sempurna, tidak menghadap atau membelakangi kiblat di tanah lapang, dan tidak berbicara.",
+        "arabic": null,
+        "transliteration": null,
+        "translationEn": null,
+        "translationId": null,
+        "hadithReference": "HR. Bukhari no. 394 & Muslim no. 264",
+        "surahReference": null
+      },
+      {
+        "order": 3,
+        "titleEn": "Cleansing & Exiting with Dua",
+        "titleId": "Istinja & Keluar dengan Doa",
+        "descriptionEn": "Cleanse with water using the left hand, exit with the right foot, and recite the exit dua.",
+        "descriptionId": "Beristinja dengan air menggunakan tangan kiri, keluar dengan kaki kanan, dan membaca doa keluar.",
+        "arabic": "غُفْرَانَكَ",
+        "transliteration": "Ghufraanak.",
+        "translationEn": "I seek Your forgiveness.",
+        "translationId": "Aku memohon ampunan-Mu.",
+        "hadithReference": "HR. Abu Dawood no. 30 & At-Tirmidhi no. 7 (Shahih)",
+        "surahReference": null
+      }
+    ],
+    "tipsEn": [
+      "Remove anything bearing Allah's name before entering.",
+      "Do not carry the mushaf into the toilet area.",
+      "Wash hands thoroughly after cleansing."
+    ],
+    "tipsId": [
+      "Lepaskan benda yang bertuliskan nama Allah sebelum masuk.",
+      "Jangan membawa mushaf Al-Qur'an ke area toilet.",
+      "Cuci kedua tangan dengan bersih setelah beristinja."
+    ]
+  },
+  {
+    "id": "sunnah_berpakaian_cermin",
+    "titleEn": "Dressing & Mirror Manners",
+    "titleId": "Adab Berpakaian & Bercermin",
+    "titleArabic": "آدَابُ اللِّبَاسِ وَالنَّظَرِ فِي الْمِرْآةِ",
+    "category": "DAILY_LIFESTYLE",
+    "summaryEn": "Sunnah manners of dressing with the right side first and supplication when looking in the mirror.",
+    "summaryId": "Adab sunnah berpakaian mendahulukan sisi kanan dan doa saat bercermin.",
+    "descriptionEn": "Clothing is a blessing and adornment from Allah. The Sunnah teaches beginning with the right side, gratitude dua for new garments, preferring white, and beautifying character when beautifying appearance.",
+    "descriptionId": "Pakaian adalah nikmat dan perhiasan dari Allah. Sunnah mengajarkan memulai dari sisi kanan, doa syukur atas pakaian baru, mengutamakan warna putih, dan memperindah akhlak saat memperindah penampilan.",
+    "surahReference": "QS. Al-A'raf [7:26]",
+    "hadithReference": "HR. Bukhari no. 168, Abu Dawood no. 4023, 4061",
+    "dalilArabic": "الْحَمْدُ لِلَّهِ الَّذِي كَسَانِي هَذَا وَرَزَقَنِيهِ مِنْ غَيْرِ حَوْلٍ مِنِّي وَلَا قُوَّةٍ",
+    "dalilTranslationEn": "All praise is for Allah who clothed me with this and provided it for me without any power or strength from me.",
+    "dalilTranslationId": "Segala puji bagi Allah yang telah memakaikanku pakaian ini dan memberikannya kepadaku tanpa daya dan kekuatan dariku.",
+    "virtuesEn": [
+      "Past and future sins forgiven for wearing dua with sincerity (Abu Dawood 4023)",
+      "Allah loves beauty and cleanliness in appearance (Muslim 91)",
+      "Starting with the right honors the Sunnah in all noble acts (Bukhari 168)"
+    ],
+    "virtuesId": [
+      "Dosa yang lalu dan akan datang diampuni bagi yang membaca doa pakaian dengan ikhlas (HR. Abu Dawood no. 4023)",
+      "Allah Maha Indah dan menyukai keindahan serta kebersihan (HR. Muslim no. 91)",
+      "Mendahulukan sisi kanan memuliakan sunnah dalam setiap perbuatan mulia (HR. Bukhari no. 168)"
+    ],
+    "steps": [
+      {
+        "order": 1,
+        "titleEn": "Start with the Right Side",
+        "titleId": "Mendahulukan Sisi Kanan",
+        "descriptionEn": "Put on clothes, shoes, and sandals starting with the right side; remove starting with the left.",
+        "descriptionId": "Mengenakan pakaian, sepatu, dan sandal mulai dari sisi kanan; melepas mulai dari sisi kiri.",
+        "arabic": null,
+        "transliteration": null,
+        "translationEn": null,
+        "translationId": null,
+        "hadithReference": "HR. Bukhari no. 168 & Muslim no. 268",
+        "surahReference": null
+      },
+      {
+        "order": 2,
+        "titleEn": "Dua for New Garments",
+        "titleId": "Doa Pakaian Baru",
+        "descriptionEn": "When wearing new clothes, recite the gratitude dua taught by the Prophet ﷺ.",
+        "descriptionId": "Saat mengenakan pakaian baru, bacalah doa syukur yang diajarkan Rasulullah ﷺ.",
+        "arabic": "الْحَمْدُ لِلَّهِ الَّذِي كَسَانِي هَذَا وَرَزَقَنِيهِ مِنْ غَيْرِ حَوْلٍ مِنِّي وَلَا قُوَّةٍ",
+        "transliteration": "Alhamdu lillaahil-ladzii kasaanii haadzaa wa razaqaniihi min ghayri hawlim-minnii wa laa quwwah.",
+        "translationEn": "All praise is for Allah who clothed me with this and provided it for me without any power or strength from me.",
+        "translationId": "Segala puji bagi Allah yang telah memakaikanku pakaian ini dan memberikannya kepadaku tanpa daya dan kekuatan dariku.",
+        "hadithReference": "HR. Abu Dawood no. 4023 & At-Tirmidhi no. 1767 (Hasan)",
+        "surahReference": null
+      },
+      {
+        "order": 3,
+        "titleEn": "Mirror Dua: Beauty of Character",
+        "titleId": "Doa Bercermin: Keindahan Akhlak",
+        "descriptionEn": "When looking in the mirror, ask Allah to beautify your character as He beautified your creation.",
+        "descriptionId": "Saat bercermin, mohonlah kepada Allah agar memperindah akhlak sebagaimana Ia memperindah rupa.",
+        "arabic": "اللَّهُمَّ كَمَا حَسَّنْتَ خَلْقِي فَحَسِّنْ خُلُقِي",
+        "transliteration": "Allaahumma kamaa hassanta khalqii fahassin khuluqii.",
+        "translationEn": "O Allah, just as You made my outward form beautiful, make my character beautiful.",
+        "translationId": "Ya Allah, sebagaimana Engkau memperindah rupaku, maka perindahlah pula akhlakku.",
+        "hadithReference": "HR. Ahmad no. 24392 (Shahih)",
+        "surahReference": null
+      }
+    ],
+    "tipsEn": [
+      "Prefer white garments as they are purest and best (Abu Dawood 4061).",
+      "Keep clothes clean and modest, avoiding extravagance and pride.",
+      "Fold and store garments neatly after use."
+    ],
+    "tipsId": [
+      "Utamakan pakaian putih karena paling suci dan terbaik (HR. Abu Dawood no. 4061).",
+      "Jaga pakaian tetap bersih dan menutup aurat, hindari berlebihan dan kesombongan.",
+      "Lipat dan simpan pakaian dengan rapi setelah digunakan."
+    ]
+  },
+  {
+    "id": "sunnah_masuk_keluar_masjid",
+    "titleEn": "Entering & Leaving the Mosque",
+    "titleId": "Adab Masuk & Keluar Masjid",
+    "titleArabic": "آدَابُ دُخُولِ الْمَسْجِدِ وَالْخُرُوجِ مِنْهُ",
+    "category": "DAILY_LIFESTYLE",
+    "summaryEn": "Sunnah duas and manners for entering and leaving the mosque with reverence.",
+    "summaryId": "Doa dan adab sunnah masuk dan keluar masjid dengan penuh penghormatan.",
+    "descriptionEn": "The mosque is the most beloved place to Allah. Enter with the right foot seeking mercy, intend i'tikaf, and leave with the left foot seeking bounty — complementing the two rak'ahs of tahiyyatul masjid.",
+    "descriptionId": "Masjid adalah tempat yang paling dicintai Allah. Masuk dengan kaki kanan memohon rahmat, berniat i'tikaf, dan keluar dengan kaki kiri memohon karunia — melengkapi shalat tahiyyatul masjid.",
+    "surahReference": "QS. Al-Jumu'ah [62:10]",
+    "hadithReference": "HR. Muslim no. 713, Abu Dawood no. 466",
+    "dalilArabic": "أَعُوذُ بِاللَّهِ الْعَظِيمِ وَبِوَجْهِهِ الْكَرِيمِ وَسُلْطَانِهِ الْقَدِيمِ مِنَ الشَّيْطَانِ الرَّجِيمِ",
+    "dalilTranslationEn": "I seek refuge in Allah the Almighty, in His noble Face, and in His eternal authority, from the accursed devil.",
+    "dalilTranslationId": "Aku berlindung kepada Allah Yang Maha Agung, dengan wajah-Nya yang mulia dan kekuasaan-Nya yang qadim, dari godaan syaitan yang terkutuk.",
+    "virtuesEn": [
+      "Shaytan says: he is protected from me for the rest of the day (Abu Dawood 466)",
+      "Every step to the mosque raises a rank and erases a sin (Muslim 665)",
+      "Intending i'tikaf turns waiting time into worship"
+    ],
+    "virtuesId": [
+      "Syaitan berkata: ia terlindung dariku sepanjang hari (HR. Abu Dawood no. 466)",
+      "Setiap langkah ke masjid mengangkat derajat dan menghapus dosa (HR. Muslim no. 665)",
+      "Niat i'tikaf mengubah waktu menunggu menjadi ibadah"
+    ],
+    "steps": [
+      {
+        "order": 1,
+        "titleEn": "Entering: Right Foot & Mercy Dua",
+        "titleId": "Masuk: Kaki Kanan & Doa Rahmat",
+        "descriptionEn": "Enter with the right foot, send salawat, and recite the entering dua asking for mercy.",
+        "descriptionId": "Masuk dengan kaki kanan, membaca shalawat, dan membaca doa masuk masjid memohon rahmat.",
+        "arabic": "بِسْمِ اللَّهِ، وَالصَّلَاةُ وَالسَّلَامُ عَلَى رَسُولِ اللَّهِ، اللَّهُمَّ افْتَحْ لِي أَبْوَابَ رَحْمَتِكَ",
+        "transliteration": "Bismillaah, wash-shalaatu wassalaamu 'alaa rasuulillaah, Allaahummaftah lii abwaaba rahmatik.",
+        "translationEn": "In the name of Allah, blessings and peace upon the Messenger of Allah. O Allah, open for me the doors of Your mercy.",
+        "translationId": "Dengan nama Allah, shalawat dan salam atas Rasulullah. Ya Allah, bukakanlah untukku pintu-pintu rahmat-Mu.",
+        "hadithReference": "HR. Muslim no. 713 & Abu Dawood no. 465",
+        "surahReference": null
+      },
+      {
+        "order": 2,
+        "titleEn": "Intending I'tikaf & Tahiyyatul Masjid",
+        "titleId": "Niat I'tikaf & Tahiyyatul Masjid",
+        "descriptionEn": "Intend i'tikaf upon entering and pray two rak'ahs before sitting.",
+        "descriptionId": "Berniat i'tikaf saat masuk dan shalat dua rakaat tahiyyatul masjid sebelum duduk.",
+        "arabic": null,
+        "transliteration": null,
+        "translationEn": null,
+        "translationId": null,
+        "hadithReference": "HR. Bukhari no. 444 & Muslim no. 714",
+        "surahReference": null
+      },
+      {
+        "order": 3,
+        "titleEn": "Leaving: Left Foot & Bounty Dua",
+        "titleId": "Keluar: Kaki Kiri & Doa Karunia",
+        "descriptionEn": "Leave with the left foot and recite the exit dua asking for Allah's bounty.",
+        "descriptionId": "Keluar dengan kaki kiri dan membaca doa keluar masjid memohon karunia Allah.",
+        "arabic": "بِسْمِ اللَّهِ، وَالصَّلَاةُ وَالسَّلَامُ عَلَى رَسُولِ اللَّهِ، اللَّهُمَّ إِنِّي أَسْأَلُكَ مِنْ فَضْلِكَ",
+        "transliteration": "Bismillaah, wash-shalaatu wassalaamu 'alaa rasuulillaah, Allaahumma innii as-aluka min fadhlik.",
+        "translationEn": "In the name of Allah, blessings and peace upon the Messenger of Allah. O Allah, I ask You from Your bounty.",
+        "translationId": "Dengan nama Allah, shalawat dan salam atas Rasulullah. Ya Allah, aku memohon karunia-Mu.",
+        "hadithReference": "HR. Muslim no. 713",
+        "surahReference": null
+      }
+    ],
+    "tipsEn": [
+      "Do not pass in front of one who is praying (Bukhari 510).",
+      "Keep phones silent and voices low out of reverence.",
+      "Leave promptly after worship to seek Allah's bounty (Al-Jumu'ah 10)."
+    ],
+    "tipsId": [
+      "Jangan melintas di depan orang yang sedang shalat (HR. Bukhari no. 510).",
+      "Heningkan ponsel dan rendahkan suara sebagai penghormatan.",
+      "Segera bertebaran setelah ibadah untuk mencari karunia Allah (QS. Al-Jumu'ah: 10)."
+    ]
+  },
+  {
+    "id": "sunnah_safar",
+    "titleEn": "Travel Manners (Adab as-Safar)",
+    "titleId": "Adab Bepergian (Safar)",
+    "titleArabic": "آدَابُ السَّفَرِ",
+    "category": "DAILY_LIFESTYLE",
+    "summaryEn": "Prophetic guidance for setting out, riding, and returning from a journey safely.",
+    "summaryId": "Bimbingan sunnah saat berangkat, berkendara, dan kembali dari perjalanan dengan selamat.",
+    "descriptionEn": "Travel is a portion of hardship. The Sunnah teaches two rak'ahs before departure, the riding supplication glorifying Allah's favor, and gratitude dua upon return.",
+    "descriptionId": "Safar adalah sebagian dari azab. Sunnah mengajarkan shalat dua rakaat sebelum berangkat, doa berkendara yang mengagungkan nikmat Allah, dan doa syukur saat kembali.",
+    "surahReference": "QS. Az-Zukhruf [43:13-14]",
+    "hadithReference": "HR. Muslim no. 1342, Bukhari no. 3088",
+    "dalilArabic": "سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَذَا وَمَا كُنَّا لَهُ مُقْرِنِينَ وَإِنَّا إِلَى رَبِّنَا لَمُنْقَلِبُونَ",
+    "dalilTranslationEn": "Glory be to Him who subjected this to us, though we could not have subdued it, and indeed to our Lord we will return.",
+    "dalilTranslationId": "Maha Suci (Allah) yang telah menundukkan kendaraan ini untuk kami, padahal kami tidak mampu menguasainya, dan sesungguhnya kepada Rabb kami kami akan kembali.",
+    "virtuesEn": [
+      "Traveler is under divine care when departing with remembrance (Muslim 1342)",
+      "Two rak'ahs before travel suffice in place of charity for the journey (Tabarani Hasan)",
+      "Returning dua affirms repentance, worship, and praise (Muslim 1342)"
+    ],
+    "virtuesId": [
+      "Musafir berada dalam penjagaan Allah saat berangkat dengan dzikir (HR. Muslim no. 1342)",
+      "Dua rakaat sebelum safar mencukupi kebaikan selama perjalanan (HR. Thabarani, Hasan)",
+      "Doa kembali menegaskan taubat, ibadah, dan pujian kepada Allah (HR. Muslim no. 1342)"
+    ],
+    "steps": [
+      {
+        "order": 1,
+        "titleEn": "Two Rak'ahs Before Departure",
+        "titleId": "Shalat Dua Rakaat Sebelum Berangkat",
+        "descriptionEn": "Pray two rak'ahs at home or the mosque before setting out, entrusting family to Allah.",
+        "descriptionId": "Shalat dua rakaat di rumah atau masjid sebelum berangkat, dan titipkan keluarga kepada Allah.",
+        "arabic": "أَسْتَوْدِعُكُمُ اللَّهَ الَّذِي لَا تَضِيعُ وَدَائِعُهُ",
+        "transliteration": "Astaudi'ukumullaahalladzii laa tadhii'u wadaa-i'uh.",
+        "translationEn": "I entrust you to Allah whose trusts are never lost.",
+        "translationId": "Aku menitipkan kalian kepada Allah yang tidak akan menyia-nyiakan titipan-Nya.",
+        "hadithReference": "HR. Ibnu Majah no. 2825 (Hasan) & Ahmad no. 9212",
+        "surahReference": null
+      },
+      {
+        "order": 2,
+        "titleEn": "Riding Supplication",
+        "titleId": "Doa Berkendara",
+        "descriptionEn": "Mount, say takbir three times, then recite the riding dua from Surah Az-Zukhruf.",
+        "descriptionId": "Naik kendaraan, bertakbir tiga kali, lalu membaca doa berkendara dari Surah Az-Zukhruf.",
+        "arabic": "اللَّهُ أَكْبَرُ، اللَّهُ أَكْبَرُ، اللَّهُ أَكْبَرُ، سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَذَا وَمَا كُنَّا لَهُ مُقْرِنِينَ وَإِنَّا إِلَى رَبِّنَا لَمُنْقَلِبُونَ",
+        "transliteration": "Allaahu akbar 3x, subhaanalladzii sakhkhara lanaa haadzaa wa maa kunnaa lahuu muqriniin, wa innaa ilaa rabbinaa lamunqalibuun.",
+        "translationEn": "Allah is Greatest (3x). Glory be to Him who subjected this to us, though we could not have subdued it, and indeed to our Lord we will return.",
+        "translationId": "Allah Maha Besar (3x). Maha Suci Allah yang menundukkan kendaraan ini untuk kami, padahal kami tidak mampu menguasainya, dan sesungguhnya kepada Rabb kami kami akan kembali.",
+        "hadithReference": "HR. Muslim no. 1342",
+        "surahReference": "QS. Az-Zukhruf [43:13-14]"
+      },
+      {
+        "order": 3,
+        "titleEn": "Return Dua & Two Rak'ahs",
+        "titleId": "Doa Kembali & Dua Rakaat",
+        "descriptionEn": "Upon return add the repentance phrase and pray two rak'ahs at the mosque before going home.",
+        "descriptionId": "Saat kembali tambahkan lafaz taubat dan shalat dua rakaat di masjid sebelum pulang ke rumah.",
+        "arabic": "آيِبُونَ تَائِبُونَ عَابِدُونَ لِرَبِّنَا حَامِدُونَ",
+        "transliteration": "Aayibuuna taa-ibuuna 'aabiduuna lirabbinaa haamiduun.",
+        "translationEn": "Returning, repenting, worshipping, and praising our Lord.",
+        "translationId": "Kami kembali, bertaubat, beribadah, dan memuji Rabb kami.",
+        "hadithReference": "HR. Muslim no. 1342 & Bukhari no. 3088",
+        "surahReference": null
+      }
+    ],
+    "tipsEn": [
+      "Travel on Thursdays in the morning when possible (Bukhari 2949).",
+      "Take three companions when able; one rider is a devil, two are two devils (Tirmidhi 1674).",
+      "Shorten and combine prayers as licensed during travel."
+    ],
+    "tipsId": [
+      "Bepergianlah pada Kamis pagi bila memungkinkan (HR. Bukhari no. 2949).",
+      "Ajaklah dua sahabat bila mampu; satu pengendara adalah syaitan (HR. Tirmidzi no. 1674).",
+      "Qashar dan jamak shalat sebagaimana keringanan saat safar."
+    ]
+  },
+  {
+    "id": "sunnah_wudhu_adab",
+    "titleEn": "Wudu Virtues & Manners",
+    "titleId": "Keutamaan & Adab Wudhu",
+    "titleArabic": "فَضَائِلُ الْوُضُوءِ وَآدَابُهُ",
+    "category": "DAILY_LIFESTYLE",
+    "summaryEn": "Virtues and etiquettes surrounding ablution: siwak, basmalah, post-wudu shahada, and two rak'ahs.",
+    "summaryId": "Keutamaan dan adab seputar wudhu: siwak, basmalah, syahadat setelah wudhu, dan dua rakaat.",
+    "descriptionEn": "Detailed rulings of wudu steps live in Prayer Guidance. This entry gathers the surrounding virtues: purification manners, remembrances before and after, and the prayer after wudu that led Bilal's footsteps to Paradise.",
+    "descriptionId": "Rincian langkah wudhu ada di Panduan Shalat. Entri ini menghimpun keutamaan dan adab sekitarnya: siwak, basmalah, dzikir sesudah wudhu, dan shalat sunnah setelah wudhu yang mengantarkan Bilal ke surga.",
+    "surahReference": "QS. Al-Ma'idah [5:6]",
+    "hadithReference": "HR. Bukhari no. 887, 1149 & Muslim no. 234, 245",
+    "dalilArabic": "مَا مِنْكُمْ مِنْ أَحَدٍ يَتَوَضَّأُ فَيُبْلِغُ أَو فَيُسْبِغُ الْوُضُوءَ ثُمَّ يَقُولُ: أَشْهَدُ أَنْ لَا إِلٰهَ إِلَّا اللَّهُ وَأَنَّ مُحَمَّدًا عَبْدُ اللَّهِ وَرَسُولُهُ، إِلَّا فُتِحَتْ لَهُ أَبْوَابُ الْجَنَّةِ الثَّمَانِيَةُ يَدْخُلُ مِنْ أَيِّهَا شَاءَ",
+    "dalilTranslationEn": "There is none among you who performs wudu thoroughly then says the shahada, except that the eight gates of Paradise are opened for him to enter through whichever he wills.",
+    "dalilTranslationId": "Tidaklah salah seorang di antara kalian berwudhu dengan sempurna lalu membaca syahadat, melainkan dibukakan baginya delapan pintu surga untuk masuk dari mana saja yang ia kehendaki.",
+    "virtuesEn": [
+      "Eight gates of Paradise opened for thorough wudu + shahada (Muslim 234)",
+      "Sins fall with the last drop of water from each limb (Muslim 245)",
+      "Bilal's footsteps heard in Paradise for guarding wudu prayer (Bukhari 1149)"
+    ],
+    "virtuesId": [
+      "Delapan pintu surga dibuka bagi wudhu sempurna + syahadat (HR. Muslim no. 234)",
+      "Dosa berguguran bersama tetesan air terakhir dari setiap anggota wudhu (HR. Muslim no. 245)",
+      "Langkah Bilal terdengar di surga karena menjaga shalat setelah wudhu (HR. Bukhari no. 1149)"
+    ],
+    "steps": [
+      {
+        "order": 1,
+        "titleEn": "Siwak & Basmalah",
+        "titleId": "Siwak & Basmalah",
+        "descriptionEn": "Clean the teeth with siwak before wudu and begin with Allah's name.",
+        "descriptionId": "Bersiwak sebelum wudhu dan memulai dengan menyebut nama Allah.",
+        "arabic": null,
+        "transliteration": null,
+        "translationEn": null,
+        "translationId": null,
+        "hadithReference": "HR. Bukhari no. 887 & Abu Dawood no. 101 (Hasan)",
+        "surahReference": null
+      },
+      {
+        "order": 2,
+        "titleEn": "Thorough & Economical Wudu",
+        "titleId": "Wudhu Sempurna & Hemat Air",
+        "descriptionEn": "Perfect each limb three times without excess; the Prophet ﷺ forbade wastefulness even at a flowing river.",
+        "descriptionId": "Sempurnakan setiap anggota wudhu hingga tiga kali tanpa berlebihan; Rasulullah ﷺ melarang pemborosan air meski di sungai mengalir.",
+        "arabic": null,
+        "transliteration": null,
+        "translationEn": null,
+        "translationId": null,
+        "hadithReference": "HR. Ibnu Majah no. 425 (Hasan) & Muslim no. 245",
+        "surahReference": null
+      },
+      {
+        "order": 3,
+        "titleEn": "Post-Wudu Shahada & Dua",
+        "titleId": "Syahadat & Doa Setelah Wudhu",
+        "descriptionEn": "Raise the gaze to the sky and recite the shahada plus the purification dua.",
+        "descriptionId": "Menengadahkan pandangan ke langit dan membaca syahadat serta doa penyucian setelah wudhu.",
+        "arabic": "أَشْهَدُ أَنْ لَا إِلٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ، اللَّهُمَّ اجْعَلْنِي مِنَ التَّوَّابِينَ وَاجْعَلْنِي مِنَ الْمُتَطَهِّرِينَ",
+        "transliteration": "Asyhadu allaa ilaaha illallaah wahdahuu laa syariika lah, wa asyhadu anna Muhammadan 'abduhuu wa rasuuluh, Allaahummaj'alnii minat-tawwaabiina waj'alnii minal-mutathahhiriin.",
+        "translationEn": "I bear witness that none is worthy of worship except Allah alone without partner, and Muhammad is His slave and Messenger. O Allah, make me among those who repent and purify themselves.",
+        "translationId": "Aku bersaksi tiada sesembahan yang berhak disembah selain Allah semata tanpa sekutu, dan aku bersaksi Muhammad adalah hamba dan utusan-Nya. Ya Allah, jadikanlah aku termasuk orang yang bertaubat dan menyucikan diri.",
+        "hadithReference": "HR. Muslim no. 234 & At-Tirmidhi no. 55 (Shahih)",
+        "surahReference": null
+      },
+      {
+        "order": 4,
+        "titleEn": "Two Rak'ahs After Wudu",
+        "titleId": "Shalat Dua Rakaat Setelah Wudhu",
+        "descriptionEn": "Pray two focused rak'ahs after wudu, as Bilal did morning and evening.",
+        "descriptionId": "Shalat dua rakaat dengan khusyuk setelah wudhu, sebagaimana Bilal menjaganya pagi dan petang.",
+        "arabic": null,
+        "transliteration": null,
+        "translationEn": null,
+        "translationId": null,
+        "hadithReference": "HR. Bukhari no. 1149 & Muslim no. 245",
+        "surahReference": null
+      }
+    ],
+    "tipsEn": [
+      "Renew wudu for each prayer even if still valid (Bukhari 214).",
+      "Avoid talking during wudu except for need.",
+      "Dry limbs gently and supplicate for acceptance."
+    ],
+    "tipsId": [
+      "Perbarui wudhu untuk setiap shalat meski masih sah (HR. Bukhari no. 214).",
+      "Hindari berbicara selama wudhu kecuali ada keperluan.",
+      "Keringkan anggota wudhu dengan lembut dan berdoa agar diterima."
+    ]
   }
 ]
