@@ -12,6 +12,7 @@ import com.smiledev.rafiq_quran.domain.model.HadithBook
 import com.smiledev.rafiq_quran.domain.model.HadithTopic
 import com.smiledev.rafiq_quran.domain.repository.HadithRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.io.Closeable
 import java.io.File
 import java.util.Calendar
 import javax.inject.Inject
@@ -21,7 +22,7 @@ import javax.inject.Singleton
 class HadithRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context,
     private val databaseCopier: DatabaseCopier
-) : HadithRepository {
+) : HadithRepository, Closeable {
 
     private var db: SQLiteDatabase? = null
 
@@ -192,6 +193,15 @@ class HadithRepositoryImpl @Inject constructor(
         }
         db = opened
         return opened
+    }
+
+    override fun close() {
+        try {
+            if (db?.isOpen == true) {
+                db?.close()
+            }
+        } catch (_: Exception) {}
+        db = null
     }
 
     companion object {
