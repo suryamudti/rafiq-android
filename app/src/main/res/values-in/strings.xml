@@ -349,7 +349,7 @@
     <string name="preview">Pratinjau</string>
     <string name="sajda_obligatory">Sajdah (Wajib)</string>
     <string name="sajda_recommended">Sajdah (Sunnah)</string>
-    <string name="bismillah_full">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</string>
+    <string name="bismillah_full">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</string>
     <!-- Hadith Additional -->
     <string name="hadith_book_number">Kitab %d</string>
     <string name="hadith_book_hadith_ref">Kitab %1$s · Hadis %2$d</string>
@@ -398,4 +398,15 @@
     <string name="update_check_failed">Gagal memeriksa pembaruan. Silakan periksa koneksi internet Anda.</string>
     <string name="whats_new">Yang Baru</string>
     <string name="about_app">Tentang Rafiq</string>
+    <!-- Hifz Memorization Tracker -->
+    <string name="hifz_memorization">Hafalan</string>
+    <string name="hifz_add_goal">Tambah target</string>
+    <string name="hifz_sura_number">Nomor surah</string>
+    <string name="hifz_sura_name">Nama surah</string>
+    <string name="hifz_from_ayah">Dari ayat</string>
+    <string name="hifz_to_ayah">Sampai ayat</string>
+    <string name="hifz_review">Murajaah</string>
+    <string name="hifz_delete">Hapus</string>
+    <string name="hifz_invalid_range">Periksa nomor surah dan ayat</string>
+    <string name="hifz_empty_body">Belum ada target hafalan — tambahkan yang pertama di atas.</string>
 </resources>

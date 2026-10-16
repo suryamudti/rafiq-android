@@ -349,7 +349,7 @@
     <string name="preview">Preview</string>
     <string name="sajda_obligatory">Sajdah (Wajib)</string>
     <string name="sajda_recommended">Sajdah (Sunnah)</string>
-    <string name="bismillah_full">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</string>
+    <string name="bismillah_full">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</string>
     <!-- Hadith Additional -->
     <string name="hadith_book_number">Book %d</string>
     <string name="hadith_book_hadith_ref">Book %1$s · Hadith %2$d</string>
@@ -398,4 +398,15 @@
     <string name="update_check_failed">Failed to check for updates. Please check your internet connection.</string>
     <string name="whats_new">What\'s New</string>
     <string name="about_app">About Rafiq</string>
+    <!-- Hifz Memorization Tracker -->
+    <string name="hifz_memorization">Memorization</string>
+    <string name="hifz_add_goal">Add goal</string>
+    <string name="hifz_sura_number">Surah number</string>
+    <string name="hifz_sura_name">Surah name</string>
+    <string name="hifz_from_ayah">From ayah</string>
+    <string name="hifz_to_ayah">To ayah</string>
+    <string name="hifz_review">Review</string>
+    <string name="hifz_delete">Delete</string>
+    <string name="hifz_invalid_range">Check the surah and ayah numbers</string>
+    <string name="hifz_empty_body">No memorization goals yet — add your first one above.</string>
 </resources>

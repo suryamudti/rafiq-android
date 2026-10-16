@@ -43,6 +43,7 @@ import androidx.navigation3.runtime.NavKey
 import com.smiledev.rafiq_quran.AsmaulHusna
 import com.smiledev.rafiq_quran.BookmarkList
 import com.smiledev.rafiq_quran.HadithBooks
+import com.smiledev.rafiq_quran.Hifz
 import com.smiledev.rafiq_quran.PrayerLog
 import com.smiledev.rafiq_quran.Prophets
 import com.smiledev.rafiq_quran.R
@@ -201,6 +202,7 @@ fun SettingsScreen(
                     MoreFeatureItem(R.string.bookmarks) { onNavigate(BookmarkList) }
                     MoreFeatureItem(R.string.prayer_log) { onNavigate(PrayerLog) }
                     MoreFeatureItem(R.string.hadiths) { onNavigate(HadithBooks) }
+                    MoreFeatureItem(R.string.hifz_memorization) { onNavigate(Hifz) }
                 }
             }
 
@@ -322,7 +324,8 @@ private val dashboardToggleItems: List<Pair<String, Int>> = listOf(
     "zakat" to R.string.zakat,
     "prayer_log" to R.string.prayer_log,
     "prayer_guidance" to R.string.prayer_guidance,
-    "sunnah_guidance" to R.string.sunnah_guidance
+    "sunnah_guidance" to R.string.sunnah_guidance,
+    "hifz" to R.string.hifz_memorization
 )
 
 @Composable
@@ -343,4 +346,3 @@ private fun DashboardToggleRow(
         Switch(checked = checked, onCheckedChange = onCheckedChange)
     }
 }
-
