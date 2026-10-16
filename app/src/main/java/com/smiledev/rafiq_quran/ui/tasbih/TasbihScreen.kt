@@ -58,6 +58,11 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -298,6 +303,7 @@ private fun ActiveDhikrCard(
                     color = MaterialTheme.colorScheme.onSurface,
                     textAlign = TextAlign.Center
                 )
+                Spacer(modifier = Modifier.height(RafiqTheme.spacing.xs))
                 Text(
                     text = meaning,
                     style = MaterialTheme.typography.bodySmall,
@@ -431,12 +437,26 @@ private fun CircularCounter(
     val surfaceVariant = MaterialTheme.colorScheme.surfaceVariant
     val strokeColor = if (progress >= 1f && progress > 0f) Gold500 else primaryColor
 
+    val counterDescription = if (isTargetReached) {
+        stringResource(R.string.tasbih_target_reached_semantics, count)
+    } else {
+        stringResource(
+            R.string.tasbih_counter_semantics,
+            count,
+            (progress.coerceIn(0f, 1f) * 100).toInt()
+        )
+    }
+
     Box(
         modifier = modifier
             .size(260.dp)
             .graphicsLayer {
                 scaleX = scale
                 scaleY = scale
+            }
+            .semantics(mergeDescendants = true) {
+                contentDescription = counterDescription
+                role = Role.Button
             }
             .clickable(
                 interactionSource = interactionSource,
@@ -446,7 +466,12 @@ private fun CircularCounter(
         contentAlignment = Alignment.Center
     ) {
         // Outer Progress Ring
-        Canvas(modifier = Modifier.fillMaxSize().padding(8.dp)) {
+        Canvas(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp)
+                .clearAndSetSemantics { }
+        ) {
             val strokeWidth = 14.dp.toPx()
             // Track
             drawArc(

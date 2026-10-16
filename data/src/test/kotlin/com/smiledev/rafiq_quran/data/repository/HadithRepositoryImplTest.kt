@@ -1,10 +1,11 @@
 package com.smiledev.rafiq_quran.data.repository
 
+import android.content.Context
 import android.database.sqlite.SQLiteDatabase
-import androidx.test.core.app.ApplicationProvider
 import com.smiledev.rafiq_quran.core.AppError
 import com.smiledev.rafiq_quran.core.DatabaseCopier
 import com.smiledev.rafiq_quran.core.Result
+import io.mockk.every
 import io.mockk.mockk
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -19,46 +20,51 @@ import java.io.File
 @RunWith(RobolectricTestRunner::class)
 class HadithRepositoryImplTest {
 
+    private val context: Context = mockk(relaxed = true)
     private val databaseCopier: DatabaseCopier = mockk(relaxed = true)
     private lateinit var repo: HadithRepositoryImpl
+    private lateinit var tempRoot: File
     private lateinit var dbFile: File
 
     @Before
     fun setUp() {
-        val context = ApplicationProvider.getApplicationContext<android.content.Context>()
-        val dbDir = File(context.filesDir, "databases").apply { mkdirs() }
+        tempRoot = createTempDir()
+        every { context.filesDir } returns tempRoot
+        val dbDir = File(tempRoot, "databases").apply { mkdirs() }
         dbFile = File(dbDir, "hadiths_hadith.db")
-        dbFile.delete()
         createFixtureDb(dbFile)
         repo = HadithRepositoryImpl(context, databaseCopier)
     }
 
     @After
     fun tearDown() {
-        dbFile.delete()
+        if (::repo.isInitialized) {
+            repo.close()
+        }
+        tempRoot.deleteRecursively()
     }
 
     private fun createFixtureDb(file: File) {
-        val db = SQLiteDatabase.openOrCreateDatabase(file, null)
-        db.execSQL(
-            "CREATE TABLE books (id TEXT PRIMARY KEY, collection TEXT NOT NULL, number INTEGER NOT NULL," +
-                " name_ar TEXT NOT NULL, name_en TEXT NOT NULL, name_id TEXT NOT NULL)"
-        )
-        db.execSQL(
-            "CREATE TABLE hadiths (id INTEGER PRIMARY KEY, book_id TEXT NOT NULL, in_book_number INTEGER NOT NULL," +
-                " narrator_ar TEXT, narrator_en TEXT, text_ar TEXT NOT NULL, text_en TEXT NOT NULL, text_id TEXT NOT NULL)"
-        )
-        db.execSQL(
-            "INSERT INTO books VALUES ('muslim.1','muslim',1,'كتاب الإيمان','Faith','Iman')"
-        )
-        db.execSQL(
-            "INSERT INTO books VALUES ('bukhari.1','bukhari',1,'كتاب بدء الوحي','Revelation','Permulaan Wahyu')"
-        )
-        db.execSQL("INSERT INTO hadiths VALUES (1,'bukhari.1',1,'','','نص واحد','t1','satu')")
-        db.execSQL("INSERT INTO hadiths VALUES (2,'muslim.1',1,'','','نص اثنان','prayer text','teks shalat')")
-        db.execSQL("INSERT INTO hadiths VALUES (3,'bukhari.1',2,'','','نص ثلاثة','price 50% off','harga diskon 50%')")
-        db.execSQL("INSERT INTO hadiths VALUES (4,'muslim.1',2,'','','نص أربعة','under_score text','teks garis_bawah')")
-        db.close()
+        SQLiteDatabase.openOrCreateDatabase(file, null).use { db ->
+            db.execSQL(
+                "CREATE TABLE books (id TEXT PRIMARY KEY, collection TEXT NOT NULL, number INTEGER NOT NULL," +
+                    " name_ar TEXT NOT NULL, name_en TEXT NOT NULL, name_id TEXT NOT NULL)"
+            )
+            db.execSQL(
+                "CREATE TABLE hadiths (id INTEGER PRIMARY KEY, book_id TEXT NOT NULL, in_book_number INTEGER NOT NULL," +
+                    " narrator_ar TEXT, narrator_en TEXT, text_ar TEXT NOT NULL, text_en TEXT NOT NULL, text_id TEXT NOT NULL)"
+            )
+            db.execSQL(
+                "INSERT INTO books VALUES ('muslim.1','muslim',1,'كتاب الإيمان','Faith','Iman')"
+            )
+            db.execSQL(
+                "INSERT INTO books VALUES ('bukhari.1','bukhari',1,'كتاب بدء الوحي','Revelation','Permulaan Wahyu')"
+            )
+            db.execSQL("INSERT INTO hadiths VALUES (1,'bukhari.1',1,'','','نص واحد','t1','satu')")
+            db.execSQL("INSERT INTO hadiths VALUES (2,'muslim.1',1,'','','نص اثنان','prayer text','teks shalat')")
+            db.execSQL("INSERT INTO hadiths VALUES (3,'bukhari.1',2,'','','نص ثلاثة','price 50% off','harga diskon 50%')")
+            db.execSQL("INSERT INTO hadiths VALUES (4,'muslim.1',2,'','','نص أربعة','under_score text','teks garis_bawah')")
+        }
     }
 
     @Test
@@ -75,6 +81,7 @@ class HadithRepositoryImplTest {
 
     @Test
     fun `getBooks returns Error when db file missing`() {
+        repo.close()
         dbFile.delete()
 
         val result = repo.getBooks()
@@ -106,6 +113,7 @@ class HadithRepositoryImplTest {
 
     @Test
     fun `getHadithsByBook returns Error when db file missing`() {
+        repo.close()
         dbFile.delete()
 
         val result = repo.getHadithsByBook("bukhari.1")
@@ -198,6 +206,7 @@ class HadithRepositoryImplTest {
 
     @Test
     fun `searchHadiths returns Error when db file missing`() {
+        repo.close()
         dbFile.delete()
 
         val result = repo.searchHadiths("prayer")
@@ -256,6 +265,7 @@ class HadithRepositoryImplTest {
 
     @Test
     fun `getHadithOfTheDay returns Error when db file missing`() {
+        repo.close()
         dbFile.delete()
 
         val result = repo.getHadithOfTheDay(0)
