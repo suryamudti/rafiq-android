@@ -6,6 +6,8 @@ import com.smiledev.rafiq_quran.core.DefaultDispatcherProvider
 import com.smiledev.rafiq_quran.core.DispatcherProvider
 import com.smiledev.rafiq_quran.data.local.BookmarkDatabase
 import com.smiledev.rafiq_quran.data.local.BookmarkDao
+import com.smiledev.rafiq_quran.data.local.HifzDatabase
+import com.smiledev.rafiq_quran.data.local.HifzDao
 import com.smiledev.rafiq_quran.data.local.PrayerLogDatabase
 import com.smiledev.rafiq_quran.data.local.PrayerLogDao
 import com.smiledev.rafiq_quran.data.preferences.PreferencesManager
@@ -18,6 +20,7 @@ import com.smiledev.rafiq_quran.data.remote.OverpassApiService
 import com.smiledev.rafiq_quran.data.repository.AsmaulHusnaRepositoryImpl
 import com.smiledev.rafiq_quran.data.repository.BookmarkRepositoryImpl
 import com.smiledev.rafiq_quran.data.repository.HadithRepositoryImpl
+import com.smiledev.rafiq_quran.data.repository.HifzRepositoryImpl
 import com.smiledev.rafiq_quran.data.repository.IslamicCalendarRepositoryImpl
 import com.smiledev.rafiq_quran.data.repository.LocationProviderImpl
 import com.smiledev.rafiq_quran.data.repository.MetalPriceRepositoryImpl
@@ -31,6 +34,7 @@ import com.smiledev.rafiq_quran.data.repository.TasbihRepositoryImpl
 import com.smiledev.rafiq_quran.domain.repository.AsmaulHusnaRepository
 import com.smiledev.rafiq_quran.domain.repository.BookmarkRepository
 import com.smiledev.rafiq_quran.domain.repository.HadithRepository
+import com.smiledev.rafiq_quran.domain.repository.HifzRepository
 import com.smiledev.rafiq_quran.domain.repository.IslamicCalendarRepository
 import com.smiledev.rafiq_quran.domain.repository.LocationProvider
 import com.smiledev.rafiq_quran.domain.repository.MetalPriceRepository
@@ -83,6 +87,7 @@ abstract class RepositoryModule {
     @Binds @Singleton abstract fun bindReciterRepository(impl: ReciterRepositoryImpl): ReciterRepository
     @Binds @Singleton abstract fun bindBookmarkRepository(impl: BookmarkRepositoryImpl): BookmarkRepository
     @Binds @Singleton abstract fun bindPrayerLogRepository(impl: PrayerLogRepositoryImpl): PrayerLogRepository
+    @Binds @Singleton abstract fun bindHifzRepository(impl: HifzRepositoryImpl): HifzRepository
     @Binds @Singleton abstract fun bindMosqueRepository(impl: MosqueRepositoryImpl): MosqueRepository
     @Binds @Singleton abstract fun bindLocationProvider(impl: LocationProviderImpl): LocationProvider
     @Binds @Singleton abstract fun bindPrayerGuidanceRepository(impl: com.smiledev.rafiq_quran.data.repository.PrayerGuidanceRepositoryImpl): com.smiledev.rafiq_quran.domain.repository.PrayerGuidanceRepository
@@ -130,6 +135,17 @@ object AppModule {
     @Provides
     fun providePrayerLogDao(database: PrayerLogDatabase): PrayerLogDao {
         return database.prayerLogDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideHifzDatabase(@ApplicationContext context: Context): HifzDatabase {
+        return HifzDatabase.getInstance(context)
+    }
+
+    @Provides
+    fun provideHifzDao(database: HifzDatabase): HifzDao {
+        return database.hifzDao()
     }
 
     @Provides

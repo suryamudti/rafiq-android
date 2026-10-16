@@ -32,7 +32,7 @@ import com.smiledev.rafiq_quran.ui.prayerguidance.PrayerGuidanceScreen
 import com.smiledev.rafiq_quran.ui.prayerguidance.PrayerGuidanceDetailScreen
 import com.smiledev.rafiq_quran.ui.sunnahguidance.SunnahGuidanceScreen
 import com.smiledev.rafiq_quran.ui.sunnahguidance.SunnahGuidanceDetailScreen
-
+import com.smiledev.rafiq_quran.ui.hifz.HifzScreen
 import com.smiledev.rafiq_quran.ui.settings.SettingsScreen
 import com.smiledev.rafiq_quran.ui.sources.SourcesScreen
 
@@ -226,7 +226,15 @@ fun MainNavigation() {
             modifier = Modifier.safeDrawingPadding()
           )
         }
-
+        entry<Hifz> {
+          HifzScreen(
+            onBack = { backStack.removeLastOrNull() },
+            onReviewAyah = { num, name, aya ->
+              backStack.add(Ayah(suraNumber = num, suraName = name, scrollToAya = aya))
+            },
+            modifier = Modifier.safeDrawingPadding()
+          )
+        }
         entry<Settings> {
           SettingsScreen(
             onBack = { backStack.removeLastOrNull() },

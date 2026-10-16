@@ -61,6 +61,7 @@ import com.smiledev.rafiq_quran.Ayah
 import com.smiledev.rafiq_quran.BookmarkList
 import com.smiledev.rafiq_quran.HadithBooks
 import com.smiledev.rafiq_quran.HadithDetail
+import com.smiledev.rafiq_quran.Hifz
 import com.smiledev.rafiq_quran.IslamicCalendar
 import com.smiledev.rafiq_quran.Mosques
 import com.smiledev.rafiq_quran.PrayerGuidance
@@ -203,6 +204,14 @@ private val quickServices = listOf(
         iconResId = R.drawable.ic_sunnah,
         tintColor = Color(0xFFD97706),
         containerColor = Color(0xFFFEF3C7)
+    ),
+    QuickServiceItem(
+        key = "hifz",
+        labelResId = R.string.hifz_memorization,
+        navKey = Hifz,
+        iconResId = R.drawable.ic_hifz,
+        tintColor = Color(0xFF0D9488),
+        containerColor = Color(0xFFCCFBF1)
     )
 )
 
@@ -262,7 +271,7 @@ fun DashboardScreen(
 
         Spacer(Modifier.height(20.dp))
 
-        // 4. Quick Access Hub (12 Features in 4 Columns)
+        // 4. Quick Access Hub
         Text(
             text = stringResource(R.string.quick_access),
             style = MaterialTheme.typography.titleMedium,
@@ -348,7 +357,7 @@ fun DashboardScreen(
 
         Spacer(Modifier.height(24.dp))
 
-        // 7. Footer App Version
+        // 8. Footer App Version
         Text(
             text = "v${state.appVersion}",
             style = MaterialTheme.typography.bodySmall,
