@@ -409,4 +409,9 @@
     <string name="hifz_delete">Hapus</string>
     <string name="hifz_invalid_range">Periksa nomor surah dan ayat</string>
     <string name="hifz_empty_body">Belum ada target hafalan — tambahkan yang pertama di atas.</string>
+    <!-- Canvas Accessibility & TalkBack Semantics -->
+    <string name="qibla_compass_aligned_desc">Kompas kiblat, menghadap kiblat pada %1$d derajat</string>
+    <string name="qibla_compass_desc">Kompas kiblat, arah target %1$d derajat, arah saat ini %2$d derajat, %3$s</string>
+    <string name="tasbih_counter_semantics">Penghitung tasbih, hitungan %1$d, progres %2$d persen</string>
+    <string name="tasbih_target_reached_semantics">Penghitung tasbih, target tercapai pada %1$d zikir</string>
 </resources>

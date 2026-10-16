@@ -409,4 +409,9 @@
     <string name="hifz_delete">Delete</string>
     <string name="hifz_invalid_range">Check the surah and ayah numbers</string>
     <string name="hifz_empty_body">No memorization goals yet — add your first one above.</string>
+    <!-- Canvas Accessibility & TalkBack Semantics -->
+    <string name="qibla_compass_aligned_desc">Qibla compass, facing Qibla at %1$d degrees</string>
+    <string name="qibla_compass_desc">Qibla compass, target bearing %1$d degrees, current heading %2$d degrees, %3$s</string>
+    <string name="tasbih_counter_semantics">Tasbih counter, count %1$d, progress %2$d percent</string>
+    <string name="tasbih_target_reached_semantics">Tasbih counter, target reached at %1$d dhikr</string>
 </resources>

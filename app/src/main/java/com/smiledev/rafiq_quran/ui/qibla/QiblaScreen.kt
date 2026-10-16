@@ -46,6 +46,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -99,6 +102,11 @@ fun QiblaScreen(
     val isAligned = abs(offset) <= ALIGNED_THRESHOLD_DEGREES
     val directionName = compassDirection(state.bearing, currentLocaleCode())
     val distanceFormatted = String.format(Locale.US, "%,d", state.distanceKm)
+    val offsetText = when {
+        isAligned -> stringResource(R.string.facing_qibla)
+        offset > 0 -> stringResource(R.string.turn_right, abs(offset).roundToInt())
+        else -> stringResource(R.string.turn_left, abs(offset).roundToInt())
+    }
 
     Scaffold(
         topBar = {
@@ -144,7 +152,12 @@ fun QiblaScreen(
 
             Spacer(Modifier.height(16.dp))
 
-            QiblaCompass(bearing = state.bearing.toFloat(), azimuth = deviceAzimuth)
+            QiblaCompass(
+                bearing = state.bearing.toFloat(),
+                azimuth = deviceAzimuth,
+                isAligned = isAligned,
+                offsetText = offsetText
+            )
 
             Spacer(Modifier.height(16.dp))
 
@@ -169,11 +182,6 @@ fun QiblaScreen(
 
             Spacer(Modifier.height(8.dp))
 
-            val offsetText = when {
-                isAligned -> stringResource(R.string.facing_qibla)
-                offset > 0 -> stringResource(R.string.turn_right, abs(offset).roundToInt())
-                else -> stringResource(R.string.turn_left, abs(offset).roundToInt())
-            }
             Text(
                 text = offsetText,
                 fontSize = 16.sp,
@@ -279,16 +287,36 @@ private fun KaabaInfoCard(
 }
 
 @Composable
-private fun QiblaCompass(bearing: Float, azimuth: Float) {
+internal fun QiblaCompass(
+    bearing: Float,
+    azimuth: Float,
+    modifier: Modifier = Modifier,
+    isAligned: Boolean = false,
+    offsetText: String = ""
+) {
+    val compassDescription = if (isAligned) {
+        stringResource(R.string.qibla_compass_aligned_desc, bearing.roundToInt())
+    } else {
+        stringResource(
+            R.string.qibla_compass_desc,
+            bearing.roundToInt(),
+            azimuth.roundToInt(),
+            offsetText
+        )
+    }
+
     Box(
-        modifier = Modifier
+        modifier = modifier
             .size(300.dp)
+            .semantics(mergeDescendants = true) {
+                contentDescription = compassDescription
+            }
             .graphicsLayer {
                 rotationZ = -azimuth
             },
         contentAlignment = Alignment.Center
     ) {
-        Canvas(modifier = Modifier.size(280.dp)) {
+        Canvas(modifier = Modifier.size(280.dp).clearAndSetSemantics { }) {
             val center = Offset(size.width / 2, size.height / 2)
             val radius = size.minDimension / 2
 
@@ -328,7 +356,9 @@ private fun QiblaCompass(bearing: Float, azimuth: Float) {
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
             color = Color(0xFF757575),
-            modifier = Modifier.padding(bottom = 260.dp)
+            modifier = Modifier
+                .padding(bottom = 260.dp)
+                .clearAndSetSemantics { }
         )
 
         Text(
@@ -336,7 +366,9 @@ private fun QiblaCompass(bearing: Float, azimuth: Float) {
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
             color = Color(0xFF757575),
-            modifier = Modifier.padding(top = 260.dp)
+            modifier = Modifier
+                .padding(top = 260.dp)
+                .clearAndSetSemantics { }
         )
 
         Text(
@@ -344,7 +376,9 @@ private fun QiblaCompass(bearing: Float, azimuth: Float) {
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
             color = Color(0xFF757575),
-            modifier = Modifier.padding(start = 260.dp)
+            modifier = Modifier
+                .padding(start = 260.dp)
+                .clearAndSetSemantics { }
         )
 
         Text(
@@ -352,7 +386,9 @@ private fun QiblaCompass(bearing: Float, azimuth: Float) {
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
             color = Color(0xFF757575),
-            modifier = Modifier.padding(end = 260.dp)
+            modifier = Modifier
+                .padding(end = 260.dp)
+                .clearAndSetSemantics { }
         )
     }
 }
