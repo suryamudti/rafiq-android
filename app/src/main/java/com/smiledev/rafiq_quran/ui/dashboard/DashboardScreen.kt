@@ -496,7 +496,7 @@ private fun HeroPrayerCard(
                 .padding(20.dp)
         ) {
             when {
-                state.isLoading -> {
+                state.isLoading || (state.prayerTimeline.isEmpty() && state.nextPrayerName.isEmpty() && state.error == null) -> {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
