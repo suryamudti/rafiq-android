@@ -14,13 +14,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.LocationOn
 import com.smiledev.rafiq_quran.ui.components.AppUpdateDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -101,7 +98,7 @@ private val quickServices = listOf(
         key = "prayer_times",
         labelResId = R.string.prayer_times,
         navKey = PrayerTimes,
-        iconResId = R.drawable.ic_calendar,
+        iconResId = R.drawable.ic_prayer_times,
         tintColor = Color(0xFF00897B),
         containerColor = Color(0xFFE0F2F1)
     ),
@@ -151,7 +148,7 @@ private val quickServices = listOf(
         key = "recitation",
         labelResId = R.string.recitations,
         navKey = Recitation,
-        iconResId = R.drawable.ic_play,
+        iconResId = R.drawable.ic_recitation,
         tintColor = Color(0xFF2563EB),
         containerColor = Color(0xFFDBEAFE)
     ),
@@ -432,7 +429,7 @@ private fun DashboardHeader(
                 modifier = Modifier.padding(vertical = 2.dp)
             ) {
                 val displayDate = if (hijriDate.isNotBlank()) {
-                    "$hijriDate • $gregorianDate"
+                    "$hijriDate \u2022 $gregorianDate"
                 } else {
                     gregorianDate
                 }
@@ -450,7 +447,7 @@ private fun DashboardHeader(
                 modifier = Modifier.padding(start = 8.dp)
             ) {
                 Icon(
-                    imageVector = Icons.Filled.LocationOn,
+                    painter = painterResource(R.drawable.ic_location),
                     contentDescription = cityName,
                     tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(16.dp)
@@ -499,7 +496,7 @@ private fun HeroPrayerCard(
                 .padding(20.dp)
         ) {
             when {
-                state.isLoading -> {
+                state.isLoading || (state.prayerTimeline.isEmpty() && state.nextPrayerName.isEmpty() && state.error == null) -> {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -983,7 +980,7 @@ private fun DailyHadithCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "${stringResource(R.string.read_hadith)} →",
+                    text = "${stringResource(R.string.read_hadith)} \u2192",
                     style = MaterialTheme.typography.labelMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary

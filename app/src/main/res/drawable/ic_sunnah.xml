@@ -3,8 +3,8 @@
     android:height="24dp"
     android:viewportWidth="24"
     android:viewportHeight="24">
-    <!-- Star / Sunnah guidance icon -->
+    <!-- Crescent moon & guiding star for Sunnah guidance -->
     <path
-        android:fillColor="#FFFFFFFF"
-        android:pathData="M12,2L14.39,8.26L21,9.27L16.5,14.14L17.77,21L12,17.77L6.23,21L7.5,14.14L3,9.27L9.61,8.26L12,2Z" />
+        android:fillColor="#FFFFFF"
+        android:pathData="M14.5,3c-4.97,0 -9,4.03 -9,9s4.03,9 9,9c2.25,0 4.31,-0.83 5.89,-2.2c-0.74,0.13 -1.5,0.2 -2.29,0.2c-5.52,0 -10,-4.48 -10,-10c0,-2.4 0.85,-4.6 2.26,-6.32C11.66,2.89 13.06,3 14.5,3zM17.5,6l1.09,2.41L21,9.5l-2.41,1.09L17.5,13l-1.09,-2.41L14,9.5l2.41,-1.09L17.5,6z" />
 </vector>

@@ -20,4 +20,31 @@ class SplashResourceTest {
     fun splashScreenLogoDrawableResourceIsGenerated() {
         assertNotEquals(0, R.drawable.ic_splash_logo)
     }
+
+    @Test
+    fun dashboardIconDrawableResourcesAreGeneratedAndDistinct() {
+        val dashboardIcons = listOf(
+            R.drawable.ic_quran,
+            R.drawable.ic_prayer_times,
+            R.drawable.ic_qibla,
+            R.drawable.ic_tasbih,
+            R.drawable.ic_hadith,
+            R.drawable.ic_prophet,
+            R.drawable.ic_asmaul_husna,
+            R.drawable.ic_recitation,
+            R.drawable.ic_mosque,
+            R.drawable.ic_calendar,
+            R.drawable.ic_zakat,
+            R.drawable.ic_prayer_log,
+            R.drawable.ic_prayer_guide,
+            R.drawable.ic_sunnah,
+            R.drawable.ic_hifz,
+            R.drawable.ic_location
+        )
+        dashboardIcons.forEach { resId ->
+            assertNotEquals(0, resId)
+        }
+        assertNotEquals(R.drawable.ic_prayer_times, R.drawable.ic_calendar)
+        assertNotEquals(R.drawable.ic_recitation, R.drawable.ic_play)
+    }
 }

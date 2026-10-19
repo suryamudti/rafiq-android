@@ -25,7 +25,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -81,7 +83,7 @@ data class DashboardUiState(
     val dailyAyahNumber: Int = 152,
     val dailyHadithId: Int = 1,
     val dailyHadithRef: String = "HR. Bukhari No. 1",
-    val dailyHadithArabic: String = "إِنَّمَا الْأَعْمَالُ بِالنِّيَّاتِ",
+    val dailyHadithArabic: String = "إِنَّمَا الْأَعْمَالُ بِالنِّيَّاتِ",
     val dailyHadithTranslation: String = "The reward of deeds depends upon the intentions and every person will get the reward according to what he has intended.",
     val dailyHadithNarrator: String = "Umar bin Al-Khattab",
     val todayCompletedPrayersCount: Int = 0,
@@ -108,7 +110,7 @@ private val inspirations = listOf(
         ayaNumber = 152
     ),
     DailyInspiration(
-        arabic = "فَإِنَّ مَعَ الْعُسْرِ يُسْرًا • إِنَّ مَعَ الْعُسْرِ يُسْرًا",
+        arabic = "فَإِنَّ مَعَ الْعُسْرِ يُسْرًا • إِنَّ مَعَ الْعُسْرِ يُسْرًا",
         translationEn = "Indeed, with hardship comes ease. Indeed, with hardship comes ease.",
         translationId = "Maka sesungguhnya bersama kesulitan ada kemudahan, sesungguhnya bersama kesulitan ada kemudahan.",
         surahRef = "QS. Al-Insyirah: 5-6",
@@ -116,7 +118,7 @@ private val inspirations = listOf(
         ayaNumber = 5
     ),
     DailyInspiration(
-        arabic = "أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ",
+        arabic = "أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ",
         translationEn = "Unquestionably, by the remembrance of Allah hearts are assured.",
         translationId = "Ingatlah, hanya dengan mengingat Allah hati menjadi tenteram.",
         surahRef = "QS. Ar-Ra'd: 28",
@@ -124,7 +126,7 @@ private val inspirations = listOf(
         ayaNumber = 28
     ),
     DailyInspiration(
-        arabic = "وَمَن يَتَوَكَّلْ عَلَى اللَّهِ فَهُوَ حَسْبُهُ",
+        arabic = "وَمَن يَتَوَكَّلْ عَلَى اللَّهِ فَهُوَ حَسْبُهُ",
         translationEn = "And whoever relies upon Allah - then He is sufficient for him.",
         translationId = "Dan barangsiapa bertawakal kepada Allah, niscaya Allah akan mencukupkan (keperluan)nya.",
         surahRef = "QS. At-Talaq: 3",
@@ -132,7 +134,7 @@ private val inspirations = listOf(
         ayaNumber = 3
     ),
     DailyInspiration(
-        arabic = "لَا يُكَلِّفُ اللَّهُ نَفْسًا إِلَّا وُسْعَهَا",
+        arabic = "لَا يُكَلِّفُ اللَّهُ نَفْسًا إِلَّا وُسْعَهَا",
         translationEn = "Allah does not burden a soul beyond that it can bear.",
         translationId = "Allah tidak membebani seseorang melainkan sesuai dengan kesanggupannya.",
         surahRef = "QS. Al-Baqarah: 286",
@@ -140,7 +142,7 @@ private val inspirations = listOf(
         ayaNumber = 286
     ),
     DailyInspiration(
-        arabic = "وَإِذَا سَأَلَكَ عِبَادِي عَنِّي فَإِنِّي قَرِيبٌ",
+        arabic = "وَإِذَا سَأَلَكَ عِبَادِي عَنِّي فَإِنِّي قَرِيبٌ",
         translationEn = "And when My servants ask you concerning Me, indeed I am near.",
         translationId = "Dan apabila hamba-hamba-Ku bertanya kepadamu tentang Aku, maka sesungguhnya Aku dekat.",
         surahRef = "QS. Al-Baqarah: 186",
@@ -148,7 +150,7 @@ private val inspirations = listOf(
         ayaNumber = 186
     ),
     DailyInspiration(
-        arabic = "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ",
+        arabic = "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ",
         translationEn = "Our Lord, give us in this world that which is good and in the Hereafter that which is good and protect us from the punishment of the Fire.",
         translationId = "Ya Tuhan kami, berilah kami kebaikan di dunia dan kebaikan di akhirat dan peliharalah kami dari siksa neraka.",
         surahRef = "QS. Al-Baqarah: 201",
@@ -220,19 +222,21 @@ class DashboardViewModel @Inject constructor(
         }
         val initialHadithNarrator = if (isIndonesian) "Umar bin Khaththab" else "Umar bin Al-Khattab"
 
-        _uiState.value = _uiState.value.copy(
-            greeting = computeGreeting(),
-            appVersion = versionName,
-            gregorianDate = gregorianFormat.format(Date()),
-            dailyAyahArabic = insp.arabic,
-            dailyAyahTranslation = if (isIndonesian) insp.translationId else insp.translationEn,
-            dailyAyahSurahRef = insp.surahRef,
-            dailyAyahSuraNumber = insp.suraNumber,
-            dailyAyahNumber = insp.ayaNumber,
-            dailyHadithRef = initialHadithRef,
-            dailyHadithTranslation = initialHadithTranslation,
-            dailyHadithNarrator = initialHadithNarrator
-        )
+        _uiState.update {
+            it.copy(
+                greeting = computeGreeting(),
+                appVersion = versionName,
+                gregorianDate = gregorianFormat.format(Date()),
+                dailyAyahArabic = insp.arabic,
+                dailyAyahTranslation = if (isIndonesian) insp.translationId else insp.translationEn,
+                dailyAyahSurahRef = insp.surahRef,
+                dailyAyahSuraNumber = insp.suraNumber,
+                dailyAyahNumber = insp.ayaNumber,
+                dailyHadithRef = initialHadithRef,
+                dailyHadithTranslation = initialHadithTranslation,
+                dailyHadithNarrator = initialHadithNarrator
+            )
+        }
 
         // Load Hadith of the Day
         viewModelScope.launch(dispatcherProvider.io) {
@@ -261,13 +265,15 @@ class DashboardViewModel @Inject constructor(
                     } else {
                         hadith.narratorEn ?: ""
                     }
-                    _uiState.value = _uiState.value.copy(
-                        dailyHadithId = hadith.id,
-                        dailyHadithRef = ref,
-                        dailyHadithArabic = hadith.textAr,
-                        dailyHadithTranslation = translation,
-                        dailyHadithNarrator = narrator
-                    )
+                    _uiState.update {
+                        it.copy(
+                            dailyHadithId = hadith.id,
+                            dailyHadithRef = ref,
+                            dailyHadithArabic = hadith.textAr,
+                            dailyHadithTranslation = translation,
+                            dailyHadithNarrator = narrator
+                        )
+                    }
                 }
             }
         }
@@ -282,28 +288,31 @@ class DashboardViewModel @Inject constructor(
                 val lat = latStr.toDoubleOrNull() ?: -6.2088
                 val lon = lonStr.toDoubleOrNull() ?: 106.8456
                 val calcMethod = if (method == 2) 20 else method
-                _uiState.value = _uiState.value.copy(
-                    latitude = lat,
-                    longitude = lon,
-                    calculationMethod = calcMethod
-                )
-            }.collect {
+                Triple(lat, lon, calcMethod)
+            }.distinctUntilChanged().collect { (lat, lon, calcMethod) ->
+                _uiState.update {
+                    it.copy(
+                        latitude = lat,
+                        longitude = lon,
+                        calculationMethod = calcMethod
+                    )
+                }
                 loadPrayerTimes()
             }
         }
 
         // Observe City Name
         viewModelScope.launch(dispatcherProvider.io) {
-            preferencesManager.cityName.collect { city ->
+            preferencesManager.cityName.distinctUntilChanged().collect { city ->
                 val displayCity = if (city.isNotBlank()) city else "Jakarta, ID"
-                _uiState.value = _uiState.value.copy(cityName = displayCity)
+                _uiState.update { it.copy(cityName = displayCity) }
             }
         }
 
         // Observe Hidden Dashboard Keys
         viewModelScope.launch(dispatcherProvider.io) {
-            preferencesManager.hiddenDashboardKeys.collect { raw ->
-                _uiState.value = _uiState.value.copy(hiddenKeys = sanitizeHiddenKeys(raw))
+            preferencesManager.hiddenDashboardKeys.distinctUntilChanged().collect { raw ->
+                _uiState.update { it.copy(hiddenKeys = sanitizeHiddenKeys(raw)) }
             }
         }
 
@@ -314,7 +323,7 @@ class DashboardViewModel @Inject constructor(
                 preferencesManager.lastReadAya
             ) { sura, aya ->
                 Pair(sura, aya)
-            }.collect { (sura, aya) ->
+            }.distinctUntilChanged().collect { (sura, aya) ->
                 val suraName = if (sura > 0 && quranRepository != null) {
                     val lang = currentLocaleCode()
                     val chaptersResult = quranRepository.getChapters(lang)
@@ -328,11 +337,13 @@ class DashboardViewModel @Inject constructor(
                 } else {
                     ""
                 }
-                _uiState.value = _uiState.value.copy(
-                    lastReadSura = sura,
-                    lastReadAya = aya,
-                    lastReadSuraName = suraName
-                )
+                _uiState.update {
+                    it.copy(
+                        lastReadSura = sura,
+                        lastReadAya = aya,
+                        lastReadSuraName = suraName
+                    )
+                }
             }
         }
 
@@ -346,13 +357,13 @@ class DashboardViewModel @Inject constructor(
                 } else {
                     0
                 }
-                _uiState.value = _uiState.value.copy(todayCompletedPrayersCount = count)
+                _uiState.update { it.copy(todayCompletedPrayersCount = count) }
             }
         }
 
         // Observe Translation Language for dynamic localization
         viewModelScope.launch(dispatcherProvider.io) {
-            preferencesManager.translationLanguage.collect {
+            preferencesManager.translationLanguage.distinctUntilChanged().collect {
                 updateLocalizedContent()
             }
         }
@@ -366,7 +377,7 @@ class DashboardViewModel @Inject constructor(
                         is Result.Success -> {
                             val info = result.data
                             if (info.isUpdateAvailable && info.latestVersion != lastDismissed) {
-                                _uiState.value = _uiState.value.copy(updateInfo = info)
+                                _uiState.update { it.copy(updateInfo = info) }
                             }
                         }
                         is Result.Error -> {
@@ -384,7 +395,7 @@ class DashboardViewModel @Inject constructor(
         viewModelScope.launch(dispatcherProvider.io) {
             preferencesManager.setLastDismissedUpdateVersion(info.latestVersion)
         }
-        _uiState.value = _uiState.value.copy(updateInfo = null)
+        _uiState.update { it.copy(updateInfo = null) }
     }
 
     private fun updateLocalizedContent() {
@@ -393,11 +404,13 @@ class DashboardViewModel @Inject constructor(
         val dayOfYear = Calendar.getInstance().get(Calendar.DAY_OF_YEAR)
         val insp = inspirations[dayOfYear % inspirations.size]
 
-        _uiState.value = _uiState.value.copy(
-            greeting = computeGreeting(),
-            gregorianDate = gregorianFormat.format(Date()),
-            dailyAyahTranslation = if (isIndonesian) insp.translationId else insp.translationEn
-        )
+        _uiState.update {
+            it.copy(
+                greeting = computeGreeting(),
+                gregorianDate = gregorianFormat.format(Date()),
+                dailyAyahTranslation = if (isIndonesian) insp.translationId else insp.translationEn
+            )
+        }
 
         viewModelScope.launch(dispatcherProvider.io) {
             hadithRepository?.let { repo ->
@@ -425,13 +438,15 @@ class DashboardViewModel @Inject constructor(
                     } else {
                         hadith.narratorEn ?: ""
                     }
-                    _uiState.value = _uiState.value.copy(
-                        dailyHadithId = hadith.id,
-                        dailyHadithRef = ref,
-                        dailyHadithArabic = hadith.textAr,
-                        dailyHadithTranslation = translation,
-                        dailyHadithNarrator = narrator
-                    )
+                    _uiState.update {
+                        it.copy(
+                            dailyHadithId = hadith.id,
+                            dailyHadithRef = ref,
+                            dailyHadithArabic = hadith.textAr,
+                            dailyHadithTranslation = translation,
+                            dailyHadithNarrator = narrator
+                        )
+                    }
                 }
             }
         }
@@ -446,7 +461,7 @@ class DashboardViewModel @Inject constructor(
                 } else {
                     "Surah $sura"
                 }
-                _uiState.value = _uiState.value.copy(lastReadSuraName = suraName)
+                _uiState.update { it.copy(lastReadSuraName = suraName) }
             }
         }
 
@@ -467,7 +482,7 @@ class DashboardViewModel @Inject constructor(
                 }
             }
 
-            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+            _uiState.update { it.copy(isLoading = true, error = null) }
             val result = prayerTimesRepository.fetchPrayerTimes(
                 state.latitude, state.longitude,
                 todayStr, state.calculationMethod,
@@ -478,7 +493,7 @@ class DashboardViewModel @Inject constructor(
                     applyPrayerTimes(result.data)
                 }
                 is Result.Error -> {
-                    _uiState.value = _uiState.value.copy(isLoading = false, error = result.error)
+                    _uiState.update { it.copy(isLoading = false, error = result.error) }
                 }
             }
         }
@@ -519,12 +534,14 @@ class DashboardViewModel @Inject constructor(
         )
 
         val hijri = data.hijriDate ?: ""
-        _uiState.value = _uiState.value.copy(
-            isLoading = false,
-            error = null,
-            hijriDate = hijri,
-            prayerTimeline = timeline
-        )
+        _uiState.update {
+            it.copy(
+                isLoading = false,
+                error = null,
+                hijriDate = hijri,
+                prayerTimeline = timeline
+            )
+        }
         updateCountdown(times, timeline)
         if (enablePeriodicCountdown) {
             startCountdown(times, timeline)
@@ -537,7 +554,7 @@ class DashboardViewModel @Inject constructor(
 
         var nextPrayer: PrayerTimeEntry? = null
         for (pt in allTimes) {
-            val parts = pt.time.split(":")
+            val parts = pt.time.substringBefore(" ").split(":")
             if (parts.size == 2) {
                 val ptMinutes = parts[0].toIntOrNull()?.let {
                     it * 60 + (parts[1].toIntOrNull() ?: 0)
@@ -550,7 +567,7 @@ class DashboardViewModel @Inject constructor(
         }
         if (nextPrayer == null) nextPrayer = allTimes.first()
 
-        val parts = nextPrayer.time.split(":")
+        val parts = nextPrayer.time.substringBefore(" ").split(":")
         if (parts.size == 2) {
             val targetMinutes = parts[0].toIntOrNull()
                 ?.let { it * 60 + (parts[1].toIntOrNull() ?: 0) } ?: 0
@@ -568,13 +585,15 @@ class DashboardViewModel @Inject constructor(
                 else -> 0
             }
 
-            _uiState.value = _uiState.value.copy(
-                nextPrayerName = nextPrayer.name,
-                nextPrayerTime = nextPrayer.time,
-                countdown = "${hours}h ${mins}m",
-                prayerTimeline = timeline,
-                activePrayerIndex = activeIdx
-            )
+            _uiState.update {
+                it.copy(
+                    nextPrayerName = nextPrayer.name,
+                    nextPrayerTime = nextPrayer.time,
+                    countdown = "${hours}h ${mins}m",
+                    prayerTimeline = timeline,
+                    activePrayerIndex = activeIdx
+                )
+            }
         }
     }
 
