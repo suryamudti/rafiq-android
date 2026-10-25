@@ -1,7 +1,9 @@
 package com.smiledev.rafiq_quran.domain.util
 
 import com.smiledev.rafiq_quran.domain.model.GregorianDate
-import java.util.Calendar
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.todayIn
 
 fun interface TodayProvider {
     fun today(): GregorianDate
@@ -9,7 +11,7 @@ fun interface TodayProvider {
 
 object SystemTodayProvider : TodayProvider {
     override fun today(): GregorianDate {
-        val cal = Calendar.getInstance()
-        return GregorianDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + 1, cal.get(Calendar.DAY_OF_MONTH))
+        val today = Clock.System.todayIn(TimeZone.currentSystemDefault())
+        return GregorianDate(today.year, today.monthNumber, today.dayOfMonth)
     }
 }
