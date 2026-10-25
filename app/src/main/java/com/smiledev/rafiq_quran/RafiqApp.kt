@@ -3,9 +3,12 @@ package com.smiledev.rafiq_quran
 import android.app.Application
 import android.content.Context
 import android.os.Build
+import com.smiledev.rafiq_quran.di.koin.appKoinModules
 import com.smiledev.rafiq_quran.service.PrayerNotificationWorker
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.launch
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
 
 @HiltAndroidApp
 class RafiqApp : Application() {
@@ -15,6 +18,13 @@ class RafiqApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
+
+        // Initialize Koin Multiplatform
+        startKoin {
+            androidContext(this@RafiqApp)
+            modules(appKoinModules)
+        }
+
         // Crashlytics: only collect in non-debuggable builds. No-op if google-services.json is absent.
         runCatching {
             val debuggable = (applicationInfo.flags and android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE) != 0

@@ -5,7 +5,6 @@ plugins {
   alias(libs.plugins.kotlin.serialization)
   alias(libs.plugins.kapt)
   alias(libs.plugins.hilt)
-
 }
 
 android {
@@ -148,6 +147,17 @@ dependencies {
   implementation(libs.androidx.navigation3.ui)
   implementation(libs.androidx.navigation3.runtime)
   implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+
+  // Ktor & Serialization
+  implementation(libs.ktor.client.core)
+  implementation(libs.kotlinx.serialization.json)
+
+  // Koin Multiplatform
+  implementation(libs.koin.core)
+  implementation(libs.koin.android)
+  implementation(libs.koin.compose)
+  implementation(libs.koin.compose.viewmodel)
+  testImplementation(libs.koin.test)
 
   // Dagger Hilt
   implementation(libs.hilt.android)
