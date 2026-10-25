@@ -2,6 +2,7 @@ package com.smiledev.rafiq_quran.core
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 
 interface DispatcherProvider {
     val main: CoroutineDispatcher
