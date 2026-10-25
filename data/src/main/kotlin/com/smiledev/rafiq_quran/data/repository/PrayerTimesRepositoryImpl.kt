@@ -5,6 +5,7 @@ import com.smiledev.rafiq_quran.core.Result
 import com.smiledev.rafiq_quran.core.retryIO
 import com.smiledev.rafiq_quran.data.preferences.PreferencesManager
 import com.smiledev.rafiq_quran.data.remote.AladhanApi
+import com.smiledev.rafiq_quran.data.remote.AladhanDateDto
 import com.smiledev.rafiq_quran.data.toDomain
 import com.smiledev.rafiq_quran.domain.model.PrayerTimesData
 import com.smiledev.rafiq_quran.domain.repository.PrayerTimesRepository
@@ -23,8 +24,8 @@ class PrayerTimesRepositoryImpl @Inject constructor(
         date: String,
         method: Int
     ): PrayerTimesData? {
-        val cached = preferencesManager.getCachedPrayerTimes() ?: return null
-        return if (cached.isValidFor(date, lat, lon, method)) {
+        val cached = preferencesManager.getCachedPrayerTimes()
+        return if (cached != null && cached.isValidFor(date, lat, lon, method)) {
             cached.data
         } else {
             null
@@ -74,12 +75,11 @@ class PrayerTimesRepositoryImpl @Inject constructor(
         }
     }
 
-    private fun extractHijriDate(dateMap: Map<String, Any>?): String {
-        if (dateMap == null) return ""
-        val hijri = dateMap["hijri"] as? Map<*, *> ?: return ""
-        val day = hijri["day"] ?: ""
-        val month = (hijri["month"] as? Map<*, *>)?.get("en") ?: ""
-        val year = hijri["year"] ?: ""
-        return "$day $month $year"
+    private fun extractHijriDate(date: AladhanDateDto?): String {
+        val hijri = date?.hijri ?: return ""
+        val day = hijri.day
+        val month = hijri.month?.en ?: ""
+        val year = hijri.year
+        return "$day $month $year".trim()
     }
 }

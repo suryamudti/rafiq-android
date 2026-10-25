@@ -1,13 +1,15 @@
 package com.smiledev.rafiq_quran.data.remote
 
+import kotlinx.serialization.Serializable
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
 import javax.inject.Inject
 import javax.inject.Singleton
 
+@Serializable
 data class OverpassElement(
-    val type: String?,
+    val type: String? = null,
     val id: Long,
     val lat: Double? = null,
     val lon: Double? = null,
@@ -15,11 +17,13 @@ data class OverpassElement(
     val tags: Map<String, String>? = null
 )
 
+@Serializable
 data class OverpassCenter(
     val lat: Double,
     val lon: Double
 )
 
+@Serializable
 data class OverpassResponse(
     val elements: List<OverpassElement>
 )
