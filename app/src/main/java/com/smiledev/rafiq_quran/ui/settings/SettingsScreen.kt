@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation3.runtime.NavKey
+import com.smiledev.rafiq_quran.AppInfo
 import com.smiledev.rafiq_quran.AsmaulHusna
 import com.smiledev.rafiq_quran.BookmarkList
 import com.smiledev.rafiq_quran.HadithBooks
@@ -210,6 +211,7 @@ fun SettingsScreen(
             HorizontalDivider()
             Spacer(modifier = Modifier.height(8.dp))
             MoreFeatureItem(R.string.sources_and_authenticity) { onNavigate(Sources) }
+            MoreFeatureItem(R.string.about_app) { onNavigate(AppInfo) }
 
             Spacer(modifier = Modifier.height(16.dp))
             HorizontalDivider()

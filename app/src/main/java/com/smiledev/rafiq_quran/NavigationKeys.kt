@@ -31,3 +31,4 @@ import kotlinx.serialization.Serializable
 
 @Serializable data object Settings : NavKey
 @Serializable data object Sources : NavKey
+@Serializable data object AppInfo : NavKey

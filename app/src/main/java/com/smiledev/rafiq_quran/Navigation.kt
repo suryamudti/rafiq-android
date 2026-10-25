@@ -8,6 +8,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
+import com.smiledev.rafiq_quran.ui.appinfo.AppInfoScreen
 import com.smiledev.rafiq_quran.ui.calendar.IslamicCalendarScreen
 import com.smiledev.rafiq_quran.ui.dashboard.DashboardScreen
 import com.smiledev.rafiq_quran.ui.quran.QuranScreen
@@ -245,6 +246,12 @@ fun MainNavigation() {
         entry<Sources> {
           SourcesScreen(
             onBack = { backStack.removeLastOrNull() },
+            modifier = Modifier.safeDrawingPadding()
+          )
+        }
+        entry<AppInfo> {
+          AppInfoScreen(
+            onBackClick = { backStack.removeLastOrNull() },
             modifier = Modifier.safeDrawingPadding()
           )
         }
