@@ -1,16 +1,18 @@
-# 🕌 Rafiq - Islamic Lifestyle App for Android
+# 🕌 Rafiq - Islamic Lifestyle App for Android & iOS (Kotlin Multiplatform)
 
 <p align="center">
   <a href="https://github.com/suryamudti/rafiq-android/actions/workflows/pr-check.yml"><img src="https://github.com/suryamudti/rafiq-android/actions/workflows/pr-check.yml/badge.svg" alt="PR Check"/></a>
   <a href="https://github.com/suryamudti/rafiq-android/actions/workflows/release.yml"><img src="https://github.com/suryamudti/rafiq-android/actions/workflows/release.yml/badge.svg" alt="Release"/></a>
+  <a href="https://kotlinlang.org/docs/multiplatform.html"><img src="https://img.shields.io/badge/Kotlin%20Multiplatform-Android%20%7C%20iOS-7F52FF.svg?style=flat&logo=kotlin" alt="Kotlin Multiplatform"/></a>
   <a href="https://kotlinlang.org"><img src="https://img.shields.io/badge/Kotlin-2.1.20-blue.svg?style=flat&logo=kotlin" alt="Kotlin"/></a>
   <a href="https://developer.android.com/about/versions/marshmallow"><img src="https://img.shields.io/badge/Min%20SDK-23%2B-brightgreen.svg" alt="Min SDK"/></a>
   <a href="https://developer.android.com/jetpack/compose"><img src="https://img.shields.io/badge/Jetpack-Compose%20(M3)-4285F4.svg?style=flat&logo=android" alt="Jetpack Compose"/></a>
-  <a href="https://dagger.dev/hilt/"><img src="https://img.shields.io/badge/Hilt-2.56.2-orange.svg" alt="Hilt"/></a>
+  <a href="https://insert-koin.io/"><img src="https://img.shields.io/badge/Koin-4.0.2-orange.svg?style=flat" alt="Koin"/></a>
+  <a href="https://dagger.dev/hilt/"><img src="https://img.shields.io/badge/Hilt-2.56.2-yellow.svg" alt="Hilt"/></a>
 </p>
 
 <p align="center">
-<b>Rafiq</b> demonstrates modern Android development with Kotlin, Jetpack Compose (Material3), Coroutines, Flow, Hilt, Navigation3, Room, and WorkManager based on <b>MVVM Architecture</b> and <b>Clean Architecture</b> multi-module guidelines.
+<b>Rafiq</b> demonstrates modern cross-platform mobile development with <b>Kotlin Multiplatform (KMP)</b>, Compose Multiplatform, Jetpack Compose (Material3), Koin, Coroutines, Flow, Room KMP, and Ktor based on <b>Clean Architecture</b> and <b>MVVM</b> multi-module guidelines.
 </p>
 
 ---
@@ -35,9 +37,9 @@ Go to the [Releases](https://github.com/suryamudti/rafiq-android/releases) secti
 | :---: | :---: | :---: | :---: |
 | <img src="figure/mosques.png" width="220"/> | <img src="figure/hadith.png" width="220"/> | <img src="figure/prophets.png" width="220"/> | <img src="figure/calendar.png" width="220"/> |
 
-| Prayer Guidance | Sunnah Guidance |
-| :---: | :---: |
-| <img src="figure/prayerguidance.png" width="220"/> | <img src="figure/sunnahguidance.png" width="220"/> |
+| Prayer Guidance | Sunnah Guidance | Architecture & Info |
+| :---: | :---: | :---: |
+| <img src="figure/prayerguidance.png" width="220"/> | <img src="figure/sunnahguidance.png" width="220"/> | <img src="figure/appinfo.png" width="220"/> |
 
 ---
 
@@ -59,7 +61,9 @@ Go to the [Releases](https://github.com/suryamudti/rafiq-android/releases) secti
 | **📖 Prayer Guidance** | Step-by-step guidance for obligatory prayers (Subuh, Dzuhur, Ashar, Maghrib, Isya) with authentic hadith/verse dalil, Arabic recitation, translation, and movement illustrations. |
 | **🤲 Sunnah Guidance** | Comprehensive guide for recommended prayers (Tahajjud, Dhuha, Rawatib, Witr, Eid, etc.) with procedures, intentions, and virtues. |
 | **🔖 Bookmarked Verses** | Bookmark favorite verses saved locally in Room database. |
-| **📊 Prayer Tracker** | Daily prayer log screen with toggle switches to track daily worship. |
+| **📊 Prayer Tracker & Log** | Daily prayer log screen with toggle switches to track daily worship. |
+| **🧠 Hifz Memorization** | Memorization tracking tools for memorizing verses and chapters. |
+| **ℹ️ App & Architecture Info** | Shared multiplatform system overview, KMP layer information, and release details. |
 | **📚 Sources & Authenticity** | Full attribution and authenticity details for Quranic text, translations, hadith collections, and prayer time calculations. |
 | **🔔 Notifications** | Background prayer alarm notifications scheduled via WorkManager. |
 | **⚙️ Settings & Updates** | Language preference (Bahasa Indonesia / English), theme mode, dashboard customization, and in-app update checking via GitHub Releases & Google Play. |
@@ -68,60 +72,73 @@ Go to the [Releases](https://github.com/suryamudti/rafiq-android/releases) secti
 
 ## 🛠️ Tech Stack & Open-Source Libraries
 
-### Architecture & Core
-- **[Kotlin](https://kotlinlang.org/)** (2.1.20): Modern, expressive, and concise programming language.
+### Architecture & Multiplatform Core
+- **[Kotlin Multiplatform](https://kotlinlang.org/docs/multiplatform.html)** (2.1.20): Shared business logic and common codebase targeting Android and iOS.
 - **[Android Gradle Plugin](https://developer.android.com/build)** (8.9.2): Modern Android build pipeline.
 - **[Coroutines](https://github.com/Kotlin/kotlinx.coroutines)** + **[Flow](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/)**: Asynchronous and reactive programming streams.
-- **[Hilt](https://dagger.dev/hilt/)** (2.56.2): Standard dependency injection library for Android (KAPT).
+- **[Koin Multiplatform](https://insert-koin.io/)** (4.0.2): Multiplatform dependency injection across common, Android, and iOS targets.
+- **[Hilt](https://dagger.dev/hilt/)** (2.56.2): Android dependency injection framework (KAPT).
 - **[Navigation3](https://developer.android.com/guide/navigation)**: Type-safe Compose navigation using Kotlin `@Serializable` data tokens.
 - **MVVM Architecture + Repository Pattern**: Separation of concerns between UI, Domain, and Data layers.
 
 ### UI & Styling
-- **[Jetpack Compose](https://developer.android.com/jetpack/compose)**: Modern declarative UI toolkit.
+- **[Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform/)** (1.7.3): Declarative multiplatform UI framework for Android and iOS.
+- **[Jetpack Compose](https://developer.android.com/jetpack/compose)**: Modern declarative UI toolkit for Android.
 - **[Material Design 3](https://m3.material.io/)**: Modern design system, dynamic color schemes, and Islamic color palette.
 - **Custom Typography**: Arabic font support via `FontFamily(Font(R.font.me_quran))`.
 
 ### Data & Local Storage
-- **[Room Database](https://developer.android.com/training/data-storage/room)** (2.8.4): SQLite object mapping library for offline prayer logs, bookmarks, and translation databases.
-- **[DataStore Preferences](https://developer.android.com/topic/libraries/architecture/datastore)**: Type-safe key-value data storage for user preferences.
+- **[Room Database KMP](https://developer.android.com/training/data-storage/room)** (2.8.4): SQLite object mapping library with Bundled SQLite Driver.
+- **[DataStore Preferences](https://developer.android.com/topic/libraries/architecture/datastore)**: Multiplatform type-safe key-value data storage.
 
 ### Network & Media
-- **[Retrofit2](https://github.com/square/retrofit) & Gson**: Type-safe REST clients for Prayer Times, Tafsir (EQuran/IslamicApp), Metal spot prices, and Overpass mosque queries.
+- **[Ktor Client](https://ktor.io/)** (3.1.1): Multiplatform asynchronous HTTP client with `kotlinx.serialization`.
+- **[Retrofit2](https://github.com/square/retrofit) & Gson**: Type-safe REST clients for Prayer Times, Tafsir, and Metals spot prices.
 - **[OkHttp](https://square.github.io/okhttp/)**: HTTP client with logging interceptor.
 - **[Media3 ExoPlayer](https://developer.android.com/guide/topics/media/media3)**: Audio playback engine for streaming recitations.
 - **[Google Play Services Location](https://developers.google.com/android/reference/com/google/android/gms/location/package-summary)**: Fused location provider for nearby mosques.
 - **[MapLibre Native](https://maplibre.org/)** (13.5.1): MapLibre rendering with GeoJson clustering for nearby mosques (BSD-2, no API key/billing).
-- **[Firebase Crashlytics](https://firebase.google.com/docs/crashlytics)** (BoM 34.4.0): Crash reporting for release/staging builds; requires `app/google-services.json` (gitignored, plugins applied only when present).
+- **[Firebase Crashlytics](https://firebase.google.com/docs/crashlytics)** (BoM 34.4.0): Crash reporting for release/staging builds.
 - **[WorkManager](https://developer.android.com/topic/libraries/architecture/workmanager)**: Deferrable background task management for notifications.
 
 ---
 
 ## 🏗️ Architecture & Modularization
 
-Rafiq follows **Clean Architecture** and Google's recommended [Guide to app architecture](https://developer.android.com/topic/architecture) with a **Multi-Module** layout.
+Rafiq follows **Clean Architecture** and Google's recommended [Guide to app architecture](https://developer.android.com/topic/architecture) with a **Kotlin Multiplatform (KMP)** multi-module layout.
 
 ### Multi-Module Structure
 
 ```
 rafiq-android/
-├── :app          # Application module (UI screens, ViewModels, Hilt DI, Services, Navigation3)
-├── :data         # Data layer (Room DAOs, Databases, Retrofit APIs, DataStore, Repository Impls)
-├── :domain       # Domain layer (Repository interfaces, Use cases, Domain models)
-└── :core         # Core utilities (Result pattern, AppError, DispatcherProvider, DatabaseCopier)
+├── :app          # Application module (Android UI screens, ViewModels, Navigation, Services)
+├── :composeApp   # Multiplatform UI & Platform bridges (Compose Multiplatform, shared components, iOS entry point)
+├── :data         # Data layer (Room DAOs, Databases, Ktor/Retrofit APIs, DataStore, Repository Impls)
+├── :domain       # Pure Kotlin Multiplatform domain layer (Repository interfaces, Use cases, Domain models)
+├── :core         # Pure Kotlin Multiplatform core layer (Result pattern, AppError, DispatcherProvider, DatabaseCopier)
+└── iosApp/       # Native iOS application wrapper (SwiftUI lifecycle, AppDelegate, Info.plist)
 ```
 
 ### Layer Architecture Overview
 
 ```mermaid
 graph TD
-    subgraph UI ["UI Layer (:app)"]
-        UI_Screen["Jetpack Compose Screens"]
-        UI_VM["Hilt ViewModels"]
+    subgraph UI ["UI Layer (:app & :composeApp)"]
+        UI_Screen["Jetpack Compose / Compose Multiplatform Screens"]
+        UI_VM["ViewModels & State Holders"]
+        UI_Shared["Shared Design System & Components"]
         UI_Screen -->|"Observe UI State"| UI_VM
-        UI_VM -->|"Emit Intent / User Events"| UI_Screen
+        UI_VM -->|"Emit Intent / Events"| UI_Screen
     end
 
-    subgraph Domain ["Domain Layer (:domain)"]
+    subgraph iOS ["iOS Host (iosApp/)"]
+        IOS_App["SwiftUI App & ContentView"]
+        IOS_VC["ComposeUIViewController Bridge"]
+        IOS_App --> IOS_VC
+        IOS_VC --> UI_Shared
+    end
+
+    subgraph Domain ["Domain Layer (:domain - KMP)"]
         Domain_UC["Use Cases"]
         Domain_Model["Domain Models"]
         Domain_Repo["Repository Interfaces"]
@@ -129,20 +146,20 @@ graph TD
         Domain_UC -->|"Invokes"| Domain_Repo
     end
 
-    subgraph Data ["Data Layer (:data)"]
+    subgraph Data ["Data Layer (:data - KMP)"]
         Data_RepoImpl["Repository Implementations"]
-        Data_Room["Room Local Databases"]
-        Data_Retrofit["Retrofit Remote APIs"]
-        Data_Store["DataStore Preferences"]
+        Data_Room["Room KMP Local Databases"]
+        Data_Network["Ktor / Retrofit Remote APIs"]
+        Data_Store["DataStore KMP Preferences"]
 
         Domain_Repo -.->|"implements"| Data_RepoImpl
         Data_RepoImpl --> Data_Room
-        Data_RepoImpl --> Data_Retrofit
+        Data_RepoImpl --> Data_Network
         Data_RepoImpl --> Data_Store
     end
 
-    subgraph Core ["Core Layer (:core)"]
-        Core_Utils["Result&lt;T&gt;, AppError, DispatcherProvider"]
+    subgraph Core ["Core Layer (:core - KMP)"]
+        Core_Utils["Result&lt;T&gt;, AppError, DispatcherProvider, DatabaseCopier"]
     end
 
     UI --> Core
@@ -151,8 +168,9 @@ graph TD
 ```
 
 ### Architecture Highlights
+- **Kotlin Multiplatform Ready**: Pure KMP in `:core`, `:domain`, and `:composeApp`, supporting Android and iOS targets (`iosArm64`, `iosSimulatorArm64`).
 - **Offline-First**: Bundled SQLite database assets (`quran-uthmani.db`, translation databases, and `hadith.db`) ensure complete offline Quran and Hadith reading without requiring an initial network load.
-- **Single Source of Truth**: Repositories in `:data` manage caching between remote REST APIs (Aladhan, Metals.live) and local databases.
+- **Single Source of Truth**: Repositories manage caching between remote APIs and local databases.
 - **Unidirectional Data Flow (UDF)**: ViewModels expose immutable `StateFlow<UiState>` to Compose UI elements while handling events asynchronously via Coroutines.
 
 ---
@@ -176,6 +194,7 @@ graph TD
 - **Android Studio** Ladybug (2024.2+) or newer
 - **JDK**: 17+
 - **Android SDK**: 36 (minSdk 23, targetSdk 36)
+- **Xcode** (for iOS build): 15+ (macOS runner)
 - **Environment**: Set `JAVA_HOME` pointing to JDK / Android Studio JBR.
 
 ### Build APK
@@ -200,8 +219,8 @@ adb -s emulator-5554 install -r app\build\outputs\apk\debug\app-debug.apk
 ### Running Tests
 
 ```powershell
-.\gradlew testDebug                 # unit tests (JVM)
-.\gradlew connectedDebugAndroidTest # instrumented tests (emulator required)
+.\gradlew testDebugUnitTest         # Run multi-module unit tests (JVM / Android)
+.\gradlew :composeApp:testDebugUnitTest # Run Compose Multiplatform tests
 ```
 
 ---
@@ -220,7 +239,6 @@ You may obtain a copy of the License at
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and limitations under the License.
+See the License for the specific language governing permissions and
+limitations under the License.
 ```
-
-

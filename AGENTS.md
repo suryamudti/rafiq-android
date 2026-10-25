@@ -1,4 +1,4 @@
-# Rafiq Android — Agent Guidance
+# Rafiq Android & iOS — Agent Guidance
 
 ## Build & Run
 
@@ -14,15 +14,25 @@ Emulator: `Medium_Phone_API_35`. No lint or typecheck commands currently set up.
 ## Tests
 
 ```powershell
-.\gradlew testDebug                # unit tests (JVM)
-.\gradlew connectedDebugAndroidTest # instrumented tests (emulator required)
+# Unit tests across modules (JVM / Android)
+.\gradlew testDebugUnitTest
+
+# Multiplatform Compose tests
+.\gradlew :composeApp:testDebugUnitTest
+
+# Compile iOS Simulator target
+.\gradlew :composeApp:compileKotlinIosSimulatorArm64
+
+# Instrumented Android tests (emulator required)
+.\gradlew connectedDebugAndroidTest
 ```
 
 ## Architecture Quirks
 
-- **Navigation3** — type-safe nav via `@Serializable data object/class` NavKey tokens in `NavigationKeys.kt`. All 15 routes use `entryProvider { entry<Key> { ... } }` pattern in `Navigation.kt`.
-- **Hilt (KAPT)** — NOT KSP. Uses `kapt` plugin with `correctErrorTypes=true`. The warning "Kapt currently doesn't support language version 2.0+. Falling back to 1.9." is harmless.
-- **Kotlin 2.1.20** — Upgraded from 2.0.0 for MapLibre Native 13.5.1 (compiled with Kotlin 2.1). Room 2.8.4 still compatible; R8 warns `kotlin metadata` but debug `assembleDebug` succeeds. Downgrade note: Room 2.6.1 metadata 2.0.0 cap vs Kotlin 2.0.10+ 2.1.0 was fixed by Room 2.8.4.
+- **Kotlin Multiplatform (KMP)** — Project supports both Android and iOS targets (`iosArm64`, `iosSimulatorArm64`). Pure KMP code in `:core` and `:domain`. Multiplatform UI and platform bridges in `:composeApp`.
+- **Navigation3** — type-safe nav via `@Serializable data object/class` NavKey tokens in `NavigationKeys.kt`. All routes use `entryProvider { entry<Key> { ... } }` pattern in `Navigation.kt`.
+- **Hilt (KAPT) & Koin Multiplatform** — Koin 4.0.2 is available for multiplatform dependency injection, while Hilt 2.56.2 manages Android-specific dependencies in `:app`.
+- **Kotlin 2.1.20** — Upgraded from 2.0.0 for MapLibre Native 13.5.1 (compiled with Kotlin 2.1). Room 2.8.4 still compatible.
 - **AGP 8.9.2** — Hilt 2.56.2 requires AGP 8.x, NOT 9.x.
 - **Material Icons: core only** — `material-icons-core`, never use extended set. Available: `DateRange`, `Face`, `Favorite`, `List` (AutoMirrored), `LocationOn`, `Notifications`, `Person`, `Place`, `PlayArrow`, `Refresh`, `ShoppingCart`, `Star`.
 - **DataStore** — all user prefs via `PreferencesManager`, NOT SharedPreferences.
@@ -53,12 +63,14 @@ Emulator: `Medium_Phone_API_35`. No lint or typecheck commands currently set up.
 
 Nearby Mosque uses `MapLibre Native 13.5.1` (`org.maplibre.gl:android-sdk`, style `https://demotiles.maplibre.org/styles/osm-bright-gl-style/style.json`) via `MapView` + `AndroidView` + `GeoJsonSource`/`SymbolLayer`/`CircleLayer` clustering (`IconFactory`, `CameraUpdateFactory`). No API key/billing, no Play Services gate. `MapView` lifecycle via `DefaultLifecycleObserver` forwarding `onCreate/onDestroy` (`LifecycleEventObserver`). `RafiqApp.onCreate` no longer touches map tiles.
 
-## File Structure (Multi-module)
+## File Structure (Multi-module & KMP)
 
-- `:core` — `Result.kt`, `AppError.kt`, `DispatcherProvider`, `retryIO`, `LocaleUtil`, `DatabaseCopier`
-- `:domain` — Repository interfaces, use cases, domain models (Surah, Ayah, PrayerTimings, etc.)
-- `:data` — Repository Impl classes, Room DBs/DAOs, Retrofit APIs, DataStore PreferencesManager
-- `:app` — DI (`di/AppModule.kt`), UI (`ui/<feature>/Screen.kt` + `ViewModel.kt`), `theme/`, `service/`, `Navigation.kt`
+- `:core` — Pure Kotlin Multiplatform (`Result.kt`, `AppError.kt`, `DispatcherProvider`, `retryIO`, `LocaleUtil`, `DatabaseCopier`)
+- `:domain` — Pure Kotlin Multiplatform repository interfaces, use cases, domain models
+- `:data` — Repository Impl classes, Room DBs/DAOs, Ktor/Retrofit APIs, DataStore PreferencesManager
+- `:composeApp` — Multiplatform UI design system, shared composables (`RafiqMultiplatformTheme`, `RafiqSharedCard`, `AppInfoScreen`), platform bridges (`AudioPlayerController`, `TasbihFeedbackController`, `ExternalPlatformActions`, `CompassBridge`), and iOS entry point (`MainViewController.kt`)
+- `:app` — Android Application module: DI (`di/AppModule.kt`), UI screens, ViewModels, Android services, `Navigation.kt`
+- `iosApp/` — Native iOS Xcode application project with SwiftUI lifecycle (`iOSApp.swift`, `ContentView.swift`, `Info.plist`)
 - `thoughts/` — plan docs, NOT source code
 
 ## Key Constraints
