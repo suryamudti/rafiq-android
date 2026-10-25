@@ -48,7 +48,6 @@ class DatabaseCopier @Inject constructor(private val context: Context) {
             return false
         }
         val flatName = dbName.replace('/', '_')
-        val assetPath = "quran-data/$dbName"
         val dbFile = context.translationDbFile(flatName)
 
         copyDatabaseIfNeeded(dbName)
@@ -82,5 +81,4 @@ class DatabaseCopier @Inject constructor(private val context: Context) {
             false
         }
     }
-
 }

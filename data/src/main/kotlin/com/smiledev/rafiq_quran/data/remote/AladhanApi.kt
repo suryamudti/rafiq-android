@@ -1,11 +1,13 @@
 package com.smiledev.rafiq_quran.data.remote
 
+import kotlinx.serialization.Serializable
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 import javax.inject.Inject
 import javax.inject.Singleton
 
+@Serializable
 data class PrayerTimings(
     val Imsak: String,
     val Fajr: String,
@@ -16,11 +18,30 @@ data class PrayerTimings(
     val Isha: String
 )
 
-data class PrayerTimesData(
-    val timings: PrayerTimings,
-    val date: Map<String, Any>?
+@Serializable
+data class HijriMonthDto(
+    val en: String = ""
 )
 
+@Serializable
+data class HijriDateDto(
+    val day: String = "",
+    val month: HijriMonthDto? = null,
+    val year: String = ""
+)
+
+@Serializable
+data class AladhanDateDto(
+    val hijri: HijriDateDto? = null
+)
+
+@Serializable
+data class PrayerTimesData(
+    val timings: PrayerTimings,
+    val date: AladhanDateDto? = null
+)
+
+@Serializable
 data class PrayerTimesResponse(
     val code: Int,
     val status: String,
