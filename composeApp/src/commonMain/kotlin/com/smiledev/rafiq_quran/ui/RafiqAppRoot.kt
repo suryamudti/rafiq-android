@@ -15,14 +15,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.smiledev.rafiq_quran.ui.appinfo.AppInfoScreen
 import com.smiledev.rafiq_quran.ui.asmaulhusna.SharedAsmaulHusnaScreen
+import com.smiledev.rafiq_quran.ui.guidance.SharedGuidanceScreen
 import com.smiledev.rafiq_quran.ui.prophets.SharedProphetsScreen
 import com.smiledev.rafiq_quran.ui.tasbih.SharedTasbihScreen
 import com.smiledev.rafiq_quran.ui.theme.RafiqMultiplatformTheme
+import com.smiledev.rafiq_quran.ui.zakat.SharedZakatScreen
 
 enum class RafiqAppTab(val title: String) {
     TASBIH("Digital Tasbih"),
     ASMAUL_HUSNA("Asmaul Husna"),
     PROPHETS("25 Prophets"),
+    ZAKAT("Zakat Calculator"),
+    GUIDANCE("Prayer & Sunnah"),
     APP_INFO("App Info")
 }
 
@@ -62,6 +66,16 @@ fun RafiqAppRoot(
                 }
                 RafiqAppTab.PROPHETS -> {
                     SharedProphetsScreen(
+                        onBackClick = onNavigateBack
+                    )
+                }
+                RafiqAppTab.ZAKAT -> {
+                    SharedZakatScreen(
+                        onBackClick = onNavigateBack
+                    )
+                }
+                RafiqAppTab.GUIDANCE -> {
+                    SharedGuidanceScreen(
                         onBackClick = onNavigateBack
                     )
                 }
