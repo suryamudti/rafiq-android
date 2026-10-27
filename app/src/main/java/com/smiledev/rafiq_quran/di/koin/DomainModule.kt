@@ -12,6 +12,7 @@ import com.smiledev.rafiq_quran.domain.usecase.GetProphetsUseCase
 import com.smiledev.rafiq_quran.domain.usecase.GetRecitersUseCase
 import com.smiledev.rafiq_quran.domain.usecase.GetSunnahGuidanceUseCase
 import com.smiledev.rafiq_quran.domain.usecase.GetSurahsUseCase
+import com.smiledev.rafiq_quran.domain.usecase.GetTasbihItemsUseCase
 import com.smiledev.rafiq_quran.domain.util.SystemTodayProvider
 import com.smiledev.rafiq_quran.domain.util.TodayProvider
 import org.koin.dsl.module
@@ -31,4 +32,5 @@ val domainModule = module {
     factory { GetRecitersUseCase(reciterRepository = get()) }
     factory { GetSunnahGuidanceUseCase(repository = get()) }
     factory { GetSurahsUseCase(quranRepository = get()) }
+    factory { GetTasbihItemsUseCase(tasbihRepository = get()) }
 }
