@@ -17,11 +17,13 @@ import com.smiledev.rafiq_quran.ui.appinfo.AppInfoScreen
 import com.smiledev.rafiq_quran.ui.asmaulhusna.SharedAsmaulHusnaScreen
 import com.smiledev.rafiq_quran.ui.guidance.SharedGuidanceScreen
 import com.smiledev.rafiq_quran.ui.prophets.SharedProphetsScreen
+import com.smiledev.rafiq_quran.ui.quran.SharedQuranScreen
 import com.smiledev.rafiq_quran.ui.tasbih.SharedTasbihScreen
 import com.smiledev.rafiq_quran.ui.theme.RafiqMultiplatformTheme
 import com.smiledev.rafiq_quran.ui.zakat.SharedZakatScreen
 
 enum class RafiqAppTab(val title: String) {
+    QURAN("Al-Qur'an"),
     TASBIH("Digital Tasbih"),
     ASMAUL_HUSNA("Asmaul Husna"),
     PROPHETS("25 Prophets"),
@@ -32,7 +34,7 @@ enum class RafiqAppTab(val title: String) {
 
 @Composable
 fun RafiqAppRoot(
-    initialTab: RafiqAppTab = RafiqAppTab.TASBIH,
+    initialTab: RafiqAppTab = RafiqAppTab.QURAN,
     onNavigateBack: (() -> Unit)? = null
 ) {
     var selectedTab by remember { mutableStateOf(initialTab) }
@@ -54,6 +56,11 @@ fun RafiqAppRoot(
             }
 
             when (selectedTab) {
+                RafiqAppTab.QURAN -> {
+                    SharedQuranScreen(
+                        onBackClick = onNavigateBack
+                    )
+                }
                 RafiqAppTab.TASBIH -> {
                     SharedTasbihScreen(
                         onBackClick = onNavigateBack
