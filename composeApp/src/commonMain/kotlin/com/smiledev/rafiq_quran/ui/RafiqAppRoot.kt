@@ -3,6 +3,7 @@ package com.smiledev.rafiq_quran.ui
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
@@ -37,10 +38,14 @@ fun RafiqAppRoot(
     initialTab: RafiqAppTab = RafiqAppTab.QURAN,
     onNavigateBack: (() -> Unit)? = null
 ) {
-    var selectedTab by remember { mutableStateOf(initialTab) }
+    var selectedTab by remember(initialTab) { mutableStateOf(initialTab) }
 
     RafiqMultiplatformTheme {
-        Column(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .statusBarsPadding()
+        ) {
             ScrollableTabRow(
                 selectedTabIndex = selectedTab.ordinal,
                 edgePadding = 16.dp,
