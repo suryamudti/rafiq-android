@@ -50,6 +50,9 @@ import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import com.smiledev.rafiq_quran.ui.designsystem.animation.RafiqMotion
+import com.smiledev.rafiq_quran.ui.designsystem.animation.rafiqPressable
+
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation3.runtime.NavKey
@@ -398,14 +401,14 @@ private fun DashboardHeader(
             }
 
             Row(verticalAlignment = Alignment.CenterVertically) {
-                IconButton(onClick = onBookmarksClick) {
+                IconButton(onClick = onBookmarksClick, modifier = Modifier.clip(CircleShape).rafiqPressable(targetScale = RafiqMotion.IconButtonPressScale)) {
                     Icon(
                         painter = painterResource(R.drawable.ic_bookmark),
                         contentDescription = stringResource(R.string.bookmarks),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
-                IconButton(onClick = onSettingsClick) {
+                IconButton(onClick = onSettingsClick, modifier = Modifier.clip(CircleShape).rafiqPressable(targetScale = RafiqMotion.IconButtonPressScale)) {
                     Icon(
                         painter = painterResource(R.drawable.ic_settings),
                         contentDescription = stringResource(R.string.settings),
@@ -476,6 +479,12 @@ private fun HeroPrayerCard(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(22.dp))
+            .rafiqPressable(targetScale = RafiqMotion.CardPressScale)
+            .border(
+                width = 1.dp,
+                color = Color.White.copy(alpha = 0.25f),
+                shape = RoundedCornerShape(22.dp)
+            )
             .clickable(onClick = onPrayerTimesClick),
         shape = RoundedCornerShape(22.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
@@ -548,6 +557,7 @@ private fun HeroPrayerCard(
                                     text = state.nextPrayerTime,
                                     fontSize = 34.sp,
                                     fontWeight = FontWeight.Bold,
+                                    letterSpacing = (-1).sp,
                                     color = Color.White
                                 )
                             }
@@ -649,13 +659,19 @@ private fun LastReadQuranCard(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
+            .clip(RoundedCornerShape(18.dp))
+            .rafiqPressable(targetScale = RafiqMotion.CardPressScale)
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                shape = RoundedCornerShape(18.dp)
+            )
             .clickable(onClick = onContinueReading),
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(18.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
         Row(
             modifier = Modifier
@@ -763,7 +779,8 @@ private fun QuickServiceCard(
 ) {
     Column(
         modifier = modifier
-            .clip(RoundedCornerShape(12.dp))
+            .clip(RoundedCornerShape(14.dp))
+            .rafiqPressable(targetScale = RafiqMotion.ChipPressScale)
             .clickable(onClick = onClick)
             .padding(vertical = 4.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -807,12 +824,18 @@ private fun DailyAyahCard(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(18.dp))
+            .rafiqPressable(targetScale = RafiqMotion.CardPressScale)
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                shape = RoundedCornerShape(18.dp)
+            )
             .clickable(onClick = onReadClick),
         shape = RoundedCornerShape(18.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
         Column(
             modifier = Modifier
@@ -855,7 +878,7 @@ private fun DailyAyahCard(
                     style = TextStyle(
                         fontFamily = FontFamily(Font(R.font.me_quran)),
                         fontSize = 20.sp,
-                        lineHeight = 36.sp,
+                        lineHeight = 42.sp,
                         textDirection = TextDirection.Rtl,
                         textAlign = TextAlign.Right
                     ),
@@ -890,12 +913,18 @@ private fun DailyHadithCard(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(18.dp))
+            .rafiqPressable(targetScale = RafiqMotion.CardPressScale)
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                shape = RoundedCornerShape(18.dp)
+            )
             .clickable(onClick = onReadClick),
         shape = RoundedCornerShape(18.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
         Column(
             modifier = Modifier
@@ -938,7 +967,7 @@ private fun DailyHadithCard(
                         style = TextStyle(
                             fontFamily = FontFamily(Font(R.font.me_quran)),
                             fontSize = 20.sp,
-                            lineHeight = 36.sp,
+                            lineHeight = 42.sp,
                             textDirection = TextDirection.Rtl,
                             textAlign = TextAlign.Right
                         ),
@@ -999,13 +1028,19 @@ private fun TodayPrayerStatusCard(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
+            .clip(RoundedCornerShape(18.dp))
+            .rafiqPressable(targetScale = RafiqMotion.CardPressScale)
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                shape = RoundedCornerShape(18.dp)
+            )
             .clickable(onClick = onOpenLog),
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(18.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
         Row(
             modifier = Modifier

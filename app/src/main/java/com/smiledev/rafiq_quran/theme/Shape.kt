@@ -7,12 +7,16 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.unit.dp
 
+/**
+ * Emil Kowalski design engineering shape system with refined, harmonic corner radiuses.
+ */
 @Immutable
 data class RafiqCustomShapes(
-    val small: CornerBasedShape = RoundedCornerShape(8.dp),
-    val medium: CornerBasedShape = RoundedCornerShape(12.dp),
-    val large: CornerBasedShape = RoundedCornerShape(16.dp),
-    val extraLarge: CornerBasedShape = RoundedCornerShape(22.dp),
+    val extraSmall: CornerBasedShape = RoundedCornerShape(6.dp),
+    val small: CornerBasedShape = RoundedCornerShape(10.dp),
+    val medium: CornerBasedShape = RoundedCornerShape(16.dp),
+    val large: CornerBasedShape = RoundedCornerShape(20.dp),
+    val extraLarge: CornerBasedShape = RoundedCornerShape(26.dp),
     val pill: CornerBasedShape = CircleShape
 )
 

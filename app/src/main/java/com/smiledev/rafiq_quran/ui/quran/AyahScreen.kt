@@ -84,6 +84,10 @@ import com.smiledev.rafiq_quran.domain.model.Ayah
 import com.smiledev.rafiq_quran.domain.model.Surah
 import com.smiledev.rafiq_quran.theme.ArabicFontFamily
 import com.smiledev.rafiq_quran.theme.RafiqTheme
+import androidx.compose.foundation.shape.CircleShape
+import com.smiledev.rafiq_quran.ui.designsystem.animation.RafiqMotion
+import com.smiledev.rafiq_quran.ui.designsystem.animation.rafiqPressable
+
 import com.smiledev.rafiq_quran.ui.common.formatDuration
 import com.smiledev.rafiq_quran.ui.common.rememberNotificationPermissionRequester
 import com.smiledev.rafiq_quran.ui.designsystem.appbar.RafiqTopAppBar
@@ -631,10 +635,13 @@ private fun VerseCard(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            // Action buttons
+            // Tactile Action buttons (Emil Kowalski micro-interactions)
             IconButton(
                 onClick = onToggleAudio,
-                modifier = Modifier.size(36.dp)
+                modifier = Modifier
+                    .size(36.dp)
+                    .clip(CircleShape)
+                    .rafiqPressable(targetScale = RafiqMotion.IconButtonPressScale)
             ) {
                 Icon(
                     imageVector = Icons.Filled.PlayArrow,
@@ -646,7 +653,10 @@ private fun VerseCard(
 
             IconButton(
                 onClick = onToggleBookmark,
-                modifier = Modifier.size(36.dp)
+                modifier = Modifier
+                    .size(36.dp)
+                    .clip(CircleShape)
+                    .rafiqPressable(targetScale = RafiqMotion.IconButtonPressScale)
             ) {
                 Icon(
                     imageVector = Icons.Filled.Favorite,
@@ -658,7 +668,10 @@ private fun VerseCard(
 
             IconButton(
                 onClick = onToggleTafsir,
-                modifier = Modifier.size(36.dp)
+                modifier = Modifier
+                    .size(36.dp)
+                    .clip(CircleShape)
+                    .rafiqPressable(targetScale = RafiqMotion.IconButtonPressScale)
             ) {
                 Icon(
                     imageVector = if (tafsirExpanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
@@ -670,7 +683,10 @@ private fun VerseCard(
 
             IconButton(
                 onClick = onOpenActions,
-                modifier = Modifier.size(36.dp)
+                modifier = Modifier
+                    .size(36.dp)
+                    .clip(CircleShape)
+                    .rafiqPressable(targetScale = RafiqMotion.IconButtonPressScale)
             ) {
                 Icon(
                     imageVector = Icons.Filled.MoreVert,
@@ -692,7 +708,7 @@ private fun VerseCard(
                     fontSize = ayahFontSize.sp,
                     fontFamily = ArabicFontFamily,
                     textDirection = TextDirection.Rtl,
-                    lineHeight = (ayahFontSize * 1.85).sp,
+                    lineHeight = (ayahFontSize * 1.95).sp,
                     textAlign = TextAlign.Right
                 ),
                 modifier = Modifier.fillMaxWidth()
@@ -924,9 +940,16 @@ private fun AudioPlayerBottomBar(
     modifier: Modifier = Modifier
 ) {
     Surface(
-        modifier = modifier.fillMaxWidth(),
-        tonalElevation = RafiqTheme.elevation.high,
-        shadowElevation = RafiqTheme.elevation.default
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp, vertical = 6.dp),
+        shape = RoundedCornerShape(24.dp),
+        tonalElevation = 6.dp,
+        shadowElevation = 8.dp,
+        border = androidx.compose.foundation.BorderStroke(
+            1.dp,
+            MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
+        )
     ) {
         Column(
             modifier = Modifier
@@ -954,7 +977,13 @@ private fun AudioPlayerBottomBar(
                     )
                 }
 
-                IconButton(onClick = onPlayPrevious, modifier = Modifier.size(36.dp)) {
+                IconButton(
+                    onClick = onPlayPrevious,
+                    modifier = Modifier
+                        .size(36.dp)
+                        .clip(CircleShape)
+                        .rafiqPressable(targetScale = RafiqMotion.IconButtonPressScale)
+                ) {
                     Text("⏮", fontSize = 18.sp)
                 }
 
@@ -962,10 +991,12 @@ private fun AudioPlayerBottomBar(
                     onClick = onTogglePlayPause,
                     modifier = Modifier
                         .size(44.dp)
+                        .clip(CircleShape)
                         .background(
                             MaterialTheme.colorScheme.primary,
                             RoundedCornerShape(22.dp)
                         )
+                        .rafiqPressable(targetScale = RafiqMotion.IconButtonPressScale)
                 ) {
                     Icon(
                         imageVector = Icons.Filled.PlayArrow,
@@ -975,11 +1006,23 @@ private fun AudioPlayerBottomBar(
                     )
                 }
 
-                IconButton(onClick = onPlayNext, modifier = Modifier.size(36.dp)) {
+                IconButton(
+                    onClick = onPlayNext,
+                    modifier = Modifier
+                        .size(36.dp)
+                        .clip(CircleShape)
+                        .rafiqPressable(targetScale = RafiqMotion.IconButtonPressScale)
+                ) {
                     Text("⏭", fontSize = 18.sp)
                 }
 
-                IconButton(onClick = onStop, modifier = Modifier.size(36.dp)) {
+                IconButton(
+                    onClick = onStop,
+                    modifier = Modifier
+                        .size(36.dp)
+                        .clip(CircleShape)
+                        .rafiqPressable(targetScale = RafiqMotion.IconButtonPressScale)
+                ) {
                     Text("✕", fontSize = 16.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }

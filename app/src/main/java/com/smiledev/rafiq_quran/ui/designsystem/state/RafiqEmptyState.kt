@@ -1,5 +1,6 @@
 package com.smiledev.rafiq_quran.ui.designsystem.state
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -7,15 +8,21 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.smiledev.rafiq_quran.theme.RafiqTheme
+import com.smiledev.rafiq_quran.ui.designsystem.button.RafiqButton
 
 @Composable
 fun RafiqEmptyState(
@@ -29,35 +36,60 @@ fun RafiqEmptyState(
 ) {
     val content = @Composable {
         Column(
-            modifier = Modifier.padding(RafiqTheme.spacing.l),
+            modifier = Modifier
+                .padding(RafiqTheme.spacing.xl)
+                .widthIn(max = 320.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
             if (icon != null) {
-                icon()
-                Spacer(modifier = Modifier.height(RafiqTheme.spacing.m))
+                // Elegant concentric layered icon container with soft background tint
+                Box(
+                    modifier = Modifier
+                        .size(76.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.08f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(54.dp)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        icon()
+                    }
+                }
+                Spacer(modifier = Modifier.height(RafiqTheme.spacing.l))
             }
+
             Text(
                 text = title,
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
+                letterSpacing = (-0.1).sp,
                 color = MaterialTheme.colorScheme.onSurface,
                 textAlign = TextAlign.Center
             )
+
             if (description != null) {
                 Spacer(modifier = Modifier.height(RafiqTheme.spacing.s))
                 Text(
                     text = description,
                     style = MaterialTheme.typography.bodyMedium,
+                    lineHeight = 22.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center
                 )
             }
+
             if (actionLabel != null && onActionClick != null) {
-                Spacer(modifier = Modifier.height(RafiqTheme.spacing.l))
-                Button(onClick = onActionClick) {
-                    Text(text = actionLabel)
-                }
+                Spacer(modifier = Modifier.height(RafiqTheme.spacing.xl))
+                RafiqButton(
+                    text = actionLabel,
+                    onClick = onActionClick
+                )
             }
         }
     }

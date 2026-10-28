@@ -24,6 +24,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import com.smiledev.rafiq_quran.R
 import com.smiledev.rafiq_quran.theme.RafiqTheme
+import com.smiledev.rafiq_quran.ui.designsystem.animation.RafiqMotion
+import com.smiledev.rafiq_quran.ui.designsystem.animation.rafiqPressable
 
 @Composable
 fun RafiqBackButton(
@@ -41,6 +43,7 @@ fun RafiqBackButton(
                 role = Role.Button
                 contentDescription = backText
             }
+            .rafiqPressable(targetScale = RafiqMotion.DefaultPressScale)
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
