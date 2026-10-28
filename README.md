@@ -1,4 +1,4 @@
-# 🕌 Rafiq - Islamic Lifestyle App for Android & iOS (Kotlin Multiplatform)
+# 🕋 Rafiq - Islamic Lifestyle App for Android & iOS (Kotlin Multiplatform)
 
 <p align="center">
   <a href="https://github.com/suryamudti/rafiq-android/actions/workflows/pr-check.yml"><img src="https://github.com/suryamudti/rafiq-android/actions/workflows/pr-check.yml/badge.svg" alt="PR Check"/></a>
@@ -12,7 +12,7 @@
 </p>
 
 <p align="center">
-<b>Rafiq</b> demonstrates modern cross-platform mobile development with <b>Kotlin Multiplatform (KMP)</b>, Compose Multiplatform, Jetpack Compose (Material3), Koin, Coroutines, Flow, Room KMP, and Ktor based on <b>Clean Architecture</b> and <b>MVVM</b> multi-module guidelines.
+<b>Rafiq</b> demonstrates modern cross-platform mobile development with <b>Kotlin Multiplatform (KMP)</b>, Compose Multiplatform, Jetpack Compose (Material3), Koin, Coroutines, Flow, Room KMP, and Ktor based on <b>Clean Architecture</b> and <b>MVVM</b> multi-module guidelines, elevated by <b>Emil Kowalski's Design Engineering philosophy</b> and responsive spring micro-interactions.
 </p>
 
 ---
@@ -37,9 +37,9 @@ Go to the [Releases](https://github.com/suryamudti/rafiq-android/releases) secti
 | :---: | :---: | :---: | :---: |
 | <img src="figure/mosques.png" width="220"/> | <img src="figure/hadith.png" width="220"/> | <img src="figure/prophets.png" width="220"/> | <img src="figure/calendar.png" width="220"/> |
 
-| Prayer Guidance | Sunnah Guidance | Architecture & Info |
-| :---: | :---: | :---: |
-| <img src="figure/prayerguidance.png" width="220"/> | <img src="figure/sunnahguidance.png" width="220"/> | <img src="figure/appinfo.png" width="220"/> |
+| Prayer Log & Tracker | Prayer Guidance | Sunnah Guidance | Architecture & Info |
+| :---: | :---: | :---: | :---: |
+| <img src="figure/prayerlog.png" width="220"/> | <img src="figure/prayerguidance.png" width="220"/> | <img src="figure/sunnahguidance.png" width="220"/> | <img src="figure/appinfo.png" width="220"/> |
 
 ---
 
@@ -47,22 +47,22 @@ Go to the [Releases](https://github.com/suryamudti/rafiq-android/releases) secti
 
 | Feature | Description |
 |---|---|
-| **🕌 Prayer Times** | Real-time prayer calculation via Aladhan API with date navigation and countdown timer. |
+| **🕌 Prayer Times** | Real-time prayer calculation via Aladhan API with date navigation, countdown timer, and interactive prayer status cards. |
 | **📖 Quran & Tafsir** | 114 Surahs with Uthmani Arabic text, Indonesian/English translations, per-ayah tafsir, sajdah markers, memorization mode, and global ayah search across the full corpus. |
 | **🔊 Recitations** | Audio streaming of 15 reciters via Media3 ExoPlayer with background playback. |
 | **🧭 Qibla Compass** | 16-point direction name, live heading/bearing readout, turn left/right offset indicator (proximity within 5°), Kaaba info card, and a Google Maps button. |
-| **✨ 99 Names of Allah** | Complete list with Arabic typography, transliterations, meanings, and search functionality. |
-| **📅 Islamic Calendar** | Tabular Hijri dates, monthly grid with event/fasting dots, day sheet, upcoming observances (57 events), and sunnah fasting recommendations. |
+| **✨ Asmaul Husna (99 Names of Allah)** | Complete list with Arabic typography, transliterations, meanings, audio, search functionality, and grid/list view toggle. |
+| **📅 Islamic Calendar (`IslamicCalendar`)** | Tabular Hijri dates, monthly grid with event/fasting dots, day sheet, upcoming observances (57 events), and sunnah fasting recommendations. Available in native Android and Compose Multiplatform. |
 | **📜 Prophet Stories** | Biographies of 25 Prophets with facts, key events, lessons, and verse references; Arabic/Latin search, favorites filter, share, adjustable story font size, and prev/next navigation. |
-| **📚 Hadith Library** | Full Sahih Bukhari and Sahih Muslim corpus (Arabic + Indonesian/English translations) with books, per-book hadith lists, detail view, and global hadith search with highlighted results. |
-| **💰 Zakat Calculator** | Nisab threshold logic with instant results computed locally while gold/silver prices refresh in the background from the Metals.live API (in-memory cache). |
-| **📿 Tasbih Counter & History** | Digital zikr counter with haptic feedback, customizable targets, and daily worship history log. |
+| **📚 Hadith Library** | Full canonical corpus (Sahih Bukhari, Sahih Muslim, 40 Hadith Nawawi, Sunan Abi Dawud, etc.) with book filtering, thematic topic explorer, Hadith of the Day, and reading modal with adjustable typography. |
+| **💰 Zakat Calculator (`ZakatCalculator`)** | Nisab threshold logic with instant results computed locally while gold/silver prices refresh in the background from the Metals.live API (in-memory cache). |
+| **📿 Tasbih Counter & History (`TasbihHistory`)** | Digital zikr counter with responsive spring haptics, tactile compression, customizable targets, preset zikr selections, and daily worship history log. |
 | **🗺️ Nearby Mosques** | Location-aware MapLibre view (no Play Services) with nearby mosque discovery via a reliable Overpass POST API with mirror failover. |
 | **📖 Prayer Guidance** | Step-by-step guidance for obligatory prayers (Subuh, Dzuhur, Ashar, Maghrib, Isya) with authentic hadith/verse dalil, Arabic recitation, translation, and movement illustrations. |
 | **🤲 Sunnah Guidance** | Comprehensive guide for recommended prayers (Tahajjud, Dhuha, Rawatib, Witr, Eid, etc.) with procedures, intentions, and virtues. |
-| **🔖 Bookmarked Verses** | Bookmark favorite verses saved locally in Room database. |
-| **📊 Prayer Tracker & Log** | Daily prayer log screen with toggle switches to track daily worship. |
-| **🧠 Hifz Memorization** | Memorization tracking tools for memorizing verses and chapters. |
+| **📊 Prayer Tracker & Log (`PrayerLog`)** | Daily prayer tracker with intuitive completion toggles and statistics to build consistent daily worship habits. |
+| **🔖 Bookmarked Verses** | Bookmark favorite verses saved locally in Room database for quick offline access. |
+| **🧠 Hifz Memorization** | Memorization tracking tools for memorizing verses and chapters with hide/reveal assistance. |
 | **ℹ️ App & Architecture Info** | Shared multiplatform system overview, KMP layer information, and release details. |
 | **📚 Sources & Authenticity** | Full attribution and authenticity details for Quranic text, translations, hadith collections, and prayer time calculations. |
 | **🔔 Notifications** | Background prayer alarm notifications scheduled via WorkManager. |
@@ -81,11 +81,12 @@ Go to the [Releases](https://github.com/suryamudti/rafiq-android/releases) secti
 - **[Navigation3](https://developer.android.com/guide/navigation)**: Type-safe Compose navigation using Kotlin `@Serializable` data tokens.
 - **MVVM Architecture + Repository Pattern**: Separation of concerns between UI, Domain, and Data layers.
 
-### UI & Styling
-- **[Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform/)** (1.7.3): Declarative multiplatform UI framework for Android and iOS.
-- **[Jetpack Compose](https://developer.android.com/jetpack/compose)**: Modern declarative UI toolkit for Android.
-- **[Material Design 3](https://m3.material.io/)**: Modern design system, dynamic color schemes, and Islamic color palette.
-- **Custom Typography**: Arabic font support via `FontFamily(Font(R.font.me_quran))`.
+### UI & Styling (Design Engineering)
+- **[Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform/)** (1.7.3): Declarative multiplatform UI framework for Android and iOS (`:composeApp`).
+- **[Jetpack Compose](https://developer.android.com/jetpack/compose)**: Modern declarative UI toolkit for Android (`:app`).
+- **[Material Design 3](https://m3.material.io/)**: Modern design system, dynamic color schemes, and Islamic emerald & gold palette.
+- **Emil Kowalski Design Principles**: Tactile interaction physics via `Modifier.rafiqPressable()` with spring dynamics (`dampingRatio = 0.75f`, `stiffness = 400f`), Apple cubic bezier easing (`AppleEaseOut`), continuous curvature geometry (squircle pills & cards), and specular highlight borders (`RafiqSpecularHighlightBorder`).
+- **Custom Typography**: Arabic font support via `FontFamily(Font(R.font.me_quran))` and negative title letter tracking for refined optical balance.
 
 ### Data & Local Storage
 - **[Room Database KMP](https://developer.android.com/training/data-storage/room)** (2.8.4): SQLite object mapping library with Bundled SQLite Driver.
@@ -159,7 +160,7 @@ graph TD
     end
 
     subgraph Core ["Core Layer (:core - KMP)"]
-        Core_Utils["Result&lt;T&gt;, AppError, DispatcherProvider, DatabaseCopier"]
+        Core_Utils["Result pattern, AppError, DispatcherProvider, DatabaseCopier"]
     end
 
     UI --> Core
@@ -168,7 +169,7 @@ graph TD
 ```
 
 ### Architecture Highlights
-- **Kotlin Multiplatform Ready**: Pure KMP in `:core`, `:domain`, and `:composeApp`, supporting Android and iOS targets (`iosArm64`, `iosSimulatorArm64`).
+- **Kotlin Multiplatform Ready**: Pure KMP in `:core`, `:domain`, and `:composeApp`, supporting Android and iOS targets (`iosArm64`, `iosSimulatorArm64`). Shared multiplatform UI covers Quran, Hadith, Calendar, Tasbih, Asmaul Husna, Prophets, Zakat, and Guidance.
 - **Offline-First**: Bundled SQLite database assets (`quran-uthmani.db`, translation databases, and `hadith.db`) ensure complete offline Quran and Hadith reading without requiring an initial network load.
 - **Single Source of Truth**: Repositories manage caching between remote APIs and local databases.
 - **Unidirectional Data Flow (UDF)**: ViewModels expose immutable `StateFlow<UiState>` to Compose UI elements while handling events asynchronously via Coroutines.
