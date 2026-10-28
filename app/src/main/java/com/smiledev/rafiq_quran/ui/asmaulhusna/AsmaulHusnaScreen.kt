@@ -2,6 +2,7 @@ package com.smiledev.rafiq_quran.ui.asmaulhusna
 
 import android.content.Intent
 import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -23,25 +24,19 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -55,7 +50,6 @@ import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -66,8 +60,17 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.smiledev.rafiq_quran.R
 import com.smiledev.rafiq_quran.theme.ArabicFontFamily
 import com.smiledev.rafiq_quran.theme.RafiqTheme
+import com.smiledev.rafiq_quran.ui.designsystem.animation.RafiqMotion
+import com.smiledev.rafiq_quran.ui.designsystem.animation.rafiqPressable
 import com.smiledev.rafiq_quran.ui.designsystem.appbar.RafiqTopAppBar
+import com.smiledev.rafiq_quran.ui.designsystem.button.RafiqButton
+import com.smiledev.rafiq_quran.ui.designsystem.button.RafiqIconButton
+import com.smiledev.rafiq_quran.ui.designsystem.button.RafiqOutlinedButton
+import com.smiledev.rafiq_quran.ui.designsystem.button.RafiqTextButton
+import com.smiledev.rafiq_quran.ui.designsystem.card.RafiqCard
+import com.smiledev.rafiq_quran.ui.designsystem.chip.RafiqFilterChip
 import com.smiledev.rafiq_quran.ui.designsystem.input.RafiqSearchBar
+import com.smiledev.rafiq_quran.ui.designsystem.state.RafiqEmptyState
 import com.smiledev.rafiq_quran.ui.designsystem.state.RafiqErrorState
 import com.smiledev.rafiq_quran.ui.designsystem.state.RafiqLoadingIndicator
 
@@ -99,19 +102,13 @@ fun AsmaulHusnaScreen(
                 title = stringResource(R.string.asmaul_husna_title),
                 onBack = onBack,
                 actions = {
-                    TextButton(
+                    RafiqTextButton(
+                        text = stringResource(R.string.asmaul_husna_random),
                         onClick = {
                             viewModel.getRandomName()?.let { viewModel.selectName(it) }
                         }
-                    ) {
-                        Text(
-                            text = stringResource(R.string.asmaul_husna_random),
-                            style = MaterialTheme.typography.labelLarge,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                    }
-                    IconButton(onClick = { viewModel.setGridView(!state.isGridView) }) {
+                    )
+                    RafiqIconButton(onClick = { viewModel.setGridView(!state.isGridView) }) {
                         Text(
                             text = if (state.isGridView) "☰" else "⊞",
                             fontSize = 20.sp,
@@ -157,33 +154,29 @@ fun AsmaulHusnaScreen(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 2.dp),
+                            .padding(horizontal = RafiqTheme.spacing.l, vertical = RafiqTheme.spacing.xs),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            FilterChip(
+                        Row(horizontalArrangement = Arrangement.spacedBy(RafiqTheme.spacing.s)) {
+                            RafiqFilterChip(
                                 selected = !state.showFavoritesOnly,
                                 onClick = { viewModel.setShowFavoritesOnly(false) },
-                                label = { Text(stringResource(R.string.asmaul_husna_all)) }
+                                label = stringResource(R.string.asmaul_husna_all)
                             )
-                            FilterChip(
+                            RafiqFilterChip(
                                 selected = state.showFavoritesOnly,
                                 onClick = { viewModel.setShowFavoritesOnly(true) },
-                                label = {
-                                    Text(
-                                        "${stringResource(R.string.asmaul_husna_favorites)} (${state.favoriteIds.size})"
-                                    )
-                                },
+                                label = "${stringResource(R.string.asmaul_husna_favorites)} (${state.favoriteIds.size})",
                                 leadingIcon = {
                                     Icon(
                                         imageVector = Icons.Filled.Favorite,
                                         contentDescription = null,
                                         modifier = Modifier.size(16.dp),
                                         tint = if (state.showFavoritesOnly) {
-                                            MaterialTheme.colorScheme.primary
+                                            MaterialTheme.colorScheme.onPrimary
                                         } else {
-                                            MaterialTheme.colorScheme.onSurfaceVariant
+                                            MaterialTheme.colorScheme.primary
                                         }
                                     )
                                 }
@@ -204,117 +197,118 @@ fun AsmaulHusnaScreen(
                     // Daily Reflection Card (shown when not searching and not favorite-filtered)
                     if (state.searchQuery.isEmpty() && !state.showFavoritesOnly && dailyName != null) {
                         val isFavDaily = dailyName.id in state.favoriteIds
-                        Card(
+                        RafiqCard(
+                            onClick = { viewModel.selectName(dailyName) },
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 16.dp, vertical = 6.dp)
-                                .clickable { viewModel.selectName(dailyName) },
+                                .padding(
+                                    horizontal = RafiqTheme.spacing.l,
+                                    vertical = RafiqTheme.spacing.xs
+                                ),
+                            shape = RafiqTheme.customShapes.large,
                             colors = CardDefaults.cardColors(
                                 containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.35f)
                             ),
-                            shape = RoundedCornerShape(16.dp)
+                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.25f)),
+                            contentPadding = RafiqTheme.spacing.l
                         ) {
-                            Column(modifier = Modifier.padding(16.dp)) {
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Text(
-                                        text = "✨ ${stringResource(R.string.asmaul_husna_daily_title)}",
-                                        style = MaterialTheme.typography.labelLarge,
-                                        fontWeight = FontWeight.Bold,
-                                        color = MaterialTheme.colorScheme.primary
-                                    )
-                                    Icon(
-                                        imageVector = Icons.Filled.Favorite,
-                                        contentDescription = "Favorite",
-                                        modifier = Modifier
-                                            .size(20.dp)
-                                            .clickable { viewModel.toggleFavorite(dailyName.id) },
-                                        tint = if (isFavDaily) {
-                                            MaterialTheme.colorScheme.primary
-                                        } else {
-                                            MaterialTheme.colorScheme.outline
-                                        }
-                                    )
-                                }
-                                Spacer(Modifier.height(8.dp))
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.SpaceBetween
-                                ) {
-                                    Column(modifier = Modifier.weight(1f)) {
-                                        Text(
-                                            text = "${dailyName.id}. ${dailyName.transliteration}",
-                                            style = MaterialTheme.typography.titleLarge,
-                                            fontWeight = FontWeight.Bold,
-                                            color = MaterialTheme.colorScheme.onSurface
-                                        )
-                                        Text(
-                                            text = if (locale == "id") dailyName.meaningId else dailyName.meaningEn,
-                                            style = MaterialTheme.typography.bodyMedium,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                            maxLines = 2,
-                                            overflow = TextOverflow.Ellipsis
-                                        )
-                                        Spacer(Modifier.height(4.dp))
-                                        Text(
-                                            text = stringResource(R.string.asmaul_husna_reflect),
-                                            style = MaterialTheme.typography.labelMedium,
-                                            fontWeight = FontWeight.SemiBold,
-                                            color = MaterialTheme.colorScheme.primary
-                                        )
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = "✨ ${stringResource(R.string.asmaul_husna_daily_title)}",
+                                    style = MaterialTheme.typography.labelLarge,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                                Icon(
+                                    imageVector = Icons.Filled.Favorite,
+                                    contentDescription = "Favorite",
+                                    modifier = Modifier
+                                        .size(22.dp)
+                                        .rafiqPressable(targetScale = RafiqMotion.IconButtonPressScale)
+                                        .clickable { viewModel.toggleFavorite(dailyName.id) },
+                                    tint = if (isFavDaily) {
+                                        MaterialTheme.colorScheme.primary
+                                    } else {
+                                        MaterialTheme.colorScheme.outline
                                     }
-                                    Spacer(Modifier.width(12.dp))
+                                )
+                            }
+                            Spacer(Modifier.height(RafiqTheme.spacing.s))
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Column(modifier = Modifier.weight(1f)) {
                                     Text(
-                                        text = dailyName.arabic,
-                                        fontFamily = arabicFont,
-                                        fontSize = 32.sp,
+                                        text = "${dailyName.id}. ${dailyName.transliteration}",
+                                        style = MaterialTheme.typography.titleLarge,
                                         fontWeight = FontWeight.Bold,
+                                        letterSpacing = (-0.1).sp,
+                                        color = MaterialTheme.colorScheme.onSurface
+                                    )
+                                    Text(
+                                        text = if (locale == "id") dailyName.meaningId else dailyName.meaningEn,
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        maxLines = 2,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                    Spacer(Modifier.height(RafiqTheme.spacing.xs))
+                                    Text(
+                                        text = stringResource(R.string.asmaul_husna_reflect),
+                                        style = MaterialTheme.typography.labelMedium,
+                                        fontWeight = FontWeight.SemiBold,
                                         color = MaterialTheme.colorScheme.primary
                                     )
                                 }
+                                Spacer(Modifier.width(RafiqTheme.spacing.m))
+                                Text(
+                                    text = dailyName.arabic,
+                                    fontFamily = arabicFont,
+                                    fontSize = 32.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
                             }
                         }
                     }
 
                     // Content: Grid or List
                     if (filtered.isEmpty()) {
-                        Box(
+                        RafiqEmptyState(
+                            title = stringResource(R.string.no_names_found),
                             modifier = Modifier
-                                .fillMaxSize()
-                                .padding(32.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = stringResource(R.string.no_names_found),
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
+                                .fillMaxWidth()
+                                .weight(1f),
+                            fullScreen = false
+                        )
                     } else if (state.isGridView) {
                         LazyVerticalGrid(
                             columns = GridCells.Fixed(2),
                             modifier = Modifier.fillMaxSize(),
-                            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                            contentPadding = PaddingValues(
+                                horizontal = RafiqTheme.spacing.m,
+                                vertical = RafiqTheme.spacing.s
+                            ),
+                            horizontalArrangement = Arrangement.spacedBy(RafiqTheme.spacing.s),
+                            verticalArrangement = Arrangement.spacedBy(RafiqTheme.spacing.s)
                         ) {
                             items(filtered, key = { it.id }) { item ->
                                 val isFav = item.id in state.favoriteIds
-                                Card(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .clickable { viewModel.selectName(item) },
-                                    shape = RoundedCornerShape(14.dp),
-                                    elevation = CardDefaults.cardElevation(1.dp)
+                                RafiqCard(
+                                    onClick = { viewModel.selectName(item) },
+                                    modifier = Modifier.fillMaxWidth(),
+                                    shape = RafiqTheme.customShapes.large,
+                                    border = BorderStroke(1.dp, RafiqTheme.extendedColors.cardBorder),
+                                    contentPadding = RafiqTheme.spacing.m
                                 ) {
                                     Column(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(12.dp),
+                                        modifier = Modifier.fillMaxWidth(),
                                         horizontalAlignment = Alignment.CenterHorizontally
                                     ) {
                                         Row(
@@ -341,6 +335,7 @@ fun AsmaulHusnaScreen(
                                                 contentDescription = "Favorite",
                                                 modifier = Modifier
                                                     .size(20.dp)
+                                                    .rafiqPressable(targetScale = RafiqMotion.IconButtonPressScale)
                                                     .clickable { viewModel.toggleFavorite(item.id) },
                                                 tint = if (isFav) {
                                                     MaterialTheme.colorScheme.primary
@@ -349,7 +344,7 @@ fun AsmaulHusnaScreen(
                                                 }
                                             )
                                         }
-                                        Spacer(Modifier.height(4.dp))
+                                        Spacer(Modifier.height(RafiqTheme.spacing.xs))
                                         Text(
                                             text = item.arabic,
                                             fontFamily = arabicFont,
@@ -358,7 +353,7 @@ fun AsmaulHusnaScreen(
                                             color = MaterialTheme.colorScheme.onSurface,
                                             textAlign = TextAlign.Center
                                         )
-                                        Spacer(Modifier.height(4.dp))
+                                        Spacer(Modifier.height(RafiqTheme.spacing.xs))
                                         Text(
                                             text = item.transliteration,
                                             style = MaterialTheme.typography.titleSmall,
@@ -383,22 +378,23 @@ fun AsmaulHusnaScreen(
                     } else {
                         LazyColumn(
                             modifier = Modifier.fillMaxSize(),
-                            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 6.dp),
-                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                            contentPadding = PaddingValues(
+                                horizontal = RafiqTheme.spacing.l,
+                                vertical = RafiqTheme.spacing.s
+                            ),
+                            verticalArrangement = Arrangement.spacedBy(RafiqTheme.spacing.s)
                         ) {
                             items(filtered, key = { it.id }) { item ->
                                 val isFav = item.id in state.favoriteIds
-                                Card(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .clickable { viewModel.selectName(item) },
-                                    shape = RoundedCornerShape(14.dp),
-                                    elevation = CardDefaults.cardElevation(1.dp)
+                                RafiqCard(
+                                    onClick = { viewModel.selectName(item) },
+                                    modifier = Modifier.fillMaxWidth(),
+                                    shape = RafiqTheme.customShapes.medium,
+                                    border = BorderStroke(1.dp, RafiqTheme.extendedColors.cardBorder),
+                                    contentPadding = RafiqTheme.spacing.m
                                 ) {
                                     Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(14.dp),
+                                        modifier = Modifier.fillMaxWidth(),
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
                                         Box(
@@ -415,7 +411,7 @@ fun AsmaulHusnaScreen(
                                                 color = MaterialTheme.colorScheme.onPrimaryContainer
                                             )
                                         }
-                                        Spacer(Modifier.width(14.dp))
+                                        Spacer(Modifier.width(RafiqTheme.spacing.m))
                                         Column(modifier = Modifier.weight(1f)) {
                                             Text(
                                                 text = item.transliteration,
@@ -429,7 +425,7 @@ fun AsmaulHusnaScreen(
                                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                                             )
                                         }
-                                        Spacer(Modifier.width(8.dp))
+                                        Spacer(Modifier.width(RafiqTheme.spacing.s))
                                         Column(horizontalAlignment = Alignment.End) {
                                             Text(
                                                 text = item.arabic,
@@ -438,12 +434,13 @@ fun AsmaulHusnaScreen(
                                                 fontWeight = FontWeight.Bold,
                                                 color = MaterialTheme.colorScheme.onSurface
                                             )
-                                            Spacer(Modifier.height(4.dp))
+                                            Spacer(Modifier.height(RafiqTheme.spacing.xxs))
                                             Icon(
                                                 imageVector = Icons.Filled.Favorite,
                                                 contentDescription = "Favorite",
                                                 modifier = Modifier
                                                     .size(20.dp)
+                                                    .rafiqPressable(targetScale = RafiqMotion.IconButtonPressScale)
                                                     .clickable { viewModel.toggleFavorite(item.id) },
                                                 tint = if (isFav) {
                                                     MaterialTheme.colorScheme.primary
@@ -478,7 +475,7 @@ fun AsmaulHusnaScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .verticalScroll(rememberScrollState())
-                    .padding(horizontal = 24.dp)
+                    .padding(horizontal = RafiqTheme.spacing.xl)
                     .padding(bottom = 36.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -490,7 +487,7 @@ fun AsmaulHusnaScreen(
                 ) {
                     Box(
                         modifier = Modifier
-                            .clip(RoundedCornerShape(8.dp))
+                            .clip(RafiqTheme.customShapes.pill)
                             .background(MaterialTheme.colorScheme.primaryContainer)
                             .padding(horizontal = 10.dp, vertical = 4.dp)
                     ) {
@@ -501,7 +498,7 @@ fun AsmaulHusnaScreen(
                             color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                     }
-                    IconButton(onClick = { viewModel.toggleFavorite(selected.id) }) {
+                    RafiqIconButton(onClick = { viewModel.toggleFavorite(selected.id) }) {
                         Icon(
                             imageVector = Icons.Filled.Favorite,
                             contentDescription = "Favorite",
@@ -514,7 +511,7 @@ fun AsmaulHusnaScreen(
                     }
                 }
 
-                Spacer(Modifier.height(12.dp))
+                Spacer(Modifier.height(RafiqTheme.spacing.m))
 
                 // Arabic Calligraphy
                 Text(
@@ -526,7 +523,7 @@ fun AsmaulHusnaScreen(
                     textAlign = TextAlign.Center
                 )
 
-                Spacer(Modifier.height(6.dp))
+                Spacer(Modifier.height(RafiqTheme.spacing.xs))
 
                 // Transliteration
                 Text(
@@ -537,7 +534,7 @@ fun AsmaulHusnaScreen(
                     color = MaterialTheme.colorScheme.onSurface
                 )
 
-                Spacer(Modifier.height(4.dp))
+                Spacer(Modifier.height(RafiqTheme.spacing.xxs))
 
                 // Meaning
                 Text(
@@ -547,25 +544,26 @@ fun AsmaulHusnaScreen(
                     textAlign = TextAlign.Center
                 )
 
-                Spacer(Modifier.height(20.dp))
+                Spacer(Modifier.height(RafiqTheme.spacing.xl))
 
                 // Virtues & Benefits (Fadhilah)
                 if (benefit.isNotBlank()) {
                     OutlinedCard(
                         modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(16.dp),
+                        shape = RafiqTheme.customShapes.large,
                         colors = CardDefaults.outlinedCardColors(
                             containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.25f)
-                        )
+                        ),
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
                     ) {
-                        Column(modifier = Modifier.padding(16.dp)) {
+                        Column(modifier = Modifier.padding(RafiqTheme.spacing.l)) {
                             Text(
                                 text = stringResource(R.string.asmaul_husna_benefits_title),
                                 style = MaterialTheme.typography.titleSmall,
                                 fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.primary
                             )
-                            Spacer(Modifier.height(6.dp))
+                            Spacer(Modifier.height(RafiqTheme.spacing.xs))
                             Text(
                                 text = benefit,
                                 style = MaterialTheme.typography.bodyMedium,
@@ -573,21 +571,22 @@ fun AsmaulHusnaScreen(
                             )
                         }
                     }
-                    Spacer(Modifier.height(16.dp))
+                    Spacer(Modifier.height(RafiqTheme.spacing.l))
                 }
 
                 // Interactive Dhikr Counter
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(16.dp),
+                    shape = RafiqTheme.customShapes.large,
                     colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant
-                    )
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f)
+                    ),
+                    border = BorderStroke(1.dp, RafiqTheme.extendedColors.cardBorder)
                 ) {
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(16.dp),
+                            .padding(RafiqTheme.spacing.l),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
@@ -596,14 +595,15 @@ fun AsmaulHusnaScreen(
                             fontWeight = FontWeight.SemiBold,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
-                        Spacer(Modifier.height(12.dp))
+                        Spacer(Modifier.height(RafiqTheme.spacing.m))
 
-                        // Large tap target for counting
+                        // Large tactile tap target for counting with instant spring physics
                         Box(
                             modifier = Modifier
                                 .size(110.dp)
                                 .clip(CircleShape)
                                 .background(MaterialTheme.colorScheme.primary)
+                                .rafiqPressable(targetScale = 0.90f)
                                 .clickable {
                                     viewModel.incrementDhikr()
                                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -625,7 +625,7 @@ fun AsmaulHusnaScreen(
                             }
                         }
 
-                        Spacer(Modifier.height(8.dp))
+                        Spacer(Modifier.height(RafiqTheme.spacing.s))
                         Text(
                             text = stringResource(R.string.asmaul_husna_tap_to_count),
                             style = MaterialTheme.typography.bodySmall,
@@ -633,18 +633,17 @@ fun AsmaulHusnaScreen(
                         )
 
                         if (state.dhikrCount > 0) {
-                            Spacer(Modifier.height(4.dp))
-                            TextButton(onClick = { viewModel.resetDhikr() }) {
-                                Text(
-                                    text = stringResource(R.string.reset),
-                                    color = MaterialTheme.colorScheme.error
-                                )
-                            }
+                            Spacer(Modifier.height(RafiqTheme.spacing.xs))
+                            RafiqTextButton(
+                                text = stringResource(R.string.reset),
+                                color = MaterialTheme.colorScheme.error,
+                                onClick = { viewModel.resetDhikr() }
+                            )
                         }
                     }
                 }
 
-                Spacer(Modifier.height(20.dp))
+                Spacer(Modifier.height(RafiqTheme.spacing.xl))
 
                 // Actions: Copy and Share
                 val benefitsTitle = stringResource(R.string.asmaul_husna_benefits_title)
@@ -660,10 +659,11 @@ fun AsmaulHusnaScreen(
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    horizontalArrangement = Arrangement.spacedBy(RafiqTheme.spacing.m)
                 ) {
-                    OutlinedButton(
+                    RafiqOutlinedButton(
                         modifier = Modifier.weight(1f),
+                        text = stringResource(R.string.asmaul_husna_copy),
                         onClick = {
                             clipboardManager.setText(AnnotatedString(shareFormattedText))
                             Toast.makeText(
@@ -672,12 +672,11 @@ fun AsmaulHusnaScreen(
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
-                    ) {
-                        Text(stringResource(R.string.asmaul_husna_copy))
-                    }
+                    )
 
-                    Button(
+                    RafiqButton(
                         modifier = Modifier.weight(1f),
+                        text = stringResource(R.string.asmaul_husna_share),
                         onClick = {
                             val sendIntent = Intent(Intent.ACTION_SEND).apply {
                                 putExtra(Intent.EXTRA_TEXT, shareFormattedText)
@@ -686,12 +685,9 @@ fun AsmaulHusnaScreen(
                             val shareIntent = Intent.createChooser(sendIntent, null)
                             context.startActivity(shareIntent)
                         }
-                    ) {
-                        Text(stringResource(R.string.asmaul_husna_share))
-                    }
+                    )
                 }
             }
         }
     }
 }
-

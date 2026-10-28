@@ -1,10 +1,13 @@
 package com.smiledev.rafiq_quran.ui.tasbih
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -64,11 +67,15 @@ import androidx.compose.ui.unit.sp
 import com.smiledev.rafiq_quran.domain.model.TasbihItem
 import com.smiledev.rafiq_quran.platform.TasbihFeedbackController
 import com.smiledev.rafiq_quran.platform.rememberTasbihFeedbackController
+import com.smiledev.rafiq_quran.ui.components.RafiqSharedBackButton
 import com.smiledev.rafiq_quran.ui.components.RafiqSharedBadge
 import com.smiledev.rafiq_quran.ui.components.RafiqSharedCard
 import com.smiledev.rafiq_quran.ui.components.RafiqSharedHeader
+import com.smiledev.rafiq_quran.ui.theme.AppleSpringSpec
 import com.smiledev.rafiq_quran.ui.theme.PrimaryTeal
+import com.smiledev.rafiq_quran.ui.theme.RafiqMultiplatformTheme
 import com.smiledev.rafiq_quran.ui.theme.SecondaryGold
+import com.smiledev.rafiq_quran.ui.theme.rafiqPressable
 
 @Composable
 fun SharedTasbihScreen(
@@ -86,21 +93,13 @@ fun SharedTasbihScreen(
                 title = "Digital Tasbih",
                 subtitle = "Lap ${state.lap}",
                 navigationIcon = onBackClick?.let { action ->
-                    {
-                        IconButton(onClick = action) {
-                            Text(
-                                text = "←",
-                                style = MaterialTheme.typography.titleLarge,
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
-                        }
-                    }
+                    { RafiqSharedBackButton(onClick = action) }
                 },
                 actions = {
                     RafiqSharedBadge(
                         text = "Total: ${state.totalCount}",
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                        containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.70f),
+                        contentColor = MaterialTheme.colorScheme.primary
                     )
                 }
             )
@@ -116,7 +115,7 @@ fun SharedTasbihScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Target Reached Banner
+            // Target Reached Banner with specular highlight
             AnimatedVisibility(
                 visible = state.isTargetReachedNotice,
                 enter = fadeIn(),
@@ -124,15 +123,16 @@ fun SharedTasbihScreen(
             ) {
                 Card(
                     colors = CardDefaults.cardColors(
-                        containerColor = SecondaryGold.copy(alpha = 0.15f)
+                        containerColor = SecondaryGold.copy(alpha = 0.12f)
                     ),
-                    shape = RoundedCornerShape(12.dp),
+                    shape = RoundedCornerShape(16.dp),
+                    border = BorderStroke(1.dp, SecondaryGold.copy(alpha = 0.35f)),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 10.dp),
+                            .padding(horizontal = 16.dp, vertical = 12.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
@@ -154,14 +154,12 @@ fun SharedTasbihScreen(
 
             // Dhikr Arabic Card
             RafiqSharedCard(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { viewModel.setDhikrPickerVisible(true) }
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(20.dp),
+                contentPadding = 18.dp
             ) {
                 Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
@@ -180,7 +178,9 @@ fun SharedTasbihScreen(
 
                     Text(
                         text = state.selectedItem.transliteration,
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            letterSpacing = (-0.2).sp
+                        ),
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.onSurface
                     )
@@ -190,32 +190,31 @@ fun SharedTasbihScreen(
                     Text(
                         text = state.selectedItem.meaningEn,
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.70f),
                         textAlign = TextAlign.Center
                     )
 
-                    Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = Modifier.height(12.dp))
 
                     OutlinedButton(
                         onClick = { viewModel.setDhikrPickerVisible(true) },
                         shape = RoundedCornerShape(20.dp),
-                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 6.dp)
+                        modifier = Modifier.rafiqPressable(targetScale = 0.94f),
+                        contentPadding = PaddingValues(horizontal = 18.dp, vertical = 6.dp)
                     ) {
-                        Text("Select Dhikr ▾", style = MaterialTheme.typography.labelMedium)
+                        Text("Select Dhikr ▾", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.SemiBold)
                     }
                 }
             }
 
-            // Circular Counter
+            // Tactile Circular Counter Button with Apple Spring Arc
             Box(
                 modifier = Modifier
-                    .size(240.dp)
+                    .size(244.dp)
                     .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f))
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null
-                    ) {
+                    .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.40f))
+                    .border(BorderStroke(1.dp, RafiqMultiplatformTheme.colors.cardBorder), CircleShape)
+                    .rafiqPressable(targetScale = 0.94f) {
                         viewModel.onIncrement(feedbackController)
                     }
                     .semantics {
@@ -224,11 +223,15 @@ fun SharedTasbihScreen(
                     },
                 contentAlignment = Alignment.Center
             ) {
-                val progress = state.progress
+                val animatedProgress by animateFloatAsState(
+                    targetValue = state.progress,
+                    animationSpec = AppleSpringSpec(dampingRatio = 0.80f),
+                    label = "tasbih_progress_arc"
+                )
                 val primaryColor = MaterialTheme.colorScheme.primary
-                val trackColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
+                val trackColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.30f)
 
-                Canvas(modifier = Modifier.fillMaxSize().padding(12.dp)) {
+                Canvas(modifier = Modifier.fillMaxSize().padding(14.dp)) {
                     val strokeWidth = 14.dp.toPx()
 
                     // Background track
@@ -241,7 +244,7 @@ fun SharedTasbihScreen(
                     drawArc(
                         color = primaryColor,
                         startAngle = -90f,
-                        sweepAngle = 360f * progress,
+                        sweepAngle = 360f * animatedProgress,
                         useCenter = false,
                         style = Stroke(width = strokeWidth, cap = StrokeCap.Round)
                     )
@@ -255,7 +258,8 @@ fun SharedTasbihScreen(
                         text = "${state.count}",
                         style = MaterialTheme.typography.displayLarge.copy(
                             fontSize = 64.sp,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
+                            letterSpacing = (-1.5).sp
                         ),
                         color = MaterialTheme.colorScheme.onSurface
                     )
@@ -264,7 +268,7 @@ fun SharedTasbihScreen(
                         text = "/ ${state.target}",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Medium,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.60f)
                     )
 
                     Spacer(modifier = Modifier.height(6.dp))
@@ -289,7 +293,9 @@ fun SharedTasbihScreen(
                     FilterChip(
                         selected = isSelected,
                         onClick = { viewModel.setTarget(targetValue) },
-                        label = { Text("$targetValue") },
+                        label = { Text("$targetValue", fontWeight = FontWeight.Medium) },
+                        modifier = Modifier.rafiqPressable(targetScale = 0.94f),
+                        shape = RoundedCornerShape(18.dp),
                         colors = FilterChipDefaults.filterChipColors(
                             selectedContainerColor = MaterialTheme.colorScheme.primary,
                             selectedLabelColor = MaterialTheme.colorScheme.onPrimary
@@ -301,7 +307,9 @@ fun SharedTasbihScreen(
                 FilterChip(
                     selected = isCustom,
                     onClick = { viewModel.setCustomTargetDialogVisible(true) },
-                    label = { Text(if (isCustom) "Target: ${state.target}" else "Custom") },
+                    label = { Text(if (isCustom) "Target: ${state.target}" else "Custom", fontWeight = FontWeight.Medium) },
+                    modifier = Modifier.rafiqPressable(targetScale = 0.94f),
+                    shape = RoundedCornerShape(18.dp),
                     colors = FilterChipDefaults.filterChipColors(
                         selectedContainerColor = MaterialTheme.colorScheme.primary,
                         selectedLabelColor = MaterialTheme.colorScheme.onPrimary
@@ -309,7 +317,7 @@ fun SharedTasbihScreen(
                 )
             }
 
-            // Control Actions Row
+            // Control Actions Row with Tactile Bounce
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly,
@@ -318,7 +326,8 @@ fun SharedTasbihScreen(
                 // Vibration Toggle
                 OutlinedButton(
                     onClick = { viewModel.toggleVibration() },
-                    shape = RoundedCornerShape(12.dp),
+                    shape = RoundedCornerShape(14.dp),
+                    modifier = Modifier.rafiqPressable(targetScale = 0.94f),
                     colors = ButtonDefaults.outlinedButtonColors(
                         contentColor = if (state.isVibrationEnabled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline
                     )
@@ -329,7 +338,8 @@ fun SharedTasbihScreen(
                 // Sound Toggle
                 OutlinedButton(
                     onClick = { viewModel.toggleSound() },
-                    shape = RoundedCornerShape(12.dp),
+                    shape = RoundedCornerShape(14.dp),
+                    modifier = Modifier.rafiqPressable(targetScale = 0.94f),
                     colors = ButtonDefaults.outlinedButtonColors(
                         contentColor = if (state.isSoundEnabled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline
                     )
@@ -340,7 +350,8 @@ fun SharedTasbihScreen(
                 // Reset Action
                 OutlinedButton(
                     onClick = { viewModel.setResetDialogVisible(true) },
-                    shape = RoundedCornerShape(12.dp),
+                    shape = RoundedCornerShape(14.dp),
+                    modifier = Modifier.rafiqPressable(targetScale = 0.94f),
                     colors = ButtonDefaults.outlinedButtonColors(
                         contentColor = MaterialTheme.colorScheme.error
                     )
@@ -351,25 +362,25 @@ fun SharedTasbihScreen(
 
             // Decrement & Manual Add Row
             Row(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 OutlinedButton(
                     onClick = { viewModel.onDecrement() },
                     enabled = state.count > 0,
-                    modifier = Modifier.weight(1f),
-                    shape = RoundedCornerShape(12.dp)
+                    modifier = Modifier.weight(1f).rafiqPressable(targetScale = 0.95f),
+                    shape = RoundedCornerShape(14.dp)
                 ) {
-                    Text("− Undo Count (-1)")
+                    Text("− Undo Count (-1)", fontWeight = FontWeight.SemiBold)
                 }
 
                 Button(
                     onClick = { viewModel.onIncrement(feedbackController) },
-                    modifier = Modifier.weight(1f),
-                    shape = RoundedCornerShape(12.dp),
+                    modifier = Modifier.weight(1f).rafiqPressable(targetScale = 0.95f),
+                    shape = RoundedCornerShape(14.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                 ) {
-                    Text("+ Count (+1)")
+                    Text("+ Count (+1)", fontWeight = FontWeight.Bold)
                 }
             }
         }
@@ -379,7 +390,12 @@ fun SharedTasbihScreen(
     if (state.showDhikrPicker) {
         AlertDialog(
             onDismissRequest = { viewModel.setDhikrPickerVisible(false) },
-            title = { Text("Select Dhikr") },
+            title = {
+                Text(
+                    "Select Dhikr",
+                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+                )
+            },
             text = {
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -394,12 +410,18 @@ fun SharedTasbihScreen(
                                     MaterialTheme.colorScheme.surface
                                 }
                             ),
-                            shape = RoundedCornerShape(8.dp),
+                            shape = RoundedCornerShape(14.dp),
+                            border = BorderStroke(
+                                1.dp,
+                                if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.40f) else RafiqMultiplatformTheme.colors.cardBorder
+                            ),
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .clickable { viewModel.onSelectItem(item) }
+                                .rafiqPressable(targetScale = 0.96f) {
+                                    viewModel.onSelectItem(item)
+                                }
                         ) {
-                            Column(modifier = Modifier.padding(12.dp)) {
+                            Column(modifier = Modifier.padding(14.dp)) {
                                 Text(
                                     text = item.arabic,
                                     style = MaterialTheme.typography.titleMedium,
@@ -409,7 +431,7 @@ fun SharedTasbihScreen(
                                 Text(
                                     text = "${item.transliteration} • Target: ${item.defaultCount}",
                                     style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.70f)
                                 )
                             }
                         }
@@ -418,7 +440,7 @@ fun SharedTasbihScreen(
             },
             confirmButton = {
                 TextButton(onClick = { viewModel.setDhikrPickerVisible(false) }) {
-                    Text("Close")
+                    Text("Close", fontWeight = FontWeight.SemiBold)
                 }
             }
         )
@@ -428,14 +450,20 @@ fun SharedTasbihScreen(
     if (state.showResetDialog) {
         AlertDialog(
             onDismissRequest = { viewModel.setResetDialogVisible(false) },
-            title = { Text("Reset Counter?") },
+            title = {
+                Text(
+                    "Reset Counter?",
+                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+                )
+            },
             text = { Text("Are you sure you want to reset the current count and lap back to 0?") },
             confirmButton = {
                 Button(
                     onClick = { viewModel.onReset() },
+                    shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
                 ) {
-                    Text("Reset")
+                    Text("Reset", fontWeight = FontWeight.Bold)
                 }
             },
             dismissButton = {
@@ -451,13 +479,19 @@ fun SharedTasbihScreen(
         var customInput by remember { mutableStateOf("${state.target}") }
         AlertDialog(
             onDismissRequest = { viewModel.setCustomTargetDialogVisible(false) },
-            title = { Text("Custom Target") },
+            title = {
+                Text(
+                    "Custom Target",
+                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+                )
+            },
             text = {
                 OutlinedTextField(
                     value = customInput,
                     onValueChange = { customInput = it.filter { char -> char.isDigit() } },
                     label = { Text("Enter target count") },
                     singleLine = true,
+                    shape = RoundedCornerShape(12.dp),
                     modifier = Modifier.fillMaxWidth()
                 )
             },
@@ -468,9 +502,10 @@ fun SharedTasbihScreen(
                         if (parsed != null && parsed > 0) {
                             viewModel.setTarget(parsed)
                         }
-                    }
+                    },
+                    shape = RoundedCornerShape(12.dp)
                 ) {
-                    Text("Set Target")
+                    Text("Set Target", fontWeight = FontWeight.Bold)
                 }
             },
             dismissButton = {

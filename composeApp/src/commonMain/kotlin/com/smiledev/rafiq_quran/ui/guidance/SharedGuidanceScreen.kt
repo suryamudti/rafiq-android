@@ -1,6 +1,8 @@
 package com.smiledev.rafiq_quran.ui.guidance
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -39,6 +41,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -50,10 +53,14 @@ import com.smiledev.rafiq_quran.domain.model.PrayerStep
 import com.smiledev.rafiq_quran.domain.model.SunnahCategory
 import com.smiledev.rafiq_quran.domain.model.SunnahGuidanceItem
 import com.smiledev.rafiq_quran.domain.model.SunnahStep
+import com.smiledev.rafiq_quran.ui.components.RafiqSharedBackButton
 import com.smiledev.rafiq_quran.ui.components.RafiqSharedBadge
 import com.smiledev.rafiq_quran.ui.components.RafiqSharedCard
 import com.smiledev.rafiq_quran.ui.components.RafiqSharedHeader
+import com.smiledev.rafiq_quran.ui.components.RafiqSharedHeroCard
+import com.smiledev.rafiq_quran.ui.theme.RafiqMultiplatformTheme
 import com.smiledev.rafiq_quran.ui.theme.SecondaryGold
+import com.smiledev.rafiq_quran.ui.theme.rafiqPressable
 
 @Composable
 fun SharedGuidanceScreen(
@@ -100,21 +107,13 @@ private fun GuidanceListView(
                 title = "Islamic Guidance",
                 subtitle = "Step-by-step Prayers & Sunnahs",
                 navigationIcon = onBackClick?.let { action ->
-                    {
-                        IconButton(onClick = action) {
-                            Text(
-                                text = "←",
-                                style = MaterialTheme.typography.titleLarge,
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
-                        }
-                    }
+                    { RafiqSharedBackButton(onClick = action) }
                 },
                 actions = {
                     RafiqSharedBadge(
                         text = "${state.prayerItems.size + state.sunnahItems.size} Topics",
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                        containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.70f),
+                        contentColor = MaterialTheme.colorScheme.primary
                     )
                 }
             )
@@ -135,7 +134,12 @@ private fun GuidanceListView(
                     Tab(
                         selected = state.selectedTab == tab,
                         onClick = { viewModel.selectTab(tab) },
-                        text = { Text(tab.title, fontWeight = FontWeight.SemiBold) }
+                        text = {
+                            Text(
+                                tab.title,
+                                fontWeight = if (state.selectedTab == tab) FontWeight.Bold else FontWeight.Medium
+                            )
+                        }
                     )
                 }
             }
@@ -145,16 +149,33 @@ private fun GuidanceListView(
                     .fillMaxSize()
                     .padding(horizontal = 16.dp, vertical = 8.dp)
             ) {
-                // Search Input
+                // Search Input with continuous corners
                 OutlinedTextField(
                     value = state.searchQuery,
                     onValueChange = { viewModel.onSearchQueryChange(it) },
-                    placeholder = { Text("Search prayers or sunnahs...") },
+                    placeholder = {
+                        Text(
+                            "Search prayers or sunnahs...",
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.50f)
+                            )
+                        )
+                    },
+                    trailingIcon = {
+                        if (state.searchQuery.isNotEmpty()) {
+                            IconButton(
+                                onClick = { viewModel.onSearchQueryChange("") },
+                                modifier = Modifier.size(28.dp).rafiqPressable(targetScale = 0.90f)
+                            ) {
+                                Text("✕", fontSize = 12.sp, color = MaterialTheme.colorScheme.outline)
+                            }
+                        }
+                    },
                     singleLine = true,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 4.dp),
-                    shape = RoundedCornerShape(12.dp)
+                    shape = RoundedCornerShape(14.dp)
                 )
 
                 // Category Chips Row
@@ -201,11 +222,13 @@ private fun PrayerCategoriesRow(state: SharedGuidanceUiState, viewModel: SharedG
         FilterChip(
             selected = state.prayerCategoryFilter == null,
             onClick = { viewModel.selectPrayerCategory(null) },
-            label = { Text("All") },
+            label = { Text("All", fontWeight = FontWeight.Medium) },
+            modifier = Modifier.rafiqPressable(targetScale = 0.94f),
             colors = FilterChipDefaults.filterChipColors(
                 selectedContainerColor = MaterialTheme.colorScheme.primary,
                 selectedLabelColor = MaterialTheme.colorScheme.onPrimary
-            )
+            ),
+            shape = RoundedCornerShape(18.dp)
         )
         PrayerGuidanceCategory.values().forEach { cat ->
             val label = when (cat) {
@@ -217,11 +240,13 @@ private fun PrayerCategoriesRow(state: SharedGuidanceUiState, viewModel: SharedG
             FilterChip(
                 selected = state.prayerCategoryFilter == cat,
                 onClick = { viewModel.selectPrayerCategory(cat) },
-                label = { Text(label) },
+                label = { Text(label, fontWeight = FontWeight.Medium) },
+                modifier = Modifier.rafiqPressable(targetScale = 0.94f),
                 colors = FilterChipDefaults.filterChipColors(
                     selectedContainerColor = MaterialTheme.colorScheme.primary,
                     selectedLabelColor = MaterialTheme.colorScheme.onPrimary
-                )
+                ),
+                shape = RoundedCornerShape(18.dp)
             )
         }
     }
@@ -240,11 +265,13 @@ private fun SunnahCategoriesRow(state: SharedGuidanceUiState, viewModel: SharedG
         FilterChip(
             selected = state.sunnahCategoryFilter == null,
             onClick = { viewModel.selectSunnahCategory(null) },
-            label = { Text("All") },
+            label = { Text("All", fontWeight = FontWeight.Medium) },
+            modifier = Modifier.rafiqPressable(targetScale = 0.94f),
             colors = FilterChipDefaults.filterChipColors(
                 selectedContainerColor = MaterialTheme.colorScheme.primary,
                 selectedLabelColor = MaterialTheme.colorScheme.onPrimary
-            )
+            ),
+            shape = RoundedCornerShape(18.dp)
         )
         SunnahCategory.values().forEach { cat ->
             val label = when (cat) {
@@ -257,11 +284,13 @@ private fun SunnahCategoriesRow(state: SharedGuidanceUiState, viewModel: SharedG
             FilterChip(
                 selected = state.sunnahCategoryFilter == cat,
                 onClick = { viewModel.selectSunnahCategory(cat) },
-                label = { Text(label) },
+                label = { Text(label, fontWeight = FontWeight.Medium) },
+                modifier = Modifier.rafiqPressable(targetScale = 0.94f),
                 colors = FilterChipDefaults.filterChipColors(
                     selectedContainerColor = MaterialTheme.colorScheme.primary,
                     selectedLabelColor = MaterialTheme.colorScheme.onPrimary
-                )
+                ),
+                shape = RoundedCornerShape(18.dp)
             )
         }
     }
@@ -270,30 +299,31 @@ private fun SunnahCategoriesRow(state: SharedGuidanceUiState, viewModel: SharedG
 @Composable
 private fun PrayerItemCard(item: PrayerGuidanceItem, onClick: () -> Unit) {
     RafiqSharedCard(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick)
+        modifier = Modifier.fillMaxWidth(),
+        onClick = onClick,
+        shape = RoundedCornerShape(16.dp),
+        contentPadding = 14.dp
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(14.dp),
+            modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         text = item.nameEn,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            fontWeight = FontWeight.Bold,
+                            letterSpacing = (-0.1).sp
+                        ),
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     if (item.rakaat != null) {
                         Spacer(modifier = Modifier.width(8.dp))
                         RafiqSharedBadge(
                             text = "${item.rakaat} Rakaat",
-                            containerColor = MaterialTheme.colorScheme.primaryContainer,
-                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                            containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.70f),
+                            contentColor = MaterialTheme.colorScheme.primary
                         )
                     }
                 }
@@ -301,7 +331,7 @@ private fun PrayerItemCard(item: PrayerGuidanceItem, onClick: () -> Unit) {
                 Text(
                     text = item.descriptionEn,
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.70f),
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -322,28 +352,29 @@ private fun PrayerItemCard(item: PrayerGuidanceItem, onClick: () -> Unit) {
 @Composable
 private fun SunnahItemCard(item: SunnahGuidanceItem, onClick: () -> Unit) {
     RafiqSharedCard(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick)
+        modifier = Modifier.fillMaxWidth(),
+        onClick = onClick,
+        shape = RoundedCornerShape(16.dp),
+        contentPadding = 14.dp
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(14.dp),
+            modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = item.titleEn,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.Bold,
+                        letterSpacing = (-0.1).sp
+                    ),
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 Spacer(modifier = Modifier.height(2.dp))
                 Text(
                     text = item.summaryEn,
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.70f),
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -371,13 +402,7 @@ private fun PrayerDetailView(item: PrayerGuidanceItem, onBack: () -> Unit) {
                 title = item.nameEn,
                 subtitle = item.category.name,
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Text(
-                            text = "←",
-                            style = MaterialTheme.typography.titleLarge,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                    }
+                    RafiqSharedBackButton(onClick = onBack)
                 }
             )
         },
@@ -391,29 +416,39 @@ private fun PrayerDetailView(item: PrayerGuidanceItem, onBack: () -> Unit) {
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
-            // Hero Title Card
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f))
+            // Hero Title Card with Prayer Gradient
+            RafiqSharedHeroCard(
+                gradient = RafiqMultiplatformTheme.colors.heroPrayerGradient,
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(20.dp),
+                        .padding(10.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
                         text = item.nameArabic,
                         style = MaterialTheme.typography.displayMedium.copy(fontSize = 36.sp),
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary,
+                        color = Color.White,
                         textAlign = TextAlign.Center
                     )
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text(text = item.nameEn, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                    Text(
+                        text = item.nameEn,
+                        style = MaterialTheme.typography.titleLarge.copy(
+                            letterSpacing = (-0.2).sp
+                        ),
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
                     if (item.nameId.isNotEmpty()) {
-                        Text(text = "(${item.nameId})", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f))
+                        Text(
+                            text = "(${item.nameId})",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.White.copy(alpha = 0.85f)
+                        )
                     }
                 }
             }
@@ -421,8 +456,12 @@ private fun PrayerDetailView(item: PrayerGuidanceItem, onBack: () -> Unit) {
             // Niyyah (Intention) Section
             val niyyahAr = item.niyyahArabic
             if (niyyahAr != null) {
-                RafiqSharedCard(modifier = Modifier.fillMaxWidth()) {
-                    Column(modifier = Modifier.padding(16.dp)) {
+                RafiqSharedCard(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(16.dp),
+                    contentPadding = 16.dp
+                ) {
+                    Column {
                         Text(
                             text = "Niyyah (Intention)",
                             style = MaterialTheme.typography.titleSmall,
@@ -440,11 +479,18 @@ private fun PrayerDetailView(item: PrayerGuidanceItem, onBack: () -> Unit) {
                         )
                         if (item.niyyahTransliteration != null) {
                             Spacer(modifier = Modifier.height(6.dp))
-                            Text(text = item.niyyahTransliteration!!, style = MaterialTheme.typography.bodyMedium)
+                            Text(
+                                text = item.niyyahTransliteration!!,
+                                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium)
+                            )
                         }
                         if (item.niyyahTranslationEn != null) {
                             Spacer(modifier = Modifier.height(4.dp))
-                            Text(text = "\"${item.niyyahTranslationEn}\"", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f))
+                            Text(
+                                text = "\"${item.niyyahTranslationEn}\"",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.70f)
+                            )
                         }
                     }
                 }
@@ -454,7 +500,9 @@ private fun PrayerDetailView(item: PrayerGuidanceItem, onBack: () -> Unit) {
             if (item.steps.isNotEmpty()) {
                 Text(
                     text = "Step-by-Step Guidance",
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        letterSpacing = (-0.2).sp
+                    ),
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary
                 )
@@ -471,14 +519,17 @@ private fun PrayerDetailView(item: PrayerGuidanceItem, onBack: () -> Unit) {
 private fun StepCard(step: PrayerStep) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+        shape = RoundedCornerShape(16.dp),
+        border = BorderStroke(1.dp, RafiqMultiplatformTheme.colors.cardBorder),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.40f)
+        )
     ) {
         Column(modifier = Modifier.padding(14.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(
                     modifier = Modifier
-                        .size(28.dp)
+                        .size(30.dp)
                         .clip(CircleShape)
                         .background(MaterialTheme.colorScheme.primary),
                     contentAlignment = Alignment.Center
@@ -491,11 +542,18 @@ private fun StepCard(step: PrayerStep) {
                     )
                 }
                 Spacer(modifier = Modifier.width(10.dp))
-                Text(text = step.titleEn, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                Text(
+                    text = step.titleEn,
+                    style = MaterialTheme.typography.titleSmall.copy(letterSpacing = (-0.1).sp),
+                    fontWeight = FontWeight.Bold
+                )
             }
 
             Spacer(modifier = Modifier.height(6.dp))
-            Text(text = step.descriptionEn, style = MaterialTheme.typography.bodySmall)
+            Text(
+                text = step.descriptionEn,
+                style = MaterialTheme.typography.bodySmall.copy(lineHeight = 18.sp)
+            )
 
             val stepAr = step.arabic
             if (stepAr != null) {
@@ -516,7 +574,11 @@ private fun StepCard(step: PrayerStep) {
             }
             if (step.translationEn != null) {
                 Spacer(modifier = Modifier.height(2.dp))
-                Text(text = "\"${step.translationEn}\"", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f))
+                Text(
+                    text = "\"${step.translationEn}\"",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.70f)
+                )
             }
         }
     }
@@ -532,13 +594,7 @@ private fun SunnahDetailView(item: SunnahGuidanceItem, onBack: () -> Unit) {
                 title = item.titleEn,
                 subtitle = item.category.name,
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Text(
-                            text = "←",
-                            style = MaterialTheme.typography.titleLarge,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                    }
+                    RafiqSharedBackButton(onClick = onBack)
                 }
             )
         },
@@ -552,39 +608,59 @@ private fun SunnahDetailView(item: SunnahGuidanceItem, onBack: () -> Unit) {
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
-            // Hero Title Card
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f))
+            // Hero Title Card with Emerald / Prayer Gradient
+            RafiqSharedHeroCard(
+                gradient = RafiqMultiplatformTheme.colors.heroPrayerGradient,
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(20.dp),
+                        .padding(10.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
                         text = item.titleArabic,
                         style = MaterialTheme.typography.displayMedium.copy(fontSize = 36.sp),
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary,
+                        color = Color.White,
                         textAlign = TextAlign.Center
                     )
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text(text = item.titleEn, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                    Text(
+                        text = item.titleEn,
+                        style = MaterialTheme.typography.titleLarge.copy(letterSpacing = (-0.2).sp),
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
                     if (item.titleId.isNotEmpty()) {
-                        Text(text = "(${item.titleId})", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f))
+                        Text(
+                            text = "(${item.titleId})",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.White.copy(alpha = 0.85f)
+                        )
                     }
                 }
             }
 
             // Description
-            RafiqSharedCard(modifier = Modifier.fillMaxWidth()) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Text(text = "Overview", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+            RafiqSharedCard(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp),
+                contentPadding = 16.dp
+            ) {
+                Column {
+                    Text(
+                        text = "Overview",
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary
+                    )
                     Spacer(modifier = Modifier.height(6.dp))
-                    Text(text = item.descriptionEn, style = MaterialTheme.typography.bodyMedium)
+                    Text(
+                        text = item.descriptionEn,
+                        style = MaterialTheme.typography.bodyMedium.copy(lineHeight = 22.sp)
+                    )
                 }
             }
 
@@ -592,14 +668,24 @@ private fun SunnahDetailView(item: SunnahGuidanceItem, onBack: () -> Unit) {
             if (item.virtuesEn.isNotEmpty()) {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = CardDefaults.cardColors(containerColor = SecondaryGold.copy(alpha = 0.1f))
+                    shape = RoundedCornerShape(16.dp),
+                    border = BorderStroke(1.dp, SecondaryGold.copy(alpha = 0.35f)),
+                    colors = CardDefaults.cardColors(containerColor = SecondaryGold.copy(alpha = 0.10f))
                 ) {
                     Column(modifier = Modifier.padding(14.dp)) {
-                        Text(text = "✨ Virtues & Rewards", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = SecondaryGold)
+                        Text(
+                            text = "✨ Virtues & Rewards",
+                            style = MaterialTheme.typography.titleSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = SecondaryGold
+                        )
                         Spacer(modifier = Modifier.height(6.dp))
                         item.virtuesEn.forEach { virtue ->
-                            Text(text = "• $virtue", style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(vertical = 2.dp))
+                            Text(
+                                text = "• $virtue",
+                                style = MaterialTheme.typography.bodySmall.copy(lineHeight = 20.sp),
+                                modifier = Modifier.padding(vertical = 2.dp)
+                            )
                         }
                     }
                 }

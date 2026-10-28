@@ -1,4 +1,4 @@
-﻿package com.smiledev.rafiq_quran.domain.model
+package com.smiledev.rafiq_quran.domain.model
 
 data class HadithTopic(
     val id: String,

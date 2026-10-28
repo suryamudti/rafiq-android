@@ -1,4 +1,4 @@
-﻿package com.smiledev.rafiq_quran.data.repository
+package com.smiledev.rafiq_quran.data.repository
 
 import android.content.Context
 import com.google.gson.Gson

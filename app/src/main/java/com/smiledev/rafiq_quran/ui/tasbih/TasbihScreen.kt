@@ -5,12 +5,13 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -56,6 +57,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -70,10 +72,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.smiledev.rafiq_quran.R
+import com.smiledev.rafiq_quran.core.currentLocaleCode
 import com.smiledev.rafiq_quran.domain.model.TasbihItem
 import com.smiledev.rafiq_quran.theme.Gold500
 import com.smiledev.rafiq_quran.theme.Gold700
 import com.smiledev.rafiq_quran.theme.RafiqTheme
+import com.smiledev.rafiq_quran.ui.designsystem.animation.EaseOutCubic
+import com.smiledev.rafiq_quran.ui.designsystem.animation.RafiqMotion
+import com.smiledev.rafiq_quran.ui.designsystem.animation.rafiqEnterTransition
+import com.smiledev.rafiq_quran.ui.designsystem.animation.rafiqExitTransition
+import com.smiledev.rafiq_quran.ui.designsystem.animation.rafiqPressable
 import com.smiledev.rafiq_quran.ui.designsystem.appbar.RafiqTopAppBar
 import com.smiledev.rafiq_quran.ui.designsystem.arabic.RafiqArabicText
 import com.smiledev.rafiq_quran.ui.designsystem.badge.RafiqBadge
@@ -81,7 +89,6 @@ import com.smiledev.rafiq_quran.ui.designsystem.button.RafiqButton
 import com.smiledev.rafiq_quran.ui.designsystem.button.RafiqOutlinedButton
 import com.smiledev.rafiq_quran.ui.designsystem.card.RafiqCard
 import com.smiledev.rafiq_quran.ui.designsystem.chip.RafiqFilterChip
-import com.smiledev.rafiq_quran.core.currentLocaleCode
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -100,14 +107,20 @@ fun TasbihScreen(
                 title = stringResource(R.string.tasbih_counter),
                 onBack = onBack,
                 actions = {
-                    IconButton(onClick = onNavigateToHistory) {
+                    IconButton(
+                        onClick = onNavigateToHistory,
+                        modifier = Modifier.rafiqPressable(targetScale = RafiqMotion.IconButtonPressScale)
+                    ) {
                         Icon(
                             imageVector = Icons.Default.DateRange,
                             contentDescription = stringResource(R.string.tasbih_history),
                             tint = MaterialTheme.colorScheme.primary
                         )
                     }
-                    IconButton(onClick = { viewModel.toggleSound() }) {
+                    IconButton(
+                        onClick = { viewModel.toggleSound() },
+                        modifier = Modifier.rafiqPressable(targetScale = RafiqMotion.IconButtonPressScale)
+                    ) {
                         Icon(
                             painter = painterResource(
                                 if (state.isSoundEnabled) R.drawable.ic_volume_up else R.drawable.ic_volume_off
@@ -116,7 +129,10 @@ fun TasbihScreen(
                             tint = if (state.isSoundEnabled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
                         )
                     }
-                    IconButton(onClick = { viewModel.toggleVibration() }) {
+                    IconButton(
+                        onClick = { viewModel.toggleVibration() },
+                        modifier = Modifier.rafiqPressable(targetScale = RafiqMotion.IconButtonPressScale)
+                    ) {
                         Icon(
                             painter = painterResource(
                                 if (state.isVibrationEnabled) R.drawable.ic_vibrate else R.drawable.ic_vibrate_off
@@ -138,7 +154,7 @@ fun TasbihScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            // 1. Active Dhikr Card
+            // 1. Active Dhikr Card with specular border highlight
             ActiveDhikrCard(
                 selectedItem = state.selectedItem,
                 isIndonesian = isIndonesian,
@@ -168,7 +184,7 @@ fun TasbihScreen(
 
             Spacer(modifier = Modifier.height(RafiqTheme.spacing.l))
 
-            // 4. Hero Circular Counter Area
+            // 4. Hero Circular Counter Area with tactile fluid spring physics
             CircularCounter(
                 count = state.count,
                 progress = state.progress,
@@ -212,10 +228,24 @@ fun TasbihScreen(
     if (state.showResetDialog) {
         AlertDialog(
             onDismissRequest = { viewModel.setShowResetDialog(false) },
-            title = { Text(text = stringResource(R.string.tasbih_reset_title)) },
-            text = { Text(text = stringResource(R.string.tasbih_reset_message)) },
+            title = {
+                Text(
+                    text = stringResource(R.string.tasbih_reset_title),
+                    style = MaterialTheme.typography.titleMedium.copy(letterSpacing = (-0.1).sp),
+                    fontWeight = FontWeight.Bold
+                )
+            },
+            text = {
+                Text(
+                    text = stringResource(R.string.tasbih_reset_message),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            },
             confirmButton = {
-                TextButton(onClick = { viewModel.reset(resetAll = true) }) {
+                TextButton(
+                    onClick = { viewModel.reset(resetAll = true) },
+                    modifier = Modifier.rafiqPressable(targetScale = RafiqMotion.ChipPressScale)
+                ) {
                     Text(
                         text = stringResource(R.string.tasbih_reset_all),
                         color = MaterialTheme.colorScheme.error,
@@ -225,10 +255,16 @@ fun TasbihScreen(
             },
             dismissButton = {
                 Row {
-                    TextButton(onClick = { viewModel.setShowResetDialog(false) }) {
+                    TextButton(
+                        onClick = { viewModel.setShowResetDialog(false) },
+                        modifier = Modifier.rafiqPressable(targetScale = RafiqMotion.ChipPressScale)
+                    ) {
                         Text(text = stringResource(R.string.cancel))
                     }
-                    TextButton(onClick = { viewModel.reset(resetAll = false) }) {
+                    TextButton(
+                        onClick = { viewModel.reset(resetAll = false) },
+                        modifier = Modifier.rafiqPressable(targetScale = RafiqMotion.ChipPressScale)
+                    ) {
                         Text(text = stringResource(R.string.tasbih_reset_current))
                     }
                 }
@@ -241,7 +277,13 @@ fun TasbihScreen(
         var targetText by remember { mutableStateOf(if (state.target > 0) state.target.toString() else "33") }
         AlertDialog(
             onDismissRequest = { viewModel.setShowCustomTargetDialog(false) },
-            title = { Text(text = stringResource(R.string.tasbih_custom_target_title)) },
+            title = {
+                Text(
+                    text = stringResource(R.string.tasbih_custom_target_title),
+                    style = MaterialTheme.typography.titleMedium.copy(letterSpacing = (-0.1).sp),
+                    fontWeight = FontWeight.Bold
+                )
+            },
             text = {
                 OutlinedTextField(
                     value = targetText,
@@ -257,13 +299,17 @@ fun TasbihScreen(
                     onClick = {
                         val num = targetText.toIntOrNull() ?: 33
                         viewModel.setTarget(num)
-                    }
+                    },
+                    modifier = Modifier.rafiqPressable(targetScale = RafiqMotion.ChipPressScale)
                 ) {
-                    Text(text = stringResource(R.string.confirm))
+                    Text(text = stringResource(R.string.confirm), fontWeight = FontWeight.SemiBold)
                 }
             },
             dismissButton = {
-                TextButton(onClick = { viewModel.setShowCustomTargetDialog(false) }) {
+                TextButton(
+                    onClick = { viewModel.setShowCustomTargetDialog(false) },
+                    modifier = Modifier.rafiqPressable(targetScale = RafiqMotion.ChipPressScale)
+                ) {
                     Text(text = stringResource(R.string.cancel))
                 }
             }
@@ -280,7 +326,8 @@ private fun ActiveDhikrCard(
 ) {
     RafiqCard(
         modifier = modifier,
-        contentPadding = RafiqTheme.spacing.m
+        contentPadding = RafiqTheme.spacing.m,
+        border = BorderStroke(1.dp, RafiqTheme.extendedColors.cardBorder)
     ) {
         if (selectedItem != null) {
             val meaning = if (isIndonesian) selectedItem.meaningId else selectedItem.meaningEn
@@ -298,7 +345,7 @@ private fun ActiveDhikrCard(
                 Spacer(modifier = Modifier.height(RafiqTheme.spacing.xs))
                 Text(
                     text = selectedItem.transliteration,
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleMedium.copy(letterSpacing = (-0.1).sp),
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface,
                     textAlign = TextAlign.Center
@@ -313,6 +360,7 @@ private fun ActiveDhikrCard(
                 Spacer(modifier = Modifier.height(RafiqTheme.spacing.s))
                 TextButton(
                     onClick = onChangeDhikrClick,
+                    modifier = Modifier.rafiqPressable(targetScale = RafiqMotion.ChipPressScale),
                     contentPadding = PaddingValues(horizontal = RafiqTheme.spacing.m, vertical = RafiqTheme.spacing.xs)
                 ) {
                     Text(
@@ -329,13 +377,14 @@ private fun ActiveDhikrCard(
             ) {
                 Text(
                     text = stringResource(R.string.tasbih_custom_dhikr),
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleMedium.copy(letterSpacing = (-0.1).sp),
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary
                 )
                 Spacer(modifier = Modifier.height(RafiqTheme.spacing.s))
                 TextButton(
                     onClick = onChangeDhikrClick,
+                    modifier = Modifier.rafiqPressable(targetScale = RafiqMotion.ChipPressScale),
                     contentPadding = PaddingValues(horizontal = RafiqTheme.spacing.m, vertical = RafiqTheme.spacing.xs)
                 ) {
                     Text(
@@ -395,17 +444,20 @@ private fun StatsRow(
         RafiqBadge(
             text = "${stringResource(R.string.tasbih_lap)} $lap",
             containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f),
-            contentColor = MaterialTheme.colorScheme.primary
+            contentColor = MaterialTheme.colorScheme.primary,
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.2f))
         )
         RafiqBadge(
             text = if (target > 0) "${stringResource(R.string.tasbih_target)}: $target" else "${stringResource(R.string.tasbih_target)}: ∞",
             containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f),
-            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+            contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.secondary.copy(alpha = 0.2f))
         )
         RafiqBadge(
             text = "${stringResource(R.string.tasbih_today_count)}: $todayTotal",
             containerColor = MaterialTheme.colorScheme.surfaceVariant,
-            contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+            contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            border = BorderStroke(1.dp, RafiqTheme.extendedColors.cardBorder)
         )
     }
 }
@@ -418,18 +470,21 @@ private fun CircularCounter(
     onTap: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val interactionSource = remember { MutableInteractionSource() }
-    val isPressed by interactionSource.collectIsPressedAsState()
+    var isPressed by remember { mutableStateOf(false) }
 
+    // Emil Kowalski spring motion: Medium bouncy (0.75f) with 400f stiffness for snappy zero-delay mechanical click response
     val scale by animateFloatAsState(
-        targetValue = if (isPressed) 0.94f else 1f,
-        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow),
-        label = "press_scale"
+        targetValue = if (isPressed) 0.93f else 1f,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = 400f
+        ),
+        label = "tasbih_press_scale"
     )
 
     val animatedProgress by animateFloatAsState(
         targetValue = progress,
-        animationSpec = tween(durationMillis = 250),
+        animationSpec = tween(durationMillis = RafiqMotion.DurationMedium, easing = EaseOutCubic),
         label = "progress_arc"
     )
 
@@ -458,8 +513,16 @@ private fun CircularCounter(
                 contentDescription = counterDescription
                 role = Role.Button
             }
+            .pointerInput(Unit) {
+                awaitEachGesture {
+                    awaitFirstDown(requireUnconsumed = false)
+                    isPressed = true
+                    waitForUpOrCancellation()
+                    isPressed = false
+                }
+            }
             .clickable(
-                interactionSource = interactionSource,
+                interactionSource = remember { MutableInteractionSource() },
                 indication = null,
                 onClick = onTap
             ),
@@ -493,11 +556,12 @@ private fun CircularCounter(
             }
         }
 
-        // Inner Circle Card
+        // Inner Circle Card with specular highlight border
         Surface(
             modifier = Modifier.size(210.dp),
             shape = CircleShape,
             color = MaterialTheme.colorScheme.surface,
+            border = BorderStroke(1.dp, RafiqTheme.extendedColors.cardHighlight),
             shadowElevation = RafiqTheme.elevation.high
         ) {
             Column(
@@ -509,7 +573,8 @@ private fun CircularCounter(
                     text = "$count",
                     style = MaterialTheme.typography.displayLarge.copy(
                         fontSize = 62.sp,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        letterSpacing = (-1.0).sp
                     ),
                     color = strokeColor
                 )
@@ -521,12 +586,12 @@ private fun CircularCounter(
                 )
                 AnimatedVisibility(
                     visible = isTargetReached,
-                    enter = fadeIn(),
-                    exit = fadeOut()
+                    enter = rafiqEnterTransition(initialScale = 0.95f),
+                    exit = rafiqExitTransition(targetScale = 0.95f)
                 ) {
                     Text(
                         text = stringResource(R.string.tasbih_target_completed),
-                        style = MaterialTheme.typography.labelSmall,
+                        style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 0.sp),
                         color = Gold700,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(top = RafiqTheme.spacing.xs)
@@ -596,7 +661,7 @@ private fun DhikrPickerSheetContent(
         item {
             Text(
                 text = stringResource(R.string.tasbih_select_dhikr),
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.titleLarge.copy(letterSpacing = (-0.2).sp),
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(vertical = RafiqTheme.spacing.m)
             )
@@ -609,7 +674,11 @@ private fun DhikrPickerSheetContent(
             RafiqCard(
                 onClick = { onSelect(item) },
                 modifier = Modifier.fillMaxWidth(),
-                contentPadding = RafiqTheme.spacing.m
+                contentPadding = RafiqTheme.spacing.m,
+                border = BorderStroke(
+                    if (isSelected) 1.5.dp else 1.dp,
+                    if (isSelected) MaterialTheme.colorScheme.primary else RafiqTheme.extendedColors.cardBorder
+                )
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -640,7 +709,8 @@ private fun DhikrPickerSheetContent(
                     RafiqBadge(
                         text = "${item.defaultCount}x",
                         containerColor = if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.4f),
-                        contentColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSecondaryContainer
+                        contentColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSecondaryContainer,
+                        border = BorderStroke(1.dp, if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.3f) else RafiqTheme.extendedColors.cardBorder)
                     )
                 }
             }
@@ -650,7 +720,8 @@ private fun DhikrPickerSheetContent(
             RafiqCard(
                 onClick = onSelectCustom,
                 modifier = Modifier.fillMaxWidth(),
-                contentPadding = RafiqTheme.spacing.m
+                contentPadding = RafiqTheme.spacing.m,
+                border = BorderStroke(1.dp, RafiqTheme.extendedColors.cardBorder)
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -659,14 +730,15 @@ private fun DhikrPickerSheetContent(
                 ) {
                     Text(
                         text = stringResource(R.string.tasbih_custom_dhikr),
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.titleMedium.copy(letterSpacing = (-0.1).sp),
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary
                     )
                     RafiqBadge(
                         text = stringResource(R.string.tasbih_free_target),
                         containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.4f),
-                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.secondary.copy(alpha = 0.2f))
                     )
                 }
             }

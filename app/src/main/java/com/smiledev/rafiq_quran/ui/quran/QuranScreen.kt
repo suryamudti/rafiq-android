@@ -63,6 +63,12 @@ import com.smiledev.rafiq_quran.domain.model.Ayah
 import com.smiledev.rafiq_quran.domain.model.Surah
 import com.smiledev.rafiq_quran.theme.ArabicFontFamily
 import com.smiledev.rafiq_quran.theme.RafiqTheme
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import com.smiledev.rafiq_quran.ui.designsystem.animation.RafiqMotion
+import com.smiledev.rafiq_quran.ui.designsystem.animation.rafiqPressable
+
 import com.smiledev.rafiq_quran.ui.bookmarks.BookmarkListTabContent
 import com.smiledev.rafiq_quran.ui.designsystem.appbar.RafiqTopAppBar
 import com.smiledev.rafiq_quran.ui.designsystem.badge.RafiqNumberBadge
@@ -128,28 +134,21 @@ fun QuranScreen(
     ) { padding ->
         Column(modifier = Modifier.fillMaxSize().padding(padding)) {
             if (showSearch) {
-                // Scope tabs: Surahs vs Verses
-                TabRow(selectedTabIndex = state.searchTab.ordinal) {
-                    Tab(
-                        selected = state.searchTab == QuranSearchTab.SURAHS,
-                        onClick = { viewModel.setSearchTab(QuranSearchTab.SURAHS) },
-                        text = {
-                            Text(
-                                "${stringResource(R.string.search_mode_surahs)} (${state.filteredSurahs.size})"
-                            )
-                        }
-                    )
-                    Tab(
-                        selected = state.searchTab == QuranSearchTab.AYAHS,
-                        onClick = { viewModel.setSearchTab(QuranSearchTab.AYAHS) },
-                        text = {
-                            val countSuffix = if (!state.searchLoading && state.searchQuery.isNotBlank()) {
-                                " (${state.searchResults.size})"
-                            } else ""
-                            Text("${stringResource(R.string.search_mode_ayahs)}$countSuffix")
-                        }
-                    )
-                }
+                // Scope tabs: Surahs vs Verses (Apple-style segmented control)
+                val searchAyahCountSuffix = if (!state.searchLoading && state.searchQuery.isNotBlank()) {
+                    " (${state.searchResults.size})"
+                } else ""
+                val searchTabTitles = listOf(
+                    "${stringResource(R.string.search_mode_surahs)} (${state.filteredSurahs.size})",
+                    "${stringResource(R.string.search_mode_ayahs)}$searchAyahCountSuffix"
+                )
+                AppleSegmentedTabRow(
+                    tabs = searchTabTitles,
+                    selectedIndex = state.searchTab.ordinal,
+                    onTabSelected = { index ->
+                        viewModel.setSearchTab(if (index == 0) QuranSearchTab.SURAHS else QuranSearchTab.AYAHS)
+                    }
+                )
 
                 Box(modifier = Modifier.fillMaxSize().weight(1f)) {
                     if (state.searchTab == QuranSearchTab.SURAHS) {
@@ -173,15 +172,11 @@ fun QuranScreen(
                     }
                 }
             } else {
-                TabRow(selectedTabIndex = selectedTabIndex) {
-                    mainTabs.forEachIndexed { index, title ->
-                        Tab(
-                            selected = selectedTabIndex == index,
-                            onClick = { selectedTabIndex = index },
-                            text = { Text(title) }
-                        )
-                    }
-                }
+                AppleSegmentedTabRow(
+                    tabs = mainTabs,
+                    selectedIndex = selectedTabIndex,
+                    onTabSelected = { selectedTabIndex = it }
+                )
 
                 Box(modifier = Modifier.fillMaxSize().weight(1f)) {
                     when (selectedTabIndex) {
@@ -308,12 +303,13 @@ private fun LastReadHeroBanner(
                 horizontal = RafiqTheme.spacing.l,
                 vertical = RafiqTheme.spacing.s
             )
+            .rafiqPressable(targetScale = RafiqMotion.CardPressScale)
             .clickable(onClick = onClick),
         shape = RafiqTheme.customShapes.large,
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)
         ),
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.25f))
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.35f))
     ) {
         Row(
             modifier = Modifier
@@ -380,9 +376,11 @@ private fun LastReadHeroBanner(
                     )
                 }
                 Surface(
+                    modifier = Modifier
+                        .padding(top = RafiqTheme.spacing.xs)
+                        .rafiqPressable(targetScale = RafiqMotion.ChipPressScale),
                     shape = RafiqTheme.customShapes.pill,
-                    color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.padding(top = RafiqTheme.spacing.xs)
+                    color = MaterialTheme.colorScheme.primary
                 ) {
                     Row(
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
@@ -430,6 +428,7 @@ private fun RevelationFilterRow(
             selected = selectedFilter == RevelationFilter.ALL,
             onClick = { onFilterSelect(RevelationFilter.ALL) },
             label = { Text("${stringResource(R.string.revelation_all)} ($totalCount)") },
+            modifier = Modifier.rafiqPressable(targetScale = RafiqMotion.ChipPressScale),
             shape = RafiqTheme.customShapes.pill,
             colors = FilterChipDefaults.filterChipColors(
                 selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -440,6 +439,7 @@ private fun RevelationFilterRow(
             selected = selectedFilter == RevelationFilter.MECCAN,
             onClick = { onFilterSelect(RevelationFilter.MECCAN) },
             label = { Text("${stringResource(R.string.revelation_meccan)} ($meccanCount)") },
+            modifier = Modifier.rafiqPressable(targetScale = RafiqMotion.ChipPressScale),
             shape = RafiqTheme.customShapes.pill,
             colors = FilterChipDefaults.filterChipColors(
                 selectedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
@@ -450,6 +450,7 @@ private fun RevelationFilterRow(
             selected = selectedFilter == RevelationFilter.MEDINAN,
             onClick = { onFilterSelect(RevelationFilter.MEDINAN) },
             label = { Text("${stringResource(R.string.revelation_medinan)} ($medinanCount)") },
+            modifier = Modifier.rafiqPressable(targetScale = RafiqMotion.ChipPressScale),
             shape = RafiqTheme.customShapes.pill,
             colors = FilterChipDefaults.filterChipColors(
                 selectedContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
@@ -480,6 +481,7 @@ private fun SurahCard(
                 horizontal = RafiqTheme.spacing.l,
                 vertical = RafiqTheme.spacing.xs
             )
+            .rafiqPressable(targetScale = RafiqMotion.CardPressScale)
             .clickable(onClick = onClick),
         shape = RafiqTheme.customShapes.medium,
         elevation = CardDefaults.cardElevation(
@@ -487,7 +489,9 @@ private fun SurahCard(
         ),
         border = if (isLastRead) {
             BorderStroke(1.5.dp, MaterialTheme.colorScheme.primary)
-        } else null,
+        } else {
+            BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+        },
         colors = if (isLastRead) {
             CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.2f)
@@ -519,7 +523,8 @@ private fun SurahCard(
                     )
                     if (isLastRead) {
                         Surface(
-                            shape = RafiqTheme.customShapes.pill,
+                            modifier = Modifier.rafiqPressable(targetScale = RafiqMotion.ChipPressScale),
+            shape = RafiqTheme.customShapes.pill,
                             color = MaterialTheme.colorScheme.primary
                         ) {
                             Text(
@@ -657,9 +662,11 @@ private fun QuranSearchResultCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = RafiqTheme.spacing.l, vertical = RafiqTheme.spacing.xs)
+            .rafiqPressable(targetScale = RafiqMotion.CardPressScale)
             .clickable(onClick = onClick),
         shape = RafiqTheme.customShapes.medium,
-        elevation = CardDefaults.cardElevation(defaultElevation = RafiqTheme.elevation.default)
+        elevation = CardDefaults.cardElevation(defaultElevation = RafiqTheme.elevation.default),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
     ) {
         Column(modifier = Modifier.fillMaxWidth().padding(RafiqTheme.spacing.l)) {
             Text(
@@ -711,6 +718,52 @@ private fun highlightMatches(text: String, query: String): AnnotatedString {
         while (index >= 0) {
             addStyle(style, index, index + q.length)
             index = text.indexOf(q, index + q.length, ignoreCase = true)
+        }
+    }
+}
+
+@Composable
+private fun AppleSegmentedTabRow(
+    tabs: List<String>,
+    selectedIndex: Int,
+    onTabSelected: (Int) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Surface(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = RafiqTheme.spacing.l, vertical = RafiqTheme.spacing.xs),
+        shape = RoundedCornerShape(24.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(4.dp),
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            tabs.forEachIndexed { index, title ->
+                val isSelected = selectedIndex == index
+                Surface(
+                    modifier = Modifier
+                        .weight(1f)
+                        .clip(RoundedCornerShape(20.dp))
+                        .rafiqPressable(targetScale = RafiqMotion.ChipPressScale)
+                        .clickable { onTabSelected(index) },
+                    shape = RoundedCornerShape(20.dp),
+                    color = if (isSelected) MaterialTheme.colorScheme.surface else Color.Transparent,
+                    shadowElevation = if (isSelected) 1.dp else 0.dp
+                ) {
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.labelLarge,
+                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                        color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(vertical = 10.dp)
+                    )
+                }
+            }
         }
     }
 }

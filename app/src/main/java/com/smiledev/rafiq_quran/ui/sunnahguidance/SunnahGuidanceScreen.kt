@@ -1,7 +1,7 @@
 package com.smiledev.rafiq_quran.ui.sunnahguidance
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,22 +17,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -53,9 +42,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.smiledev.rafiq_quran.R
-import com.smiledev.rafiq_quran.core.displayMessage
 import com.smiledev.rafiq_quran.domain.model.SunnahCategory
 import com.smiledev.rafiq_quran.domain.model.SunnahGuidanceItem
+import com.smiledev.rafiq_quran.theme.RafiqTheme
+import com.smiledev.rafiq_quran.ui.designsystem.appbar.RafiqTopAppBar
+import com.smiledev.rafiq_quran.ui.designsystem.card.RafiqCard
+import com.smiledev.rafiq_quran.ui.designsystem.chip.RafiqFilterChip
+import com.smiledev.rafiq_quran.ui.designsystem.input.RafiqSearchBar
+import com.smiledev.rafiq_quran.ui.designsystem.state.RafiqEmptyState
+import com.smiledev.rafiq_quran.ui.designsystem.state.RafiqErrorState
+import com.smiledev.rafiq_quran.ui.designsystem.state.RafiqLoadingIndicator
 
 private val arabicFont = FontFamily(Font(R.font.me_quran))
 
@@ -76,26 +72,9 @@ fun SunnahGuidanceScreen(
     Scaffold(
         modifier = modifier,
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(R.string.sunnah_guidance),
-                        fontWeight = FontWeight.Bold
-                    )
-                },
-                navigationIcon = {
-                    Text(
-                        text = stringResource(R.string.back),
-                        modifier = Modifier
-                            .clickable(onClick = onBack)
-                            .padding(16.dp),
-                        fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                )
+            RafiqTopAppBar(
+                title = stringResource(R.string.sunnah_guidance),
+                onBack = onBack
             )
         }
     ) { padding ->
@@ -106,48 +85,25 @@ fun SunnahGuidanceScreen(
         ) {
             when {
                 state.isLoading && state.items.isEmpty() -> {
-                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
-                    }
+                    RafiqLoadingIndicator(modifier = Modifier.fillMaxSize())
                 }
                 state.error != null && state.items.isEmpty() -> {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(24.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        Text(
-                            text = state.error?.displayMessage ?: "",
-                            color = MaterialTheme.colorScheme.error,
-                            textAlign = TextAlign.Center
-                        )
-                        Spacer(Modifier.height(12.dp))
-                        TextButton(onClick = { viewModel.loadSunnahGuidance() }) {
-                            Text(stringResource(R.string.retry))
-                        }
-                    }
+                    RafiqErrorState(
+                        error = state.error!!,
+                        onRetry = { viewModel.loadSunnahGuidance() },
+                        modifier = Modifier.fillMaxSize()
+                    )
                 }
                 else -> {
                     Column(modifier = Modifier.fillMaxSize()) {
                         // 1. Search Bar
-                        TextField(
-                            value = state.searchQuery,
-                            onValueChange = { viewModel.search(it) },
-                            placeholder = {
-                                Text(stringResource(R.string.search_sunnah_guide))
-                            },
-                            singleLine = true,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp, vertical = 6.dp),
-                            shape = RoundedCornerShape(16.dp),
-                            colors = TextFieldDefaults.colors(
-                                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f),
-                                focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.8f),
-                                focusedIndicatorColor = Color.Transparent,
-                                unfocusedIndicatorColor = Color.Transparent
+                        RafiqSearchBar(
+                            query = state.searchQuery,
+                            onQueryChange = { viewModel.search(it) },
+                            placeholder = stringResource(R.string.search_sunnah_guide),
+                            modifier = Modifier.padding(
+                                horizontal = RafiqTheme.spacing.l,
+                                vertical = RafiqTheme.spacing.xs
                             )
                         )
 
@@ -156,73 +112,63 @@ fun SunnahGuidanceScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .horizontalScroll(rememberScrollState())
-                                .padding(horizontal = 16.dp, vertical = 6.dp),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                .padding(
+                                    horizontal = RafiqTheme.spacing.l,
+                                    vertical = RafiqTheme.spacing.xs
+                                ),
+                            horizontalArrangement = Arrangement.spacedBy(RafiqTheme.spacing.s)
                         ) {
-                            FilterChip(
+                            RafiqFilterChip(
                                 selected = state.selectedCategory == null,
                                 onClick = { viewModel.selectCategory(null) },
-                                label = { Text(stringResource(R.string.category_all)) },
-                                shape = RoundedCornerShape(12.dp),
-                                colors = FilterChipDefaults.filterChipColors(
-                                    selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-                                    selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer
-                                )
+                                label = stringResource(R.string.category_all)
                             )
-                            FilterChip(
+                            RafiqFilterChip(
                                 selected = state.selectedCategory == SunnahCategory.PRAYER,
                                 onClick = { viewModel.selectCategory(SunnahCategory.PRAYER) },
-                                label = { Text(stringResource(R.string.category_sunnah_prayer)) },
-                                shape = RoundedCornerShape(12.dp)
+                                label = stringResource(R.string.category_sunnah_prayer)
                             )
-                            FilterChip(
+                            RafiqFilterChip(
                                 selected = state.selectedCategory == SunnahCategory.DAILY_LIFESTYLE,
                                 onClick = { viewModel.selectCategory(SunnahCategory.DAILY_LIFESTYLE) },
-                                label = { Text(stringResource(R.string.category_daily_lifestyle)) },
-                                shape = RoundedCornerShape(12.dp)
+                                label = stringResource(R.string.category_daily_lifestyle)
                             )
-                            FilterChip(
+                            RafiqFilterChip(
                                 selected = state.selectedCategory == SunnahCategory.FRIDAY,
                                 onClick = { viewModel.selectCategory(SunnahCategory.FRIDAY) },
-                                label = { Text(stringResource(R.string.category_friday)) },
-                                shape = RoundedCornerShape(12.dp)
+                                label = stringResource(R.string.category_friday)
                             )
-                            FilterChip(
+                            RafiqFilterChip(
                                 selected = state.selectedCategory == SunnahCategory.FASTING,
                                 onClick = { viewModel.selectCategory(SunnahCategory.FASTING) },
-                                label = { Text(stringResource(R.string.category_fasting)) },
-                                shape = RoundedCornerShape(12.dp)
+                                label = stringResource(R.string.category_fasting)
                             )
-                            FilterChip(
+                            RafiqFilterChip(
                                 selected = state.selectedCategory == SunnahCategory.DHIKR_DUA,
                                 onClick = { viewModel.selectCategory(SunnahCategory.DHIKR_DUA) },
-                                label = { Text(stringResource(R.string.category_dhikr_dua)) },
-                                shape = RoundedCornerShape(12.dp)
+                                label = stringResource(R.string.category_dhikr_dua)
                             )
                         }
 
                         // 3. List of Sunnah Guides
                         if (filteredItems.isEmpty()) {
-                            Box(
+                            RafiqEmptyState(
+                                title = stringResource(R.string.no_sunnah_found),
                                 modifier = Modifier
-                                    .weight(1f)
                                     .fillMaxWidth()
-                                    .padding(32.dp),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text(
-                                    text = stringResource(R.string.no_sunnah_found),
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            }
+                                    .weight(1f),
+                                fullScreen = false
+                            )
                         } else {
                             LazyColumn(
                                 modifier = Modifier
                                     .weight(1f)
                                     .fillMaxWidth(),
-                                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-                                verticalArrangement = Arrangement.spacedBy(12.dp)
+                                contentPadding = PaddingValues(
+                                    horizontal = RafiqTheme.spacing.l,
+                                    vertical = RafiqTheme.spacing.s
+                                ),
+                                verticalArrangement = Arrangement.spacedBy(RafiqTheme.spacing.m)
                             ) {
                                 items(filteredItems, key = { it.id }) { item ->
                                     SunnahGuidanceCard(
@@ -247,173 +193,163 @@ private fun SunnahGuidanceCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
-            .clickable(onClick = onClick),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    RafiqCard(
+        onClick = onClick,
+        modifier = modifier.fillMaxWidth(),
+        shape = RafiqTheme.customShapes.large,
+        border = BorderStroke(1.dp, RafiqTheme.extendedColors.cardBorder),
+        contentPadding = RafiqTheme.spacing.l
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                // Category badge
-                val (badgeText, badgeColor, badgeTextColor) = when (item.category) {
-                    SunnahCategory.PRAYER -> Triple(
-                        stringResource(R.string.category_sunnah_prayer),
-                        Color(0xFF0D9488).copy(alpha = 0.15f),
-                        Color(0xFF0D9488)
-                    )
-                    SunnahCategory.DAILY_LIFESTYLE -> Triple(
-                        stringResource(R.string.category_daily_lifestyle),
-                        Color(0xFF2563EB).copy(alpha = 0.15f),
-                        Color(0xFF2563EB)
-                    )
-                    SunnahCategory.FRIDAY -> Triple(
-                        stringResource(R.string.category_friday),
-                        Color(0xFF16A34A).copy(alpha = 0.15f),
-                        Color(0xFF16A34A)
-                    )
-                    SunnahCategory.FASTING -> Triple(
-                        stringResource(R.string.category_fasting),
-                        Color(0xFFD97706).copy(alpha = 0.15f),
-                        Color(0xFFD97706)
-                    )
-                    SunnahCategory.DHIKR_DUA -> Triple(
-                        stringResource(R.string.category_dhikr_dua),
-                        Color(0xFF7C3AED).copy(alpha = 0.15f),
-                        Color(0xFF7C3AED)
-                    )
-                }
-
-                Surface(
-                    shape = RoundedCornerShape(8.dp),
-                    color = badgeColor
-                ) {
-                    Text(
-                        text = badgeText,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = badgeTextColor,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
-                    )
-                }
-
-                // Steps count badge
-                Surface(
-                    shape = RoundedCornerShape(8.dp),
-                    color = MaterialTheme.colorScheme.primaryContainer
-                ) {
-                    Text(
-                        text = stringResource(R.string.sunnah_steps_count, item.steps.size),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
-                    )
-                }
-            }
-
-            Spacer(Modifier.height(10.dp))
-
-            // Arabic Calligraphy Header
-            Text(
-                text = item.titleArabic,
-                fontFamily = arabicFont,
-                fontSize = 20.sp,
-                color = MaterialTheme.colorScheme.primary,
-                textAlign = TextAlign.Right,
-                style = TextStyle(textDirection = TextDirection.Rtl, textAlign = TextAlign.Right),
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(Modifier.height(6.dp))
-
-            // Title
-            Text(
-                text = if (isId) item.titleId else item.titleEn,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-
-            Spacer(Modifier.height(4.dp))
-
-            // Summary
-            Text(
-                text = if (isId) item.summaryId else item.summaryEn,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-                lineHeight = 18.sp
-            )
-
-            // Dalil Reference Preview if available
-            val hadithRef = item.hadithReference
-            val surahRef = item.surahReference
-            if (hadithRef != null || surahRef != null) {
-                Spacer(Modifier.height(8.dp))
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.08f))
-                        .padding(horizontal = 10.dp, vertical = 6.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = surahRef ?: hadithRef ?: "",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.primary,
-                        fontWeight = FontWeight.SemiBold,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
-            }
-
-            Spacer(Modifier.height(10.dp))
-
-            // Bottom row: Virtues info and Details link
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                val virtues = if (isId) item.virtuesId else item.virtuesEn
-                if (virtues.isNotEmpty()) {
-                    Text(
-                        text = "★ ${virtues.first()}",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = Color(0xFFD97706),
-                        fontWeight = FontWeight.Medium,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.weight(1f, fill = false)
-                    )
-                } else {
-                    Spacer(Modifier.width(1.dp))
-                }
-
-                Text(
-                    text = stringResource(R.string.view_details),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.Bold
+            // Category badge
+            val (badgeText, badgeColor, badgeTextColor) = when (item.category) {
+                SunnahCategory.PRAYER -> Triple(
+                    stringResource(R.string.category_sunnah_prayer),
+                    Color(0xFF0D9488).copy(alpha = 0.15f),
+                    Color(0xFF0D9488)
+                )
+                SunnahCategory.DAILY_LIFESTYLE -> Triple(
+                    stringResource(R.string.category_daily_lifestyle),
+                    Color(0xFF2563EB).copy(alpha = 0.15f),
+                    Color(0xFF2563EB)
+                )
+                SunnahCategory.FRIDAY -> Triple(
+                    stringResource(R.string.category_friday),
+                    Color(0xFF16A34A).copy(alpha = 0.15f),
+                    Color(0xFF16A34A)
+                )
+                SunnahCategory.FASTING -> Triple(
+                    stringResource(R.string.category_fasting),
+                    Color(0xFFD97706).copy(alpha = 0.15f),
+                    Color(0xFFD97706)
+                )
+                SunnahCategory.DHIKR_DUA -> Triple(
+                    stringResource(R.string.category_dhikr_dua),
+                    Color(0xFF7C3AED).copy(alpha = 0.15f),
+                    Color(0xFF7C3AED)
                 )
             }
+
+            Surface(
+                shape = RafiqTheme.customShapes.pill,
+                color = badgeColor
+            ) {
+                Text(
+                    text = badgeText,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = badgeTextColor,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
+                )
+            }
+
+            // Steps count badge
+            Surface(
+                shape = RafiqTheme.customShapes.pill,
+                color = MaterialTheme.colorScheme.primaryContainer
+            ) {
+                Text(
+                    text = stringResource(R.string.sunnah_steps_count, item.steps.size),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
+                )
+            }
+        }
+
+        Spacer(Modifier.height(RafiqTheme.spacing.s))
+
+        // Arabic Calligraphy Header
+        Text(
+            text = item.titleArabic,
+            fontFamily = arabicFont,
+            fontSize = 20.sp,
+            color = MaterialTheme.colorScheme.primary,
+            textAlign = TextAlign.Right,
+            style = TextStyle(textDirection = TextDirection.Rtl, textAlign = TextAlign.Right),
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(Modifier.height(RafiqTheme.spacing.xs))
+
+        // Title
+        Text(
+            text = if (isId) item.titleId else item.titleEn,
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+
+        Spacer(Modifier.height(RafiqTheme.spacing.xxs))
+
+        // Summary
+        Text(
+            text = if (isId) item.summaryId else item.summaryEn,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
+            lineHeight = 18.sp
+        )
+
+        // Dalil Reference Preview if available
+        val hadithRef = item.hadithReference
+        val surahRef = item.surahReference
+        if (hadithRef != null || surahRef != null) {
+            Spacer(Modifier.height(RafiqTheme.spacing.s))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RafiqTheme.customShapes.small)
+                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.08f))
+                    .padding(horizontal = 10.dp, vertical = 6.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = surahRef ?: hadithRef ?: "",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+        }
+
+        Spacer(Modifier.height(RafiqTheme.spacing.m))
+
+        // Bottom row: Virtues info and Details link
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            val virtues = if (isId) item.virtuesId else item.virtuesEn
+            if (virtues.isNotEmpty()) {
+                Text(
+                    text = "★ ${virtues.first()}",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = Color(0xFFD97706),
+                    fontWeight = FontWeight.Medium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f, fill = false)
+                )
+            } else {
+                Spacer(Modifier.width(1.dp))
+            }
+
+            Text(
+                text = stringResource(R.string.view_details),
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.primary,
+                fontWeight = FontWeight.Bold
+            )
         }
     }
 }

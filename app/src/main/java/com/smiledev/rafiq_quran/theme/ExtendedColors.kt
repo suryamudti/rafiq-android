@@ -23,6 +23,7 @@ data class RafiqExtendedColors(
     val badgeSunnah: Color,
     val badgeNeutral: Color,
     val cardBorder: Color,
+    val cardHighlight: Color = Color.White.copy(alpha = 0.20f),
     val heroPrayerGradient: Brush,
     val quranGradient: Brush,
     val amberGradient: Brush
@@ -44,7 +45,8 @@ val LightRafiqExtendedColors = RafiqExtendedColors(
     badgeObligatory = Color(0xFFD32F2F),
     badgeSunnah = Color(0xFF00796B),
     badgeNeutral = Color(0xFF607D8B),
-    cardBorder = Color(0xFFE0E0E0),
+    cardBorder = Color(0x14000000),
+    cardHighlight = Color(0x40FFFFFF),
     heroPrayerGradient = Brush.verticalGradient(
         colors = listOf(
             Color(0xFF00695C),
@@ -82,11 +84,12 @@ val DarkRafiqExtendedColors = RafiqExtendedColors(
     badgeObligatory = Color(0xFFEF9A9A),
     badgeSunnah = Color(0xFF80CBC4),
     badgeNeutral = Color(0xFFB0BEC5),
-    cardBorder = Color(0xFF373737),
+    cardBorder = Color(0x26FFFFFF),
+    cardHighlight = Color(0x26FFFFFF),
     heroPrayerGradient = Brush.verticalGradient(
         colors = listOf(
+            Color(0xFF005B4F),
             Color(0xFF004D40),
-            Color(0xFF00695C),
             Color(0xFF00332C)
         )
     ),

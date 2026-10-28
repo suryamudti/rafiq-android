@@ -1,5 +1,6 @@
 package com.smiledev.rafiq_quran.ui.zakat
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,6 +14,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -32,11 +34,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.smiledev.rafiq_quran.ui.components.RafiqSharedBackButton
 import com.smiledev.rafiq_quran.ui.components.RafiqSharedBadge
 import com.smiledev.rafiq_quran.ui.components.RafiqSharedCard
 import com.smiledev.rafiq_quran.ui.components.RafiqSharedHeader
 import com.smiledev.rafiq_quran.ui.theme.PrimaryTeal
+import com.smiledev.rafiq_quran.ui.theme.RafiqMultiplatformTheme
 import com.smiledev.rafiq_quran.ui.theme.SecondaryGold
+import com.smiledev.rafiq_quran.ui.theme.rafiqPressable
 
 @Composable
 fun SharedZakatScreen(
@@ -73,21 +78,13 @@ fun SharedZakatScreen(
                 title = "Zakat Calculator",
                 subtitle = "Gold, Silver, and Wealth (Maal)",
                 navigationIcon = onBackClick?.let { action ->
-                    {
-                        IconButton(onClick = action) {
-                            Text(
-                                text = "←",
-                                style = MaterialTheme.typography.titleLarge,
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
-                        }
-                    }
+                    { RafiqSharedBackButton(onClick = action) }
                 },
                 actions = {
                     RafiqSharedBadge(
                         text = state.selectedCurrency,
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                        containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.70f),
+                        contentColor = MaterialTheme.colorScheme.primary
                     )
                 }
             )
@@ -112,30 +109,43 @@ fun SharedZakatScreen(
                     if (isSelected) {
                         Button(
                             onClick = { viewModel.updateCurrency(curr) },
-                            modifier = Modifier.weight(1f)
+                            shape = RoundedCornerShape(14.dp),
+                            modifier = Modifier
+                                .weight(1f)
+                                .rafiqPressable(targetScale = 0.95f),
+                            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                         ) {
                             Text(curr, fontWeight = FontWeight.Bold)
                         }
                     } else {
                         OutlinedButton(
                             onClick = { viewModel.updateCurrency(curr) },
-                            modifier = Modifier.weight(1f)
+                            shape = RoundedCornerShape(14.dp),
+                            modifier = Modifier
+                                .weight(1f)
+                                .rafiqPressable(targetScale = 0.95f)
                         ) {
-                            Text(curr)
+                            Text(curr, fontWeight = FontWeight.Medium)
                         }
                     }
                 }
             }
 
             // Asset Inputs
-            RafiqSharedCard(modifier = Modifier.fillMaxWidth()) {
+            RafiqSharedCard(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(18.dp),
+                contentPadding = 18.dp
+            ) {
                 Column(
-                    modifier = Modifier.padding(16.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     Text(
                         text = "Enter Your Assets",
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            letterSpacing = (-0.1).sp
+                        ),
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary
                     )
@@ -147,7 +157,7 @@ fun SharedZakatScreen(
                         placeholder = { Text("e.g. 100") },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(12.dp)
+                        shape = RoundedCornerShape(14.dp)
                     )
 
                     OutlinedTextField(
@@ -157,7 +167,7 @@ fun SharedZakatScreen(
                         placeholder = { Text("e.g. 600") },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(12.dp)
+                        shape = RoundedCornerShape(14.dp)
                     )
 
                     OutlinedTextField(
@@ -167,15 +177,18 @@ fun SharedZakatScreen(
                         placeholder = { Text("e.g. 5000") },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(12.dp)
+                        shape = RoundedCornerShape(14.dp)
                     )
 
                     Button(
                         onClick = { viewModel.calculate() },
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(12.dp)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .rafiqPressable(targetScale = 0.96f),
+                        shape = RoundedCornerShape(14.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                     ) {
-                        Text("Calculate Zakat", fontWeight = FontWeight.Bold)
+                        Text("Calculate Zakat", fontWeight = FontWeight.Bold, fontSize = 15.sp)
                     }
                 }
             }
@@ -191,7 +204,7 @@ fun SharedZakatScreen(
                 Text(
                     text = "Using standard reference rates (Nisab: 85g Gold / 595g Silver)",
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.60f)
                 )
             }
 
@@ -199,18 +212,21 @@ fun SharedZakatScreen(
             val r = state.result
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp),
+                shape = RoundedCornerShape(18.dp),
+                border = BorderStroke(1.dp, RafiqMultiplatformTheme.colors.cardBorder),
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.40f)
                 )
             ) {
                 Column(
-                    modifier = Modifier.padding(16.dp),
+                    modifier = Modifier.padding(18.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Text(
                         text = "Calculation Summary",
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            letterSpacing = (-0.1).sp
+                        ),
                         fontWeight = FontWeight.Bold
                     )
                     HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
@@ -242,7 +258,9 @@ fun SharedZakatScreen(
                         )
                         Text(
                             text = formatVal(r.totalZakat),
-                            style = MaterialTheme.typography.titleLarge,
+                            style = MaterialTheme.typography.titleLarge.copy(
+                                letterSpacing = (-0.5).sp
+                            ),
                             fontWeight = FontWeight.Bold,
                             color = PrimaryTeal
                         )
@@ -253,7 +271,7 @@ fun SharedZakatScreen(
                         Text(
                             text = "Rates: Gold ${formatVal(r.goldPricePerGram)}/g, Silver ${formatVal(r.silverPricePerGram)}/g",
                             style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.60f)
                         )
                     }
                 }
@@ -262,8 +280,9 @@ fun SharedZakatScreen(
             // Info Notes
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(12.dp),
-                colors = CardDefaults.cardColors(containerColor = SecondaryGold.copy(alpha = 0.1f))
+                shape = RoundedCornerShape(16.dp),
+                border = BorderStroke(1.dp, SecondaryGold.copy(alpha = 0.35f)),
+                colors = CardDefaults.cardColors(containerColor = SecondaryGold.copy(alpha = 0.10f))
             ) {
                 Column(modifier = Modifier.padding(14.dp)) {
                     Text(
@@ -275,7 +294,7 @@ fun SharedZakatScreen(
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = "Zakat is obligatory at 2.5% on wealth that meets or exceeds the Nisab threshold held for a full lunar year (Hawl).",
-                        style = MaterialTheme.typography.bodySmall
+                        style = MaterialTheme.typography.bodySmall.copy(lineHeight = 18.sp)
                     )
                 }
             }

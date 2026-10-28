@@ -1,5 +1,6 @@
 package com.smiledev.rafiq_quran.ui.designsystem.badge
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -17,11 +18,13 @@ fun RafiqBadge(
     modifier: Modifier = Modifier,
     containerColor: Color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.4f),
     contentColor: Color = MaterialTheme.colorScheme.onSecondaryContainer,
+    border: BorderStroke? = null,
     shape: Shape = RafiqTheme.customShapes.pill
 ) {
     Surface(
         shape = shape,
         color = containerColor,
+        border = border,
         modifier = modifier
     ) {
         Text(

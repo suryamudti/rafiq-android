@@ -1,6 +1,8 @@
 package com.smiledev.rafiq_quran.ui.quran
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,7 +18,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -38,6 +39,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -45,11 +47,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.smiledev.rafiq_quran.domain.model.Ayah
 import com.smiledev.rafiq_quran.domain.model.Surah
+import com.smiledev.rafiq_quran.ui.components.RafiqSharedBackButton
 import com.smiledev.rafiq_quran.ui.components.RafiqSharedBadge
 import com.smiledev.rafiq_quran.ui.components.RafiqSharedCard
 import com.smiledev.rafiq_quran.ui.components.RafiqSharedHeader
+import com.smiledev.rafiq_quran.ui.components.RafiqSharedHeroCard
 import com.smiledev.rafiq_quran.ui.theme.PrimaryTeal
+import com.smiledev.rafiq_quran.ui.theme.RafiqMultiplatformTheme
 import com.smiledev.rafiq_quran.ui.theme.SecondaryGold
+import com.smiledev.rafiq_quran.ui.theme.rafiqPressable
 
 @Composable
 fun SharedQuranScreen(
@@ -89,21 +95,13 @@ private fun SurahListView(
                 title = "Al-Qur'an",
                 subtitle = "Read, Listen, and Reflect",
                 navigationIcon = onBackClick?.let { action ->
-                    {
-                        IconButton(onClick = action) {
-                            Text(
-                                text = "←",
-                                style = MaterialTheme.typography.titleLarge,
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
-                        }
-                    }
+                    { RafiqSharedBackButton(onClick = action) }
                 },
                 actions = {
                     RafiqSharedBadge(
                         text = "${state.surahs.size} Surahs",
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                        containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.70f),
+                        contentColor = MaterialTheme.colorScheme.primary
                     )
                 }
             )
@@ -116,19 +114,36 @@ private fun SurahListView(
                 .padding(padding)
                 .padding(horizontal = 16.dp, vertical = 8.dp)
         ) {
-            // Search Input
+            // Search Input with Continuous Corners
             OutlinedTextField(
                 value = state.searchQuery,
                 onValueChange = { viewModel.onSearchQueryChange(it) },
-                placeholder = { Text("Search by name, meaning, or number...") },
+                placeholder = {
+                    Text(
+                        "Search by name, meaning, or number...",
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.50f)
+                        )
+                    )
+                },
+                trailingIcon = {
+                    if (state.searchQuery.isNotEmpty()) {
+                        IconButton(
+                            onClick = { viewModel.onSearchQueryChange("") },
+                            modifier = Modifier.size(28.dp).rafiqPressable(targetScale = 0.90f)
+                        ) {
+                            Text("✕", fontSize = 12.sp, color = MaterialTheme.colorScheme.outline)
+                        }
+                    }
+                },
                 singleLine = true,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 4.dp),
-                shape = RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(14.dp)
             )
 
-            // Revelation Filter Row
+            // Revelation Filter Row with tactile bounce
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -138,29 +153,35 @@ private fun SurahListView(
                 FilterChip(
                     selected = state.revelationFilter == null,
                     onClick = { viewModel.selectRevelationFilter(null) },
-                    label = { Text("All") },
+                    label = { Text("All", fontWeight = FontWeight.Medium) },
+                    modifier = Modifier.rafiqPressable(targetScale = 0.94f),
                     colors = FilterChipDefaults.filterChipColors(
                         selectedContainerColor = MaterialTheme.colorScheme.primary,
                         selectedLabelColor = MaterialTheme.colorScheme.onPrimary
-                    )
+                    ),
+                    shape = RoundedCornerShape(18.dp)
                 )
                 FilterChip(
                     selected = state.revelationFilter == "makkah",
                     onClick = { viewModel.selectRevelationFilter("makkah") },
-                    label = { Text("Makkiyyah") },
+                    label = { Text("Makkiyyah", fontWeight = FontWeight.Medium) },
+                    modifier = Modifier.rafiqPressable(targetScale = 0.94f),
                     colors = FilterChipDefaults.filterChipColors(
                         selectedContainerColor = MaterialTheme.colorScheme.primary,
                         selectedLabelColor = MaterialTheme.colorScheme.onPrimary
-                    )
+                    ),
+                    shape = RoundedCornerShape(18.dp)
                 )
                 FilterChip(
                     selected = state.revelationFilter == "madinah",
                     onClick = { viewModel.selectRevelationFilter("madinah") },
-                    label = { Text("Madaniyyah") },
+                    label = { Text("Madaniyyah", fontWeight = FontWeight.Medium) },
+                    modifier = Modifier.rafiqPressable(targetScale = 0.94f),
                     colors = FilterChipDefaults.filterChipColors(
                         selectedContainerColor = MaterialTheme.colorScheme.primary,
                         selectedLabelColor = MaterialTheme.colorScheme.onPrimary
-                    )
+                    ),
+                    shape = RoundedCornerShape(18.dp)
                 )
             }
 
@@ -182,22 +203,25 @@ private fun SurahListView(
 @Composable
 private fun SurahCard(surah: Surah, onClick: () -> Unit) {
     RafiqSharedCard(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick)
+        modifier = Modifier.fillMaxWidth(),
+        onClick = onClick,
+        shape = RoundedCornerShape(16.dp),
+        contentPadding = 14.dp
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(14.dp),
+            modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Chapter Number Hexagon / Circle Badge
+            // Chapter Number Hexagon / Circle Badge with specular border
             Box(
                 modifier = Modifier
-                    .size(38.dp)
+                    .size(40.dp)
                     .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)),
+                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.10f))
+                    .border(
+                        BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.25f)),
+                        CircleShape
+                    ),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
@@ -214,8 +238,10 @@ private fun SurahCard(surah: Surah, onClick: () -> Unit) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = surah.nameSimple,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.Bold,
+                        letterSpacing = (-0.1).sp
+                    ),
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 Spacer(modifier = Modifier.height(2.dp))
@@ -223,7 +249,7 @@ private fun SurahCard(surah: Surah, onClick: () -> Unit) {
                     Text(
                         text = surah.translatedName,
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.70f),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -231,7 +257,7 @@ private fun SurahCard(surah: Surah, onClick: () -> Unit) {
                     Text(
                         text = "• ${surah.versesCount} Ayahs",
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.50f)
                     )
                 }
             }
@@ -262,18 +288,12 @@ private fun AyahReaderView(
                 title = surah.nameSimple,
                 subtitle = "${surah.revelationPlace.replaceFirstChar { it.uppercase() }} • ${surah.versesCount} Verses",
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Text(
-                            text = "←",
-                            style = MaterialTheme.typography.titleLarge,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                    }
+                    RafiqSharedBackButton(onClick = onBack)
                 },
                 actions = {
                     Text(
                         text = surah.nameArabic,
-                        style = MaterialTheme.typography.titleLarge,
+                        style = MaterialTheme.typography.titleLarge.copy(fontSize = 24.sp),
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary
                     )
@@ -297,33 +317,54 @@ private fun AyahReaderView(
             ) {
                 OutlinedButton(
                     onClick = { viewModel.toggleTranslation() },
-                    shape = RoundedCornerShape(8.dp)
+                    shape = RoundedCornerShape(12.dp),
+                    modifier = Modifier.rafiqPressable(targetScale = 0.94f)
                 ) {
-                    Text(if (state.showTranslation) "Hide Translation" else "Show Translation", fontSize = 12.sp)
+                    Text(
+                        if (state.showTranslation) "Hide Translation" else "Show Translation",
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Medium
+                    )
                 }
 
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("Font: ", style = MaterialTheme.typography.bodySmall)
-                    IconButton(
-                        onClick = { viewModel.decreaseArabicFontSize() },
-                        modifier = Modifier.size(32.dp)
+                    Text("Font:", style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Medium)
+                    Box(
+                        modifier = Modifier
+                            .size(32.dp)
+                            .rafiqPressable(targetScale = 0.90f) { viewModel.decreaseArabicFontSize() }
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.50f))
+                            .border(BorderStroke(1.dp, RafiqMultiplatformTheme.colors.cardBorder), CircleShape),
+                        contentAlignment = Alignment.Center
                     ) {
-                        Text("A-", fontWeight = FontWeight.Bold)
+                        Text("A-", fontSize = 12.sp, fontWeight = FontWeight.Bold)
                     }
-                    Text("${state.arabicFontSizeSp}", style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Bold)
-                    IconButton(
-                        onClick = { viewModel.increaseArabicFontSize() },
-                        modifier = Modifier.size(32.dp)
+                    Text(
+                        "${state.arabicFontSizeSp}",
+                        style = MaterialTheme.typography.bodySmall,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Box(
+                        modifier = Modifier
+                            .size(32.dp)
+                            .rafiqPressable(targetScale = 0.90f) { viewModel.increaseArabicFontSize() }
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.50f))
+                            .border(BorderStroke(1.dp, RafiqMultiplatformTheme.colors.cardBorder), CircleShape),
+                        contentAlignment = Alignment.Center
                     ) {
-                        Text("A+", fontWeight = FontWeight.Bold)
+                        Text("A+", fontSize = 12.sp, fontWeight = FontWeight.Bold)
                     }
                 }
             }
 
-            HorizontalDivider()
+            HorizontalDivider(
+                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.50f)
+            )
 
             if (state.isLoading) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -340,8 +381,11 @@ private fun AyahReaderView(
                         item {
                             Card(
                                 modifier = Modifier.fillMaxWidth(),
-                                shape = RoundedCornerShape(12.dp),
-                                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.25f))
+                                shape = RoundedCornerShape(16.dp),
+                                border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.25f)),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.25f)
+                                )
                             ) {
                                 Box(
                                     modifier = Modifier
@@ -380,11 +424,13 @@ private fun AyahCard(
     arabicFontSize: Int,
     showTranslation: Boolean
 ) {
-    RafiqSharedCard(modifier = Modifier.fillMaxWidth()) {
+    RafiqSharedCard(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        contentPadding = 16.dp
+    ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+            modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             // Verse Number Header
@@ -395,9 +441,13 @@ private fun AyahCard(
             ) {
                 Box(
                     modifier = Modifier
-                        .size(30.dp)
+                        .size(32.dp)
                         .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)),
+                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.10f))
+                        .border(
+                            BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.25f)),
+                            CircleShape
+                        ),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
@@ -409,15 +459,15 @@ private fun AyahCard(
                 }
 
                 if (ayah.juz > 0) {
-                    Text(
+                    RafiqSharedBadge(
                         text = "Juz ${ayah.juz}",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.50f),
+                        contentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.60f)
                     )
                 }
             }
 
-            // Arabic Text
+            // Arabic Text with enhanced typography
             Text(
                 text = ayah.text,
                 style = MaterialTheme.typography.headlineSmall.copy(
@@ -434,7 +484,10 @@ private fun AyahCard(
             if (showTranslation) {
                 val translationText = ayah.translationEn ?: ayah.translationId ?: ayah.translation
                 if (translationText != null) {
-                    HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
+                    HorizontalDivider(
+                        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.40f),
+                        modifier = Modifier.padding(vertical = 4.dp)
+                    )
                     Text(
                         text = translationText,
                         style = MaterialTheme.typography.bodyMedium.copy(lineHeight = 22.sp),
