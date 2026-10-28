@@ -7,8 +7,15 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.net.Uri
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,18 +27,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Place
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
@@ -41,6 +47,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
@@ -56,8 +63,19 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.smiledev.rafiq_quran.R
 import com.smiledev.rafiq_quran.core.currentLocaleCode
-import kotlin.math.*
+import com.smiledev.rafiq_quran.theme.RafiqTheme
+import com.smiledev.rafiq_quran.ui.designsystem.animation.EaseOutCubic
+import com.smiledev.rafiq_quran.ui.designsystem.animation.RafiqMotion
+import com.smiledev.rafiq_quran.ui.designsystem.appbar.RafiqTopAppBar
+import com.smiledev.rafiq_quran.ui.designsystem.badge.RafiqBadge
+import com.smiledev.rafiq_quran.ui.designsystem.button.RafiqButton
+import com.smiledev.rafiq_quran.ui.designsystem.card.RafiqCard
 import java.util.Locale
+import kotlin.math.PI
+import kotlin.math.abs
+import kotlin.math.cos
+import kotlin.math.roundToInt
+import kotlin.math.sin
 
 private const val KAABA_LAT = 21.4225
 private const val KAABA_LON = 39.8262
@@ -110,14 +128,9 @@ fun QiblaScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.qibla_compass)) },
-                navigationIcon = {
-                    Text(stringResource(R.string.back), modifier = Modifier.clickable(onClick = onBack).padding(16.dp))
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                )
+            RafiqTopAppBar(
+                title = stringResource(R.string.qibla_compass),
+                onBack = onBack
             )
         }
     ) { padding ->
@@ -125,33 +138,44 @@ fun QiblaScreen(
             modifier = modifier
                 .fillMaxSize()
                 .padding(padding)
-                .verticalScroll(rememberScrollState()),
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = RafiqTheme.spacing.l, vertical = RafiqTheme.spacing.m),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(Modifier.height(8.dp))
-
+            // Direction Title and Info Header
             Text(
                 text = stringResource(R.string.qibla_direction),
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold
+                style = MaterialTheme.typography.headlineSmall.copy(letterSpacing = (-0.15).sp),
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface
             )
+            Spacer(Modifier.height(4.dp))
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.bearing_from_north, state.bearing.toInt()),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Text(
+                    text = "•",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+                )
+                Text(
+                    text = directionName,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontWeight = FontWeight.Medium
+                )
+            }
 
-            Text(
-                text = stringResource(R.string.bearing_from_north, state.bearing.toInt()),
-                fontSize = 16.sp,
-                color = Color(0xFF009688),
-                fontWeight = FontWeight.Medium
-            )
+            Spacer(Modifier.height(RafiqTheme.spacing.l))
 
-            Text(
-                text = directionName,
-                fontSize = 14.sp,
-                color = Color.Gray,
-                fontWeight = FontWeight.Medium
-            )
-
-            Spacer(Modifier.height(16.dp))
-
+            // Compass Area with spring bounce physics on alignment
             QiblaCompass(
                 bearing = state.bearing.toFloat(),
                 azimuth = deviceAzimuth,
@@ -159,45 +183,66 @@ fun QiblaScreen(
                 offsetText = offsetText
             )
 
-            Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(RafiqTheme.spacing.l))
 
-            Row(
-                modifier = Modifier.padding(horizontal = 24.dp),
-                verticalAlignment = Alignment.CenterVertically
+            // Heading & Target Bearing Bar
+            Surface(
+                shape = RoundedCornerShape(12.dp),
+                color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),
+                border = BorderStroke(1.dp, RafiqTheme.extendedColors.cardBorder),
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Text(
-                    text = stringResource(R.string.qibla_heading, deviceAzimuth.roundToInt()),
-                    fontSize = 14.sp,
-                    color = Color.Gray,
-                    modifier = Modifier.weight(1f)
-                )
-                Text(
-                    text = stringResource(R.string.qibla_bearing, state.bearing.toInt()),
-                    fontSize = 14.sp,
-                    color = Color.Gray,
-                    modifier = Modifier.weight(1f),
-                    textAlign = TextAlign.End
-                )
+                Row(
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = stringResource(R.string.qibla_heading, deviceAzimuth.roundToInt()),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.weight(1f)
+                    )
+                    Text(
+                        text = stringResource(R.string.qibla_bearing, state.bearing.toInt()),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.weight(1f),
+                        textAlign = TextAlign.End
+                    )
+                }
             }
 
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(RafiqTheme.spacing.m))
 
-            Text(
+            // Alignment Status Badge
+            RafiqBadge(
                 text = offsetText,
-                fontSize = 16.sp,
-                color = if (isAligned) Color(0xFF009688) else Color(0xFFFF9800),
-                fontWeight = FontWeight.Bold
+                containerColor = if (isAligned) {
+                    MaterialTheme.colorScheme.primaryContainer
+                } else {
+                    MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.7f)
+                },
+                contentColor = if (isAligned) {
+                    MaterialTheme.colorScheme.onPrimaryContainer
+                } else {
+                    MaterialTheme.colorScheme.onTertiaryContainer
+                },
+                border = BorderStroke(
+                    1.dp,
+                    if (isAligned) MaterialTheme.colorScheme.primary.copy(alpha = 0.4f)
+                    else MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f)
+                )
             )
 
-            Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(RafiqTheme.spacing.s))
 
             Text(
                 text = stringResource(R.string.distance_to_mecca, state.distanceKm.toInt()),
-                fontSize = 14.sp,
-                color = Color.Gray
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
-            Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(RafiqTheme.spacing.l))
 
             KaabaInfoCard(
                 userLat = state.userLat,
@@ -212,17 +257,17 @@ fun QiblaScreen(
                 }
             )
 
-            Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(RafiqTheme.spacing.m))
 
             Text(
                 text = stringResource(R.string.calibrate_compass),
-                fontSize = 12.sp,
-                color = Color.Gray,
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
                 textAlign = TextAlign.Center,
-                lineHeight = 18.sp
+                lineHeight = 16.sp
             )
 
-            Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(RafiqTheme.spacing.m))
         }
     }
 }
@@ -240,48 +285,48 @@ private fun KaabaInfoCard(
     val kaabaLatFormatted = String.format(Locale.US, "%.4f", KAABA_LAT)
     val kaabaLonFormatted = String.format(Locale.US, "%.4f", KAABA_LON)
 
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 24.dp)
+    RafiqCard(
+        modifier = Modifier.fillMaxWidth(),
+        border = BorderStroke(1.dp, RafiqTheme.extendedColors.cardBorder)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.fillMaxWidth()) {
             Text(
                 text = stringResource(R.string.kaaba_info),
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
+                style = MaterialTheme.typography.titleMedium.copy(letterSpacing = (-0.1).sp),
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface
             )
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(RafiqTheme.spacing.s))
             Text(
                 text = stringResource(R.string.kaaba_coords, kaabaLatFormatted, kaabaLonFormatted),
-                fontSize = 14.sp,
-                color = Color.Gray
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Spacer(Modifier.height(4.dp))
             Text(
                 text = stringResource(R.string.your_coords, userLatFormatted, userLonFormatted),
-                fontSize = 14.sp,
-                color = Color.Gray
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Spacer(Modifier.height(4.dp))
             Text(
                 text = stringResource(R.string.distance_to_mecca_formatted, distanceKm),
-                fontSize = 14.sp,
-                color = Color.Gray
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-            Spacer(Modifier.height(8.dp))
-            Button(
+            Spacer(Modifier.height(RafiqTheme.spacing.m))
+            RafiqButton(
                 onClick = { onOpenMaps(kaabaLabel) },
+                text = stringResource(R.string.open_in_maps),
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Filled.Place,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp)
+                    )
+                },
                 modifier = Modifier.fillMaxWidth()
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Place,
-                    contentDescription = null,
-                    modifier = Modifier.size(18.dp)
-                )
-                Spacer(Modifier.width(8.dp))
-                Text(stringResource(R.string.open_in_maps))
-            }
+            )
         }
     }
 }
@@ -305,6 +350,28 @@ internal fun QiblaCompass(
         )
     }
 
+    // Emil Kowalski spring motion: subtle scale pop when alignment state snaps
+    val alignmentScale by animateFloatAsState(
+        targetValue = if (isAligned) 1.04f else 1.0f,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = 400f
+        ),
+        label = "qibla_aligned_scale"
+    )
+
+    val dialBackgroundColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f)
+    val targetRingColor = if (isAligned) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline.copy(alpha = 0.35f)
+    val ringColor by animateColorAsState(
+        targetValue = targetRingColor,
+        animationSpec = tween(durationMillis = RafiqMotion.DurationNormal, easing = EaseOutCubic),
+        label = "qibla_ring_color"
+    )
+    val tickColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.45f)
+    val needleColor = if (isAligned) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primary.copy(alpha = 0.85f)
+    val cardinalColor = MaterialTheme.colorScheme.onSurfaceVariant
+    val northColor = MaterialTheme.colorScheme.primary
+
     Box(
         modifier = modifier
             .size(300.dp)
@@ -312,6 +379,8 @@ internal fun QiblaCompass(
                 contentDescription = compassDescription
             }
             .graphicsLayer {
+                scaleX = alignmentScale
+                scaleY = alignmentScale
                 rotationZ = -azimuth
             },
         contentAlignment = Alignment.Center
@@ -320,26 +389,34 @@ internal fun QiblaCompass(
             val center = Offset(size.width / 2, size.height / 2)
             val radius = size.minDimension / 2
 
-            drawCircle(color = Color(0xFFE0E0E0), radius = radius, center = center)
-            drawCircle(color = Color(0xFFBDBDBD), radius = radius - 2.dp.toPx(), center = center, style = androidx.compose.ui.graphics.drawscope.Stroke(width = 2.dp.toPx()))
+            // Compass Dial Background
+            drawCircle(color = dialBackgroundColor, radius = radius, center = center)
+            drawCircle(
+                color = ringColor,
+                radius = radius - 2.dp.toPx(),
+                center = center,
+                style = androidx.compose.ui.graphics.drawscope.Stroke(width = if (isAligned) 3.dp.toPx() else 2.dp.toPx())
+            )
 
+            // Degree Tick Marks (every 30 deg)
             for (i in 0 until 360 step 30) {
                 val angle = i * PI / 180
                 val inner = radius * 0.85f
                 val outer = radius * 0.92f
                 drawLine(
-                    color = Color(0xFF757575),
+                    color = tickColor,
                     start = Offset(center.x + inner * cos(angle).toFloat(), center.y + inner * sin(angle).toFloat()),
                     end = Offset(center.x + outer * cos(angle).toFloat(), center.y + outer * sin(angle).toFloat()),
                     strokeWidth = 2.dp.toPx()
                 )
             }
 
+            // Qibla Needle pointing towards Kaaba bearing
             val arrowAngle = (bearing - 180) * PI / 180
             val arrowLength = radius * 0.65f
 
             drawLine(
-                color = Color(0xFF009688),
+                color = needleColor,
                 start = center,
                 end = Offset(
                     center.x + arrowLength * sin(arrowAngle).toFloat(),
@@ -348,14 +425,16 @@ internal fun QiblaCompass(
                 strokeWidth = 6.dp.toPx()
             )
 
-            drawCircle(color = Color(0xFFFF9800), radius = 8.dp.toPx(), center = center)
+            // Center Pivot Hub
+            drawCircle(color = needleColor, radius = 9.dp.toPx(), center = center)
+            drawCircle(color = Color.White, radius = 4.dp.toPx(), center = center)
         }
 
         Text(
             text = stringResource(R.string.north),
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
-            color = Color(0xFF757575),
+            color = northColor,
             modifier = Modifier
                 .padding(bottom = 260.dp)
                 .clearAndSetSemantics { }
@@ -365,7 +444,7 @@ internal fun QiblaCompass(
             text = stringResource(R.string.south),
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
-            color = Color(0xFF757575),
+            color = cardinalColor,
             modifier = Modifier
                 .padding(top = 260.dp)
                 .clearAndSetSemantics { }
@@ -375,7 +454,7 @@ internal fun QiblaCompass(
             text = stringResource(R.string.east),
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
-            color = Color(0xFF757575),
+            color = cardinalColor,
             modifier = Modifier
                 .padding(start = 260.dp)
                 .clearAndSetSemantics { }
@@ -385,7 +464,7 @@ internal fun QiblaCompass(
             text = stringResource(R.string.west),
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
-            color = Color(0xFF757575),
+            color = cardinalColor,
             modifier = Modifier
                 .padding(end = 260.dp)
                 .clearAndSetSemantics { }

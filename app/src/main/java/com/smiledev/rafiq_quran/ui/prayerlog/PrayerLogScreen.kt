@@ -1,5 +1,8 @@
 package com.smiledev.rafiq_quran.ui.prayerlog
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -49,6 +52,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.smiledev.rafiq_quran.R
 import com.smiledev.rafiq_quran.domain.repository.PrayerLogDay
 import com.smiledev.rafiq_quran.theme.RafiqTheme
+import com.smiledev.rafiq_quran.ui.designsystem.animation.EaseOutCubic
+import com.smiledev.rafiq_quran.ui.designsystem.animation.RafiqMotion
+import com.smiledev.rafiq_quran.ui.designsystem.animation.rafiqEnterTransition
+import com.smiledev.rafiq_quran.ui.designsystem.animation.rafiqExitTransition
+import com.smiledev.rafiq_quran.ui.designsystem.animation.rafiqPressable
 import com.smiledev.rafiq_quran.ui.designsystem.appbar.RafiqTopAppBar
 import com.smiledev.rafiq_quran.ui.designsystem.card.RafiqCard
 import com.smiledev.rafiq_quran.ui.designsystem.card.RafiqStatCard
@@ -118,7 +126,7 @@ fun PrayerLogScreen(
                     )
                 }
 
-                // 2. 7-Day Date Selector Strip
+                // 2. 7-Day Date Selector Strip with tactile chip press
                 item {
                     RecentDaysStrip(
                         days = state.recentDays,
@@ -126,7 +134,7 @@ fun PrayerLogScreen(
                     )
                 }
 
-                // 3. Date Navigation & Active Day Header
+                // 3. Date Navigation & Active Day Header with 44dp touch targets
                 item {
                     DateNavigationHeader(
                         selectedDate = state.selectedDate,
@@ -137,11 +145,15 @@ fun PrayerLogScreen(
                     )
                 }
 
-                // 4. Celebration Banner (All 5 completed)
+                // 4. Celebration Banner (All 5 completed) with 0.95f fluid scale enter
                 val activeLog = state.selectedLog
                 val completedCount = activeLog?.completedCount ?: 0
-                if (completedCount == 5) {
-                    item {
+                item {
+                    AnimatedVisibility(
+                        visible = completedCount == 5,
+                        enter = rafiqEnterTransition(initialScale = 0.95f),
+                        exit = rafiqExitTransition(targetScale = 0.95f)
+                    ) {
                         AllCompletedBanner()
                     }
                 }
@@ -231,20 +243,21 @@ private fun RecentDaysStrip(
             val borderColor = if (isSelected) {
                 MaterialTheme.colorScheme.primary
             } else {
-                MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
+                RafiqTheme.extendedColors.cardBorder
             }
 
             Surface(
                 modifier = Modifier
                     .clip(RafiqTheme.customShapes.medium)
+                    .rafiqPressable(targetScale = RafiqMotion.ChipPressScale)
                     .clickable { onDayClick(day) },
                 shape = RafiqTheme.customShapes.medium,
                 color = containerColor,
                 border = BorderStroke(1.dp, borderColor),
-                shadowElevation = if (isSelected) 3.dp else 0.dp
+                shadowElevation = if (isSelected) 2.dp else 0.dp
             ) {
                 Column(
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
@@ -255,7 +268,7 @@ private fun RecentDaysStrip(
                     Spacer(Modifier.height(4.dp))
                     Text(
                         text = day.dayNumber,
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.titleMedium.copy(letterSpacing = (-0.1).sp),
                         fontWeight = FontWeight.Bold,
                         color = contentColor
                     )
@@ -296,14 +309,16 @@ private fun DateNavigationHeader(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Previous Day Button
+        // Previous Day Button with min 44dp touch target
         Surface(
             modifier = Modifier
-                .size(36.dp)
+                .size(44.dp)
                 .clip(CircleShape)
+                .rafiqPressable(targetScale = RafiqMotion.IconButtonPressScale)
                 .clickable(onClick = onPreviousDay),
             shape = CircleShape,
-            color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f)
+            color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f),
+            border = BorderStroke(1.dp, RafiqTheme.extendedColors.cardBorder)
         ) {
             Box(contentAlignment = Alignment.Center) {
                 Text(
@@ -319,35 +334,50 @@ private fun DateNavigationHeader(
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
                 text = displayDate,
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleMedium.copy(letterSpacing = (-0.1).sp),
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onSurface
             )
             if (!isToday) {
-                Text(
-                    text = stringResource(R.string.jump_to_today),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.Bold,
+                Surface(
+                    shape = RoundedCornerShape(12.dp),
+                    color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)),
                     modifier = Modifier
+                        .padding(top = 4.dp)
+                        .rafiqPressable(targetScale = RafiqMotion.ChipPressScale)
                         .clickable(onClick = onJumpToToday)
-                        .padding(top = 2.dp)
-                )
+                ) {
+                    Text(
+                        text = stringResource(R.string.jump_to_today),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 2.dp)
+                    )
+                }
             }
         }
 
-        // Next Day Button (Disabled if already today)
+        // Next Day Button (Disabled if already today) with min 44dp touch target
         Surface(
             modifier = Modifier
-                .size(36.dp)
+                .size(44.dp)
                 .clip(CircleShape)
-                .clickable(enabled = isPastDay, onClick = onNextDay),
+                .then(
+                    if (isPastDay) {
+                        Modifier
+                            .rafiqPressable(targetScale = RafiqMotion.IconButtonPressScale)
+                            .clickable(onClick = onNextDay)
+                    } else Modifier
+                ),
             shape = CircleShape,
             color = if (isPastDay) {
                 MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f)
             } else {
                 MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.2f)
-            }
+            },
+            border = BorderStroke(1.dp, RafiqTheme.extendedColors.cardBorder)
         ) {
             Box(contentAlignment = Alignment.Center) {
                 Text(
@@ -396,7 +426,7 @@ private fun AllCompletedBanner() {
             Column {
                 Text(
                     text = stringResource(R.string.all_prayers_completed_title),
-                    style = MaterialTheme.typography.titleSmall,
+                    style = MaterialTheme.typography.titleSmall.copy(letterSpacing = (-0.1).sp),
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface
                 )
@@ -418,8 +448,15 @@ private fun PrayerChecklistCard(
     onTogglePrayer: (String, Boolean) -> Unit,
     onMarkAll: (Boolean) -> Unit
 ) {
+    val animatedProgress by animateFloatAsState(
+        targetValue = completedCount / 5f,
+        animationSpec = tween(durationMillis = RafiqMotion.DurationMedium, easing = EaseOutCubic),
+        label = "prayer_log_progress"
+    )
+
     RafiqCard(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
+        border = BorderStroke(1.dp, RafiqTheme.extendedColors.cardBorder)
     ) {
         // Card Header: Progress and Batch Action
         Row(
@@ -430,7 +467,7 @@ private fun PrayerChecklistCard(
             Column {
                 Text(
                     text = stringResource(R.string.prayers_completed_format, completedCount),
-                    style = MaterialTheme.typography.titleSmall,
+                    style = MaterialTheme.typography.titleSmall.copy(letterSpacing = (-0.1).sp),
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -438,6 +475,7 @@ private fun PrayerChecklistCard(
             val allDone = completedCount == 5
             TextButton(
                 onClick = { onMarkAll(!allDone) },
+                modifier = Modifier.rafiqPressable(targetScale = RafiqMotion.ChipPressScale),
                 contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
             ) {
                 Text(
@@ -451,7 +489,7 @@ private fun PrayerChecklistCard(
         Spacer(Modifier.height(6.dp))
 
         LinearProgressIndicator(
-            progress = { completedCount / 5f },
+            progress = { animatedProgress },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(6.dp)
@@ -499,9 +537,12 @@ private fun PrayerLogRowItem(
     }
 
     Surface(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .rafiqPressable(targetScale = 0.99f),
         shape = RafiqTheme.customShapes.small,
-        color = backgroundColor
+        color = backgroundColor,
+        border = BorderStroke(1.dp, if (isChecked) MaterialTheme.colorScheme.primary.copy(alpha = 0.2f) else RafiqTheme.extendedColors.cardBorder)
     ) {
         Row(
             modifier = Modifier
@@ -514,7 +555,7 @@ private fun PrayerLogRowItem(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         text = stringResource(item.labelResId),
-                        style = MaterialTheme.typography.bodyLarge,
+                        style = MaterialTheme.typography.bodyLarge.copy(letterSpacing = (-0.1).sp),
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.onSurface
                     )
@@ -566,7 +607,7 @@ private fun HistoryDayCard(
     val borderColor = if (isCurrentSelected) {
         MaterialTheme.colorScheme.primary
     } else {
-        MaterialTheme.colorScheme.outline.copy(alpha = 0.15f)
+        RafiqTheme.extendedColors.cardBorder
     }
 
     RafiqCard(
@@ -583,7 +624,7 @@ private fun HistoryDayCard(
             Column {
                 Text(
                     text = dayLog.date,
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.bodyMedium.copy(letterSpacing = (-0.05).sp),
                     fontWeight = FontWeight.Medium,
                     color = MaterialTheme.colorScheme.onSurface
                 )
@@ -622,7 +663,7 @@ private fun MiniPrayerDot(label: String, completed: Boolean) {
 
     Box(
         modifier = Modifier
-            .size(22.dp)
+            .size(24.dp)
             .clip(CircleShape)
             .background(containerColor),
         contentAlignment = Alignment.Center
@@ -666,4 +707,3 @@ private fun formatDisplayDate(dateStr: String, todayStr: String): String {
         dateStr
     }
 }
-

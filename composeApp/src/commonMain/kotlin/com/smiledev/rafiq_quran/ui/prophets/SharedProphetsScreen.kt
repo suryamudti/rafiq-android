@@ -1,6 +1,8 @@
 package com.smiledev.rafiq_quran.ui.prophets
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -41,16 +43,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.smiledev.rafiq_quran.domain.model.ProphetStory
+import com.smiledev.rafiq_quran.ui.components.RafiqSharedBackButton
 import com.smiledev.rafiq_quran.ui.components.RafiqSharedBadge
 import com.smiledev.rafiq_quran.ui.components.RafiqSharedCard
 import com.smiledev.rafiq_quran.ui.components.RafiqSharedHeader
+import com.smiledev.rafiq_quran.ui.components.RafiqSharedHeroCard
+import com.smiledev.rafiq_quran.ui.theme.RafiqMultiplatformTheme
 import com.smiledev.rafiq_quran.ui.theme.SecondaryGold
+import com.smiledev.rafiq_quran.ui.theme.rafiqPressable
 
 @Composable
 fun SharedProphetsScreen(
@@ -97,21 +104,13 @@ private fun ProphetsListView(
                 title = "25 Prophets",
                 subtitle = "Stories of the Messengers",
                 navigationIcon = onBackClick?.let { action ->
-                    {
-                        IconButton(onClick = action) {
-                            Text(
-                                text = "←",
-                                style = MaterialTheme.typography.titleLarge,
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
-                        }
-                    }
+                    { RafiqSharedBackButton(onClick = action) }
                 },
                 actions = {
                     RafiqSharedBadge(
                         text = "${filteredProphets.size} Prophets",
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                        containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.70f),
+                        contentColor = MaterialTheme.colorScheme.primary
                     )
                 }
             )
@@ -124,16 +123,33 @@ private fun ProphetsListView(
                 .padding(innerPadding)
                 .padding(horizontal = 16.dp, vertical = 4.dp)
         ) {
-            // Search field
+            // Search field with continuous corners
             OutlinedTextField(
                 value = state.searchQuery,
                 onValueChange = { viewModel.onSearchQueryChange(it) },
-                placeholder = { Text("Search prophet name...") },
+                placeholder = {
+                    Text(
+                        "Search prophet name...",
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.50f)
+                        )
+                    )
+                },
+                trailingIcon = {
+                    if (state.searchQuery.isNotEmpty()) {
+                        IconButton(
+                            onClick = { viewModel.onSearchQueryChange("") },
+                            modifier = Modifier.size(28.dp).rafiqPressable(targetScale = 0.90f)
+                        ) {
+                            Text("✕", fontSize = 12.sp, color = MaterialTheme.colorScheme.outline)
+                        }
+                    }
+                },
                 singleLine = true,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 4.dp),
-                shape = RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(14.dp)
             )
 
             // Filter row
@@ -147,18 +163,20 @@ private fun ProphetsListView(
                 FilterChip(
                     selected = state.showFavoritesOnly,
                     onClick = { viewModel.toggleFavoritesOnly() },
-                    label = { Text("Favorites (${state.favoriteIds.size})") },
+                    label = { Text("Favorites (${state.favoriteIds.size})", fontWeight = FontWeight.Medium) },
+                    modifier = Modifier.rafiqPressable(targetScale = 0.94f),
                     colors = FilterChipDefaults.filterChipColors(
                         selectedContainerColor = MaterialTheme.colorScheme.primary,
                         selectedLabelColor = MaterialTheme.colorScheme.onPrimary
-                    )
+                    ),
+                    shape = RoundedCornerShape(18.dp)
                 )
             }
 
             when {
                 state.isLoading -> {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        CircularProgressIndicator()
+                        CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                     }
                 }
                 filteredProphets.isEmpty() -> {
@@ -171,7 +189,7 @@ private fun ProphetsListView(
                         Text(
                             text = if (state.showFavoritesOnly) "No favorite prophets found" else "No prophets match your query",
                             style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.60f),
                             textAlign = TextAlign.Center
                         )
                     }
@@ -207,21 +225,24 @@ private fun ProphetCard(
     modifier: Modifier = Modifier
 ) {
     RafiqSharedCard(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick)
+        modifier = modifier.fillMaxWidth(),
+        onClick = onClick,
+        shape = RoundedCornerShape(16.dp),
+        contentPadding = 14.dp
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(14.dp),
+            modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
                 modifier = Modifier
                     .size(42.dp)
                     .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)),
+                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.10f))
+                    .border(
+                        BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.25f)),
+                        CircleShape
+                    ),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
@@ -237,14 +258,16 @@ private fun ProphetCard(
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = prophet.nameEn,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.Bold,
+                        letterSpacing = (-0.1).sp
+                    ),
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 Text(
                     text = prophet.summaryEn,
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.70f),
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -259,7 +282,12 @@ private fun ProphetCard(
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary
                 )
-                IconButton(onClick = onToggleFavorite, modifier = Modifier.size(32.dp)) {
+                Box(
+                    modifier = Modifier
+                        .size(32.dp)
+                        .rafiqPressable(targetScale = 0.85f, onClick = onToggleFavorite),
+                    contentAlignment = Alignment.Center
+                ) {
                     Text(if (isFavorite) "❤️" else "🤍", fontSize = 16.sp)
                 }
             }
@@ -284,16 +312,13 @@ private fun ProphetDetailView(
                 title = prophet.nameEn,
                 subtitle = "Prophet #${prophet.id}",
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Text(
-                            text = "←",
-                            style = MaterialTheme.typography.titleLarge,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                    }
+                    RafiqSharedBackButton(onClick = onBack)
                 },
                 actions = {
-                    IconButton(onClick = onToggleFavorite) {
+                    IconButton(
+                        onClick = onToggleFavorite,
+                        modifier = Modifier.rafiqPressable(targetScale = 0.85f)
+                    ) {
                         Text(if (isFavorite) "❤️" else "🤍", fontSize = 20.sp)
                     }
                 }
@@ -309,36 +334,38 @@ private fun ProphetDetailView(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Hero Arabic Display
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f))
+            // Hero Arabic Display with Gold Gradient
+            RafiqSharedHeroCard(
+                gradient = RafiqMultiplatformTheme.colors.heroGoldGradient,
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(20.dp),
+                        .padding(8.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
                         text = prophet.nameArabic,
                         style = MaterialTheme.typography.displayMedium.copy(fontSize = 44.sp),
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary,
+                        color = Color.White,
                         textAlign = TextAlign.Center
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
                         text = prophet.nameEn,
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold
+                        style = MaterialTheme.typography.titleLarge.copy(
+                            letterSpacing = (-0.2).sp
+                        ),
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
                     )
                     if (prophet.nameId.isNotEmpty()) {
                         Text(
                             text = "(${prophet.nameId})",
                             style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                            color = Color.White.copy(alpha = 0.85f)
                         )
                     }
                 }
@@ -352,11 +379,20 @@ private fun ProphetDetailView(
                 if (prophet.eraEn.isNotEmpty()) {
                     Card(
                         modifier = Modifier.weight(1f),
-                        shape = RoundedCornerShape(12.dp),
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+                        shape = RoundedCornerShape(14.dp),
+                        border = BorderStroke(1.dp, RafiqMultiplatformTheme.colors.cardBorder),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.40f)
+                        )
                     ) {
-                        Column(modifier = Modifier.padding(10.dp)) {
-                            Text("Era", style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+                        Column(modifier = Modifier.padding(12.dp)) {
+                            Text(
+                                "Era",
+                                style = MaterialTheme.typography.labelSmall,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                            Spacer(modifier = Modifier.height(2.dp))
                             Text(prophet.eraEn, style = MaterialTheme.typography.bodySmall)
                         }
                     }
@@ -364,11 +400,20 @@ private fun ProphetDetailView(
                 if (prophet.peopleEn.isNotEmpty()) {
                     Card(
                         modifier = Modifier.weight(1f),
-                        shape = RoundedCornerShape(12.dp),
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+                        shape = RoundedCornerShape(14.dp),
+                        border = BorderStroke(1.dp, RafiqMultiplatformTheme.colors.cardBorder),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.40f)
+                        )
                     ) {
-                        Column(modifier = Modifier.padding(10.dp)) {
-                            Text("Sent To", style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+                        Column(modifier = Modifier.padding(12.dp)) {
+                            Text(
+                                "Sent To",
+                                style = MaterialTheme.typography.labelSmall,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                            Spacer(modifier = Modifier.height(2.dp))
                             Text(prophet.peopleEn, style = MaterialTheme.typography.bodySmall)
                         }
                     }
@@ -381,29 +426,43 @@ private fun ProphetDetailView(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text("Font size: ${fontSize}sp", style = MaterialTheme.typography.labelMedium)
+                Text(
+                    "Font size: ${fontSize}sp",
+                    style = MaterialTheme.typography.labelMedium,
+                    fontWeight = FontWeight.Medium
+                )
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     OutlinedButton(
                         onClick = { onFontSizeChange(fontSize - 2) },
-                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 2.dp)
+                        shape = RoundedCornerShape(10.dp),
+                        modifier = Modifier.rafiqPressable(targetScale = 0.92f),
+                        contentPadding = PaddingValues(horizontal = 14.dp, vertical = 2.dp)
                     ) {
-                        Text("A-")
+                        Text("A-", fontWeight = FontWeight.Bold)
                     }
                     OutlinedButton(
                         onClick = { onFontSizeChange(fontSize + 2) },
-                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 2.dp)
+                        shape = RoundedCornerShape(10.dp),
+                        modifier = Modifier.rafiqPressable(targetScale = 0.92f),
+                        contentPadding = PaddingValues(horizontal = 14.dp, vertical = 2.dp)
                     ) {
-                        Text("A+")
+                        Text("A+", fontWeight = FontWeight.Bold)
                     }
                 }
             }
 
             // Story Narrative
-            RafiqSharedCard(modifier = Modifier.fillMaxWidth()) {
-                Column(modifier = Modifier.padding(16.dp)) {
+            RafiqSharedCard(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(18.dp),
+                contentPadding = 18.dp
+            ) {
+                Column {
                     Text(
                         text = "The Story",
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            letterSpacing = (-0.2).sp
+                        ),
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary
                     )
@@ -412,7 +471,7 @@ private fun ProphetDetailView(
                         text = prophet.storyEn,
                         style = MaterialTheme.typography.bodyMedium.copy(
                             fontSize = fontSize.sp,
-                            lineHeight = (fontSize * 1.5).sp
+                            lineHeight = (fontSize * 1.6).sp
                         ),
                         color = MaterialTheme.colorScheme.onSurface
                     )
@@ -423,8 +482,9 @@ private fun ProphetDetailView(
             if (prophet.miraclesEn.isNotEmpty()) {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = CardDefaults.cardColors(containerColor = SecondaryGold.copy(alpha = 0.1f))
+                    shape = RoundedCornerShape(16.dp),
+                    border = BorderStroke(1.dp, SecondaryGold.copy(alpha = 0.35f)),
+                    colors = CardDefaults.cardColors(containerColor = SecondaryGold.copy(alpha = 0.10f))
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text(
@@ -436,7 +496,7 @@ private fun ProphetDetailView(
                         Spacer(modifier = Modifier.height(6.dp))
                         Text(
                             text = prophet.miraclesEn,
-                            style = MaterialTheme.typography.bodyMedium
+                            style = MaterialTheme.typography.bodyMedium.copy(lineHeight = 22.sp)
                         )
                     }
                 }
@@ -446,8 +506,11 @@ private fun ProphetDetailView(
             if (prophet.lessonsEn.isNotEmpty()) {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+                    shape = RoundedCornerShape(16.dp),
+                    border = BorderStroke(1.dp, RafiqMultiplatformTheme.colors.cardBorder),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.40f)
+                    )
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text(
@@ -460,7 +523,7 @@ private fun ProphetDetailView(
                         prophet.lessonsEn.forEach { lesson ->
                             Text(
                                 text = "• $lesson",
-                                style = MaterialTheme.typography.bodySmall,
+                                style = MaterialTheme.typography.bodySmall.copy(lineHeight = 20.sp),
                                 modifier = Modifier.padding(vertical = 2.dp)
                             )
                         }
@@ -472,8 +535,11 @@ private fun ProphetDetailView(
             if (prophet.verses.isNotEmpty()) {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.2f))
+                    shape = RoundedCornerShape(16.dp),
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.25f)),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.20f)
+                    )
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text(
