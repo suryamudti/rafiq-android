@@ -16,7 +16,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.smiledev.rafiq_quran.ui.appinfo.AppInfoScreen
 import com.smiledev.rafiq_quran.ui.asmaulhusna.SharedAsmaulHusnaScreen
+import com.smiledev.rafiq_quran.ui.calendar.SharedCalendarScreen
 import com.smiledev.rafiq_quran.ui.guidance.SharedGuidanceScreen
+import com.smiledev.rafiq_quran.ui.hadith.SharedHadithScreen
 import com.smiledev.rafiq_quran.ui.prophets.SharedProphetsScreen
 import com.smiledev.rafiq_quran.ui.quran.SharedQuranScreen
 import com.smiledev.rafiq_quran.ui.tasbih.SharedTasbihScreen
@@ -25,6 +27,8 @@ import com.smiledev.rafiq_quran.ui.zakat.SharedZakatScreen
 
 enum class RafiqAppTab(val title: String) {
     QURAN("Al-Qur'an"),
+    HADITH("Hadith"),
+    CALENDAR("Calendar"),
     TASBIH("Digital Tasbih"),
     ASMAUL_HUSNA("Asmaul Husna"),
     PROPHETS("25 Prophets"),
@@ -63,6 +67,16 @@ fun RafiqAppRoot(
             when (selectedTab) {
                 RafiqAppTab.QURAN -> {
                     SharedQuranScreen(
+                        onBackClick = onNavigateBack
+                    )
+                }
+                RafiqAppTab.HADITH -> {
+                    SharedHadithScreen(
+                        onBackClick = onNavigateBack
+                    )
+                }
+                RafiqAppTab.CALENDAR -> {
+                    SharedCalendarScreen(
                         onBackClick = onNavigateBack
                     )
                 }
