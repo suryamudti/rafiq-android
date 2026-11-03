@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.smiledev.rafiq_quran.ui.theme.SecondaryGold
 import com.smiledev.rafiq_quran.ui.theme.rafiqPressable
 
 /**
@@ -26,9 +27,10 @@ import com.smiledev.rafiq_quran.ui.theme.rafiqPressable
 fun RafiqSharedBadge(
     text: String,
     modifier: Modifier = Modifier,
+    isGold: Boolean = false,
     shape: Shape = RoundedCornerShape(20.dp),
-    containerColor: Color = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f),
-    contentColor: Color = MaterialTheme.colorScheme.primary,
+    containerColor: Color = if (isGold) SecondaryGold.copy(alpha = 0.16f) else MaterialTheme.colorScheme.primary.copy(alpha = 0.12f),
+    contentColor: Color = if (isGold) SecondaryGold else MaterialTheme.colorScheme.primary,
     border: BorderStroke? = BorderStroke(1.dp, contentColor.copy(alpha = 0.22f)),
     onClick: (() -> Unit)? = null
 ) {
