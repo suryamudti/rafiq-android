@@ -19,6 +19,8 @@ import com.smiledev.rafiq_quran.ui.asmaulhusna.SharedAsmaulHusnaScreen
 import com.smiledev.rafiq_quran.ui.calendar.SharedCalendarScreen
 import com.smiledev.rafiq_quran.ui.guidance.SharedGuidanceScreen
 import com.smiledev.rafiq_quran.ui.hadith.SharedHadithScreen
+import com.smiledev.rafiq_quran.ui.hifz.SharedHifzScreen
+import com.smiledev.rafiq_quran.ui.prayerlog.SharedPrayerLogScreen
 import com.smiledev.rafiq_quran.ui.prophets.SharedProphetsScreen
 import com.smiledev.rafiq_quran.ui.quran.SharedQuranScreen
 import com.smiledev.rafiq_quran.ui.tasbih.SharedTasbihScreen
@@ -29,6 +31,8 @@ enum class RafiqAppTab(val title: String) {
     QURAN("Al-Qur'an"),
     HADITH("Hadith"),
     CALENDAR("Calendar"),
+    PRAYER_LOG("Prayer Tracker"),
+    HIFZ("Hifz Tracker"),
     TASBIH("Digital Tasbih"),
     ASMAUL_HUSNA("Asmaul Husna"),
     PROPHETS("25 Prophets"),
@@ -77,6 +81,16 @@ fun RafiqAppRoot(
                 }
                 RafiqAppTab.CALENDAR -> {
                     SharedCalendarScreen(
+                        onBackClick = onNavigateBack
+                    )
+                }
+                RafiqAppTab.PRAYER_LOG -> {
+                    SharedPrayerLogScreen(
+                        onBackClick = onNavigateBack
+                    )
+                }
+                RafiqAppTab.HIFZ -> {
+                    SharedHifzScreen(
                         onBackClick = onNavigateBack
                     )
                 }
