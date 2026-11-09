@@ -7,12 +7,13 @@
   <a href="https://kotlinlang.org"><img src="https://img.shields.io/badge/Kotlin-2.1.20-blue.svg?style=flat&logo=kotlin" alt="Kotlin"/></a>
   <a href="https://developer.android.com/about/versions/marshmallow"><img src="https://img.shields.io/badge/Min%20SDK-23%2B-brightgreen.svg" alt="Min SDK"/></a>
   <a href="https://developer.android.com/jetpack/compose"><img src="https://img.shields.io/badge/Jetpack-Compose%20(M3)-4285F4.svg?style=flat&logo=android" alt="Jetpack Compose"/></a>
+  <a href="https://developer.android.com/training/wearables/compose"><img src="https://img.shields.io/badge/Wear%20OS-Compose%201.4.1-00838F.svg?style=flat&logo=wearos" alt="Wear OS Compose"/></a>
   <a href="https://insert-koin.io/"><img src="https://img.shields.io/badge/Koin-4.0.2-orange.svg?style=flat" alt="Koin"/></a>
   <a href="https://dagger.dev/hilt/"><img src="https://img.shields.io/badge/Hilt-2.56.2-yellow.svg" alt="Hilt"/></a>
 </p>
 
 <p align="center">
-<b>Rafiq</b> demonstrates modern cross-platform mobile development with <b>Kotlin Multiplatform (KMP)</b>, Compose Multiplatform, Jetpack Compose (Material3), Koin, Coroutines, Flow, Room KMP, and Ktor based on <b>Clean Architecture</b> and <b>MVVM</b> multi-module guidelines, elevated by <b>Emil Kowalski's Design Engineering philosophy</b> and responsive spring micro-interactions.
+<b>Rafiq</b> demonstrates modern cross-platform mobile and wearable development with <b>Kotlin Multiplatform (KMP)</b>, Compose Multiplatform, Jetpack Compose (Material3), Wear OS Compose, Koin, Coroutines, Flow, Room KMP, and Ktor based on <b>Clean Architecture</b> and <b>MVVM</b> multi-module guidelines, elevated by <b>Emil Kowalski's Design Engineering philosophy</b> and responsive spring micro-interactions.
 </p>
 
 ---
@@ -66,6 +67,7 @@ Go to the [Releases](https://github.com/suryamudti/rafiq-android/releases) secti
 | **ℹ️ App & Architecture Info** | Shared multiplatform system overview, KMP layer information, and release details. |
 | **📚 Sources & Authenticity** | Full attribution and authenticity details for Quranic text, translations, hadith collections, and prayer time calculations. |
 | **🔔 Notifications** | Background prayer alarm notifications scheduled via WorkManager. |
+| **⌚ Wear OS App (`:wear`)** | Standalone watch companion featuring real-time prayer countdown, 114 Surahs offline reader, and rotation vector sensor Qibla compass. |
 | **⚙️ Settings & Updates** | Language preference (Bahasa Indonesia / English), theme mode, dashboard customization, and in-app update checking via GitHub Releases & Google Play. |
 
 ---
@@ -84,6 +86,7 @@ Go to the [Releases](https://github.com/suryamudti/rafiq-android/releases) secti
 ### UI & Styling (Design Engineering)
 - **[Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform/)** (1.7.3): Declarative multiplatform UI framework for Android and iOS (`:composeApp`).
 - **[Jetpack Compose](https://developer.android.com/jetpack/compose)**: Modern declarative UI toolkit for Android (`:app`).
+- **[Wear OS Compose](https://developer.android.com/training/wearables/compose)** (1.4.1): Declarative watch UI toolkit via `androidx.wear.compose:compose-material`, `androidx.wear.compose:compose-foundation`, and `androidx.wear.compose:compose-navigation` (`:wear`).
 - **[Material Design 3](https://m3.material.io/)**: Modern design system, dynamic color schemes, and Islamic emerald & gold palette.
 - **Emil Kowalski Design Principles**: Tactile interaction physics via `Modifier.rafiqPressable()` with spring dynamics (`dampingRatio = 0.75f`, `stiffness = 400f`), Apple cubic bezier easing (`AppleEaseOut`), continuous curvature geometry (squircle pills & cards), and specular highlight borders (`RafiqSpecularHighlightBorder`).
 - **Custom Typography**: Arabic font support via `FontFamily(Font(R.font.me_quran))` and negative title letter tracking for refined optical balance.
@@ -113,6 +116,7 @@ Rafiq follows **Clean Architecture** and Google's recommended [Guide to app arch
 ```
 rafiq-android/
 ├── :app          # Application module (Android UI screens, ViewModels, Navigation, Services)
+├── :wear         # Wear OS standalone app (Prayer Times, Al-Qur'an reader, Qibla Compass)
 ├── :composeApp   # Multiplatform UI & Platform bridges (Compose Multiplatform, shared components, iOS entry point)
 ├── :data         # Data layer (Room DAOs, Databases, Ktor/Retrofit APIs, DataStore, Repository Impls)
 ├── :domain       # Pure Kotlin Multiplatform domain layer (Repository interfaces, Use cases, Domain models)
@@ -124,12 +128,19 @@ rafiq-android/
 
 ```mermaid
 graph TD
-    subgraph UI ["UI Layer (:app & :composeApp)"]
+    subgraph UI ["Mobile UI Layer (:app & :composeApp)"]
         UI_Screen["Jetpack Compose / Compose Multiplatform Screens"]
         UI_VM["ViewModels & State Holders"]
         UI_Shared["Shared Design System & Components"]
         UI_Screen -->|"Observe UI State"| UI_VM
         UI_VM -->|"Emit Intent / Events"| UI_Screen
+    end
+
+    subgraph Wear ["Wear OS Layer (:wear)"]
+        Wear_Screen["Wear OS Compose Screens (ScalingLazyColumn)"]
+        Wear_VM["Wear ViewModels & Bezel Compass"]
+        Wear_Screen -->|"Observe UI State"| Wear_VM
+        Wear_VM -->|"Emit Intent / Events"| Wear_Screen
     end
 
     subgraph iOS ["iOS Host (iosApp/)"]
@@ -144,6 +155,7 @@ graph TD
         Domain_Model["Domain Models"]
         Domain_Repo["Repository Interfaces"]
         UI_VM -->|"Executes"| Domain_UC
+        Wear_VM -->|"Executes"| Domain_UC
         Domain_UC -->|"Invokes"| Domain_Repo
     end
 
@@ -164,9 +176,17 @@ graph TD
     end
 
     UI --> Core
+    Wear --> Core
     Domain --> Core
     Data --> Core
 ```
+
+### Wear OS App (`:wear`)
+
+The `:wear` module delivers a standalone Wear OS experience optimized for round watch displays, bezel interaction, and glanceable worship utilities:
+- **Wear Prayer Times**: Next prayer hero card with live countdown, Hijri date, and 8 daily prayer times (Imsak, Subuh, Syuruq, Dhuha, Dzuhur, Ashar, Maghrib, Isya) in a Rotary/Crown scrollable `ScalingLazyColumn`.
+- **Wear Al-Qur'an Reader**: All 114 Surahs with revelation filter (Makkiyah/Madaniyah), Last Read quick-resume chip, Uthmani Arabic script (`me_quran.ttf`), and EN/ID translation toggle.
+- **Wear Qibla Compass**: Circular watch bezel compass using rotation vector sensor with Kaaba pointer, alignment indicator (±3° tolerance with haptic cue), and Mecca distance.
 
 ### Architecture Highlights
 - **Kotlin Multiplatform Ready**: Pure KMP in `:core`, `:domain`, and `:composeApp`, supporting Android and iOS targets (`iosArm64`, `iosSimulatorArm64`). Shared multiplatform UI covers Quran, Hadith, Calendar, Tasbih, Asmaul Husna, Prophets, Zakat, and Guidance.
@@ -204,24 +224,33 @@ graph TD
 # Set JAVA_HOME (Windows PowerShell example; Temurin JDK 17 recommended)
 $env:JAVA_HOME = "C:\Program Files\Eclipse Adoptium\jdk-17.0.19.10-hotspot"
 
-# Build debug APK
+# Build debug APK (Mobile)
 .\gradlew assembleDebug
+
+# Build debug APK (Wear OS)
+.\gradlew :wear:assembleDebug
 ```
 
-The compiled APK will be located at:
-`app/build/outputs/apk/debug/app-debug.apk`
+The compiled APKs will be located at:
+- Mobile: `app/build/outputs/apk/debug/app-debug.apk`
+- Wear OS: `wear/build/outputs/apk/debug/wear-debug.apk`
 
-Install on the emulator:
+Install on the emulator / target device:
 
 ```powershell
+# Mobile
 adb -s emulator-5554 install -r app\build\outputs\apk\debug\app-debug.apk
+
+# Wear OS
+adb -s <wear_device_id> install -r wear\build\outputs\apk\debug\wear-debug.apk
 ```
 
 ### Running Tests
 
 ```powershell
-.\gradlew testDebugUnitTest         # Run multi-module unit tests (JVM / Android)
-.\gradlew :composeApp:testDebugUnitTest # Run Compose Multiplatform tests
+.\gradlew testDebugUnitTest              # Run multi-module unit tests (JVM / Android)
+.\gradlew :composeApp:testDebugUnitTest      # Run Compose Multiplatform tests
+.\gradlew :wear:testDebugUnitTest            # Run Wear OS module unit tests
 ```
 
 ---
