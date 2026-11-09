@@ -3,6 +3,9 @@ package com.smiledev.rafiq_quran.platform
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.net.toUri
 
 class AndroidExternalPlatformActions(
@@ -51,4 +54,10 @@ class AndroidExternalPlatformActions(
     override fun applyAppLocale(langCode: String) {
         // Handled via LocaleWrapper on Android
     }
+}
+
+@Composable
+actual fun rememberExternalPlatformActions(): ExternalPlatformActions {
+    val context = LocalContext.current
+    return remember(context) { AndroidExternalPlatformActions(context) }
 }

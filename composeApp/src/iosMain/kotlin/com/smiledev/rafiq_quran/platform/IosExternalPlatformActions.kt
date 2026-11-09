@@ -1,5 +1,8 @@
 package com.smiledev.rafiq_quran.platform
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+
 class IosExternalPlatformActions : ExternalPlatformActions {
     override fun openMapsDirections(lat: Double, lon: Double, label: String) {
         // iOS UIApplication.sharedApplication.openURL(NSURL.URLWithString("http://maps.apple.com/?daddr=$lat,$lon"))
@@ -16,4 +19,9 @@ class IosExternalPlatformActions : ExternalPlatformActions {
     override fun applyAppLocale(langCode: String) {
         // iOS NSUserDefaults override
     }
+}
+
+@Composable
+actual fun rememberExternalPlatformActions(): ExternalPlatformActions {
+    return remember { IosExternalPlatformActions() }
 }
