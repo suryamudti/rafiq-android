@@ -15,7 +15,7 @@ enum class SourceCategory(val label: String) {
 }
 
 @Immutable
-data class SourceItem(
+data class SharedSourceItem(
     val name: String,
     val category: SourceCategory,
     val description: String,
@@ -24,43 +24,43 @@ data class SourceItem(
 )
 
 val DEFAULT_SOURCES_CATALOG = listOf(
-    SourceItem(
+    SharedSourceItem(
         name = "Kementerian Agama RI (Kemenag)",
         category = SourceCategory.QURAN,
         description = "Standard Indonesian Mushaf Rasm Uthmani text, Surah names, translations, and Indonesian prayer calculation standards.",
         url = "https://quran.kemenag.go.id"
     ),
-    SourceItem(
+    SharedSourceItem(
         name = "Tanzil Project",
         category = SourceCategory.QURAN,
         description = "International verified standard Quran text and multi-language translations archive.",
         url = "https://tanzil.net"
     ),
-    SourceItem(
+    SharedSourceItem(
         name = "Kutubut Tis'ah & Sunnah.com",
         category = SourceCategory.QURAN,
         description = "Canonical Hadith collections (Sahih al-Bukhari, Sahih Muslim, Sunan Abi Dawud, Jami` at-Tirmidhi, etc.).",
         url = "https://sunnah.com"
     ),
-    SourceItem(
+    SharedSourceItem(
         name = "AlAdhan Prayer Times API",
         category = SourceCategory.PRAYER,
         description = "Global astronomical prayer time calculation service supporting multiple international conventions.",
         url = "https://aladhan.com"
     ),
-    SourceItem(
+    SharedSourceItem(
         name = "OpenFreeMap & MapLibre",
         category = SourceCategory.PRAYER,
         description = "Vector map tiles and open-source rendering engine for displaying nearby mosques globally.",
         url = "https://openfreemap.org"
     ),
-    SourceItem(
+    SharedSourceItem(
         name = "Compose Multiplatform",
         category = SourceCategory.LIBRARIES,
         description = "JetBrains declarative UI framework sharing code across Android and iOS.",
         url = "https://www.jetbrains.com/compose-multiplatform"
     ),
-    SourceItem(
+    SharedSourceItem(
         name = "Ktor HTTP Client",
         category = SourceCategory.LIBRARIES,
         description = "Multiplatform asynchronous HTTP client for Kotlin.",
@@ -71,9 +71,9 @@ val DEFAULT_SOURCES_CATALOG = listOf(
 @Immutable
 data class SharedSourcesUiState(
     val selectedCategory: SourceCategory = SourceCategory.ALL,
-    val sources: List<SourceItem> = DEFAULT_SOURCES_CATALOG
+    val sources: List<SharedSourceItem> = DEFAULT_SOURCES_CATALOG
 ) {
-    val filteredSources: List<SourceItem>
+    val filteredSources: List<SharedSourceItem>
         get() = when (selectedCategory) {
             SourceCategory.ALL -> sources
             else -> sources.filter { it.category == selectedCategory }
@@ -81,7 +81,7 @@ data class SharedSourcesUiState(
 }
 
 class SharedSourcesViewModel(
-    initialSources: List<SourceItem> = DEFAULT_SOURCES_CATALOG
+    initialSources: List<SharedSourceItem> = DEFAULT_SOURCES_CATALOG
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(
