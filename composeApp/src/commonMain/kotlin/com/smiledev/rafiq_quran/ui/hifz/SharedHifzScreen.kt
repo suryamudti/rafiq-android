@@ -7,8 +7,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -61,7 +59,6 @@ import com.smiledev.rafiq_quran.ui.theme.RafiqMultiplatformTheme
 import com.smiledev.rafiq_quran.ui.theme.SecondaryGold
 import com.smiledev.rafiq_quran.ui.theme.rafiqPressable
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun SharedHifzScreen(
     viewModel: SharedHifzViewModel = remember { SharedHifzViewModel() },
@@ -230,7 +227,6 @@ fun SharedHifzScreen(
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun HifzGoalCard(
     goal: HifzGoal,
@@ -303,31 +299,37 @@ private fun HifzGoalCard(
 
         // Ayah Chips Grid
         if (expanded) {
-            FlowRow(
-                horizontalArrangement = Arrangement.spacedBy(6.dp),
+            Column(
                 verticalArrangement = Arrangement.spacedBy(6.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                for (aya in goal.ayaStart..goal.ayaEnd) {
-                    val isMemorized = aya in goal.memorizedAyahs
-                    Box(
-                        modifier = Modifier
-                            .size(34.dp)
-                            .rafiqPressable(targetScale = 0.90f) { onToggleAyah(aya) }
-                            .clip(RoundedCornerShape(8.dp))
-                            .background(
-                                if (isMemorized) PrimaryTeal else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
-                            )
-                            .padding(2.dp),
-                        contentAlignment = Alignment.Center
+                (goal.ayaStart..goal.ayaEnd).toList().chunked(8).forEach { rowAyahs ->
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                        modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text(
-                            text = "$aya",
-                            style = MaterialTheme.typography.labelSmall.copy(
-                                fontWeight = if (isMemorized) FontWeight.Bold else FontWeight.Normal
-                            ),
-                            color = if (isMemorized) Color.White else MaterialTheme.colorScheme.onSurface
-                        )
+                        rowAyahs.forEach { aya ->
+                            val isMemorized = aya in goal.memorizedAyahs
+                            Box(
+                                modifier = Modifier
+                                    .size(34.dp)
+                                    .rafiqPressable(targetScale = 0.90f) { onToggleAyah(aya) }
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .background(
+                                        if (isMemorized) PrimaryTeal else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                                    )
+                                    .padding(2.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = "$aya",
+                                    style = MaterialTheme.typography.labelSmall.copy(
+                                        fontWeight = if (isMemorized) FontWeight.Bold else FontWeight.Normal
+                                    ),
+                                    color = if (isMemorized) Color.White else MaterialTheme.colorScheme.onSurface
+                                )
+                            }
+                        }
                     }
                 }
             }

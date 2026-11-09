@@ -26,13 +26,29 @@ class MainActivity : ComponentActivity() {
 
   @Inject lateinit var preferencesManager: PreferencesManager
 
+  private val activeTabState = androidx.compose.runtime.mutableStateOf<com.smiledev.rafiq_quran.ui.RafiqAppTab?>(null)
+
   override fun attachBaseContext(newBase: Context) {
     super.attachBaseContext(newBase)
+  }
+
+  override fun onNewIntent(intent: android.content.Intent) {
+    super.onNewIntent(intent)
+    setIntent(intent)
+    intent.getStringExtra("TARGET_TAB")?.let { tabStr ->
+      val tab = runCatching { com.smiledev.rafiq_quran.ui.RafiqAppTab.valueOf(tabStr) }.getOrNull()
+      if (tab != null) activeTabState.value = tab
+    }
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     installSplashScreen()
     super.onCreate(savedInstanceState)
+
+    intent?.getStringExtra("TARGET_TAB")?.let { tabStr ->
+      val tab = runCatching { com.smiledev.rafiq_quran.ui.RafiqAppTab.valueOf(tabStr) }.getOrNull()
+      if (tab != null) activeTabState.value = tab
+    }
 
     enableEdgeToEdge()
     setContent {
@@ -53,7 +69,14 @@ class MainActivity : ComponentActivity() {
       ) {
           RafiqAppTheme(themeMode = themeMode) {
               Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                  MainNavigation()
+                  val activeTab by activeTabState
+                  if (activeTab != null) {
+                      androidx.compose.runtime.key(activeTab) {
+                          com.smiledev.rafiq_quran.ui.RafiqAppRoot(initialTab = activeTab!!)
+                      }
+                  } else {
+                      MainNavigation()
+                  }
               }
           }
       }
