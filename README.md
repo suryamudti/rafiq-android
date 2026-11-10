@@ -26,6 +26,8 @@ Go to the [Releases](https://github.com/suryamudti/rafiq-android/releases) secti
 
 ## 📸 Screenshots
 
+### Mobile Application (Android & iOS)
+
 | Dashboard | Prayer Times | Quran Reader | Ayah Reader |
 | :---: | :---: | :---: | :---: |
 | <img src="figure/dashboard.png" width="220"/> | <img src="figure/prayertimes.png" width="220"/> | <img src="figure/quran.png" width="220"/> | <img src="figure/ayah.png" width="220"/> |
@@ -41,6 +43,12 @@ Go to the [Releases](https://github.com/suryamudti/rafiq-android/releases) secti
 | Prayer Log & Tracker | Prayer Guidance | Sunnah Guidance | Architecture & Info |
 | :---: | :---: | :---: | :---: |
 | <img src="figure/prayerlog.png" width="220"/> | <img src="figure/prayerguidance.png" width="220"/> | <img src="figure/sunnahguidance.png" width="220"/> | <img src="figure/appinfo.png" width="220"/> |
+
+### Wear OS Companion App (`:wear`)
+
+| Wear OS Home | Prayer Times | Quran Surahs | Surah Reading | Qibla Compass |
+| :---: | :---: | :---: | :---: | :---: |
+| <img src="figure/wear_home.png" width="160"/> | <img src="figure/wear_prayertimes.png" width="160"/> | <img src="figure/wear_quran.png" width="160"/> | <img src="figure/wear_surah.png" width="160"/> | <img src="figure/wear_qibla.png" width="160"/> |
 
 ---
 
@@ -251,6 +259,8 @@ adb -s <wear_device_id> install -r wear\build\outputs\apk\debug\wear-debug.apk
 .\gradlew testDebugUnitTest              # Run multi-module unit tests (JVM / Android)
 .\gradlew :composeApp:testDebugUnitTest      # Run Compose Multiplatform tests
 .\gradlew :wear:testDebugUnitTest            # Run Wear OS module unit tests
+.\gradlew lintDebug                          # Run Android Lint across all modules
+.\gradlew :wear:lintDebug                    # Run Wear OS module lint
 ```
 
 ---
