@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Rafiq Wear</string>
+    <string name="wear_prayer_times">Prayer Times</string>
+    <string name="wear_quran">Al-Qur\'an</string>
+    <string name="wear_qibla">Qibla Compass</string>
+    <string name="wear_next_prayer">Next Prayer</string>
+    <string name="wear_facing_qibla">Facing Qibla</string>
+    <string name="wear_turn_left">Turn Left %1$d°</string>
+    <string name="wear_turn_right">Turn Right %1$d°</string>
+    <string name="wear_continue_reading">Last Read: %1$s : %2$d</string>
+    <string name="wear_loading">Loading…</string>
+    <string name="wear_retry">Retry</string>
+</resources>

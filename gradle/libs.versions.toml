@@ -38,6 +38,7 @@ datastore = "1.1.1"
 firebaseBom = "34.4.0"
 googleServices = "4.4.3"
 firebaseCrashlyticsPlugin = "3.0.6"
+wearCompose = "1.4.1"
 
 [libraries]
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidxCore" }
@@ -128,6 +129,11 @@ datastore-preferences = { module = "androidx.datastore:datastore-preferences", v
 # Firebase
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
+
+# Wear OS Compose
+androidx-wear-compose-material = { module = "androidx.wear.compose:compose-material", version.ref = "wearCompose" }
+androidx-wear-compose-foundation = { module = "androidx.wear.compose:compose-foundation", version.ref = "wearCompose" }
+androidx-wear-compose-navigation = { module = "androidx.wear.compose:compose-navigation", version.ref = "wearCompose" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }

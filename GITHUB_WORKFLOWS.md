@@ -92,6 +92,12 @@ jobs:
           mkdir -p app/build/outputs/release
           cp app/build/outputs/apk/release/*.apk app/build/outputs/release/
           cp app/build/outputs/bundle/release/*.aab app/build/outputs/release/
+          if [ -d "wear/build/outputs/apk/release" ]; then
+            cp wear/build/outputs/apk/release/*.apk app/build/outputs/release/
+          fi
+          if [ -d "wear/build/outputs/bundle/release" ]; then
+            cp wear/build/outputs/bundle/release/*.aab app/build/outputs/release/
+          fi
 
       - name: Sign Artifacts
         uses: r0adkll/sign-android-release@v1
@@ -107,8 +113,25 @@ jobs:
 
       - name: Rename Signed Artifacts
         run: |
+          # Rename Phone App APK & AAB
           mv app/build/outputs/release/app-release-unsigned-signed.apk app/build/outputs/release/rafiq-v${{ steps.get_version.outputs.version }}.${{ github.run_number }}.apk
           mv app/build/outputs/release/app-release.aab app/build/outputs/release/rafiq-v${{ steps.get_version.outputs.version }}.${{ github.run_number }}.aab
+
+          # Rename Wear OS App APK & AAB
+          if [ -f "app/build/outputs/release/wear-release-unsigned-signed.apk" ]; then
+            mv app/build/outputs/release/wear-release-unsigned-signed.apk "app/build/outputs/release/rafiq-wear-v${{ steps.get_version.outputs.version }}.${{ github.run_number }}.apk"
+          fi
+          if [ -f "app/build/outputs/release/wear-release.aab" ]; then
+            mv app/build/outputs/release/wear-release.aab "app/build/outputs/release/rafiq-wear-v${{ steps.get_version.outputs.version }}.${{ github.run_number }}.aab"
+          fi
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-artifacts-${{ steps.get_version.outputs.version }}.${{ github.run_number }}
+          path: |
+            app/build/outputs/release/rafiq-*.apk
+            app/build/outputs/release/rafiq-*.aab
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
