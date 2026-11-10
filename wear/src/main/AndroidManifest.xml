@@ -3,7 +3,7 @@
 
     <uses-feature
         android:name="android.hardware.type.watch"
-        android:required="false" />
+        android:required="true" />
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.INTERNET" />
