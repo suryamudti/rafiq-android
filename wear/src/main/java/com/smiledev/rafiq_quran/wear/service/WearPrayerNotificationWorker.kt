@@ -275,7 +275,16 @@ class WearPrayerNotificationWorker(
             )
             val alarmInfo = AlarmManager.AlarmClockInfo(trigger, showPi)
             try {
-                alarmManager.setAlarmClock(alarmInfo, pi)
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S || alarmManager.canScheduleExactAlarms()) {
+                    alarmManager.setAlarmClock(alarmInfo, pi)
+                } else {
+                    alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, trigger, pi)
+                }
+            } catch (_: SecurityException) {
+                try {
+                    alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, trigger, pi)
+                } catch (_: Exception) {
+                }
             } catch (_: Exception) {
                 try {
                     alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, trigger, pi)
