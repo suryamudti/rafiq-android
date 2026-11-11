@@ -1,11 +1,16 @@
 package com.smiledev.rafiq_quran.wear
 
 import android.app.Application
+import android.os.Build
 import com.smiledev.rafiq_quran.data.preferences.PreferencesManager
 import com.smiledev.rafiq_quran.domain.model.PrayerTimesData
 import com.smiledev.rafiq_quran.domain.model.PrayerTimings
+import com.smiledev.rafiq_quran.wear.service.WearPrayerNotificationWorker
 import dagger.hilt.android.HiltAndroidApp
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -42,6 +47,12 @@ class WearRafiqApp : Application() {
                     )
                 )
             }
+        }
+        CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                WearPrayerNotificationWorker.createNotificationChannel(this@WearRafiqApp)
+            }
+            WearPrayerNotificationWorker.schedule(this@WearRafiqApp)
         }
     }
 }

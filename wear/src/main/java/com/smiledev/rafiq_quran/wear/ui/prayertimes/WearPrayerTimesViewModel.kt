@@ -1,5 +1,6 @@
 package com.smiledev.rafiq_quran.wear.ui.prayertimes
 
+import android.content.Context
 import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
@@ -13,7 +14,9 @@ import com.smiledev.rafiq_quran.data.preferences.PreferencesManager
 import com.smiledev.rafiq_quran.domain.model.PrayerTimesData
 import com.smiledev.rafiq_quran.domain.repository.PrayerTimesRepository
 import com.smiledev.rafiq_quran.wear.R
+import com.smiledev.rafiq_quran.wear.service.WearPrayerNotificationWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -53,13 +56,15 @@ data class WearPrayerTimesUiState(
     val longitude: Double = 106.8456,
     val calculationMethod: Int = 20,
     val calculationMethodName: String = "KEMENAG",
-    val cityName: String = "Jakarta"
+    val cityName: String = "Jakarta",
+    val prayerNotificationsEnabled: Boolean = true
 )
 
 @HiltViewModel
 class WearPrayerTimesViewModel @Inject constructor(
     private val prayerTimesRepository: PrayerTimesRepository,
     private val preferencesManager: PreferencesManager,
+    @ApplicationContext private val appContext: Context,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider
 ) : ViewModel() {
 
@@ -77,8 +82,9 @@ class WearPrayerTimesViewModel @Inject constructor(
                 preferencesManager.latitude,
                 preferencesManager.longitude,
                 preferencesManager.prayerCalculationMethod,
-                preferencesManager.cityName
-            ) { latStr, lonStr, method, city ->
+                preferencesManager.cityName,
+                preferencesManager.prayerNotificationsEnabled
+            ) { latStr, lonStr, method, city, notifEnabled ->
                 val lat = latStr.toDoubleOrNull() ?: -6.2088
                 val lon = lonStr.toDoubleOrNull() ?: 106.8456
                 val calcMethod = if (method == 2) 20 else method
@@ -89,7 +95,8 @@ class WearPrayerTimesViewModel @Inject constructor(
                     longitude = lon,
                     calculationMethod = calcMethod,
                     calculationMethodName = methodName,
-                    cityName = resolvedCity
+                    cityName = resolvedCity,
+                    prayerNotificationsEnabled = notifEnabled
                 )
             }.collect {
                 loadPrayerTimes()
@@ -171,6 +178,9 @@ class WearPrayerTimesViewModel @Inject constructor(
             startCountdown()
         } else {
             updatePrayerStatusAndCountdown()
+        }
+        if (_uiState.value.prayerNotificationsEnabled) {
+            WearPrayerNotificationWorker.scheduleNow(appContext)
         }
     }
 
@@ -271,6 +281,19 @@ class WearPrayerTimesViewModel @Inject constructor(
 
     fun refresh() {
         loadPrayerTimes(forceRefresh = true)
+    }
+
+    fun toggleNotifications() {
+        viewModelScope.launch(dispatcherProvider.io) {
+            val nextEnabled = !_uiState.value.prayerNotificationsEnabled
+            preferencesManager.setPrayerNotificationsEnabled(nextEnabled)
+            _uiState.value = _uiState.value.copy(prayerNotificationsEnabled = nextEnabled)
+            if (nextEnabled) {
+                WearPrayerNotificationWorker.scheduleNow(appContext)
+            } else {
+                WearPrayerNotificationWorker.cancelScheduledAlarms(appContext)
+            }
+        }
     }
 
     fun goToToday() {

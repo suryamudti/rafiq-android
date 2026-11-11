@@ -1,5 +1,6 @@
 package com.smiledev.rafiq_quran.wear.ui.prayertimes
 
+import android.content.Context
 import com.smiledev.rafiq_quran.core.AppError
 import com.smiledev.rafiq_quran.core.DispatcherProvider
 import com.smiledev.rafiq_quran.core.Result
@@ -7,11 +8,16 @@ import com.smiledev.rafiq_quran.data.preferences.PreferencesManager
 import com.smiledev.rafiq_quran.domain.model.PrayerTimesData
 import com.smiledev.rafiq_quran.domain.model.PrayerTimings
 import com.smiledev.rafiq_quran.domain.repository.PrayerTimesRepository
+import com.smiledev.rafiq_quran.wear.service.WearPrayerNotificationWorker
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.mockkObject
+import io.mockk.runs
 import io.mockk.unmockkAll
+import io.mockk.verify
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -45,6 +51,7 @@ class WearPrayerTimesViewModelTest {
 
     private val prayerTimesRepository: PrayerTimesRepository = mockk()
     private val preferencesManager: PreferencesManager = mockk()
+    private val context: Context = mockk(relaxed = true)
 
     private val fakePrayerData = PrayerTimesData(
         timings = PrayerTimings(
@@ -62,11 +69,15 @@ class WearPrayerTimesViewModelTest {
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
+        mockkObject(WearPrayerNotificationWorker.Companion)
+        every { WearPrayerNotificationWorker.scheduleNow(any()) } just runs
+        every { WearPrayerNotificationWorker.cancelScheduledAlarms(any()) } just runs
 
         every { preferencesManager.latitude } returns flowOf("-6.2088")
         every { preferencesManager.longitude } returns flowOf("106.8456")
         every { preferencesManager.prayerCalculationMethod } returns flowOf(20)
         every { preferencesManager.cityName } returns flowOf("Jakarta")
+        every { preferencesManager.prayerNotificationsEnabled } returns flowOf(true)
 
         coEvery {
             prayerTimesRepository.getCachedPrayerTimes(any(), any(), any(), any())
@@ -87,6 +98,7 @@ class WearPrayerTimesViewModelTest {
         return WearPrayerTimesViewModel(
             prayerTimesRepository = prayerTimesRepository,
             preferencesManager = preferencesManager,
+            appContext = context,
             dispatcherProvider = testDispatcherProvider
         ).apply {
             enablePeriodicCountdown = false
@@ -103,10 +115,18 @@ class WearPrayerTimesViewModelTest {
         testScheduler.runCurrent()
 
         val state = vm.uiState.value
+        assertFalse(state.isLoading)
+        assertNull(state.error)
         assertEquals("Jakarta", state.cityName)
         assertEquals("KEMENAG", state.calculationMethodName)
         assertEquals("14 Shawwal 1445", state.hijriDate)
         assertEquals(8, state.prayerTimes.size)
+        assertEquals("04:15", state.prayerTimes[0].time)
+        assertEquals("04:30", state.prayerTimes[1].time)
+        assertEquals("06:05", state.prayerTimes[3].time) // Dhuha = sunrise (05:45) + 20m
+        assertEquals("19:05", state.prayerTimes[7].time)
+        assertTrue(state.prayerNotificationsEnabled)
+        verify(atLeast = 1) { WearPrayerNotificationWorker.scheduleNow(context) }
 
         val expectedKeys = listOf("imsak", "fajr", "sunrise", "dhuha", "dhuhr", "asr", "maghrib", "isha")
         assertEquals(expectedKeys, state.prayerTimes.map { it.prayerKey })
@@ -114,16 +134,13 @@ class WearPrayerTimesViewModelTest {
         val dhuhaEntry = state.prayerTimes.first { it.prayerKey == "dhuha" }
         assertEquals("06:05", dhuhaEntry.time)
 
-        assertFalse(state.isLoading)
-        assertNull(state.error)
-
         coVerify(exactly = 0) {
             prayerTimesRepository.fetchPrayerTimes(any(), any(), any(), any(), any())
         }
     }
 
     @Test
-    fun `network fallback when cache is empty calls fetchPrayerTimes`() = runTest(testDispatcher) {
+    fun `when cache is empty fetches from network and updates state`() = runTest(testDispatcher) {
         coEvery {
             prayerTimesRepository.getCachedPrayerTimes(any(), any(), any(), any())
         } returns null
@@ -145,18 +162,18 @@ class WearPrayerTimesViewModelTest {
         }
 
         val state = vm.uiState.value
-        assertEquals(8, state.prayerTimes.size)
-        assertEquals("14 Shawwal 1445", state.hijriDate)
         assertFalse(state.isLoading)
         assertNull(state.error)
+        assertEquals(8, state.prayerTimes.size)
+        assertEquals("14 Shawwal 1445", state.hijriDate)
     }
 
     @Test
-    fun `error handling sets uiState error`() = runTest(testDispatcher) {
+    fun `network failure when cache is empty surfaces error in state`() = runTest(testDispatcher) {
         coEvery {
             prayerTimesRepository.getCachedPrayerTimes(any(), any(), any(), any())
         } returns null
-        val networkError = AppError.Network("Network failure", null)
+        val networkError = AppError.Network("Offline", null)
         coEvery {
             prayerTimesRepository.fetchPrayerTimes(any(), any(), any(), any(), any())
         } returns Result.Error(networkError)
@@ -171,7 +188,22 @@ class WearPrayerTimesViewModelTest {
     }
 
     @Test
-    fun `day navigation updates currentDate and reloads`() = runTest(testDispatcher) {
+    fun `legacy ISNA method 2 normalizes to KEMENAG method 20`() = runTest(testDispatcher) {
+        every { preferencesManager.prayerCalculationMethod } returns flowOf(2)
+        coEvery {
+            prayerTimesRepository.getCachedPrayerTimes(any(), any(), any(), 20)
+        } returns fakePrayerData
+
+        val vm = createViewModel()
+        testScheduler.runCurrent()
+
+        val state = vm.uiState.value
+        assertEquals(20, state.calculationMethod)
+        assertEquals("KEMENAG", state.calculationMethodName)
+    }
+
+    @Test
+    fun `day navigation updates currentDate and isToday flag`() = runTest(testDispatcher) {
         coEvery {
             prayerTimesRepository.getCachedPrayerTimes(any(), any(), any(), any())
         } returns fakePrayerData
@@ -223,5 +255,32 @@ class WearPrayerTimesViewModelTest {
         coVerify(exactly = 1) {
             prayerTimesRepository.fetchPrayerTimes(any(), any(), any(), any(), forceRefresh = true)
         }
+    }
+
+    @Test
+    fun `prayer notifications are auto enabled by default and toggleNotifications updates state and alarms`() = runTest(testDispatcher) {
+        coEvery {
+            prayerTimesRepository.getCachedPrayerTimes(any(), any(), any(), any())
+        } returns fakePrayerData
+        coEvery { preferencesManager.setPrayerNotificationsEnabled(any()) } just runs
+
+        val vm = createViewModel()
+        testScheduler.runCurrent()
+
+        assertTrue(vm.uiState.value.prayerNotificationsEnabled)
+
+        vm.toggleNotifications()
+        testScheduler.runCurrent()
+
+        assertFalse(vm.uiState.value.prayerNotificationsEnabled)
+        coVerify { preferencesManager.setPrayerNotificationsEnabled(false) }
+        verify { WearPrayerNotificationWorker.cancelScheduledAlarms(context) }
+
+        vm.toggleNotifications()
+        testScheduler.runCurrent()
+
+        assertTrue(vm.uiState.value.prayerNotificationsEnabled)
+        coVerify { preferencesManager.setPrayerNotificationsEnabled(true) }
+        verify(atLeast = 2) { WearPrayerNotificationWorker.scheduleNow(context) }
     }
 }

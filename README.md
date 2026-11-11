@@ -75,7 +75,7 @@ Go to the [Releases](https://github.com/suryamudti/rafiq-android/releases) secti
 | **ℹ️ App & Architecture Info** | Shared multiplatform system overview, KMP layer information, and release details. |
 | **📚 Sources & Authenticity** | Full attribution and authenticity details for Quranic text, translations, hadith collections, and prayer time calculations. |
 | **🔔 Notifications** | Background prayer alarm notifications scheduled via WorkManager. |
-| **⌚ Wear OS App (`:wear`)** | Standalone watch companion featuring real-time prayer countdown, 114 Surahs offline reader, and rotation vector sensor Qibla compass. |
+| **⌚ Wear OS App (`:wear`)** | Standalone watch companion featuring real-time prayer countdown, auto-enabled prayer time alarm notifications, 114 Surahs offline reader, and rotation vector sensor Qibla compass. |
 | **⚙️ Settings & Updates** | Language preference (Bahasa Indonesia / English), theme mode, dashboard customization, and in-app update checking via GitHub Releases & Google Play. |
 
 ---
