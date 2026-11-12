@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -22,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -44,6 +47,7 @@ import androidx.wear.compose.material.TimeText
 import androidx.wear.compose.material.Vignette
 import androidx.wear.compose.material.VignettePosition
 import com.smiledev.rafiq_quran.core.displayMessage
+import com.smiledev.rafiq_quran.wear.R
 import com.smiledev.rafiq_quran.wear.theme.WearColors
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -80,8 +84,7 @@ fun WearPrayerTimesScreen(
             // Header Card
             item {
                 Card(
-                    onClick = {},
-                    enabled = false,
+                    onClick = { viewModel.toggleNotifications() },
                     backgroundPainter = CardDefaults.cardBackgroundPainter(
                         startBackgroundColor = WearColors.SurfaceCard,
                         endBackgroundColor = WearColors.SurfaceDark
@@ -93,15 +96,63 @@ fun WearPrayerTimesScreen(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(
-                            text = state.cityName,
-                            fontSize = 13.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = WearColors.TextPrimary,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            textAlign = TextAlign.Center
-                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = state.cityName,
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = WearColors.TextPrimary,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                modifier = Modifier.weight(1f, fill = false)
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier
+                                    .background(
+                                        color = if (state.prayerNotificationsEnabled) {
+                                            WearColors.TealBright.copy(alpha = 0.18f)
+                                        } else {
+                                            WearColors.SurfaceDark
+                                        },
+                                        shape = RoundedCornerShape(8.dp)
+                                    )
+                                    .padding(horizontal = 5.dp, vertical = 2.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.Notifications,
+                                    contentDescription = stringResource(
+                                        if (state.prayerNotificationsEnabled) {
+                                            R.string.wear_notifications_on
+                                        } else {
+                                            R.string.wear_notifications_off
+                                        }
+                                    ),
+                                    tint = if (state.prayerNotificationsEnabled) {
+                                        WearColors.TealBright
+                                    } else {
+                                        WearColors.TextMuted
+                                    },
+                                    modifier = Modifier.size(11.dp)
+                                )
+                                Spacer(modifier = Modifier.width(3.dp))
+                                Text(
+                                    text = if (state.prayerNotificationsEnabled) "ON" else "OFF",
+                                    fontSize = 9.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = if (state.prayerNotificationsEnabled) {
+                                        WearColors.TealBright
+                                    } else {
+                                        WearColors.TextMuted
+                                    }
+                                )
+                            }
+                        }
                         if (state.hijriDate.isNotBlank()) {
                             Text(
                                 text = state.hijriDate,
@@ -109,7 +160,8 @@ fun WearPrayerTimesScreen(
                                 color = WearColors.TextSecondary,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
-                                textAlign = TextAlign.Center
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.fillMaxWidth()
                             )
                         }
                         Spacer(modifier = Modifier.height(6.dp))

@@ -115,6 +115,9 @@ dependencies {
     // Location
     implementation(libs.play.services.location)
 
+    // WorkManager for prayer notifications
+    implementation(libs.work.runtime.ktx)
+
     // Unit testing
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)

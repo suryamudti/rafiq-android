@@ -10,4 +10,18 @@
     <string name="wear_continue_reading">Last Read: %1$s : %2$d</string>
     <string name="wear_loading">Loading…</string>
     <string name="wear_retry">Retry</string>
+    <string name="wear_notifications_on">Reminders On</string>
+    <string name="wear_notifications_off">Reminders Off</string>
+    <string name="prayer_time_for">Time for %s</string>
+    <string name="prayer_notification_body">It\'s time to pray %1$s (%2$s)</string>
+    <string name="prayer_notification_channel_desc">Notifications for prayer times</string>
+    <string name="prayer_imsak">Imsak</string>
+    <string name="prayer_fajr">Fajr</string>
+    <string name="prayer_sunrise">Sunrise</string>
+    <string name="prayer_dhuha">Dhuha</string>
+    <string name="prayer_dhuhr">Dhuhr</string>
+    <string name="prayer_friday">Friday prayer</string>
+    <string name="prayer_asr">Asr</string>
+    <string name="prayer_maghrib">Maghrib</string>
+    <string name="prayer_isha">Isha</string>
 </resources>
