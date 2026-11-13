@@ -1,5 +1,9 @@
 package com.smiledev.rafiq_quran.wear.ui.prayertimes
 
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,14 +19,17 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -30,6 +37,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
 import androidx.wear.compose.foundation.lazy.items
@@ -49,6 +57,7 @@ import androidx.wear.compose.material.VignettePosition
 import com.smiledev.rafiq_quran.core.displayMessage
 import com.smiledev.rafiq_quran.wear.R
 import com.smiledev.rafiq_quran.wear.theme.WearColors
+import com.smiledev.rafiq_quran.wear.ui.components.wearRotaryScroll
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -58,7 +67,40 @@ fun WearPrayerTimesScreen(
 ) {
     val state by viewModel.uiState.collectAsState()
     val listState = rememberScalingLazyListState(initialCenterItemIndex = 0)
-    val displayDateFormat = SimpleDateFormat("EEEE, d MMM", Locale.getDefault())
+    val context = LocalContext.current
+    val locale = Locale.getDefault()
+    val displayDateFormat = remember(locale) { SimpleDateFormat("EEEE, d MMM", locale) }
+
+    val locationPermissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { grants ->
+        val granted = grants[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
+            grants[Manifest.permission.ACCESS_COARSE_LOCATION] == true
+        if (granted) {
+            viewModel.refreshLocation(forceGeocode = true)
+        }
+    }
+
+    val onUpdateGpsClick: () -> Unit = {
+        val hasFine = ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+        val hasCoarse = ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+        if (hasFine || hasCoarse) {
+            viewModel.refreshLocation(forceGeocode = true)
+        } else {
+            locationPermissionLauncher.launch(
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+            )
+        }
+    }
 
     Scaffold(
         timeText = { TimeText() },
@@ -69,7 +111,9 @@ fun WearPrayerTimesScreen(
             .background(WearColors.DeepNavy)
     ) {
         ScalingLazyColumn(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .wearRotaryScroll(listState),
             state = listState,
             autoCentering = null,
             contentPadding = PaddingValues(
@@ -142,7 +186,13 @@ fun WearPrayerTimesScreen(
                                 )
                                 Spacer(modifier = Modifier.width(3.dp))
                                 Text(
-                                    text = if (state.prayerNotificationsEnabled) "ON" else "OFF",
+                                    text = stringResource(
+                                        if (state.prayerNotificationsEnabled) {
+                                            R.string.wear_on
+                                        } else {
+                                            R.string.wear_off
+                                        }
+                                    ),
                                     fontSize = 9.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = if (state.prayerNotificationsEnabled) {
@@ -173,9 +223,9 @@ fun WearPrayerTimesScreen(
                             Column(modifier = Modifier.weight(1f, fill = false)) {
                                 Text(
                                     text = if (state.nextPrayerName.isNotBlank()) {
-                                        "Next • ${state.nextPrayerName}"
+                                        stringResource(R.string.wear_next_prefix, state.nextPrayerName)
                                     } else {
-                                        "Prayer Schedule"
+                                        stringResource(R.string.wear_prayer_schedule)
                                     },
                                     fontSize = 11.sp,
                                     color = WearColors.TealBright,
@@ -224,7 +274,7 @@ fun WearPrayerTimesScreen(
                     ) {
                         CompactChip(
                             onClick = { viewModel.goToPreviousDay() },
-                            label = { Text("‹ Prev", fontSize = 10.sp, maxLines = 1) },
+                            label = { Text(stringResource(R.string.wear_prev_day), fontSize = 10.sp, maxLines = 1) },
                             colors = ChipDefaults.chipColors(
                                 backgroundColor = WearColors.SurfaceDark,
                                 contentColor = WearColors.TextPrimary
@@ -234,7 +284,7 @@ fun WearPrayerTimesScreen(
                             onClick = { viewModel.goToToday() },
                             label = {
                                 Text(
-                                    text = "Today",
+                                    text = stringResource(R.string.wear_today),
                                     fontSize = 10.sp,
                                     fontWeight = if (state.isToday) FontWeight.Bold else FontWeight.Normal,
                                     maxLines = 1
@@ -247,7 +297,7 @@ fun WearPrayerTimesScreen(
                         )
                         CompactChip(
                             onClick = { viewModel.goToNextDay() },
-                            label = { Text("Next ›", fontSize = 10.sp, maxLines = 1) },
+                            label = { Text(stringResource(R.string.wear_next_day), fontSize = 10.sp, maxLines = 1) },
                             colors = ChipDefaults.chipColors(
                                 backgroundColor = WearColors.SurfaceDark,
                                 contentColor = WearColors.TextPrimary
@@ -288,7 +338,7 @@ fun WearPrayerTimesScreen(
                             .padding(8.dp)
                     ) {
                         Text(
-                            text = state.error?.displayMessage ?: "Failed to load prayer times",
+                            text = state.error?.displayMessage ?: stringResource(R.string.wear_prayer_load_error),
                             fontSize = 10.sp,
                             color = WearColors.ErrorRed,
                             textAlign = TextAlign.Center,
@@ -298,7 +348,7 @@ fun WearPrayerTimesScreen(
                         Spacer(modifier = Modifier.height(4.dp))
                         CompactChip(
                             onClick = { viewModel.loadPrayerTimes(forceRefresh = true) },
-                            label = { Text("Retry", fontSize = 10.sp) },
+                            label = { Text(stringResource(R.string.wear_retry), fontSize = 10.sp) },
                             colors = ChipDefaults.chipColors(
                                 backgroundColor = WearColors.TealPrimary,
                                 contentColor = Color.Black
@@ -313,16 +363,51 @@ fun WearPrayerTimesScreen(
                 WearPrayerTimeRow(entry = entry)
             }
 
-            // Calculation Method Info
-            if (state.calculationMethodName.isNotBlank() && !state.isLoading) {
+            // GPS Sync & Calculation Method Info
+            if (!state.isLoading) {
                 item {
-                    Text(
-                        text = "Method: ${state.calculationMethodName}",
-                        fontSize = 9.sp,
-                        color = WearColors.TextMuted,
-                        textAlign = TextAlign.Center,
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(4.dp),
                         modifier = Modifier.padding(top = 4.dp)
-                    )
+                    ) {
+                        CompactChip(
+                            onClick = onUpdateGpsClick,
+                            icon = {
+                                Icon(
+                                    imageVector = Icons.Filled.LocationOn,
+                                    contentDescription = stringResource(R.string.wear_update_gps),
+                                    tint = WearColors.TealBright,
+                                    modifier = Modifier.size(14.dp)
+                                )
+                            },
+                            label = {
+                                Text(
+                                    text = stringResource(
+                                        if (state.isSyncingLocation) {
+                                            R.string.wear_updating_gps
+                                        } else {
+                                            R.string.wear_update_gps
+                                        }
+                                    ),
+                                    fontSize = 10.sp,
+                                    maxLines = 1
+                                )
+                            },
+                            colors = ChipDefaults.chipColors(
+                                backgroundColor = WearColors.SurfaceDark,
+                                contentColor = WearColors.TextPrimary
+                            )
+                        )
+                        if (state.calculationMethodName.isNotBlank()) {
+                            Text(
+                                text = stringResource(R.string.wear_method_format, state.calculationMethodName),
+                                fontSize = 9.sp,
+                                color = WearColors.TextMuted,
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -395,7 +480,7 @@ private fun WearPrayerTimeRow(
                             .padding(horizontal = 4.dp, vertical = 1.dp)
                     ) {
                         Text(
-                            text = "NEXT",
+                            text = stringResource(R.string.wear_next_badge),
                             fontSize = 8.sp,
                             fontWeight = FontWeight.Bold,
                             color = WearColors.TealBright

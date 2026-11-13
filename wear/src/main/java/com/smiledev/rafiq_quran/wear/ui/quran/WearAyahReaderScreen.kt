@@ -15,12 +15,20 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -44,19 +52,45 @@ import androidx.wear.compose.material.TimeText
 import androidx.wear.compose.material.Vignette
 import androidx.wear.compose.material.VignettePosition
 import com.smiledev.rafiq_quran.core.displayMessage
+import com.smiledev.rafiq_quran.wear.R
 import com.smiledev.rafiq_quran.wear.theme.WearArabicFontFamily
 import com.smiledev.rafiq_quran.wear.theme.WearColors
+import com.smiledev.rafiq_quran.wear.ui.components.wearRotaryScroll
 
 @Composable
 fun WearAyahReaderScreen(
     suraNumber: Int,
+    initialAyaNumber: Int = 1,
+    onNavigateSurah: (Int) -> Unit = {},
     viewModel: WearQuranViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsState()
     val listState = rememberScalingLazyListState(initialCenterItemIndex = 0)
+    val view = LocalView.current
+    val haptic = LocalHapticFeedback.current
+    var scrolledToInitialAya by remember(suraNumber, initialAyaNumber) { mutableStateOf(false) }
+
+    DisposableEffect(view) {
+        view.keepScreenOn = true
+        onDispose {
+            view.keepScreenOn = false
+        }
+    }
 
     LaunchedEffect(suraNumber) {
         viewModel.loadAyahs(suraNumber)
+    }
+
+    LaunchedEffect(suraNumber, initialAyaNumber, state.ayahs, state.isLoadingAyahs) {
+        if (!scrolledToInitialAya && initialAyaNumber > 1 && !state.isLoadingAyahs && state.ayahs.isNotEmpty()) {
+            val ayahIdx = state.ayahs.indexOfFirst { it.aya == initialAyaNumber }
+            if (ayahIdx >= 0) {
+                val hasBismillah = suraNumber != 1 && suraNumber != 9
+                val headerItemsCount = if (hasBismillah) 3 else 2
+                listState.scrollToItem(headerItemsCount + ayahIdx)
+            }
+            scrolledToInitialAya = true
+        }
     }
 
     Scaffold(
@@ -68,7 +102,9 @@ fun WearAyahReaderScreen(
             .background(WearColors.DeepNavy)
     ) {
         ScalingLazyColumn(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .wearRotaryScroll(listState),
             state = listState,
             autoCentering = null,
             contentPadding = PaddingValues(
@@ -138,7 +174,13 @@ fun WearAyahReaderScreen(
                     onClick = { viewModel.toggleShowTranslation() },
                     label = {
                         Text(
-                            text = if (state.showTranslation) "Hide Translation" else "Show Translation",
+                            text = stringResource(
+                                if (state.showTranslation) {
+                                    R.string.wear_hide_translation
+                                } else {
+                                    R.string.wear_show_translation
+                                }
+                            ),
                             fontSize = 10.sp,
                             fontWeight = FontWeight.Medium,
                             maxLines = 1
@@ -196,7 +238,7 @@ fun WearAyahReaderScreen(
                             .padding(8.dp)
                     ) {
                         Text(
-                            text = state.ayahsError?.displayMessage ?: "Failed to load Ayahs",
+                            text = state.ayahsError?.displayMessage ?: stringResource(R.string.wear_ayah_load_error),
                             fontSize = 10.sp,
                             color = WearColors.ErrorRed,
                             textAlign = TextAlign.Center,
@@ -206,7 +248,7 @@ fun WearAyahReaderScreen(
                         Spacer(modifier = Modifier.height(4.dp))
                         CompactChip(
                             onClick = { viewModel.loadAyahs(suraNumber) },
-                            label = { Text("Retry", fontSize = 10.sp) },
+                            label = { Text(stringResource(R.string.wear_retry), fontSize = 10.sp) },
                             colors = ChipDefaults.chipColors(
                                 backgroundColor = WearColors.TealPrimary,
                                 contentColor = Color.Black
@@ -220,7 +262,10 @@ fun WearAyahReaderScreen(
             items(state.ayahs, key = { it.aya }) { ayah ->
                 val isSaved = state.lastReadSura == ayah.sura && state.lastReadAya == ayah.aya
                 Card(
-                    onClick = { viewModel.saveLastRead(ayah.sura, ayah.aya) },
+                    onClick = {
+                        haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                        viewModel.saveLastRead(ayah.sura, ayah.aya)
+                    },
                     backgroundPainter = CardDefaults.cardBackgroundPainter(
                         startBackgroundColor = if (isSaved) WearColors.SurfaceCard else WearColors.SurfaceDark,
                         endBackgroundColor = if (isSaved) WearColors.SurfaceDark else WearColors.SurfaceCard
@@ -257,7 +302,7 @@ fun WearAyahReaderScreen(
                                 if (ayah.juz > 0 || ayah.page > 0) {
                                     Spacer(modifier = Modifier.width(4.dp))
                                     Text(
-                                        text = "Juz ${ayah.juz} \u2022 P.${ayah.page}",
+                                        text = "Juz ${ayah.juz} • P.${ayah.page}",
                                         fontSize = 8.sp,
                                         color = WearColors.TextMuted
                                     )
@@ -273,7 +318,7 @@ fun WearAyahReaderScreen(
                                         .padding(horizontal = 4.dp, vertical = 1.dp)
                                 ) {
                                     Text(
-                                        text = "Saved",
+                                        text = stringResource(R.string.wear_saved),
                                         fontSize = 8.sp,
                                         fontWeight = FontWeight.Bold,
                                         color = WearColors.GoldAccent
@@ -305,6 +350,52 @@ fun WearAyahReaderScreen(
                                     modifier = Modifier.fillMaxWidth()
                                 )
                             }
+                        }
+                    }
+                }
+            }
+
+            // Prev / Next Surah Footer Navigation
+            if (!state.isLoadingAyahs && state.ayahs.isNotEmpty() && (suraNumber > 1 || suraNumber < 114)) {
+                item {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 4.dp),
+                        horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        if (suraNumber > 1) {
+                            CompactChip(
+                                onClick = { onNavigateSurah(suraNumber - 1) },
+                                label = {
+                                    Text(
+                                        text = stringResource(R.string.wear_prev_surah, suraNumber - 1),
+                                        fontSize = 10.sp,
+                                        maxLines = 1
+                                    )
+                                },
+                                colors = ChipDefaults.chipColors(
+                                    backgroundColor = WearColors.SurfaceDark,
+                                    contentColor = WearColors.TextPrimary
+                                )
+                            )
+                        }
+                        if (suraNumber < 114) {
+                            CompactChip(
+                                onClick = { onNavigateSurah(suraNumber + 1) },
+                                label = {
+                                    Text(
+                                        text = stringResource(R.string.wear_next_surah, suraNumber + 1),
+                                        fontSize = 10.sp,
+                                        maxLines = 1
+                                    )
+                                },
+                                colors = ChipDefaults.chipColors(
+                                    backgroundColor = WearColors.TealPrimary,
+                                    contentColor = Color.Black
+                                )
+                            )
                         }
                     }
                 }

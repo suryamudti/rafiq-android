@@ -13,39 +13,42 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
+import androidx.work.CoroutineWorker
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import androidx.work.Worker
 import androidx.work.WorkerParameters
-import com.smiledev.rafiq_quran.core.AppError
 import com.smiledev.rafiq_quran.core.Result as CoreResult
-import com.smiledev.rafiq_quran.core.retryIO
 import com.smiledev.rafiq_quran.data.preferences.PreferencesManager
-import com.smiledev.rafiq_quran.domain.model.PrayerTimesData
-import com.smiledev.rafiq_quran.domain.model.PrayerTimings
+import com.smiledev.rafiq_quran.domain.repository.PrayerTimesRepository
 import com.smiledev.rafiq_quran.wear.R
 import com.smiledev.rafiq_quran.wear.WearMainActivity
 import com.smiledev.rafiq_quran.wear.navigation.WearRoutes
+import dagger.hilt.EntryPoint
+import dagger.hilt.InstallIn
+import dagger.hilt.android.EntryPointAccessors
+import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import org.json.JSONObject
-import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 
+@EntryPoint
+@InstallIn(SingletonComponent::class)
+interface WearPrayerWorkerEntryPoint {
+    fun preferencesManager(): PreferencesManager
+    fun prayerTimesRepository(): PrayerTimesRepository
+}
+
 class WearPrayerNotificationWorker(
     context: Context,
     params: WorkerParameters
-) : Worker(context, params) {
+) : CoroutineWorker(context, params) {
 
     companion object {
         const val CHANNEL_ID = "wear_prayer_times"
@@ -182,12 +185,21 @@ class WearPrayerNotificationWorker(
         }
     }
 
-    override fun doWork(): Result {
+    override suspend fun doWork(): Result {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createNotificationChannel(applicationContext)
         }
 
-        val prefs = PreferencesManager(applicationContext)
+        val entryPoint = runCatching {
+            EntryPointAccessors.fromApplication(
+                applicationContext,
+                WearPrayerWorkerEntryPoint::class.java
+            )
+        }.getOrNull() ?: return Result.failure()
+
+        val prefs = entryPoint.preferencesManager()
+        val repository = entryPoint.prayerTimesRepository()
+
         data class PrefSnapshot(
             val latStr: String,
             val lonStr: String,
@@ -195,16 +207,14 @@ class WearPrayerNotificationWorker(
             val enabled: Boolean
         )
 
-        val snapshot = runBlocking {
-            combine(
-                prefs.latitude,
-                prefs.longitude,
-                prefs.prayerCalculationMethod,
-                prefs.prayerNotificationsEnabled
-            ) { lat, lon, m, enabled ->
-                PrefSnapshot(lat, lon, m, enabled)
-            }.first()
-        }
+        val snapshot = combine(
+            prefs.latitude,
+            prefs.longitude,
+            prefs.prayerCalculationMethod,
+            prefs.prayerNotificationsEnabled
+        ) { lat, lon, m, enabled ->
+            PrefSnapshot(lat, lon, m, enabled)
+        }.first()
 
         if (!snapshot.enabled) {
             cancelScheduledAlarms(applicationContext)
@@ -218,24 +228,13 @@ class WearPrayerNotificationWorker(
         val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.US)
         val today = dateFormat.format(Date())
 
-        val cached = runBlocking { prefs.getCachedPrayerTimes() }
-        val timings: PrayerTimings = if (cached != null && cached.isValidFor(today, lat, lon, calcMethod)) {
-            cached.data.timings
-        } else {
-            val fetched = fetchTimingsFromNetwork(today, lat, lon, calcMethod)
-                ?: return Result.retry()
-            runBlocking {
-                prefs.saveCachedPrayerTimes(
-                    date = today,
-                    lat = lat,
-                    lon = lon,
-                    method = calcMethod,
-                    data = fetched
-                )
+        val prayerData = repository.getCachedPrayerTimes(lat, lon, today, calcMethod)
+            ?: when (val fetched = repository.fetchPrayerTimes(lat, lon, today, calcMethod, forceRefresh = false)) {
+                is CoreResult.Success -> fetched.data
+                is CoreResult.Error -> return Result.retry()
             }
-            fetched.timings
-        }
 
+        val timings = prayerData.timings
         val now = System.currentTimeMillis()
         val alarmManager = applicationContext.getSystemService(AlarmManager::class.java)
             ?: return Result.success()
@@ -294,66 +293,6 @@ class WearPrayerNotificationWorker(
         }
 
         return Result.success()
-    }
-
-    private fun fetchTimingsFromNetwork(
-        today: String,
-        lat: Double,
-        lon: Double,
-        method: Int
-    ): PrayerTimesData? {
-        return try {
-            val fetchResult = runBlocking {
-                retryIO(times = 3, initialDelay = 200) {
-                    try {
-                        val client = OkHttpClient.Builder()
-                            .connectTimeout(20, TimeUnit.SECONDS)
-                            .readTimeout(20, TimeUnit.SECONDS)
-                            .writeTimeout(20, TimeUnit.SECONDS)
-                            .build()
-                        val url = "https://api.aladhan.com/v1/timings/$today?latitude=$lat&longitude=$lon&method=$method"
-                        val request = Request.Builder().url(url).build()
-                        val response = client.newCall(request).execute()
-                        if (!response.isSuccessful) throw IOException("HTTP ${response.code}")
-                        val json = JSONObject(response.body?.string() ?: "")
-                        val dataObj = json.getJSONObject("data")
-                        val timingsObj = dataObj.getJSONObject("timings")
-                        val hijriDate = dataObj.optJSONObject("date")
-                            ?.optJSONObject("hijri")
-                            ?.let { h ->
-                                val day = h.optString("day", "")
-                                val month = h.optJSONObject("month")?.optString("en", "") ?: ""
-                                val year = h.optString("year", "")
-                                "$day $month $year".trim()
-                            }
-                        CoreResult.Success(
-                            PrayerTimesData(
-                                timings = PrayerTimings(
-                                    imsak = cleanTime(timingsObj.optString("Imsak", "04:18")),
-                                    fajr = cleanTime(timingsObj.optString("Fajr", "04:28")),
-                                    sunrise = cleanTime(timingsObj.optString("Sunrise", "05:44")),
-                                    dhuhr = cleanTime(timingsObj.optString("Dhuhr", "11:52")),
-                                    asr = cleanTime(timingsObj.optString("Asr", "15:12")),
-                                    maghrib = cleanTime(timingsObj.optString("Maghrib", "17:56")),
-                                    isha = cleanTime(timingsObj.optString("Isha", "19:07"))
-                                ),
-                                hijriDate = hijriDate
-                            )
-                        )
-                    } catch (e: IOException) {
-                        CoreResult.Error(AppError.Network(e.message ?: "network error", e))
-                    } catch (e: Exception) {
-                        CoreResult.Error(AppError.Network(e.message ?: "network error", e))
-                    }
-                }
-            }
-            when (fetchResult) {
-                is CoreResult.Success -> fetchResult.data
-                is CoreResult.Error -> null
-            }
-        } catch (_: Exception) {
-            null
-        }
     }
 
     private fun cleanTime(raw: String): String {

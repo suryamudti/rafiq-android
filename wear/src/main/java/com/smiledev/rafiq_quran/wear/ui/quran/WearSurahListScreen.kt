@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -47,10 +48,11 @@ import com.smiledev.rafiq_quran.core.displayMessage
 import com.smiledev.rafiq_quran.wear.R
 import com.smiledev.rafiq_quran.wear.theme.WearArabicFontFamily
 import com.smiledev.rafiq_quran.wear.theme.WearColors
+import com.smiledev.rafiq_quran.wear.ui.components.wearRotaryScroll
 
 @Composable
 fun WearSurahListScreen(
-    onSurahClick: (Int) -> Unit,
+    onSurahClick: (Int, Int) -> Unit,
     viewModel: WearQuranViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsState()
@@ -65,7 +67,9 @@ fun WearSurahListScreen(
             .background(WearColors.DeepNavy)
     ) {
         ScalingLazyColumn(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .wearRotaryScroll(listState),
             state = listState,
             autoCentering = null,
             contentPadding = PaddingValues(
@@ -84,7 +88,7 @@ fun WearSurahListScreen(
                     modifier = Modifier.padding(bottom = 2.dp)
                 ) {
                     Text(
-                        text = "AL-QUR'AN",
+                        text = stringResource(R.string.wear_quran_header),
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Bold,
                         color = WearColors.GoldAccent,
@@ -92,7 +96,7 @@ fun WearSurahListScreen(
                         textAlign = TextAlign.Center
                     )
                     Text(
-                        text = "114 Surahs",
+                        text = stringResource(R.string.wear_quran_surah_count),
                         fontSize = 10.sp,
                         color = WearColors.TextSecondary,
                         textAlign = TextAlign.Center
@@ -106,10 +110,10 @@ fun WearSurahListScreen(
                     val lastSurah = state.lastReadSurah
                     Chip(
                         modifier = Modifier.fillMaxWidth(),
-                        onClick = { onSurahClick(state.lastReadSura) },
+                        onClick = { onSurahClick(state.lastReadSura, state.lastReadAya.coerceAtLeast(1)) },
                         label = {
                             Text(
-                                text = "Last Read",
+                                text = stringResource(R.string.wear_last_read),
                                 fontSize = 11.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = WearColors.GoldAccent,
@@ -120,9 +124,9 @@ fun WearSurahListScreen(
                         secondaryLabel = {
                             Text(
                                 text = if (lastSurah != null) {
-                                    "${lastSurah.nameSimple} \u2022 Ayah ${state.lastReadAya}"
+                                    "${lastSurah.nameSimple} • Ayah ${state.lastReadAya}"
                                 } else {
-                                    "Surah ${state.lastReadSura} \u2022 Ayah ${state.lastReadAya}"
+                                    "Surah ${state.lastReadSura} • Ayah ${state.lastReadAya}"
                                 },
                                 fontSize = 10.sp,
                                 color = WearColors.TextPrimary,
@@ -133,7 +137,7 @@ fun WearSurahListScreen(
                         icon = {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_quran),
-                                contentDescription = "Last Read",
+                                contentDescription = stringResource(R.string.wear_last_read),
                                 tint = WearColors.GoldAccent,
                                 modifier = Modifier.size(18.dp)
                             )
@@ -158,7 +162,7 @@ fun WearSurahListScreen(
                         onClick = { viewModel.setRevelationFilter(WearRevelationFilter.ALL) },
                         label = {
                             Text(
-                                text = "All",
+                                text = stringResource(R.string.wear_filter_all),
                                 fontSize = 10.sp,
                                 fontWeight = if (allSelected) FontWeight.Bold else FontWeight.Normal,
                                 maxLines = 1
@@ -175,7 +179,7 @@ fun WearSurahListScreen(
                         onClick = { viewModel.setRevelationFilter(WearRevelationFilter.MECCAN) },
                         label = {
                             Text(
-                                text = "Makkah",
+                                text = stringResource(R.string.wear_filter_makkah),
                                 fontSize = 10.sp,
                                 fontWeight = if (meccanSelected) FontWeight.Bold else FontWeight.Normal,
                                 maxLines = 1
@@ -192,7 +196,7 @@ fun WearSurahListScreen(
                         onClick = { viewModel.setRevelationFilter(WearRevelationFilter.MEDINAN) },
                         label = {
                             Text(
-                                text = "Madinah",
+                                text = stringResource(R.string.wear_filter_madinah),
                                 fontSize = 10.sp,
                                 fontWeight = if (medinanSelected) FontWeight.Bold else FontWeight.Normal,
                                 maxLines = 1
@@ -230,7 +234,7 @@ fun WearSurahListScreen(
                             .padding(8.dp)
                     ) {
                         Text(
-                            text = state.surahsError?.displayMessage ?: "Failed to load Surahs",
+                            text = state.surahsError?.displayMessage ?: stringResource(R.string.wear_surah_load_error),
                             fontSize = 10.sp,
                             color = WearColors.ErrorRed,
                             textAlign = TextAlign.Center,
@@ -240,7 +244,7 @@ fun WearSurahListScreen(
                         Spacer(modifier = Modifier.height(4.dp))
                         CompactChip(
                             onClick = { viewModel.loadSurahs() },
-                            label = { Text("Retry", fontSize = 10.sp) },
+                            label = { Text(stringResource(R.string.wear_retry), fontSize = 10.sp) },
                             colors = ChipDefaults.chipColors(
                                 backgroundColor = WearColors.TealPrimary,
                                 contentColor = Color.Black
@@ -253,7 +257,7 @@ fun WearSurahListScreen(
             // Surahs List
             items(state.filteredSurahs, key = { it.chapterNumber }) { surah ->
                 Card(
-                    onClick = { onSurahClick(surah.chapterNumber) },
+                    onClick = { onSurahClick(surah.chapterNumber, 1) },
                     backgroundPainter = CardDefaults.cardBackgroundPainter(
                         startBackgroundColor = WearColors.SurfaceCard,
                         endBackgroundColor = WearColors.SurfaceDark
@@ -294,7 +298,7 @@ fun WearSurahListScreen(
                                     overflow = TextOverflow.Ellipsis
                                 )
                                 Text(
-                                    text = "${surah.translatedName} \u2022 ${surah.versesCount} Ayahs",
+                                    text = "${surah.translatedName} • ${surah.versesCount} Ayahs",
                                     fontSize = 9.sp,
                                     color = WearColors.TextSecondary,
                                     maxLines = 1,

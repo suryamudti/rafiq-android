@@ -5,8 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.smiledev.rafiq_quran.core.DefaultDispatcherProvider
 import com.smiledev.rafiq_quran.core.DispatcherProvider
+import com.smiledev.rafiq_quran.core.currentLocaleCode
 import com.smiledev.rafiq_quran.data.preferences.PreferencesManager
 import com.smiledev.rafiq_quran.domain.usecase.CalculateQiblaUseCase
+import com.smiledev.rafiq_quran.wear.location.WearLocationSync
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -27,15 +29,23 @@ data class WearQiblaUiState(
     val userLat: Double = -6.2088,
     val userLon: Double = 106.8456,
     val cityName: String = "Jakarta",
-    val directionCardinal: String = "NW"
+    val directionCardinal: String = "WNW",
+    val isSyncingLocation: Boolean = false
 )
 
 @HiltViewModel
 class WearQiblaViewModel @Inject constructor(
     private val preferencesManager: PreferencesManager,
     private val calculateQiblaUseCase: CalculateQiblaUseCase,
-    private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider
+    private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
+    private val wearLocationSync: WearLocationSync? = null
 ) : ViewModel() {
+
+    constructor(
+        preferencesManager: PreferencesManager,
+        calculateQiblaUseCase: CalculateQiblaUseCase,
+        dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider
+    ) : this(preferencesManager, calculateQiblaUseCase, dispatcherProvider, null)
 
     private val _uiState = MutableStateFlow(WearQiblaUiState())
     val uiState: StateFlow<WearQiblaUiState> = _uiState.asStateFlow()
@@ -58,15 +68,24 @@ class WearQiblaViewModel @Inject constructor(
         }
     }
 
+    fun refreshLocation(forceGeocode: Boolean = true) {
+        val sync = wearLocationSync ?: return
+        viewModelScope.launch(dispatcherProvider.io) {
+            _uiState.value = _uiState.value.copy(isSyncingLocation = true)
+            sync.syncIfPermitted(forceGeocode = forceGeocode)
+            _uiState.value = _uiState.value.copy(isSyncingLocation = false)
+        }
+    }
+
     fun recalculate(lat: Double, lon: Double, city: String = _uiState.value.cityName) {
         val result = calculateQiblaUseCase(lat, lon)
-        _uiState.value = WearQiblaUiState(
+        _uiState.value = _uiState.value.copy(
             bearing = result.bearing,
             distanceKm = result.distanceKm,
             userLat = lat,
             userLon = lon,
             cityName = city,
-            directionCardinal = wearCompassDirection(result.bearing)
+            directionCardinal = wearCompassDirection(result.bearing, currentLocaleCode())
         )
     }
 }

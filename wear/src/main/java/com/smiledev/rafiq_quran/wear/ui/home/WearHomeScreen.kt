@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -42,6 +43,7 @@ import androidx.wear.compose.material.Vignette
 import androidx.wear.compose.material.VignettePosition
 import com.smiledev.rafiq_quran.wear.R
 import com.smiledev.rafiq_quran.wear.theme.WearColors
+import com.smiledev.rafiq_quran.wear.ui.components.wearRotaryScroll
 import com.smiledev.rafiq_quran.wear.ui.prayertimes.WearPrayerTimesViewModel
 
 @Composable
@@ -63,7 +65,9 @@ fun WearHomeScreen(
             .background(WearColors.DeepNavy)
     ) {
         ScalingLazyColumn(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .wearRotaryScroll(listState),
             state = listState,
             autoCentering = null,
             contentPadding = PaddingValues(
@@ -81,7 +85,7 @@ fun WearHomeScreen(
                     modifier = Modifier.padding(bottom = 2.dp)
                 ) {
                     Text(
-                        text = "RAFIQ WEAR",
+                        text = stringResource(R.string.wear_brand_header),
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Bold,
                         color = WearColors.GoldAccent,
@@ -119,9 +123,9 @@ fun WearHomeScreen(
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
                                 text = if (prayerState.nextPrayerName.isNotBlank()) {
-                                    "Next • ${prayerState.nextPrayerName}"
+                                    stringResource(R.string.wear_next_prefix, prayerState.nextPrayerName)
                                 } else {
-                                    "Prayer Schedule"
+                                    stringResource(R.string.wear_prayer_schedule)
                                 },
                                 fontSize = 11.sp,
                                 color = WearColors.TealBright,
@@ -155,7 +159,7 @@ fun WearHomeScreen(
 
             item {
                 WearFeatureChip(
-                    title = "Prayer Times",
+                    title = stringResource(R.string.wear_prayer_times),
                     subtitle = "${prayerState.cityName} • ${prayerState.calculationMethodName}",
                     iconRes = R.drawable.ic_prayer_times,
                     accentColor = WearColors.TealBright,
@@ -165,8 +169,8 @@ fun WearHomeScreen(
 
             item {
                 WearFeatureChip(
-                    title = "Al-Qur'an",
-                    subtitle = "114 Surahs • Uthmani",
+                    title = stringResource(R.string.wear_quran),
+                    subtitle = stringResource(R.string.wear_quran_subtitle),
                     iconRes = R.drawable.ic_quran,
                     accentColor = WearColors.GoldAccent,
                     onClick = onNavigateQuran
@@ -175,8 +179,8 @@ fun WearHomeScreen(
 
             item {
                 WearFeatureChip(
-                    title = "Qibla Compass",
-                    subtitle = "Mecca Direction & Bearing",
+                    title = stringResource(R.string.wear_qibla),
+                    subtitle = stringResource(R.string.wear_qibla_subtitle),
                     iconRes = R.drawable.ic_qibla,
                     accentColor = WearColors.TealPrimary,
                     onClick = onNavigateQibla
