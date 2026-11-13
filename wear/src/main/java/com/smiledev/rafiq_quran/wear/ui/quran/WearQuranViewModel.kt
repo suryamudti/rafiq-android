@@ -16,6 +16,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -71,23 +72,26 @@ class WearQuranViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(dispatcherProvider.io) {
-            preferencesManager.translationLanguage.collect { lang ->
-                _uiState.update { it.copy(translationLanguage = lang) }
-            }
-        }
-        viewModelScope.launch(dispatcherProvider.io) {
-            preferencesManager.lastReadSura.collect { sura ->
-                _uiState.update { it.copy(lastReadSura = sura) }
-            }
-        }
-        viewModelScope.launch(dispatcherProvider.io) {
-            preferencesManager.lastReadAya.collect { aya ->
-                _uiState.update { it.copy(lastReadAya = aya) }
-            }
-        }
-        viewModelScope.launch(dispatcherProvider.io) {
-            preferencesManager.showAyahTranslation.collect { show ->
-                _uiState.update { it.copy(showTranslation = show) }
+            combine(
+                preferencesManager.translationLanguage,
+                preferencesManager.lastReadSura,
+                preferencesManager.lastReadAya,
+                preferencesManager.showAyahTranslation
+            ) { lang, sura, aya, show ->
+                Quadruple(lang, sura, aya, show)
+            }.collect { (lang, sura, aya, show) ->
+                val prevLang = _uiState.value.translationLanguage
+                _uiState.update {
+                    it.copy(
+                        translationLanguage = lang,
+                        lastReadSura = sura,
+                        lastReadAya = aya,
+                        showTranslation = show
+                    )
+                }
+                if (prevLang != lang && _uiState.value.surahs.isNotEmpty()) {
+                    loadSurahs()
+                }
             }
         }
         loadSurahs()
@@ -206,4 +210,6 @@ class WearQuranViewModel @Inject constructor(
             }
         }
     }
+
+    private data class Quadruple<A, B, C, D>(val first: A, val second: B, val third: C, val fourth: D)
 }

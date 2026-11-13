@@ -1,10 +1,15 @@
 package com.smiledev.rafiq_quran.wear.ui.qibla
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
+import android.hardware.GeomagneticField
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -15,9 +20,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -33,16 +40,23 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.wear.compose.material.Scaffold
 import androidx.wear.compose.material.Text
 import androidx.wear.compose.material.TimeText
+import com.smiledev.rafiq_quran.wear.BuildConfig
+import com.smiledev.rafiq_quran.wear.R
 import com.smiledev.rafiq_quran.wear.theme.WearColors
 import kotlin.math.PI
 import kotlin.math.abs
@@ -56,13 +70,67 @@ fun WearQiblaScreen(
 ) {
     val state by viewModel.uiState.collectAsState()
     val context = LocalContext.current
+    val view = LocalView.current
+    val haptic = LocalHapticFeedback.current
 
     var deviceAzimuth by remember { mutableFloatStateOf(0f) }
     var simulatedAzimuthOverride by remember { mutableStateOf<Float?>(null) }
+    var hasRotationSensor by remember { mutableStateOf(true) }
+    var needsCalibration by remember { mutableStateOf(false) }
 
-    DisposableEffect(Unit) {
+    val declinationDegrees = remember(state.userLat, state.userLon) {
+        runCatching {
+            GeomagneticField(
+                state.userLat.toFloat(),
+                state.userLon.toFloat(),
+                0f,
+                System.currentTimeMillis()
+            ).declination
+        }.getOrDefault(0f)
+    }
+
+    val locationPermissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { grants ->
+        val granted = grants[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
+            grants[Manifest.permission.ACCESS_COARSE_LOCATION] == true
+        if (granted) {
+            viewModel.refreshLocation(forceGeocode = true)
+        }
+    }
+
+    val onRefreshLocationClick: () -> Unit = {
+        val hasFine = ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+        val hasCoarse = ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+        if (hasFine || hasCoarse) {
+            viewModel.refreshLocation(forceGeocode = true)
+        } else {
+            locationPermissionLauncher.launch(
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+            )
+        }
+    }
+
+    DisposableEffect(view) {
+        view.keepScreenOn = true
+        onDispose {
+            view.keepScreenOn = false
+        }
+    }
+
+    DisposableEffect(declinationDegrees) {
         val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as? SensorManager
         val rotationSensor = sensorManager?.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR)
+        hasRotationSensor = rotationSensor != null
 
         val listener = object : SensorEventListener {
             override fun onSensorChanged(event: SensorEvent?) {
@@ -73,12 +141,16 @@ fun WearQiblaScreen(
                     val orientation = FloatArray(3)
                     SensorManager.getOrientation(rotationMatrix, orientation)
                     val azimuthRad = orientation[0].toDouble()
-                    val azimuthDeg = ((azimuthRad * 180.0 / PI) + 360.0) % 360.0
-                    deviceAzimuth = azimuthDeg.toFloat()
+                    val magneticDeg = ((azimuthRad * 180.0 / PI) + 360.0) % 360.0
+                    val trueNorthDeg = ((magneticDeg + declinationDegrees) % 360.0 + 360.0) % 360.0
+                    deviceAzimuth = trueNorthDeg.toFloat()
                 }
             }
 
-            override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) = Unit
+            override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
+                needsCalibration = accuracy == SensorManager.SENSOR_STATUS_UNRELIABLE ||
+                    accuracy == SensorManager.SENSOR_STATUS_ACCURACY_LOW
+            }
         }
 
         if (sensorManager != null && rotationSensor != null) {
@@ -94,14 +166,28 @@ fun WearQiblaScreen(
         }
     }
 
-    val activeAzimuth = simulatedAzimuthOverride ?: deviceAzimuth
+    val activeAzimuth = if (BuildConfig.DEBUG) {
+        simulatedAzimuthOverride ?: deviceAzimuth
+    } else {
+        deviceAzimuth
+    }
     val aligned = isQiblaAligned(state.bearing, activeAzimuth)
     val angleDiff = wearNormalizeAngle180(state.bearing.toDouble() - activeAzimuth.toDouble())
 
+    var wasAligned by remember { mutableStateOf(false) }
+    LaunchedEffect(aligned) {
+        if (aligned && !wasAligned) {
+            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+        }
+        wasAligned = aligned
+    }
+
     val statusText = when {
-        aligned -> "Facing Qibla"
-        angleDiff > 0 -> "Turn Right ${angleDiff.roundToInt()}°"
-        else -> "Turn Left ${abs(angleDiff).roundToInt()}°"
+        !hasRotationSensor && simulatedAzimuthOverride == null ->
+            stringResource(R.string.wear_compass_unavailable)
+        aligned -> stringResource(R.string.wear_facing_qibla)
+        angleDiff > 0 -> stringResource(R.string.wear_turn_right, angleDiff.roundToInt())
+        else -> stringResource(R.string.wear_turn_left, abs(angleDiff).roundToInt())
     }
 
     Scaffold(
@@ -111,16 +197,7 @@ fun WearQiblaScreen(
             .background(WearColors.DeepNavy)
     ) {
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .clickable {
-                    // Tap to simulate/toggle alignment or cycle heading on emulators
-                    simulatedAzimuthOverride = if (aligned) {
-                        (state.bearing + 45f) % 360f
-                    } else {
-                        state.bearing.toFloat()
-                    }
-                },
+            modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
             // Rotating compass bezel & needle ring
@@ -309,46 +386,87 @@ fun WearQiblaScreen(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                // Top pill: City & Bearing + Direction Cardinal
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                // Top pill: City (tappable to refresh GPS) & Bearing + Direction Cardinal
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(3.dp),
                     modifier = Modifier
                         .align(Alignment.TopCenter)
-                        .padding(top = 28.dp)
-                        .background(
-                            color = WearColors.SurfaceDark.copy(alpha = 0.90f),
-                            shape = RoundedCornerShape(12.dp)
-                        )
-                        .border(
-                            width = 1.dp,
-                            color = WearColors.SurfaceCard,
-                            shape = RoundedCornerShape(12.dp)
-                        )
-                        .padding(horizontal = 8.dp, vertical = 2.dp)
+                        .padding(top = 24.dp)
                 ) {
-                    Text(
-                        text = state.cityName,
-                        fontSize = 10.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = WearColors.TextPrimary,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                    Text(
-                        text = "•",
-                        fontSize = 9.sp,
-                        color = WearColors.TextMuted
-                    )
-                    Text(
-                        text = "${state.bearing}° ${state.directionCardinal}",
-                        fontSize = 10.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = if (aligned) WearColors.TealBright else WearColors.GoldAccent
-                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                        modifier = Modifier
+                            .background(
+                                color = WearColors.SurfaceDark.copy(alpha = 0.90f),
+                                shape = RoundedCornerShape(12.dp)
+                            )
+                            .border(
+                                width = 1.dp,
+                                color = WearColors.SurfaceCard,
+                                shape = RoundedCornerShape(12.dp)
+                            )
+                            .clickable(onClick = onRefreshLocationClick)
+                            .padding(horizontal = 8.dp, vertical = 2.dp)
+                    ) {
+                        Text(
+                            text = if (state.isSyncingLocation) {
+                                stringResource(R.string.wear_updating_gps)
+                            } else {
+                                state.cityName
+                            },
+                            fontSize = 10.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = WearColors.TextPrimary,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.widthIn(max = 88.dp)
+                        )
+                        Text(
+                            text = "•",
+                            fontSize = 9.sp,
+                            color = WearColors.TextMuted
+                        )
+                        Text(
+                            text = "${state.bearing}° ${state.directionCardinal}",
+                            fontSize = 10.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = if (aligned) WearColors.TealBright else WearColors.GoldAccent
+                        )
+                    }
+
+                    if (needsCalibration && simulatedAzimuthOverride == null) {
+                        Text(
+                            text = stringResource(R.string.wear_calibrate_compass),
+                            fontSize = 9.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = WearColors.GoldSoft,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier
+                                .background(
+                                    color = WearColors.SurfaceDark.copy(alpha = 0.9f),
+                                    shape = RoundedCornerShape(8.dp)
+                                )
+                                .padding(horizontal = 6.dp, vertical = 1.dp)
+                        )
+                    }
                 }
 
                 // Center/bottom status badge + Distance to Mecca
+                // In debug builds only, tapping the status pill cycles/clears heading simulation for emulator testing.
+                val statusModifier = if (BuildConfig.DEBUG) {
+                    Modifier.clickable {
+                        simulatedAzimuthOverride = when {
+                            simulatedAzimuthOverride == null -> state.bearing.toFloat()
+                            aligned -> (state.bearing + 45f) % 360f
+                            else -> null
+                        }
+                    }
+                } else {
+                    Modifier
+                }
+
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(2.dp),
@@ -375,6 +493,7 @@ fun WearQiblaScreen(
                                 },
                                 shape = RoundedCornerShape(12.dp)
                             )
+                            .then(statusModifier)
                             .padding(horizontal = 8.dp, vertical = 2.dp)
                     ) {
                         Text(
@@ -382,11 +501,13 @@ fun WearQiblaScreen(
                             fontSize = 10.sp,
                             fontWeight = FontWeight.Bold,
                             color = if (aligned) WearColors.TealBright else WearColors.GoldAccent,
-                            textAlign = TextAlign.Center
+                            textAlign = TextAlign.Center,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
                     Text(
-                        text = "${state.distanceKm} km",
+                        text = stringResource(R.string.wear_distance_km, state.distanceKm),
                         fontSize = 10.sp,
                         fontWeight = FontWeight.Medium,
                         color = WearColors.TextSecondary

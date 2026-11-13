@@ -283,4 +283,78 @@ class WearPrayerTimesViewModelTest {
         coVerify { preferencesManager.setPrayerNotificationsEnabled(true) }
         verify(atLeast = 2) { WearPrayerNotificationWorker.scheduleNow(context) }
     }
+
+    @Test
+    fun `toggling notifications does not trigger redundant prayer times reload`() = runTest(testDispatcher) {
+        coEvery {
+            prayerTimesRepository.getCachedPrayerTimes(any(), any(), any(), any())
+        } returns fakePrayerData
+        coEvery { preferencesManager.setPrayerNotificationsEnabled(any()) } just runs
+
+        val notifFlow = kotlinx.coroutines.flow.MutableStateFlow(true)
+        every { preferencesManager.prayerNotificationsEnabled } returns notifFlow
+
+        val vm = createViewModel()
+        testScheduler.runCurrent()
+
+        coVerify(exactly = 1) {
+            prayerTimesRepository.getCachedPrayerTimes(any(), any(), any(), any())
+        }
+
+        notifFlow.value = false
+        testScheduler.runCurrent()
+
+        coVerify(exactly = 1) {
+            prayerTimesRepository.getCachedPrayerTimes(any(), any(), any(), any())
+        }
+        assertFalse(vm.uiState.value.prayerNotificationsEnabled)
+    }
+
+    @Test
+    fun `after Isha next prayer falls back to Fajr instead of Imsak`() = runTest(testDispatcher) {
+        coEvery {
+            prayerTimesRepository.getCachedPrayerTimes(any(), any(), any(), any())
+        } returns fakePrayerData
+
+        val vm = createViewModel()
+        testScheduler.runCurrent()
+
+        val afterIsha = java.util.Calendar.getInstance().apply {
+            time = vm.uiState.value.currentDate
+            set(java.util.Calendar.HOUR_OF_DAY, 22)
+            set(java.util.Calendar.MINUTE, 0)
+        }
+        vm.updatePrayerStatusAndCountdown(afterIsha)
+
+        val state = vm.uiState.value
+        assertEquals("Fajr", state.nextPrayerName)
+        assertEquals("04:30", state.nextPrayerTime)
+        assertEquals("6h 30m", state.countdown)
+    }
+
+    @Test
+    fun `refreshLocation invokes WearLocationSync and clears syncing flag`() = runTest(testDispatcher) {
+        coEvery {
+            prayerTimesRepository.getCachedPrayerTimes(any(), any(), any(), any())
+        } returns fakePrayerData
+        val locationSync: com.smiledev.rafiq_quran.wear.location.WearLocationSync = mockk()
+        coEvery { locationSync.syncIfPermitted(any()) } returns true
+
+        val vm = WearPrayerTimesViewModel(
+            prayerTimesRepository = prayerTimesRepository,
+            preferencesManager = preferencesManager,
+            appContext = context,
+            dispatcherProvider = testDispatcherProvider,
+            wearLocationSync = locationSync
+        ).apply {
+            enablePeriodicCountdown = false
+        }
+        testScheduler.runCurrent()
+
+        vm.refreshLocation(forceGeocode = true)
+        testScheduler.runCurrent()
+
+        coVerify(exactly = 1) { locationSync.syncIfPermitted(true) }
+        assertFalse(vm.uiState.value.isSyncingLocation)
+    }
 }

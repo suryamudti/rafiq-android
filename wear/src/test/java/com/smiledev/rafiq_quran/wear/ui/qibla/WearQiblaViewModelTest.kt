@@ -177,4 +177,24 @@ class WearQiblaViewModelTest {
         // Bearing 355° vs Azimuth 3° -> diff is 8° (unaligned)
         assertFalse(isQiblaAligned(355, 3f))
     }
+
+    @Test
+    fun `refreshLocation invokes WearLocationSync`() = runTest(testDispatcher) {
+        val locationSync: com.smiledev.rafiq_quran.wear.location.WearLocationSync = mockk()
+        io.mockk.coEvery { locationSync.syncIfPermitted(any()) } returns true
+
+        val viewModel = WearQiblaViewModel(
+            preferencesManager = preferencesManager,
+            calculateQiblaUseCase = calculateQiblaUseCase,
+            dispatcherProvider = testDispatcherProvider,
+            wearLocationSync = locationSync
+        )
+        advanceUntilIdle()
+
+        viewModel.refreshLocation(forceGeocode = true)
+        advanceUntilIdle()
+
+        io.mockk.coVerify(exactly = 1) { locationSync.syncIfPermitted(true) }
+        assertFalse(viewModel.uiState.value.isSyncingLocation)
+    }
 }

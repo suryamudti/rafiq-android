@@ -14,6 +14,7 @@ import com.smiledev.rafiq_quran.data.preferences.PreferencesManager
 import com.smiledev.rafiq_quran.domain.model.PrayerTimesData
 import com.smiledev.rafiq_quran.domain.repository.PrayerTimesRepository
 import com.smiledev.rafiq_quran.wear.R
+import com.smiledev.rafiq_quran.wear.location.WearLocationSync
 import com.smiledev.rafiq_quran.wear.service.WearPrayerNotificationWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -22,7 +23,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -51,6 +51,7 @@ data class WearPrayerTimesUiState(
     val nextPrayerTime: String = "",
     val countdown: String = "",
     val isLoading: Boolean = false,
+    val isSyncingLocation: Boolean = false,
     val error: AppError? = null,
     val latitude: Double = -6.2088,
     val longitude: Double = 106.8456,
@@ -65,20 +66,29 @@ class WearPrayerTimesViewModel @Inject constructor(
     private val prayerTimesRepository: PrayerTimesRepository,
     private val preferencesManager: PreferencesManager,
     @ApplicationContext private val appContext: Context,
-    private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider
+    private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
+    private val wearLocationSync: WearLocationSync? = null
 ) : ViewModel() {
+
+    constructor(
+        prayerTimesRepository: PrayerTimesRepository,
+        preferencesManager: PreferencesManager,
+        appContext: Context,
+        dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider
+    ) : this(prayerTimesRepository, preferencesManager, appContext, dispatcherProvider, null)
 
     private val _uiState = MutableStateFlow(WearPrayerTimesUiState())
     val uiState: StateFlow<WearPrayerTimesUiState> = _uiState.asStateFlow()
 
     private var countdownJob: Job? = null
     var enablePeriodicCountdown: Boolean = true
+    private var lastLoadedKey: Triple<Double, Double, Int>? = null
 
     private val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.US)
 
     init {
         viewModelScope.launch(dispatcherProvider.io) {
-            combine(
+            kotlinx.coroutines.flow.combine(
                 preferencesManager.latitude,
                 preferencesManager.longitude,
                 preferencesManager.prayerCalculationMethod,
@@ -98,9 +108,22 @@ class WearPrayerTimesViewModel @Inject constructor(
                     cityName = resolvedCity,
                     prayerNotificationsEnabled = notifEnabled
                 )
-            }.collect {
-                loadPrayerTimes()
+                Triple(lat, lon, calcMethod)
+            }.collect { key ->
+                if (key != lastLoadedKey) {
+                    lastLoadedKey = key
+                    loadPrayerTimes()
+                }
             }
+        }
+    }
+
+    fun refreshLocation(forceGeocode: Boolean = true) {
+        val sync = wearLocationSync ?: return
+        viewModelScope.launch(dispatcherProvider.io) {
+            _uiState.value = _uiState.value.copy(isSyncingLocation = true)
+            sync.syncIfPermitted(forceGeocode = forceGeocode)
+            _uiState.value = _uiState.value.copy(isSyncingLocation = false)
         }
     }
 
@@ -194,16 +217,15 @@ class WearPrayerTimesViewModel @Inject constructor(
         }
     }
 
-    private fun updatePrayerStatusAndCountdown() {
+    internal fun updatePrayerStatusAndCountdown(now: Calendar = Calendar.getInstance()) {
         val state = _uiState.value
         val times = state.prayerTimes
         if (times.isEmpty()) return
 
-        val now = Calendar.getInstance()
         val nowMinutes = now.get(Calendar.HOUR_OF_DAY) * 60 + now.get(Calendar.MINUTE)
 
-        val isToday = checkIfToday(state.currentDate)
-        val todayStart = Calendar.getInstance().apply {
+        val isToday = checkIfToday(state.currentDate, now)
+        val todayStart = (now.clone() as Calendar).apply {
             set(Calendar.HOUR_OF_DAY, 0)
             set(Calendar.MINUTE, 0)
             set(Calendar.SECOND, 0)
@@ -231,7 +253,7 @@ class WearPrayerTimesViewModel @Inject constructor(
                 }
             }
             if (nextPrayer == null) {
-                nextPrayer = times.firstOrNull()
+                nextPrayer = times.firstOrNull { it.prayerKey == "fajr" } ?: times.firstOrNull()
             }
         }
 
@@ -320,11 +342,10 @@ class WearPrayerTimesViewModel @Inject constructor(
         loadPrayerTimes()
     }
 
-    private fun checkIfToday(date: Date): Boolean {
-        val today = Calendar.getInstance()
+    private fun checkIfToday(date: Date, today: Calendar = Calendar.getInstance()): Boolean {
         val target = Calendar.getInstance().apply { time = date }
         return today.get(Calendar.YEAR) == target.get(Calendar.YEAR) &&
-                today.get(Calendar.DAY_OF_YEAR) == target.get(Calendar.DAY_OF_YEAR)
+            today.get(Calendar.DAY_OF_YEAR) == target.get(Calendar.DAY_OF_YEAR)
     }
 
     private fun getMethodDisplayName(method: Int): String {
@@ -349,7 +370,7 @@ class WearPrayerTimesViewModel @Inject constructor(
         val total = hour * 60 + minute + add
         val h = (total / 60) % 24
         val m = total % 60
-        return "%02d:%02d".format(h, m)
+        return "%02d:%02d".format(Locale.US, h, m)
     }
 
     override fun onCleared() {
