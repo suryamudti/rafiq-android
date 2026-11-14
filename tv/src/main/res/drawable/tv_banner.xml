@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="320dp"
+    android:height="180dp"
+    android:viewportWidth="320"
+    android:viewportHeight="180">
+    <!-- Deep Emerald Navy Background -->
+    <path
+        android:fillColor="#08121E"
+        android:pathData="M0,0h320v180h-320z" />
+    <!-- Subtle Inner Border -->
+    <path
+        android:strokeColor="#26A69A"
+        android:strokeWidth="2"
+        android:fillColor="#112236"
+        android:pathData="M12,12h296v156h-296z" />
+    <!-- Mosque Dome & Minaret Silhouette -->
+    <path
+        android:fillColor="#4DB6AC"
+        android:pathData="M160,42 C136,42 118,62 118,86 L202,86 C202,62 184,42 160,42 Z" />
+    <path
+        android:fillColor="#26A69A"
+        android:pathData="M108,86 h104 v42 h-104 z" />
+    <!-- Gold Crescent Finial -->
+    <path
+        android:fillColor="#FFD54F"
+        android:pathData="M160,24 A8,8 0 1,0 168,32 A6,6 0 1,1 160,24 Z" />
+    <!-- Gold Arch Doorway -->
+    <path
+        android:fillColor="#FFD54F"
+        android:pathData="M148,128 L148,104 C148,96 172,96 172,104 L172,128 Z" />
+</vector>

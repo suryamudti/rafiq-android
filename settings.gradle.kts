@@ -28,6 +28,7 @@ dependencyResolutionManagement {
 rootProject.name = "rafiq-android"
 include(":app")
 include(":wear")
+include(":tv")
 include(":composeApp")
 include(":core")
 include(":domain")

@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Rafiq TV</string>
+    <string name="tv_ambient_title">Rafiq Masjid &amp; Home Ambient Display</string>
+    <string name="tv_prayer_times">Prayer Times</string>
+    <string name="tv_next_prayer">Next Prayer</string>
+    <string name="tv_adhan_alert_title">Adhan Time Entered</string>
+    <string name="tv_notifications_on">Adhan Alerts: ON</string>
+    <string name="tv_notifications_off">Adhan Alerts: OFF</string>
+    <string name="prayer_time_for">Time for %s</string>
+    <string name="prayer_notification_body">It\'s time to pray %1$s (%2$s)</string>
+    <string name="prayer_notification_channel_desc">Masjid &amp; Home TV Adhan alerts for prayer times</string>
+    <string name="prayer_imsak">Imsak</string>
+    <string name="prayer_fajr">Fajr</string>
+    <string name="prayer_sunrise">Sunrise</string>
+    <string name="prayer_dhuha">Dhuha</string>
+    <string name="prayer_dhuhr">Dhuhr</string>
+    <string name="prayer_friday">Jumu\'ah</string>
+    <string name="prayer_asr">Asr</string>
+    <string name="prayer_maghrib">Maghrib</string>
+    <string name="prayer_isha">Isha</string>
+</resources>

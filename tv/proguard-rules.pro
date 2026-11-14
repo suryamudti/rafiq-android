@@ -1,0 +1,2 @@
+-keep class com.smiledev.rafiq_quran.data.remote.** { *; }
+-keep class com.smiledev.rafiq_quran.domain.model.** { *; }

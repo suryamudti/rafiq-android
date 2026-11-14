@@ -1,4 +1,4 @@
-# 🕋 Rafiq - Islamic Lifestyle App for Android & iOS (Kotlin Multiplatform)
+# 🕌 Rafiq - Islamic Lifestyle App for Android, Wear OS, Android TV & iOS (Kotlin Multiplatform)
 
 <p align="center">
   <a href="https://github.com/suryamudti/rafiq-android/actions/workflows/pr-check.yml"><img src="https://github.com/suryamudti/rafiq-android/actions/workflows/pr-check.yml/badge.svg" alt="PR Check"/></a>
@@ -8,12 +8,13 @@
   <a href="https://developer.android.com/about/versions/marshmallow"><img src="https://img.shields.io/badge/Min%20SDK-23%2B-brightgreen.svg" alt="Min SDK"/></a>
   <a href="https://developer.android.com/jetpack/compose"><img src="https://img.shields.io/badge/Jetpack-Compose%20(M3)-4285F4.svg?style=flat&logo=android" alt="Jetpack Compose"/></a>
   <a href="https://developer.android.com/training/wearables/compose"><img src="https://img.shields.io/badge/Wear%20OS-Compose%201.4.1-00838F.svg?style=flat&logo=wearos" alt="Wear OS Compose"/></a>
+  <a href="https://developer.android.com/training/tv"><img src="https://img.shields.io/badge/Android%20TV-Compose%201.0.0-00838F.svg?style=flat&logo=androidtv" alt="Android TV Compose"/></a>
   <a href="https://insert-koin.io/"><img src="https://img.shields.io/badge/Koin-4.0.2-orange.svg?style=flat" alt="Koin"/></a>
   <a href="https://dagger.dev/hilt/"><img src="https://img.shields.io/badge/Hilt-2.56.2-yellow.svg" alt="Hilt"/></a>
 </p>
 
 <p align="center">
-<b>Rafiq</b> demonstrates modern cross-platform mobile and wearable development with <b>Kotlin Multiplatform (KMP)</b>, Compose Multiplatform, Jetpack Compose (Material3), Wear OS Compose, Koin, Coroutines, Flow, Room KMP, and Ktor based on <b>Clean Architecture</b> and <b>MVVM</b> multi-module guidelines, elevated by <b>Emil Kowalski's Design Engineering philosophy</b> and responsive spring micro-interactions.
+<b>Rafiq</b> demonstrates modern cross-platform mobile, wearable, and TV development with <b>Kotlin Multiplatform (KMP)</b>, Compose Multiplatform, Jetpack Compose (Material3), Wear OS Compose, Android TV Compose, Koin, Coroutines, Flow, Room KMP, and Ktor based on <b>Clean Architecture</b> and <b>MVVM</b> multi-module guidelines, elevated by <b>Emil Kowalski's Design Engineering philosophy</b> and responsive spring micro-interactions.
 </p>
 
 ---
@@ -26,7 +27,7 @@ Go to the [Releases](https://github.com/suryamudti/rafiq-android/releases) secti
 
 ## 📸 Screenshots
 
-### Mobile Application (Android & iOS)
+### 📱 Mobile Application (Android & iOS)
 
 | Dashboard | Prayer Times | Quran Reader | Ayah Reader |
 | :---: | :---: | :---: | :---: |
@@ -44,11 +45,17 @@ Go to the [Releases](https://github.com/suryamudti/rafiq-android/releases) secti
 | :---: | :---: | :---: | :---: |
 | <img src="figure/prayerlog.png" width="220"/> | <img src="figure/prayerguidance.png" width="220"/> | <img src="figure/sunnahguidance.png" width="220"/> | <img src="figure/appinfo.png" width="220"/> |
 
-### Wear OS Companion App (`:wear`)
+### ⌚ Wear OS Companion App (`:wear`)
 
 | Wear OS Home | Prayer Times | Quran Surahs | Surah Reading | Qibla Compass |
 | :---: | :---: | :---: | :---: | :---: |
 | <img src="figure/wear_home.png" width="160"/> | <img src="figure/wear_prayertimes.png" width="160"/> | <img src="figure/wear_quran.png" width="160"/> | <img src="figure/wear_surah.png" width="160"/> | <img src="figure/wear_qibla.png" width="160"/> |
+
+### 📺 Android TV Masjid & Home Ambient Display (`:tv`)
+
+| Masjid & Home Ambient Display | Adhan Time Entered Alert Banner |
+| :---: | :---: |
+| <img src="figure/tv_ambient.png" width="420"/> | <img src="figure/tv_adhan_alert.png" width="420"/> |
 
 ---
 
@@ -76,6 +83,7 @@ Go to the [Releases](https://github.com/suryamudti/rafiq-android/releases) secti
 | **📚 Sources & Authenticity** | Full attribution and authenticity details for Quranic text, translations, hadith collections, and prayer time calculations. |
 | **🔔 Notifications** | Background prayer alarm notifications scheduled via WorkManager. |
 | **⌚ Wear OS App (`:wear`)** | Standalone watch companion featuring real-time prayer countdown, auto-enabled prayer time alarm notifications, 114 Surahs offline reader, and rotation vector sensor Qibla compass. |
+| **📺 Android TV App (`:tv`)** | Standalone 10-foot Masjid & Home Ambient Display featuring a live digital clock, Gregorian & Hijri dates, next-prayer hero countdown, 8 daily prayer cards (Imsak–Isha), Adhan time alert banner & exact alarm notifications, D-pad city & calculation method switchers, and rotating Quranic verses. |
 | **⚙️ Settings & Updates** | Language preference (Bahasa Indonesia / English), theme mode, dashboard customization, and in-app update checking via GitHub Releases & Google Play. |
 
 ---
@@ -95,6 +103,7 @@ Go to the [Releases](https://github.com/suryamudti/rafiq-android/releases) secti
 - **[Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform/)** (1.7.3): Declarative multiplatform UI framework for Android and iOS (`:composeApp`).
 - **[Jetpack Compose](https://developer.android.com/jetpack/compose)**: Modern declarative UI toolkit for Android (`:app`).
 - **[Wear OS Compose](https://developer.android.com/training/wearables/compose)** (1.4.1): Declarative watch UI toolkit via `androidx.wear.compose:compose-material`, `androidx.wear.compose:compose-foundation`, and `androidx.wear.compose:compose-navigation` (`:wear`).
+- **[Android TV Compose](https://developer.android.com/training/tv)** (1.0.0): 10-foot widescreen TV UI toolkit via `androidx.tv:tv-material` (`:tv`).
 - **[Material Design 3](https://m3.material.io/)**: Modern design system, dynamic color schemes, and Islamic emerald & gold palette.
 - **Emil Kowalski Design Principles**: Tactile interaction physics via `Modifier.rafiqPressable()` with spring dynamics (`dampingRatio = 0.75f`, `stiffness = 400f`), Apple cubic bezier easing (`AppleEaseOut`), continuous curvature geometry (squircle pills & cards), and specular highlight borders (`RafiqSpecularHighlightBorder`).
 - **Custom Typography**: Arabic font support via `FontFamily(Font(R.font.me_quran))` and negative title letter tracking for refined optical balance.
@@ -125,6 +134,7 @@ Rafiq follows **Clean Architecture** and Google's recommended [Guide to app arch
 rafiq-android/
 ├── :app          # Application module (Android UI screens, ViewModels, Navigation, Services)
 ├── :wear         # Wear OS standalone app (Prayer Times, Al-Qur'an reader, Qibla Compass)
+├── :tv           # Android TV standalone app (Masjid & Home 10-foot Ambient Display, Live Prayer Countdown, Adhan Alerts)
 ├── :composeApp   # Multiplatform UI & Platform bridges (Compose Multiplatform, shared components, iOS entry point)
 ├── :data         # Data layer (Room DAOs, Databases, Ktor/Retrofit APIs, DataStore, Repository Impls)
 ├── :domain       # Pure Kotlin Multiplatform domain layer (Repository interfaces, Use cases, Domain models)
@@ -151,6 +161,13 @@ graph TD
         Wear_VM -->|"Emit Intent / Events"| Wear_Screen
     end
 
+    subgraph TV ["Android TV Layer (:tv)"]
+        TV_Screen["Android TV 10-Foot Ambient Display Screen"]
+        TV_VM["TvAmbientViewModel & Adhan Alert Worker"]
+        TV_Screen -->|"Observe UI State"| TV_VM
+        TV_VM -->|"D-Pad Actions / Adhan Events"| TV_Screen
+    end
+
     subgraph iOS ["iOS Host (iosApp/)"]
         IOS_App["SwiftUI App & ContentView"]
         IOS_VC["ComposeUIViewController Bridge"]
@@ -164,6 +181,7 @@ graph TD
         Domain_Repo["Repository Interfaces"]
         UI_VM -->|"Executes"| Domain_UC
         Wear_VM -->|"Executes"| Domain_UC
+        TV_VM -->|"Executes"| Domain_UC
         Domain_UC -->|"Invokes"| Domain_Repo
     end
 
@@ -185,6 +203,7 @@ graph TD
 
     UI --> Core
     Wear --> Core
+    TV --> Core
     Domain --> Core
     Data --> Core
 ```
@@ -195,6 +214,15 @@ The `:wear` module delivers a standalone Wear OS experience optimized for round 
 - **Wear Prayer Times**: Next prayer hero card with live countdown, Hijri date, and 8 daily prayer times (Imsak, Subuh, Syuruq, Dhuha, Dzuhur, Ashar, Maghrib, Isya) in a Rotary/Crown scrollable `ScalingLazyColumn`.
 - **Wear Al-Qur'an Reader**: All 114 Surahs with revelation filter (Makkiyah/Madaniyah), Last Read quick-resume chip, Uthmani Arabic script (`me_quran.ttf`), and EN/ID translation toggle.
 - **Wear Qibla Compass**: Circular watch bezel compass using rotation vector sensor with Kaaba pointer, alignment indicator (±3° tolerance with haptic cue), and Mecca distance.
+
+### Android TV App (`:tv`)
+
+The `:tv` module delivers a standalone 10-foot **Masjid & Home Ambient Display** (`LEANBACK_LAUNCHER`, `FLAG_KEEP_SCREEN_ON`) designed for widescreen TVs in living rooms, prayer rooms (Musholla), or mosques:
+- **Live Masjid Header**: Real-time digital clock, Gregorian & Hijri dates, and city + calculation method indicator.
+- **Next Prayer Hero & Live Countdown**: High-contrast upcoming prayer panel with Arabic script, scheduled time, and live countdown (`-Xh Ym`).
+- **8-Prayer Horizontal Strip**: D-pad focusable cards for **Imsak, Fajr/Subuh, Sunrise/Terbit, Dhuha, Dhuhr/Dzuhur (or Jumu'ah on Friday), Asr/Ashar, Maghrib, and Isha/Isya** with `NEXT` badge highlight and dimmed passed states.
+- **Adhan Time Alert Banner & Alarms**: Exact alarm scheduling via `TvPrayerNotificationWorker` + `TvPrayerAlarmReceiver` and an interactive on-screen Adhan Time Entered banner.
+- **D-Pad Remote Controls & Spiritual Verses**: Remote-friendly action bar to navigate days (`‹ Prev Day`, `Today`, `Next Day ›`), switch preset cities (`Jakarta`, `Makkah`, `Madinah`, `Surabaya`, `Bandung`, `Yogyakarta`, `Kuala Lumpur`, `Singapore`), cycle calculation methods (`KEMENAG`, `Umm Al-Qura`, `MWL`, `MUIS`, `JAKIM`), toggle Adhan alerts, and cycle Quranic verses.
 
 ### Architecture Highlights
 - **Kotlin Multiplatform Ready**: Pure KMP in `:core`, `:domain`, and `:composeApp`, supporting Android and iOS targets (`iosArm64`, `iosSimulatorArm64`). Shared multiplatform UI covers Quran, Hadith, Calendar, Tasbih, Asmaul Husna, Prophets, Zakat, and Guidance.
@@ -237,11 +265,15 @@ $env:JAVA_HOME = "C:\Program Files\Eclipse Adoptium\jdk-17.0.19.10-hotspot"
 
 # Build debug APK (Wear OS)
 .\gradlew :wear:assembleDebug
+
+# Build debug APK (Android TV)
+.\gradlew :tv:assembleDebug
 ```
 
 The compiled APKs will be located at:
 - Mobile: `app/build/outputs/apk/debug/app-debug.apk`
 - Wear OS: `wear/build/outputs/apk/debug/wear-debug.apk`
+- Android TV: `tv/build/outputs/apk/debug/tv-debug.apk`
 
 Install on the emulator / target device:
 
@@ -251,6 +283,9 @@ adb -s emulator-5554 install -r app\build\outputs\apk\debug\app-debug.apk
 
 # Wear OS
 adb -s <wear_device_id> install -r wear\build\outputs\apk\debug\wear-debug.apk
+
+# Android TV
+adb -s <tv_device_id> install -r tv\build\outputs\apk\debug\tv-debug.apk
 ```
 
 ### Running Tests
@@ -259,8 +294,10 @@ adb -s <wear_device_id> install -r wear\build\outputs\apk\debug\wear-debug.apk
 .\gradlew testDebugUnitTest              # Run multi-module unit tests (JVM / Android)
 .\gradlew :composeApp:testDebugUnitTest      # Run Compose Multiplatform tests
 .\gradlew :wear:testDebugUnitTest            # Run Wear OS module unit tests
+.\gradlew :tv:testDebugUnitTest              # Run Android TV module unit tests
 .\gradlew lintDebug                          # Run Android Lint across all modules
 .\gradlew :wear:lintDebug                    # Run Wear OS module lint
+.\gradlew :tv:lintDebug                      # Run Android TV module lint
 ```
 
 ---
