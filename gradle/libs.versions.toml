@@ -39,6 +39,7 @@ firebaseBom = "34.4.0"
 googleServices = "4.4.3"
 firebaseCrashlyticsPlugin = "3.0.6"
 wearCompose = "1.4.1"
+tvMaterial = "1.0.0"
 
 [libraries]
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidxCore" }
@@ -134,6 +135,9 @@ firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
 androidx-wear-compose-material = { module = "androidx.wear.compose:compose-material", version.ref = "wearCompose" }
 androidx-wear-compose-foundation = { module = "androidx.wear.compose:compose-foundation", version.ref = "wearCompose" }
 androidx-wear-compose-navigation = { module = "androidx.wear.compose:compose-navigation", version.ref = "wearCompose" }
+
+# Android TV Compose
+androidx-tv-material = { module = "androidx.tv:tv-material", version.ref = "tvMaterial" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
