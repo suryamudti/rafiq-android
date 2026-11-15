@@ -39,6 +39,9 @@ firebaseBom = "34.4.0"
 googleServices = "4.4.3"
 firebaseCrashlyticsPlugin = "3.0.6"
 wearCompose = "1.4.1"
+wearWatchfaceComplications = "1.2.1"
+wearTiles = "1.4.1"
+wearProtoLayout = "1.2.1"
 tvMaterial = "1.0.0"
 
 [libraries]
@@ -135,6 +138,12 @@ firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
 androidx-wear-compose-material = { module = "androidx.wear.compose:compose-material", version.ref = "wearCompose" }
 androidx-wear-compose-foundation = { module = "androidx.wear.compose:compose-foundation", version.ref = "wearCompose" }
 androidx-wear-compose-navigation = { module = "androidx.wear.compose:compose-navigation", version.ref = "wearCompose" }
+androidx-wear-watchface-complications-data-source-ktx = { module = "androidx.wear.watchface:watchface-complications-data-source-ktx", version.ref = "wearWatchfaceComplications" }
+androidx-wear-tiles = { module = "androidx.wear.tiles:tiles", version.ref = "wearTiles" }
+androidx-wear-protolayout = { module = "androidx.wear.protolayout:protolayout", version.ref = "wearProtoLayout" }
+androidx-wear-protolayout-material = { module = "androidx.wear.protolayout:protolayout-material", version.ref = "wearProtoLayout" }
+androidx-wear-protolayout-expression = { module = "androidx.wear.protolayout:protolayout-expression", version.ref = "wearProtoLayout" }
+kotlinx-coroutines-guava = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-guava", version.ref = "coroutines" }
 
 # Android TV Compose
 androidx-tv-material = { module = "androidx.tv:tv-material", version.ref = "tvMaterial" }

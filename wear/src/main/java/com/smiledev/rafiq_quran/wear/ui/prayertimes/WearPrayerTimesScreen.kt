@@ -63,6 +63,7 @@ import java.util.Locale
 
 @Composable
 fun WearPrayerTimesScreen(
+    onNavigateWatchfaceWidget: () -> Unit = {},
     viewModel: WearPrayerTimesViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsState()
@@ -390,6 +391,28 @@ fun WearPrayerTimesScreen(
                                             R.string.wear_update_gps
                                         }
                                     ),
+                                    fontSize = 10.sp,
+                                    maxLines = 1
+                                )
+                            },
+                            colors = ChipDefaults.chipColors(
+                                backgroundColor = WearColors.SurfaceDark,
+                                contentColor = WearColors.TextPrimary
+                            )
+                        )
+                        CompactChip(
+                            onClick = onNavigateWatchfaceWidget,
+                            icon = {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_prayer_times),
+                                    contentDescription = stringResource(R.string.wear_watchface_widget),
+                                    tint = WearColors.GoldAccent,
+                                    modifier = Modifier.size(14.dp)
+                                )
+                            },
+                            label = {
+                                Text(
+                                    text = stringResource(R.string.wear_watchface_widget),
                                     fontSize = 10.sp,
                                     maxLines = 1
                                 )

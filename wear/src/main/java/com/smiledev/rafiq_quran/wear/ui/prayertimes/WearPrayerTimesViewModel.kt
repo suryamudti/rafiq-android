@@ -205,6 +205,11 @@ class WearPrayerTimesViewModel @Inject constructor(
         if (_uiState.value.prayerNotificationsEnabled) {
             WearPrayerNotificationWorker.scheduleNow(appContext)
         }
+        com.smiledev.rafiq_quran.wear.widget.WearNextPrayerWidgetUpdater.requestUpdate(appContext)
+    }
+
+    fun syncWatchfaceWidget() {
+        com.smiledev.rafiq_quran.wear.widget.WearNextPrayerWidgetUpdater.requestUpdate(appContext)
     }
 
     private fun startCountdown() {

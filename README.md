@@ -47,9 +47,9 @@ Go to the [Releases](https://github.com/suryamudti/rafiq-android/releases) secti
 
 ### ⌚ Wear OS Companion App (`:wear`)
 
-| Wear OS Home | Prayer Times | Quran Surahs | Surah Reading | Qibla Compass |
-| :---: | :---: | :---: | :---: | :---: |
-| <img src="figure/wear_home.png" width="160"/> | <img src="figure/wear_prayertimes.png" width="160"/> | <img src="figure/wear_quran.png" width="160"/> | <img src="figure/wear_surah.png" width="160"/> | <img src="figure/wear_qibla.png" width="160"/> |
+| Wear OS Home | Prayer Times | Watchface Widget | Quran Surahs | Surah Reading | Qibla Compass |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| <img src="figure/wear_home.png" width="145"/> | <img src="figure/wear_prayertimes.png" width="145"/> | <img src="figure/wear_watchface_widget.png" width="145"/> | <img src="figure/wear_quran.png" width="145"/> | <img src="figure/wear_surah.png" width="145"/> | <img src="figure/wear_qibla.png" width="145"/> |
 
 ### 📺 Android TV Masjid & Home Ambient Display (`:tv`)
 
@@ -82,7 +82,7 @@ Go to the [Releases](https://github.com/suryamudti/rafiq-android/releases) secti
 | **ℹ️ App & Architecture Info** | Shared multiplatform system overview, KMP layer information, and release details. |
 | **📚 Sources & Authenticity** | Full attribution and authenticity details for Quranic text, translations, hadith collections, and prayer time calculations. |
 | **🔔 Notifications** | Background prayer alarm notifications scheduled via WorkManager. |
-| **⌚ Wear OS App (`:wear`)** | Standalone watch companion featuring real-time prayer countdown, auto-enabled prayer time alarm notifications, 114 Surahs offline reader, and rotation vector sensor Qibla compass. |
+| **⌚ Wear OS App (`:wear`)** | Standalone watch companion featuring Watch Face Complications (`SHORT_TEXT`, `LONG_TEXT`, `RANGED_VALUE`), a Next Prayer Wear OS Tile, real-time prayer countdown, auto-enabled prayer time alarm notifications, 114 Surahs offline reader, and rotation vector sensor Qibla compass. |
 | **📺 Android TV App (`:tv`)** | Standalone 10-foot Masjid & Home Ambient Display featuring a live digital clock, Gregorian & Hijri dates, next-prayer hero countdown, 8 daily prayer cards (Imsak–Isha), Adhan time alert banner & exact alarm notifications, D-pad city & calculation method switchers, and rotating Quranic verses. |
 | **⚙️ Settings & Updates** | Language preference (Bahasa Indonesia / English), theme mode, dashboard customization, and in-app update checking via GitHub Releases & Google Play. |
 
@@ -103,6 +103,7 @@ Go to the [Releases](https://github.com/suryamudti/rafiq-android/releases) secti
 - **[Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform/)** (1.7.3): Declarative multiplatform UI framework for Android and iOS (`:composeApp`).
 - **[Jetpack Compose](https://developer.android.com/jetpack/compose)**: Modern declarative UI toolkit for Android (`:app`).
 - **[Wear OS Compose](https://developer.android.com/training/wearables/compose)** (1.4.1): Declarative watch UI toolkit via `androidx.wear.compose:compose-material`, `androidx.wear.compose:compose-foundation`, and `androidx.wear.compose:compose-navigation` (`:wear`).
+- **[Wear OS Complications & Tiles](https://developer.android.com/training/wearables/complications)**: Watchface complication data source (`androidx.wear.watchface:watchface-complications-data-source-ktx:1.2.1`) and ProtoLayout Tile service (`androidx.wear.tiles:tiles:1.4.1`, `androidx.wear.protolayout:protolayout:1.2.1`) (`:wear`).
 - **[Android TV Compose](https://developer.android.com/training/tv)** (1.0.0): 10-foot widescreen TV UI toolkit via `androidx.tv:tv-material` (`:tv`).
 - **[Material Design 3](https://m3.material.io/)**: Modern design system, dynamic color schemes, and Islamic emerald & gold palette.
 - **Emil Kowalski Design Principles**: Tactile interaction physics via `Modifier.rafiqPressable()` with spring dynamics (`dampingRatio = 0.75f`, `stiffness = 400f`), Apple cubic bezier easing (`AppleEaseOut`), continuous curvature geometry (squircle pills & cards), and specular highlight borders (`RafiqSpecularHighlightBorder`).
@@ -133,7 +134,7 @@ Rafiq follows **Clean Architecture** and Google's recommended [Guide to app arch
 ```
 rafiq-android/
 ├── :app          # Application module (Android UI screens, ViewModels, Navigation, Services)
-├── :wear         # Wear OS standalone app (Prayer Times, Al-Qur'an reader, Qibla Compass)
+├── :wear         # Wear OS standalone app (Prayer Times, Watchface Complications & Tile, Al-Qur'an reader, Qibla Compass)
 ├── :tv           # Android TV standalone app (Masjid & Home 10-foot Ambient Display, Live Prayer Countdown, Adhan Alerts)
 ├── :composeApp   # Multiplatform UI & Platform bridges (Compose Multiplatform, shared components, iOS entry point)
 ├── :data         # Data layer (Room DAOs, Databases, Ktor/Retrofit APIs, DataStore, Repository Impls)
@@ -155,7 +156,7 @@ graph TD
     end
 
     subgraph Wear ["Wear OS Layer (:wear)"]
-        Wear_Screen["Wear OS Compose Screens (ScalingLazyColumn)"]
+        Wear_Screen["Wear OS Compose Screens & Watchface Complication / Tile"]
         Wear_VM["Wear ViewModels & Bezel Compass"]
         Wear_Screen -->|"Observe UI State"| Wear_VM
         Wear_VM -->|"Emit Intent / Events"| Wear_Screen
@@ -211,6 +212,7 @@ graph TD
 ### Wear OS App (`:wear`)
 
 The `:wear` module delivers a standalone Wear OS experience optimized for round watch displays, bezel interaction, and glanceable worship utilities:
+- **Watchface Complications & Next Prayer Tile**: Watch face complication data source (`WearNextPrayerComplicationService`) supporting `SHORT_TEXT`, `LONG_TEXT`, and `RANGED_VALUE` progress arcs, plus a swipeable Wear OS Tile (`WearNextPrayerTileService`) and in-app Watchface Widget Preview & Sync screen (`WearWatchfaceWidgetScreen`).
 - **Wear Prayer Times**: Next prayer hero card with live countdown, Hijri date, and 8 daily prayer times (Imsak, Subuh, Syuruq, Dhuha, Dzuhur, Ashar, Maghrib, Isya) in a Rotary/Crown scrollable `ScalingLazyColumn`.
 - **Wear Al-Qur'an Reader**: All 114 Surahs with revelation filter (Makkiyah/Madaniyah), Last Read quick-resume chip, Uthmani Arabic script (`me_quran.ttf`), and EN/ID translation toggle.
 - **Wear Qibla Compass**: Circular watch bezel compass using rotation vector sensor with Kaaba pointer, alignment indicator (±3° tolerance with haptic cue), and Mecca distance.

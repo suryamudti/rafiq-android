@@ -292,6 +292,7 @@ class WearPrayerNotificationWorker(
             }
         }
 
+        com.smiledev.rafiq_quran.wear.widget.WearNextPrayerWidgetUpdater.requestUpdate(applicationContext)
         return Result.success()
     }
 

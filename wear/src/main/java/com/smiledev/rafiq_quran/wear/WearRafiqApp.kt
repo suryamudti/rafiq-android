@@ -4,6 +4,7 @@ import android.app.Application
 import android.os.Build
 import com.smiledev.rafiq_quran.wear.location.WearLocationSync
 import com.smiledev.rafiq_quran.wear.service.WearPrayerNotificationWorker
+import com.smiledev.rafiq_quran.wear.widget.WearNextPrayerWidgetUpdater
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,6 +28,7 @@ class WearRafiqApp : Application() {
             }
             wearLocationSync.syncIfPermitted()
             WearPrayerNotificationWorker.schedule(this@WearRafiqApp)
+            WearNextPrayerWidgetUpdater.requestUpdate(this@WearRafiqApp)
         }
     }
 }
