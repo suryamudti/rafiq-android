@@ -4,6 +4,7 @@ import android.app.AlarmManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import com.smiledev.rafiq_quran.wear.widget.WearNextPrayerWidgetUpdater
 
 class WearBootReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent?) {
@@ -13,6 +14,7 @@ class WearBootReceiver : BroadcastReceiver() {
             action == AlarmManager.ACTION_SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED
         ) {
             WearPrayerNotificationWorker.schedule(context.applicationContext)
+            WearNextPrayerWidgetUpdater.requestUpdate(context.applicationContext)
         }
     }
 }

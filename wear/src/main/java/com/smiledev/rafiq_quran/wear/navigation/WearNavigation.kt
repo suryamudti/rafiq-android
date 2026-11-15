@@ -15,10 +15,12 @@ import com.smiledev.rafiq_quran.wear.ui.qibla.WearQiblaScreen
 import com.smiledev.rafiq_quran.wear.ui.quran.WearAyahReaderScreen
 import com.smiledev.rafiq_quran.wear.ui.quran.WearQuranViewModel
 import com.smiledev.rafiq_quran.wear.ui.quran.WearSurahListScreen
+import com.smiledev.rafiq_quran.wear.ui.widget.WearWatchfaceWidgetScreen
 
 object WearRoutes {
     const val HOME = "home"
     const val PRAYER_TIMES = "prayer_times"
+    const val WATCHFACE_WIDGET = "watchface_widget"
     const val QURAN_SURAHS = "quran_surahs"
     const val QURAN_AYAHS = "quran_ayahs/{suraNumber}?aya={ayaNumber}"
     const val QIBLA = "qibla"
@@ -59,11 +61,19 @@ fun WearNavigation(
             WearHomeScreen(
                 onNavigatePrayerTimes = { navController.navigate(WearRoutes.PRAYER_TIMES) },
                 onNavigateQuran = { navController.navigate(WearRoutes.QURAN_SURAHS) },
-                onNavigateQibla = { navController.navigate(WearRoutes.QIBLA) }
+                onNavigateQibla = { navController.navigate(WearRoutes.QIBLA) },
+                onNavigateWatchfaceWidget = { navController.navigate(WearRoutes.WATCHFACE_WIDGET) }
             )
         }
         composable(WearRoutes.PRAYER_TIMES) {
-            WearPrayerTimesScreen()
+            WearPrayerTimesScreen(
+                onNavigateWatchfaceWidget = { navController.navigate(WearRoutes.WATCHFACE_WIDGET) }
+            )
+        }
+        composable(WearRoutes.WATCHFACE_WIDGET) {
+            WearWatchfaceWidgetScreen(
+                onOpenPrayerTimes = { navController.navigate(WearRoutes.PRAYER_TIMES) }
+            )
         }
         composable(WearRoutes.QURAN_SURAHS) {
             WearSurahListScreen(

@@ -51,6 +51,7 @@ fun WearHomeScreen(
     onNavigatePrayerTimes: () -> Unit,
     onNavigateQuran: () -> Unit,
     onNavigateQibla: () -> Unit,
+    onNavigateWatchfaceWidget: () -> Unit = {},
     prayerViewModel: WearPrayerTimesViewModel = hiltViewModel()
 ) {
     val prayerState by prayerViewModel.uiState.collectAsState()
@@ -184,6 +185,16 @@ fun WearHomeScreen(
                     iconRes = R.drawable.ic_qibla,
                     accentColor = WearColors.TealPrimary,
                     onClick = onNavigateQibla
+                )
+            }
+
+            item {
+                WearFeatureChip(
+                    title = stringResource(R.string.wear_watchface_widget),
+                    subtitle = stringResource(R.string.wear_watchface_widget_subtitle),
+                    iconRes = R.drawable.ic_prayer_times,
+                    accentColor = WearColors.GoldAccent,
+                    onClick = onNavigateWatchfaceWidget
                 )
             }
         }
