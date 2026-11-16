@@ -40,7 +40,6 @@ import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.material.Card
 import androidx.wear.compose.material.CardDefaults
 import androidx.wear.compose.material.ChipDefaults
-import androidx.wear.compose.material.CircularProgressIndicator
 import androidx.wear.compose.material.CompactChip
 import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.PositionIndicator
@@ -120,108 +119,52 @@ fun WearWatchfaceWidgetScreen(
                 }
             }
 
-            // Watchface Complication Slots Preview (Ranged Arc + Short Text)
+            // Short Text Watchface Complication Slot Preview
             item {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally),
-                    verticalAlignment = Alignment.CenterVertically
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(WearColors.SurfaceDark, RoundedCornerShape(16.dp))
+                        .padding(vertical = 8.dp, horizontal = 10.dp)
                 ) {
-                    // Ranged Value Complication Slot
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
+                    Text(
+                        text = stringResource(R.string.wear_complication_short),
+                        fontSize = 8.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = WearColors.GoldAccent
+                    )
+                    Spacer(modifier = Modifier.height(5.dp))
+                    Box(
+                        contentAlignment = Alignment.Center,
                         modifier = Modifier
-                            .weight(1f)
-                            .background(WearColors.SurfaceDark, RoundedCornerShape(14.dp))
-                            .padding(vertical = 8.dp, horizontal = 4.dp)
+                            .size(58.dp)
+                            .border(1.5.dp, WearColors.GoldAccent.copy(alpha = 0.6f), CircleShape)
+                            .background(WearColors.SurfaceCard, CircleShape)
                     ) {
-                        Box(
-                            contentAlignment = Alignment.Center,
-                            modifier = Modifier.size(54.dp)
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            CircularProgressIndicator(
-                                progress = 0.68f,
-                                modifier = Modifier.fillMaxSize(),
-                                startAngle = 295f,
-                                endAngle = 245f,
-                                indicatorColor = WearColors.TealBright,
-                                trackColor = WearColors.SurfaceCard,
-                                strokeWidth = 4.dp
+                            Icon(
+                                painter = painterResource(id = iconRes),
+                                contentDescription = nextName,
+                                tint = WearColors.GoldAccent,
+                                modifier = Modifier.size(14.dp)
                             )
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                Text(
-                                    text = nextName.take(5),
-                                    fontSize = 8.sp,
-                                    fontWeight = FontWeight.SemiBold,
-                                    color = WearColors.TealBright,
-                                    maxLines = 1
-                                )
-                                Text(
-                                    text = nextTime,
-                                    fontSize = 11.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = WearColors.TextPrimary,
-                                    maxLines = 1
-                                )
-                            }
+                            Text(
+                                text = nextTime,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = WearColors.TextPrimary,
+                                maxLines = 1
+                            )
+                            Text(
+                                text = nextName.take(6),
+                                fontSize = 8.sp,
+                                color = WearColors.TextSecondary,
+                                maxLines = 1
+                            )
                         }
-                        Spacer(modifier = Modifier.height(3.dp))
-                        Text(
-                            text = stringResource(R.string.wear_complication_ranged),
-                            fontSize = 8.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = WearColors.TextMuted
-                        )
-                    }
-
-                    // Short Text Complication Slot
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier
-                            .weight(1f)
-                            .background(WearColors.SurfaceDark, RoundedCornerShape(14.dp))
-                            .padding(vertical = 8.dp, horizontal = 4.dp)
-                    ) {
-                        Box(
-                            contentAlignment = Alignment.Center,
-                            modifier = Modifier
-                                .size(54.dp)
-                                .border(1.5.dp, WearColors.GoldAccent.copy(alpha = 0.6f), CircleShape)
-                                .background(WearColors.SurfaceCard, CircleShape)
-                        ) {
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = iconRes),
-                                    contentDescription = nextName,
-                                    tint = WearColors.GoldAccent,
-                                    modifier = Modifier.size(13.dp)
-                                )
-                                Text(
-                                    text = nextTime,
-                                    fontSize = 11.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = WearColors.TextPrimary,
-                                    maxLines = 1
-                                )
-                                Text(
-                                    text = nextName.take(6),
-                                    fontSize = 8.sp,
-                                    color = WearColors.TextSecondary,
-                                    maxLines = 1
-                                )
-                            }
-                        }
-                        Spacer(modifier = Modifier.height(3.dp))
-                        Text(
-                            text = stringResource(R.string.wear_complication_short),
-                            fontSize = 8.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = WearColors.TextMuted
-                        )
                     }
                 }
             }

@@ -62,7 +62,6 @@
     <string name="wear_watchface_widget_subtitle">Komplikasi &amp; Tile Jam</string>
     <string name="wear_watchface_preview_header">WIDGET WATCHFACE</string>
     <string name="wear_complication_short">SLOT PENDEK</string>
-    <string name="wear_complication_ranged">BUSUR PROGRES</string>
     <string name="wear_complication_long">SLOT PANJANG</string>
     <string name="wear_sync_watchface">Sinkron Watchface</string>
     <string name="wear_watchface_synced">Watchface Tersinkron</string>
