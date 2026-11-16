@@ -60,7 +60,7 @@ class WearNextPrayerComplicationService : SuspendingComplicationDataSourceServic
             includeTapAction: Boolean = true
         ): ComplicationData? {
             val descriptionText = PlainComplicationText.Builder(
-                "${snapshot.nextPrayerName} ${snapshot.nextPrayerTime} (-${snapshot.countdown})"
+                "${snapshot.nextPrayerName} ${snapshot.nextPrayerTime}"
             ).build()
 
             val monoImage = MonochromaticImage.Builder(
@@ -87,16 +87,10 @@ class WearNextPrayerComplicationService : SuspendingComplicationDataSourceServic
 
                 ComplicationType.LONG_TEXT -> {
                     LongTextComplicationData.Builder(
-                        text = PlainComplicationText.Builder(
-                            "${snapshot.nextPrayerName} • ${snapshot.nextPrayerTime}"
-                        ).build(),
+                        text = PlainComplicationText.Builder(snapshot.nextPrayerTime).build(),
                         contentDescription = descriptionText
                     )
-                        .setTitle(
-                            PlainComplicationText.Builder(
-                                "-${snapshot.countdown} • ${snapshot.cityName}"
-                            ).build()
-                        )
+                        .setTitle(PlainComplicationText.Builder(snapshot.nextPrayerName).build())
                         .setMonochromaticImage(monoImage)
                         .setTapAction(tapAction)
                         .build()

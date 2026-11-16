@@ -66,8 +66,6 @@ fun WearWatchfaceWidgetScreen(
     val fallbackSnapshot = remember { WearNextPrayerCalculator.defaultPreviewSnapshot() }
     val nextName = state.nextPrayerName.ifBlank { fallbackSnapshot.nextPrayerName }
     val nextTime = state.nextPrayerTime.ifBlank { fallbackSnapshot.nextPrayerTime }
-    val countdown = state.countdown.ifBlank { fallbackSnapshot.countdown }
-    val cityName = state.cityName.ifBlank { fallbackSnapshot.cityName }
     val nextEntry = state.prayerTimes.firstOrNull { it.isNext }
     val iconRes = if (nextEntry != null && nextEntry.iconResId != 0) {
         nextEntry.iconResId
@@ -95,81 +93,21 @@ fun WearWatchfaceWidgetScreen(
                 end = 10.dp,
                 bottom = 32.dp
             ),
-            verticalArrangement = Arrangement.spacedBy(6.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = stringResource(R.string.wear_watchface_preview_header),
-                        fontSize = 10.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = WearColors.GoldAccent,
-                        letterSpacing = 1.1.sp,
-                        textAlign = TextAlign.Center
-                    )
-                    Text(
-                        text = stringResource(R.string.wear_watchface_widget_subtitle),
-                        fontSize = 9.sp,
-                        color = WearColors.TextSecondary,
-                        textAlign = TextAlign.Center
-                    )
-                }
+                Text(
+                    text = stringResource(R.string.wear_watchface_preview_header),
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = WearColors.GoldAccent,
+                    letterSpacing = 1.1.sp,
+                    textAlign = TextAlign.Center
+                )
             }
 
-            // Short Text Watchface Complication Slot Preview
-            item {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(WearColors.SurfaceDark, RoundedCornerShape(16.dp))
-                        .padding(vertical = 8.dp, horizontal = 10.dp)
-                ) {
-                    Text(
-                        text = stringResource(R.string.wear_complication_short),
-                        fontSize = 8.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = WearColors.GoldAccent
-                    )
-                    Spacer(modifier = Modifier.height(5.dp))
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier
-                            .size(58.dp)
-                            .border(1.5.dp, WearColors.GoldAccent.copy(alpha = 0.6f), CircleShape)
-                            .background(WearColors.SurfaceCard, CircleShape)
-                    ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Icon(
-                                painter = painterResource(id = iconRes),
-                                contentDescription = nextName,
-                                tint = WearColors.GoldAccent,
-                                modifier = Modifier.size(14.dp)
-                            )
-                            Text(
-                                text = nextTime,
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = WearColors.TextPrimary,
-                                maxLines = 1
-                            )
-                            Text(
-                                text = nextName.take(6),
-                                fontSize = 8.sp,
-                                color = WearColors.TextSecondary,
-                                maxLines = 1
-                            )
-                        }
-                    }
-                }
-            }
-
-            // Long Text Watchface Complication Pill Preview
+            // Watchface Widget Preview (Upcoming Prayer & Time only)
             item {
                 Card(
                     onClick = onOpenPrayerTimes,
@@ -177,54 +115,49 @@ fun WearWatchfaceWidgetScreen(
                         startBackgroundColor = WearColors.SurfaceCard,
                         endBackgroundColor = WearColors.SurfaceDark
                     ),
-                    shape = RoundedCornerShape(16.dp),
+                    shape = RoundedCornerShape(18.dp),
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Column(
-                        modifier = Modifier.fillMaxWidth()
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp)
                     ) {
-                        Text(
-                            text = stringResource(R.string.wear_complication_long),
-                            fontSize = 8.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = WearColors.TealBright
-                        )
-                        Spacer(modifier = Modifier.height(3.dp))
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            modifier = Modifier.fillMaxWidth()
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier
+                                .size(32.dp)
+                                .border(1.dp, WearColors.GoldAccent.copy(alpha = 0.5f), CircleShape)
+                                .background(WearColors.SurfaceDark, CircleShape)
                         ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.weight(1f)
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = iconRes),
-                                    contentDescription = nextName,
-                                    tint = WearColors.TealBright,
-                                    modifier = Modifier.size(16.dp)
-                                )
-                                Spacer(modifier = Modifier.width(6.dp))
-                                Column {
-                                    Text(
-                                        text = "$nextName • $nextTime",
-                                        fontSize = 12.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        color = WearColors.TextPrimary,
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis
-                                    )
-                                    Text(
-                                        text = "-$countdown • $cityName",
-                                        fontSize = 10.sp,
-                                        fontWeight = FontWeight.SemiBold,
-                                        color = WearColors.GoldAccent,
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis
-                                    )
-                                }
-                            }
+                            Icon(
+                                painter = painterResource(id = iconRes),
+                                contentDescription = nextName,
+                                tint = WearColors.GoldAccent,
+                                modifier = Modifier.size(16.dp)
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(10.dp))
+                        Column(
+                            horizontalAlignment = Alignment.Start
+                        ) {
+                            Text(
+                                text = nextName,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = WearColors.GoldAccent,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                            Text(
+                                text = nextTime,
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = WearColors.TextPrimary,
+                                maxLines = 1
+                            )
                         }
                     }
                 }
