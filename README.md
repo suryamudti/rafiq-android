@@ -82,7 +82,7 @@ Go to the [Releases](https://github.com/suryamudti/rafiq-android/releases) secti
 | **ℹ️ App & Architecture Info** | Shared multiplatform system overview, KMP layer information, and release details. |
 | **📚 Sources & Authenticity** | Full attribution and authenticity details for Quranic text, translations, hadith collections, and prayer time calculations. |
 | **🔔 Notifications** | Background prayer alarm notifications scheduled via WorkManager. |
-| **⌚ Wear OS App (`:wear`)** | Standalone watch companion featuring Watch Face Complications (`SHORT_TEXT`, `LONG_TEXT`, `RANGED_VALUE`), a Next Prayer Wear OS Tile, real-time prayer countdown, auto-enabled prayer time alarm notifications, 114 Surahs offline reader, and rotation vector sensor Qibla compass. |
+| **⌚ Wear OS App (`:wear`)** | Standalone watch companion featuring Watch Face Complications (`SHORT_TEXT`, `LONG_TEXT`), a Next Prayer Wear OS Tile, real-time prayer countdown, auto-enabled prayer time alarm notifications, 114 Surahs offline reader, and rotation vector sensor Qibla compass. |
 | **📺 Android TV App (`:tv`)** | Standalone 10-foot Masjid & Home Ambient Display featuring a live digital clock, Gregorian & Hijri dates, next-prayer hero countdown, 8 daily prayer cards (Imsak–Isha), Adhan time alert banner & exact alarm notifications, D-pad city & calculation method switchers, and rotating Quranic verses. |
 | **⚙️ Settings & Updates** | Language preference (Bahasa Indonesia / English), theme mode, dashboard customization, and in-app update checking via GitHub Releases & Google Play. |
 
@@ -212,7 +212,7 @@ graph TD
 ### Wear OS App (`:wear`)
 
 The `:wear` module delivers a standalone Wear OS experience optimized for round watch displays, bezel interaction, and glanceable worship utilities:
-- **Watchface Complications & Next Prayer Tile**: Watch face complication data source (`WearNextPrayerComplicationService`) supporting `SHORT_TEXT`, `LONG_TEXT`, and `RANGED_VALUE` progress arcs, plus a swipeable Wear OS Tile (`WearNextPrayerTileService`) and in-app Watchface Widget Preview & Sync screen (`WearWatchfaceWidgetScreen`).
+- **Watchface Complications & Next Prayer Tile**: Watch face complication data source (`WearNextPrayerComplicationService`) supporting `SHORT_TEXT` and `LONG_TEXT` slots, plus a swipeable Wear OS Tile (`WearNextPrayerTileService`) and in-app Watchface Widget Preview & Sync screen (`WearWatchfaceWidgetScreen`).
 - **Wear Prayer Times**: Next prayer hero card with live countdown, Hijri date, and 8 daily prayer times (Imsak, Subuh, Syuruq, Dhuha, Dzuhur, Ashar, Maghrib, Isya) in a Rotary/Crown scrollable `ScalingLazyColumn`.
 - **Wear Al-Qur'an Reader**: All 114 Surahs with revelation filter (Makkiyah/Madaniyah), Last Read quick-resume chip, Uthmani Arabic script (`me_quran.ttf`), and EN/ID translation toggle.
 - **Wear Qibla Compass**: Circular watch bezel compass using rotation vector sensor with Kaaba pointer, alignment indicator (±3° tolerance with haptic cue), and Mecca distance.
