@@ -62,7 +62,6 @@
     <string name="wear_watchface_widget_subtitle">Complication &amp; Tile Preview</string>
     <string name="wear_watchface_preview_header">WATCHFACE WIDGET</string>
     <string name="wear_complication_short">SHORT SLOT</string>
-    <string name="wear_complication_ranged">RANGED ARC</string>
     <string name="wear_complication_long">LONG PILL SLOT</string>
     <string name="wear_sync_watchface">Sync Watchface</string>
     <string name="wear_watchface_synced">Watchface Synced</string>

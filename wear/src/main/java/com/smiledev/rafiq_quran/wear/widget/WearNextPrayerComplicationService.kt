@@ -9,7 +9,6 @@ import androidx.wear.watchface.complications.data.ComplicationType
 import androidx.wear.watchface.complications.data.LongTextComplicationData
 import androidx.wear.watchface.complications.data.MonochromaticImage
 import androidx.wear.watchface.complications.data.PlainComplicationText
-import androidx.wear.watchface.complications.data.RangedValueComplicationData
 import androidx.wear.watchface.complications.data.ShortTextComplicationData
 import androidx.wear.watchface.complications.datasource.ComplicationRequest
 import androidx.wear.watchface.complications.datasource.SuspendingComplicationDataSourceService
@@ -98,20 +97,6 @@ class WearNextPrayerComplicationService : SuspendingComplicationDataSourceServic
                                 "-${snapshot.countdown} • ${snapshot.cityName}"
                             ).build()
                         )
-                        .setMonochromaticImage(monoImage)
-                        .setTapAction(tapAction)
-                        .build()
-                }
-
-                ComplicationType.RANGED_VALUE -> {
-                    RangedValueComplicationData.Builder(
-                        value = snapshot.progressPercent.coerceIn(0f, 100f),
-                        min = 0f,
-                        max = 100f,
-                        contentDescription = descriptionText
-                    )
-                        .setTitle(PlainComplicationText.Builder(snapshot.nextPrayerName).build())
-                        .setText(PlainComplicationText.Builder(snapshot.nextPrayerTime).build())
                         .setMonochromaticImage(monoImage)
                         .setTapAction(tapAction)
                         .build()

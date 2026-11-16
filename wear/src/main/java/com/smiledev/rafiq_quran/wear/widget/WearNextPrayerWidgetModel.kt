@@ -35,7 +35,6 @@ data class WearNextPrayerSnapshot(
     val previousPrayerName: String,
     val previousPrayerTime: String,
     val countdown: String,
-    val progressPercent: Float,
     val cityName: String,
     val calculationMethodName: String,
     val hijriDate: String,
@@ -90,23 +89,12 @@ object WearNextPrayerCalculator {
         val nextDef = defs[resolvedNextIndex]
         val prevDef = defs[resolvedPrevIndex]
         val nextMinutes = parsedMinutes[resolvedNextIndex]
-        val prevMinutes = parsedMinutes[resolvedPrevIndex]
 
         val diffMinutes = if (wrapsToTomorrowFajr || nextMinutes <= nowMinutes) {
             (24 * 60 - nowMinutes) + nextMinutes
         } else {
             nextMinutes - nowMinutes
         }.coerceAtLeast(1)
-
-        val totalWindowMinutes = if (resolvedNextIndex == 0) {
-            (24 * 60 - prevMinutes) + nextMinutes
-        } else {
-            (nextMinutes - prevMinutes).coerceAtLeast(1)
-        }.coerceAtLeast(1)
-
-        val elapsedMinutes = (totalWindowMinutes - diffMinutes).coerceIn(0, totalWindowMinutes)
-        val progressPercent = ((elapsedMinutes.toFloat() / totalWindowMinutes.toFloat()) * 100f)
-            .coerceIn(0f, 100f)
 
         val hours = diffMinutes / 60
         val mins = diffMinutes % 60
@@ -137,7 +125,6 @@ object WearNextPrayerCalculator {
             previousPrayerName = prevLocalizedName,
             previousPrayerTime = prevDef.rawTime,
             countdown = countdown,
-            progressPercent = progressPercent,
             cityName = resolvedCity,
             calculationMethodName = getMethodDisplayName(calculationMethod),
             hijriDate = data.hijriDate.orEmpty(),

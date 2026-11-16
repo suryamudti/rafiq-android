@@ -26,7 +26,7 @@ class WearNextPrayerWidgetTest {
     )
 
     @Test
-    fun `computeSnapshot resolves upcoming Maghrib and progress before sunset`() {
+    fun `computeSnapshot resolves upcoming Maghrib before sunset`() {
         val now = Calendar.getInstance().apply {
             set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
             set(Calendar.HOUR_OF_DAY, 16)
@@ -50,7 +50,6 @@ class WearNextPrayerWidgetTest {
         assertEquals("Jakarta", snapshot.cityName)
         assertEquals("KEMENAG", snapshot.calculationMethodName)
         assertEquals(R.drawable.ic_prayer_maghrib, snapshot.iconResId)
-        assertTrue(snapshot.progressPercent in 50f..60f)
 
         val maghribItem = snapshot.schedule.first { it.key == "maghrib" }
         assertTrue(maghribItem.isNext)
@@ -79,7 +78,6 @@ class WearNextPrayerWidgetTest {
         assertEquals("Isya", snapshot.previousPrayerName)
         assertEquals("7h 20m", snapshot.countdown)
         assertEquals(R.drawable.ic_prayer_fajr, snapshot.iconResId)
-        assertTrue(snapshot.progressPercent in 20f..25f)
     }
 
     @Test
