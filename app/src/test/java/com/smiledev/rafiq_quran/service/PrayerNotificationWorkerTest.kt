@@ -106,5 +106,19 @@ class PrayerNotificationWorkerTest {
             mockk<androidx.work.WorkerParameters>(relaxed = true)
         )
         org.junit.Assert.assertEquals(0L, worker.prayerTriggerMillisPublic("bad"))
+        org.junit.Assert.assertEquals(0L, worker.prayerTriggerMillisPublic("25:00"))
+        org.junit.Assert.assertEquals(0L, worker.prayerTriggerMillisPublic("12:60"))
+    }
+
+    @Test
+    fun triggerParsesTimeWithTimezoneSuffix() {
+        val worker = PrayerNotificationWorker(
+            mockk<Context>(relaxed = true),
+            mockk<androidx.work.WorkerParameters>(relaxed = true)
+        )
+        val millis = worker.prayerTriggerMillisPublic("04:32 (WIB)")
+        val cal = java.util.Calendar.getInstance().apply { timeInMillis = millis }
+        org.junit.Assert.assertEquals(4, cal.get(java.util.Calendar.HOUR_OF_DAY))
+        org.junit.Assert.assertEquals(32, cal.get(java.util.Calendar.MINUTE))
     }
 }

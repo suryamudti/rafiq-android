@@ -64,10 +64,7 @@ class AudioRecitationService : MediaSessionService() {
                 ): androidx.media3.session.MediaNotification {
                     val base = baseProvider.createNotification(mediaSession, customLayout, actionFactory, onNotificationChangedCallback)
                     val notif = base.notification
-                    val ongoing = MediaNotificationPolicy.shouldBeOngoing(player.isPlaying)
-                    if (!ongoing) {
-                        notif.flags = notif.flags and android.app.Notification.FLAG_ONGOING_EVENT.inv()
-                    }
+                    notif.flags = MediaNotificationPolicy.applyDismissibleFlags(notif.flags, player.isPlaying)
                     val deleteIntent = android.app.PendingIntent.getService(
                         this@AudioRecitationService,
                         0,

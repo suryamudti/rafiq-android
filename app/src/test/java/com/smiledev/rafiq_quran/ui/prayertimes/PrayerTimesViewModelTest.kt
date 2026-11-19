@@ -58,6 +58,7 @@ class PrayerTimesViewModelTest {
         Dispatchers.setMain(testDispatcher)
         mockkObject(PrayerNotificationWorker.Companion)
         every { PrayerNotificationWorker.scheduleNow(any()) } just runs
+        every { PrayerNotificationWorker.cancelScheduledAlarms(any()) } just runs
 
         every { preferencesManager.latitude } returns flowOf("-6.2088")
         every { preferencesManager.longitude } returns flowOf("106.8456")

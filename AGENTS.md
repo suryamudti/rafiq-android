@@ -38,7 +38,7 @@ Emulator: `Medium_Phone_API_35`. No lint or typecheck commands currently set up.
 - **DataStore** — all user prefs via `PreferencesManager`, NOT SharedPreferences.
 - **Room** — singleton `getInstance()` pattern, `fallbackToDestructiveMigration()`. Use `api(libs.room.runtime)` in `:data` module (not `implementation`) so `:app` can see `RoomDatabase` supertype transitively.
 - **Cross-module smart casts** — Properties from other modules are treated as open API. Smart casts from nullable don't work. Use `!!` or local `val` explicitly.
-- **Media notification** (`AudioRecitationService`, channel `media_playback`) is posted with `FLAG_NO_CLEAR` in all states (playing/paused/stopped) — it is NOT user-dismissable via swipe and persists after playback completes (the singleton `AudioPlayerController` keeps the session alive); the only user path to remove it is force-stopping the app. A `deleteIntent` exists in the record and would stop playback if the notification were dismissed via that path.
+- **Media notification** (`AudioRecitationService`, channel `media_playback`) applies `MediaNotificationPolicy.applyDismissibleFlags(...)`: active playback sets `FLAG_ONGOING_EVENT`, while paused/stopped states clear both `FLAG_ONGOING_EVENT` and `FLAG_NO_CLEAR` so the notification can be swiped away (triggering `ACTION_STOP_FROM_DISMISS` via `deleteIntent` to stop playback and the service).
 
 ## Asset Loading Gotchas
 
