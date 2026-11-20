@@ -305,8 +305,13 @@ class PrayerTimesViewModel @Inject constructor(
 
     fun toggleNotifications() {
         viewModelScope.launch(dispatcherProvider.io) {
-            val current = _uiState.value.prayerNotificationsEnabled
-            preferencesManager.setPrayerNotificationsEnabled(!current)
+            val nextEnabled = !_uiState.value.prayerNotificationsEnabled
+            preferencesManager.setPrayerNotificationsEnabled(nextEnabled)
+            if (nextEnabled) {
+                PrayerNotificationWorker.scheduleNow(appContext)
+            } else {
+                PrayerNotificationWorker.cancelScheduledAlarms(appContext)
+            }
         }
     }
 

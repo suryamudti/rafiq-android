@@ -15,44 +15,56 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
+import androidx.work.CoroutineWorker
 import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.smiledev.rafiq_quran.R
+import com.smiledev.rafiq_quran.core.Result as CoreResult
 import com.smiledev.rafiq_quran.data.preferences.PreferencesManager
+import com.smiledev.rafiq_quran.domain.repository.PrayerTimesRepository
+import dagger.hilt.EntryPoint
+import dagger.hilt.InstallIn
+import dagger.hilt.android.EntryPointAccessors
+import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 
+@EntryPoint
+@InstallIn(SingletonComponent::class)
+interface PrayerWorkerEntryPoint {
+    fun preferencesManager(): PreferencesManager
+    fun prayerTimesRepository(): PrayerTimesRepository
+}
+
 class PrayerNotificationWorker(
     context: Context,
     params: WorkerParameters
-) : Worker(context, params) {
+) : CoroutineWorker(context, params) {
 
     companion object {
         const val CHANNEL_ID = "prayer_times"
         const val WORK_NAME = "prayer_notification_worker"
+        const val IMMEDIATE_WORK_NAME = "prayer_notification_immediate"
         private const val PRAYER_NOTIFICATION_ID = 1000
         private val PRAYER_NAMES = listOf("Fajr", "Dhuhr", "Asr", "Maghrib", "Isha")
 
         fun schedule(context: Context) {
-            val now = java.util.Calendar.getInstance()
-            val midnight = (now.clone() as java.util.Calendar).apply {
-                add(java.util.Calendar.DAY_OF_YEAR, 1)
-                set(java.util.Calendar.HOUR_OF_DAY, 0)
-                set(java.util.Calendar.MINUTE, 5)
-                set(java.util.Calendar.SECOND, 0)
-                set(java.util.Calendar.MILLISECOND, 0)
+            val now = Calendar.getInstance()
+            val midnight = (now.clone() as Calendar).apply {
+                add(Calendar.DAY_OF_YEAR, 1)
+                set(Calendar.HOUR_OF_DAY, 0)
+                set(Calendar.MINUTE, 5)
+                set(Calendar.SECOND, 0)
+                set(Calendar.MILLISECOND, 0)
             }
             val delayMs = (midnight.timeInMillis - System.currentTimeMillis()).coerceAtLeast(0L)
             val request = PeriodicWorkRequestBuilder<PrayerNotificationWorker>(1, TimeUnit.DAYS)
@@ -67,7 +79,28 @@ class PrayerNotificationWorker(
 
         fun scheduleNow(context: Context) {
             val request = OneTimeWorkRequestBuilder<PrayerNotificationWorker>().build()
-            WorkManager.getInstance(context).enqueue(request)
+            WorkManager.getInstance(context).enqueueUniqueWork(
+                IMMEDIATE_WORK_NAME,
+                ExistingWorkPolicy.REPLACE,
+                request
+            )
+        }
+
+        fun cancelScheduledAlarms(context: Context) {
+            val alarmManager = context.getSystemService(AlarmManager::class.java) ?: return
+            for (name in PRAYER_NAMES) {
+                val intent = Intent(context, PrayerAlarmReceiver::class.java)
+                val pi = PendingIntent.getBroadcast(
+                    context,
+                    name.hashCode(),
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                )
+                try {
+                    alarmManager.cancel(pi)
+                } catch (_: Exception) {
+                }
+            }
         }
 
         @RequiresApi(Build.VERSION_CODES.O)
@@ -143,7 +176,7 @@ class PrayerNotificationWorker(
             }
             val localizedName = getLocalizedPrayerName(context, name, calendar)
             val notification = NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(android.R.drawable.ic_dialog_info)
+                .setSmallIcon(R.drawable.ic_prayer_times)
                 .setContentTitle(context.getString(R.string.prayer_time_for, localizedName))
                 .setContentText(context.getString(R.string.prayer_notification_body, localizedName, time))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -163,68 +196,75 @@ class PrayerNotificationWorker(
         createNotificationChannel(applicationContext)
     }
 
-    override fun doWork(): Result {
+    override suspend fun doWork(): Result {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             ensureChannel()
         }
 
-        val prefs = PreferencesManager(applicationContext)
-        val (latStr, lonStr, method) = runBlocking {
-            kotlinx.coroutines.flow.combine(
-                prefs.latitude,
-                prefs.longitude,
-                prefs.prayerCalculationMethod
-            ) { lat, lon, m -> Triple(lat, lon, m) }.first()
+        val entryPoint = runCatching {
+            EntryPointAccessors.fromApplication(
+                applicationContext,
+                PrayerWorkerEntryPoint::class.java
+            )
+        }.getOrNull() ?: return Result.failure()
+
+        val prefs = entryPoint.preferencesManager()
+        val repository = entryPoint.prayerTimesRepository()
+
+        data class PrefSnapshot(
+            val latStr: String,
+            val lonStr: String,
+            val method: Int,
+            val enabled: Boolean
+        )
+
+        val snapshot = combine(
+            prefs.latitude,
+            prefs.longitude,
+            prefs.prayerCalculationMethod,
+            prefs.prayerNotificationsEnabled
+        ) { lat, lon, m, enabled ->
+            PrefSnapshot(lat, lon, m, enabled)
+        }.first()
+
+        if (!snapshot.enabled) {
+            cancelScheduledAlarms(applicationContext)
+            return Result.success()
         }
-        val lat = latStr.toDoubleOrNull() ?: -6.2088
-        val lon = lonStr.toDoubleOrNull() ?: 106.8456
+
+        val lat = snapshot.latStr.toDoubleOrNull() ?: -6.2088
+        val lon = snapshot.lonStr.toDoubleOrNull() ?: 106.8456
+        val calcMethod = if (snapshot.method == 2) 20 else snapshot.method
 
         val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.US)
         val today = dateFormat.format(Date())
 
-        val timings = try {
-            val fetchResult = runBlocking {
-                com.smiledev.rafiq_quran.core.retryIO(times = 3, initialDelay = 200) {
-                    try {
-                        val client = okhttp3.OkHttpClient.Builder()
-                            .connectTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
-                            .readTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
-                            .writeTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
-                            .build()
-                        val url = "https://api.aladhan.com/v1/timings/$today?latitude=$lat&longitude=$lon&method=$method"
-                        val request = okhttp3.Request.Builder().url(url).build()
-                        val response = client.newCall(request).execute()
-                        if (!response.isSuccessful) throw java.io.IOException("HTTP ${response.code}")
-                        val json = org.json.JSONObject(response.body?.string() ?: "")
-                        com.smiledev.rafiq_quran.core.Result.Success(json.getJSONObject("data").getJSONObject("timings"))
-                    } catch (e: java.io.IOException) {
-                        com.smiledev.rafiq_quran.core.Result.Error(
-                            com.smiledev.rafiq_quran.core.AppError.Network(e.message ?: "network error", e)
-                        )
-                    } catch (e: Exception) {
-                        com.smiledev.rafiq_quran.core.Result.Error(
-                            com.smiledev.rafiq_quran.core.AppError.Network(e.message ?: "network error", e)
-                        )
-                    }
-                }
+        val prayerData = repository.getCachedPrayerTimes(lat, lon, today, calcMethod)
+            ?: when (val fetched = repository.fetchPrayerTimes(lat, lon, today, calcMethod, forceRefresh = false)) {
+                is CoreResult.Success -> fetched.data
+                is CoreResult.Error -> return Result.retry()
             }
-            when (fetchResult) {
-                is com.smiledev.rafiq_quran.core.Result.Success -> fetchResult.data
-                is com.smiledev.rafiq_quran.core.Result.Error -> return androidx.work.ListenableWorker.Result.retry()
-            }
-        } catch (e: Exception) {
-            return androidx.work.ListenableWorker.Result.retry()
-        }
 
+        val timings = prayerData.timings
         val now = System.currentTimeMillis()
         val alarmManager = applicationContext.getSystemService(AlarmManager::class.java)
-        var scheduled = 0
+            ?: return Result.success()
 
+        val timeByPrayer = mapOf(
+            "Fajr" to timings.fajr,
+            "Dhuhr" to timings.dhuhr,
+            "Asr" to timings.asr,
+            "Maghrib" to timings.maghrib,
+            "Isha" to timings.isha
+        )
+
+        var scheduled = 0
         for (name in PRAYER_NAMES) {
-            val time = timings.optString(name, "")
+            val time = timeByPrayer[name].orEmpty()
             if (time.isBlank()) continue
             val trigger = prayerTriggerMillis(time)
             if (trigger <= now) continue
+
             val intent = Intent(applicationContext, PrayerAlarmReceiver::class.java).apply {
                 putExtra("name", name)
                 putExtra("time", time)
@@ -238,15 +278,31 @@ class PrayerNotificationWorker(
             val showIntent = applicationContext.packageManager
                 .getLaunchIntentForPackage(applicationContext.packageName)
             val showPi = PendingIntent.getActivity(
-                applicationContext, 0, showIntent,
+                applicationContext,
+                0,
+                showIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
             val alarmInfo = AlarmManager.AlarmClockInfo(trigger, showPi)
             try {
-                alarmManager.setAlarmClock(alarmInfo, pi)
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S || alarmManager.canScheduleExactAlarms()) {
+                    alarmManager.setAlarmClock(alarmInfo, pi)
+                } else {
+                    alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, trigger, pi)
+                }
                 scheduled++
+            } catch (_: SecurityException) {
+                try {
+                    alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, trigger, pi)
+                    scheduled++
+                } catch (_: Exception) {
+                }
             } catch (_: Exception) {
-                // AlarmManager may be unavailable; skip this prayer.
+                try {
+                    alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, trigger, pi)
+                    scheduled++
+                } catch (_: Exception) {
+                }
             }
         }
 
@@ -257,11 +313,17 @@ class PrayerNotificationWorker(
         return Result.success()
     }
 
+    private fun cleanTime(raw: String): String {
+        return raw.substringBefore(" ").trim()
+    }
+
     internal fun prayerTriggerMillis(time: String): Long {
-        val parts = time.split(":")
+        val clean = cleanTime(time)
+        val parts = clean.split(":")
         if (parts.size != 2) return 0L
         val hour = parts[0].toIntOrNull() ?: return 0L
         val minute = parts[1].toIntOrNull() ?: return 0L
+        if (hour !in 0..23 || minute !in 0..59) return 0L
         val cal = Calendar.getInstance().apply {
             set(Calendar.HOUR_OF_DAY, hour)
             set(Calendar.MINUTE, minute)

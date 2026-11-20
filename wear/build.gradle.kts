@@ -27,6 +27,14 @@ android {
         }
     }
 
+    androidResources {
+        // Wear only reads Quran DBs, chapters, metadata, and EN/ID translations;
+        // exclude unused assets (~40 MB, notably hadith.db) from the watch APK.
+        ignoreAssetsPattern = "!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~" +
+            ":!hadiths:!prophets:!dzikir:!asmaul_husna.json:!islamic_events.json" +
+            ":!juz.json:!prayer_guidance.json:!reciters.json:!sunnah_guidance.json:!translations.db"
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = true
