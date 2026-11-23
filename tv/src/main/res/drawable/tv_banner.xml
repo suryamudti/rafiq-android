@@ -4,29 +4,100 @@
     android:height="180dp"
     android:viewportWidth="320"
     android:viewportHeight="180">
+
     <!-- Deep Emerald Navy Background -->
     <path
         android:fillColor="#08121E"
         android:pathData="M0,0h320v180h-320z" />
-    <!-- Subtle Inner Border -->
+
+    <!-- Subtle Inner Border Card -->
     <path
+        android:fillColor="#112236"
         android:strokeColor="#26A69A"
         android:strokeWidth="2"
-        android:fillColor="#112236"
-        android:pathData="M12,12h296v156h-296z" />
-    <!-- Mosque Dome & Minaret Silhouette -->
+        android:pathData="M14,14h292v152h-292z" />
+
+    <!-- Left Emblem Halo -->
+    <path
+        android:fillColor="#16324A"
+        android:pathData="M76,46 A44,44 0 1,0 76,134 A44,44 0 1,0 76,46 Z" />
+
+    <!-- Mosque Dome -->
     <path
         android:fillColor="#4DB6AC"
-        android:pathData="M160,42 C136,42 118,62 118,86 L202,86 C202,62 184,42 160,42 Z" />
+        android:pathData="M76,66 C58,66 48,79 48,96 L104,96 C104,79 94,66 76,66 Z" />
+
+    <!-- Mosque Base -->
     <path
         android:fillColor="#26A69A"
-        android:pathData="M108,86 h104 v42 h-104 z" />
+        android:pathData="M44,96 h64 v26 h-64 z" />
+
     <!-- Gold Crescent Finial -->
     <path
         android:fillColor="#FFD54F"
-        android:pathData="M160,24 A8,8 0 1,0 168,32 A6,6 0 1,1 160,24 Z" />
+        android:pathData="M76,51 A6.5,6.5 0 1,0 82.5,57.5 A5,5 0 1,1 76,51 Z" />
+
     <!-- Gold Arch Doorway -->
     <path
         android:fillColor="#FFD54F"
-        android:pathData="M148,128 L148,104 C148,96 172,96 172,104 L172,128 Z" />
+        android:pathData="M68,122 L68,107 C68,101 84,101 84,107 L84,122 Z" />
+
+    <!-- Wordmark: R -->
+    <path
+        android:strokeColor="#F5F7FA"
+        android:strokeWidth="5.2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M141,94 L141,62 L152,62 C157,62 160,65.5 160,70 C160,74.5 157,78 152,78 L141,78 M151,78 L161,94" />
+
+    <!-- Wordmark: A -->
+    <path
+        android:strokeColor="#F5F7FA"
+        android:strokeWidth="5.2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M170,94 L181,62 L192,94 M174.5,83 L187.5,83" />
+
+    <!-- Wordmark: F -->
+    <path
+        android:strokeColor="#F5F7FA"
+        android:strokeWidth="5.2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M204,94 L204,62 L222,62 M204,77 L218,77" />
+
+    <!-- Wordmark: I -->
+    <path
+        android:strokeColor="#F5F7FA"
+        android:strokeWidth="5.2"
+        android:strokeLineCap="round"
+        android:pathData="M233,62 L233,94" />
+
+    <!-- Wordmark: Q -->
+    <path
+        android:strokeColor="#F5F7FA"
+        android:strokeWidth="5.2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M259,62 C267,62 273,69 273,78 C273,87 267,94 259,94 C251,94 245,87 245,78 C245,69 251,62 259,62 Z M263,84 L275,96" />
+
+    <!-- Gold Pill Badge for TV -->
+    <path
+        android:fillColor="#FFD54F"
+        android:pathData="M144,106 L178,106 Q184,106 184,112 L184,124 Q184,130 178,130 L144,130 Q138,130 138,124 L138,112 Q138,106 144,106 Z" />
+
+    <!-- Dark Navy Lettering: TV -->
+    <path
+        android:strokeColor="#08121E"
+        android:strokeWidth="2.8"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M147,112.5 L159,112.5 M153,112.5 L153,124.5 M164,112.5 L169.5,124 L175,112.5" />
+
+    <!-- Subtle Emerald Accent Line -->
+    <path
+        android:strokeColor="#26A69A"
+        android:strokeWidth="2.5"
+        android:strokeLineCap="round"
+        android:pathData="M194,118 L274,118" />
 </vector>

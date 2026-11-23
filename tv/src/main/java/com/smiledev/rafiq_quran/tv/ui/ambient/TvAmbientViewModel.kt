@@ -44,8 +44,13 @@ data class TvCityPreset(
 data class TvSpiritualReminder(
     val arabic: String,
     val translation: String,
-    val reference: String
-)
+    val reference: String,
+    val translationId: String = translation
+) {
+    fun localizedTranslation(localeCode: String = currentLocaleCode()): String {
+        return if (localeCode == "id") translationId else translation
+    }
+}
 
 @Immutable
 data class TvPrayerTimeEntry(
@@ -82,6 +87,9 @@ data class TvAmbientUiState(
     val currentReminder: TvSpiritualReminder = DEFAULT_REMINDERS.first()
 ) {
     companion object {
+        const val COUNTDOWN_TICK_MS = 15_000L
+        const val REMINDER_ROTATION_MS = 45_000L
+
         val CITY_PRESETS = listOf(
             TvCityPreset("Jakarta", -6.2088, 106.8456, 20),
             TvCityPreset("Makkah", 21.4225, 39.8262, 4),
@@ -99,16 +107,19 @@ data class TvAmbientUiState(
             TvSpiritualReminder(
                 arabic = "إِنَّ الصَّلَاةَ كَانَتْ عَلَى الْمُؤْمِنِينَ كِتَابًا مَّوْقُوتًا",
                 translation = "Indeed, prayer has been decreed upon the believers a decree of specified times.",
+                translationId = "Sungguh, shalat itu adalah kewajiban yang ditentukan waktunya atas orang-orang yang beriman.",
                 reference = "QS. An-Nisa: 103"
             ),
             TvSpiritualReminder(
                 arabic = "حَافِظُوا عَلَى الصَّلَوَاتِ وَالصَّلَاةِ الْوُسْطَىٰ وَقُومُوا لِلَّهِ قَانِتِينَ",
                 translation = "Maintain with care the [obligatory] prayers and [in particular] the middle prayer and stand before Allah, devoutly obedient.",
+                translationId = "Peliharalah semua shalat dan shalat wustha. Dan laksanakanlah (shalat) karena Allah dengan khusyuk.",
                 reference = "QS. Al-Baqarah: 238"
             ),
             TvSpiritualReminder(
                 arabic = "أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ",
                 translation = "Unquestionably, by the remembrance of Allah hearts are assured.",
+                translationId = "Ingatlah, hanya dengan mengingat Allah hati menjadi tenteram.",
                 reference = "QS. Ar-Ra'd: 28"
             )
         )
@@ -131,7 +142,11 @@ class TvAmbientViewModel @Inject constructor(
     val uiState: StateFlow<TvAmbientUiState> = _uiState.asStateFlow()
 
     private var countdownJob: Job? = null
+    private var reminderRotationJob: Job? = null
+    private var followingToday: Boolean = true
+
     var enablePeriodicCountdown: Boolean = true
+    internal var nowProvider: () -> Calendar = { Calendar.getInstance() }
 
     private val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.US)
     private val clockFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
@@ -208,28 +223,36 @@ class TvAmbientViewModel @Inject constructor(
 
     private fun applyPrayerTimes(data: PrayerTimesData) {
         val isId = currentLocaleCode() == "id"
-        val dhuhaTime = addMinutes(data.timings.sunrise, 20)
+        val imsak = cleanTime(data.timings.imsak)
+        val fajr = cleanTime(data.timings.fajr)
+        val sunrise = cleanTime(data.timings.sunrise)
+        val dhuhaTime = addMinutes(sunrise, 20)
+        val dhuhr = cleanTime(data.timings.dhuhr)
+        val asr = cleanTime(data.timings.asr)
+        val maghrib = cleanTime(data.timings.maghrib)
+        val isha = cleanTime(data.timings.isha)
+
         val rawTimes = if (isId) {
             listOf(
-                TvPrayerTimeEntry("Imsak", "الإمساك", data.timings.imsak, prayerKey = "imsak", iconResId = R.drawable.ic_prayer_imsak),
-                TvPrayerTimeEntry("Subuh", "الفجر", data.timings.fajr, prayerKey = "fajr", iconResId = R.drawable.ic_prayer_fajr),
-                TvPrayerTimeEntry("Terbit", "الشروق", data.timings.sunrise, prayerKey = "sunrise", iconResId = R.drawable.ic_prayer_sunrise),
+                TvPrayerTimeEntry("Imsak", "الإمساك", imsak, prayerKey = "imsak", iconResId = R.drawable.ic_prayer_imsak),
+                TvPrayerTimeEntry("Subuh", "الفجر", fajr, prayerKey = "fajr", iconResId = R.drawable.ic_prayer_fajr),
+                TvPrayerTimeEntry("Terbit", "الشروق", sunrise, prayerKey = "sunrise", iconResId = R.drawable.ic_prayer_sunrise),
                 TvPrayerTimeEntry("Dhuha", "الضحى", dhuhaTime, prayerKey = "dhuha", iconResId = R.drawable.ic_prayer_dhuha),
-                TvPrayerTimeEntry("Dzuhur", "الظهر", data.timings.dhuhr, prayerKey = "dhuhr", iconResId = R.drawable.ic_prayer_dhuhr),
-                TvPrayerTimeEntry("Ashar", "العصر", data.timings.asr, prayerKey = "asr", iconResId = R.drawable.ic_prayer_asr),
-                TvPrayerTimeEntry("Maghrib", "المغرب", data.timings.maghrib, prayerKey = "maghrib", iconResId = R.drawable.ic_prayer_maghrib),
-                TvPrayerTimeEntry("Isya", "العشاء", data.timings.isha, prayerKey = "isha", iconResId = R.drawable.ic_prayer_isha)
+                TvPrayerTimeEntry("Dzuhur", "الظهر", dhuhr, prayerKey = "dhuhr", iconResId = R.drawable.ic_prayer_dhuhr),
+                TvPrayerTimeEntry("Ashar", "العصر", asr, prayerKey = "asr", iconResId = R.drawable.ic_prayer_asr),
+                TvPrayerTimeEntry("Maghrib", "المغرب", maghrib, prayerKey = "maghrib", iconResId = R.drawable.ic_prayer_maghrib),
+                TvPrayerTimeEntry("Isya", "العشاء", isha, prayerKey = "isha", iconResId = R.drawable.ic_prayer_isha)
             )
         } else {
             listOf(
-                TvPrayerTimeEntry("Imsak", "الإمساك", data.timings.imsak, prayerKey = "imsak", iconResId = R.drawable.ic_prayer_imsak),
-                TvPrayerTimeEntry("Fajr", "الفجر", data.timings.fajr, prayerKey = "fajr", iconResId = R.drawable.ic_prayer_fajr),
-                TvPrayerTimeEntry("Sunrise", "الشروق", data.timings.sunrise, prayerKey = "sunrise", iconResId = R.drawable.ic_prayer_sunrise),
+                TvPrayerTimeEntry("Imsak", "الإمساك", imsak, prayerKey = "imsak", iconResId = R.drawable.ic_prayer_imsak),
+                TvPrayerTimeEntry("Fajr", "الفجر", fajr, prayerKey = "fajr", iconResId = R.drawable.ic_prayer_fajr),
+                TvPrayerTimeEntry("Sunrise", "الشروق", sunrise, prayerKey = "sunrise", iconResId = R.drawable.ic_prayer_sunrise),
                 TvPrayerTimeEntry("Dhuha", "الضحى", dhuhaTime, prayerKey = "dhuha", iconResId = R.drawable.ic_prayer_dhuha),
-                TvPrayerTimeEntry("Dhuhr", "الظهر", data.timings.dhuhr, prayerKey = "dhuhr", iconResId = R.drawable.ic_prayer_dhuhr),
-                TvPrayerTimeEntry("Asr", "العصر", data.timings.asr, prayerKey = "asr", iconResId = R.drawable.ic_prayer_asr),
-                TvPrayerTimeEntry("Maghrib", "المغرب", data.timings.maghrib, prayerKey = "maghrib", iconResId = R.drawable.ic_prayer_maghrib),
-                TvPrayerTimeEntry("Isha", "العشاء", data.timings.isha, prayerKey = "isha", iconResId = R.drawable.ic_prayer_isha)
+                TvPrayerTimeEntry("Dhuhr", "الظهر", dhuhr, prayerKey = "dhuhr", iconResId = R.drawable.ic_prayer_dhuhr),
+                TvPrayerTimeEntry("Asr", "العصر", asr, prayerKey = "asr", iconResId = R.drawable.ic_prayer_asr),
+                TvPrayerTimeEntry("Maghrib", "المغرب", maghrib, prayerKey = "maghrib", iconResId = R.drawable.ic_prayer_maghrib),
+                TvPrayerTimeEntry("Isha", "العشاء", isha, prayerKey = "isha", iconResId = R.drawable.ic_prayer_isha)
             )
         }
 
@@ -242,6 +265,7 @@ class TvAmbientViewModel @Inject constructor(
 
         if (enablePeriodicCountdown) {
             startCountdown()
+            startReminderRotation()
         } else {
             updatePrayerStatusAndCountdown()
         }
@@ -255,15 +279,43 @@ class TvAmbientViewModel @Inject constructor(
         countdownJob = viewModelScope.launch(dispatcherProvider.io) {
             while (isActive) {
                 updatePrayerStatusAndCountdown()
-                delay(15_000)
+                delay(TvAmbientUiState.COUNTDOWN_TICK_MS)
             }
         }
     }
 
+    private fun startReminderRotation() {
+        if (reminderRotationJob?.isActive == true) return
+        reminderRotationJob = viewModelScope.launch(dispatcherProvider.io) {
+            while (isActive) {
+                delay(TvAmbientUiState.REMINDER_ROTATION_MS)
+                nextSpiritualReminder()
+            }
+        }
+    }
+
+    internal fun checkAndHandleMidnightRollover(now: Calendar = nowProvider()): Boolean {
+        val state = _uiState.value
+        if (followingToday && !checkIfToday(state.currentDate, now)) {
+            _uiState.value = state.copy(
+                currentDate = now.time,
+                currentClockTime = clockFormat.format(now.time),
+                isToday = true
+            )
+            loadPrayerTimes()
+            return true
+        }
+        return false
+    }
+
     private fun updatePrayerStatusAndCountdown() {
+        val now = nowProvider()
+        if (checkAndHandleMidnightRollover(now)) {
+            return
+        }
+
         val state = _uiState.value
         val times = state.prayerTimes
-        val now = Calendar.getInstance()
         val clockStr = clockFormat.format(now.time)
         if (times.isEmpty()) {
             _uiState.value = state.copy(currentClockTime = clockStr)
@@ -272,8 +324,8 @@ class TvAmbientViewModel @Inject constructor(
 
         val nowMinutes = now.get(Calendar.HOUR_OF_DAY) * 60 + now.get(Calendar.MINUTE)
 
-        val isToday = checkIfToday(state.currentDate)
-        val todayStart = Calendar.getInstance().apply {
+        val isToday = checkIfToday(state.currentDate, now)
+        val todayStart = (now.clone() as Calendar).apply {
             set(Calendar.HOUR_OF_DAY, 0)
             set(Calendar.MINUTE, 0)
             set(Calendar.SECOND, 0)
@@ -291,7 +343,7 @@ class TvAmbientViewModel @Inject constructor(
         var nextPrayer: TvPrayerTimeEntry? = null
         if (isToday) {
             for (pt in times.drop(1)) {
-                val parts = pt.time.split(":")
+                val parts = cleanTime(pt.time).split(":")
                 if (parts.size == 2) {
                     val ptMinutes = parts[0].toIntOrNull()?.let { it * 60 + (parts[1].toIntOrNull() ?: 0) }
                     if (ptMinutes != null && ptMinutes > nowMinutes) {
@@ -315,7 +367,7 @@ class TvAmbientViewModel @Inject constructor(
             nextPrayerArabic = nextPrayer.arabicName
             nextPrayerTime = nextPrayer.time
 
-            val parts = nextPrayer.time.split(":")
+            val parts = cleanTime(nextPrayer.time).split(":")
             if (parts.size == 2) {
                 val targetMinutes = parts[0].toIntOrNull()?.let { it * 60 + (parts[1].toIntOrNull() ?: 0) } ?: 0
                 var diff = targetMinutes - nowMinutes
@@ -327,7 +379,7 @@ class TvAmbientViewModel @Inject constructor(
         }
 
         val updatedTimes = times.map { pt ->
-            val parts = pt.time.split(":")
+            val parts = cleanTime(pt.time).split(":")
             val ptMinutes = if (parts.size == 2) {
                 (parts[0].toIntOrNull() ?: 0) * 60 + (parts[1].toIntOrNull() ?: 0)
             } else 0
@@ -429,7 +481,8 @@ class TvAmbientViewModel @Inject constructor(
     }
 
     fun goToToday() {
-        val today = Date()
+        followingToday = true
+        val today = nowProvider().time
         _uiState.value = _uiState.value.copy(currentDate = today, isToday = true)
         loadPrayerTimes()
     }
@@ -439,7 +492,9 @@ class TvAmbientViewModel @Inject constructor(
         cal.time = _uiState.value.currentDate
         cal.add(Calendar.DAY_OF_MONTH, -1)
         val newDate = cal.time
-        _uiState.value = _uiState.value.copy(currentDate = newDate, isToday = checkIfToday(newDate))
+        val isNowToday = checkIfToday(newDate)
+        followingToday = isNowToday
+        _uiState.value = _uiState.value.copy(currentDate = newDate, isToday = isNowToday)
         loadPrayerTimes()
     }
 
@@ -448,15 +503,20 @@ class TvAmbientViewModel @Inject constructor(
         cal.time = _uiState.value.currentDate
         cal.add(Calendar.DAY_OF_MONTH, 1)
         val newDate = cal.time
-        _uiState.value = _uiState.value.copy(currentDate = newDate, isToday = checkIfToday(newDate))
+        val isNowToday = checkIfToday(newDate)
+        followingToday = isNowToday
+        _uiState.value = _uiState.value.copy(currentDate = newDate, isToday = isNowToday)
         loadPrayerTimes()
     }
 
-    private fun checkIfToday(date: Date): Boolean {
-        val today = Calendar.getInstance()
+    private fun checkIfToday(date: Date, reference: Calendar = nowProvider()): Boolean {
         val target = Calendar.getInstance().apply { time = date }
-        return today.get(Calendar.YEAR) == target.get(Calendar.YEAR) &&
-                today.get(Calendar.DAY_OF_YEAR) == target.get(Calendar.DAY_OF_YEAR)
+        return reference.get(Calendar.YEAR) == target.get(Calendar.YEAR) &&
+                reference.get(Calendar.DAY_OF_YEAR) == target.get(Calendar.DAY_OF_YEAR)
+    }
+
+    private fun cleanTime(raw: String): String {
+        return raw.substringBefore(" ").trim()
     }
 
     private fun getMethodDisplayName(method: Int): String {
@@ -474,7 +534,7 @@ class TvAmbientViewModel @Inject constructor(
     }
 
     private fun addMinutes(time: String, add: Int): String {
-        val parts = time.split(":")
+        val parts = cleanTime(time).split(":")
         if (parts.size != 2) return time
         val hour = parts[0].toIntOrNull() ?: return time
         val minute = parts[1].toIntOrNull() ?: return time
@@ -487,5 +547,6 @@ class TvAmbientViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         countdownJob?.cancel()
+        reminderRotationJob?.cancel()
     }
 }

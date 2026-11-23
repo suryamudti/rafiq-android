@@ -70,6 +70,8 @@ Nearby Mosque uses `MapLibre Native 13.5.1` (`org.maplibre.gl:android-sdk`, styl
 - `:data` — Repository Impl classes, Room DBs/DAOs, Ktor/Retrofit APIs, DataStore PreferencesManager
 - `:composeApp` — Multiplatform UI design system, shared composables (`RafiqMultiplatformTheme`, `RafiqSharedCard`, `AppInfoScreen`), platform bridges (`AudioPlayerController`, `TasbihFeedbackController`, `ExternalPlatformActions`, `CompassBridge`), and iOS entry point (`MainViewController.kt`)
 - `:app` — Android Application module: DI (`di/AppModule.kt`), UI screens, ViewModels, Android services, `Navigation.kt`
+- `:wear` — Wear OS standalone companion app (Watchface Complications, Next Prayer Tile, Prayer Times, Quran Reader, Qibla)
+- `:tv` — Android TV standalone app (10-foot Masjid & Home Ambient Display, Live Prayer Countdown, Adhan Alerts)
 - `iosApp/` — Native iOS Xcode application project with SwiftUI lifecycle (`iOSApp.swift`, `ContentView.swift`, `Info.plist`)
 - `thoughts/` — plan docs, NOT source code
 

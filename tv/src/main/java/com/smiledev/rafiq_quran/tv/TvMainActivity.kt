@@ -9,6 +9,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import com.smiledev.rafiq_quran.tv.service.TvAdhanAudioPlayer
 import com.smiledev.rafiq_quran.tv.service.TvPrayerNotificationWorker
 import com.smiledev.rafiq_quran.tv.theme.RafiqTvTheme
 import com.smiledev.rafiq_quran.tv.ui.ambient.TvAmbientDisplayScreen
@@ -44,6 +45,11 @@ class TvMainActivity : ComponentActivity() {
     override fun onNewIntent(intent: android.content.Intent) {
         super.onNewIntent(intent)
         handleAdhanPreviewIntent(intent)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        TvAdhanAudioPlayer.stop()
     }
 
     private fun handleAdhanPreviewIntent(intent: android.content.Intent?) {
