@@ -5,6 +5,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,6 +28,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,10 +38,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -47,7 +55,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.smiledev.rafiq_quran.core.displayMessage
+import com.smiledev.rafiq_quran.tv.R
 import com.smiledev.rafiq_quran.tv.service.TvAdhanAlertEvent
+import com.smiledev.rafiq_quran.tv.service.TvAdhanAudioPlayer
 import com.smiledev.rafiq_quran.tv.theme.TvArabicFontFamily
 import com.smiledev.rafiq_quran.tv.theme.TvColors
 import java.text.SimpleDateFormat
@@ -58,7 +68,30 @@ fun TvAmbientDisplayScreen(
     viewModel: TvAmbientViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
     val displayDateFormat = remember { SimpleDateFormat("EEEE, d MMMM yyyy", Locale.getDefault()) }
+    val initialFocusRequester = remember { FocusRequester() }
+    val adhanBannerFocusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(Unit) {
+        runCatching { initialFocusRequester.requestFocus() }
+    }
+
+    val activeAlert = state.activeAdhanAlert
+    LaunchedEffect(activeAlert?.timestampMillis) {
+        if (activeAlert != null) {
+            TvAdhanAudioPlayer.play(context)
+            runCatching { adhanBannerFocusRequester.requestFocus() }
+        } else {
+            TvAdhanAudioPlayer.stop()
+        }
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            TvAdhanAudioPlayer.stop()
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -85,12 +118,15 @@ fun TvAmbientDisplayScreen(
             )
 
             // 2. Active Adhan Alert Banner (if triggered)
-            val activeAlert = state.activeAdhanAlert
             if (activeAlert != null) {
                 TvAdhanAlertBanner(
                     alert = activeAlert,
                     cityName = state.cityName,
-                    onDismiss = { viewModel.dismissAdhanAlert() }
+                    focusRequester = adhanBannerFocusRequester,
+                    onDismiss = {
+                        TvAdhanAudioPlayer.stop()
+                        viewModel.dismissAdhanAlert()
+                    }
                 )
             }
 
@@ -127,7 +163,8 @@ fun TvAmbientDisplayScreen(
                 }
             } else if (state.error != null && state.prayerTimes.isEmpty()) {
                 TvErrorBanner(
-                    message = state.error?.displayMessage ?: "Unable to load prayer schedule",
+                    message = state.error?.displayMessage
+                        ?: stringResource(R.string.tv_error_load_schedule),
                     onRetry = { viewModel.refresh() }
                 )
             } else {
@@ -147,6 +184,7 @@ fun TvAmbientDisplayScreen(
             // 5. D-Pad Interactive Control Bar (Day Nav, City Switcher, Method, Adhan Alert, Refresh)
             TvControlBar(
                 state = state,
+                todayFocusRequester = initialFocusRequester,
                 onPreviousDay = { viewModel.goToPreviousDay() },
                 onToday = { viewModel.goToToday() },
                 onNextDay = { viewModel.goToNextDay() },
@@ -190,7 +228,7 @@ private fun TvHeaderSection(
                         .padding(horizontal = 10.dp, vertical = 4.dp)
                 ) {
                     Text(
-                        text = "RAFIQ TV • MASJID DISPLAY",
+                        text = stringResource(R.string.tv_brand_badge),
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold,
                         color = TvColors.TealBright,
@@ -275,22 +313,27 @@ private fun TvHeaderSection(
 private fun TvAdhanAlertBanner(
     alert: TvAdhanAlertEvent,
     cityName: String,
+    focusRequester: FocusRequester,
     onDismiss: () -> Unit
 ) {
-    var isFocused by remember { mutableStateOf(false) }
+    val interactionSource = remember { MutableInteractionSource() }
+    val isFocused by interactionSource.collectIsFocusedAsState()
 
     Surface(
         shape = RoundedCornerShape(16.dp),
         color = Color(0xFF1A3A3A),
         border = BorderStroke(
             width = if (isFocused) 3.dp else 2.dp,
-            color = TvColors.GoldAccent
+            color = if (isFocused) Color.White else TvColors.GoldAccent
         ),
         modifier = Modifier
             .fillMaxWidth()
-            .onFocusChanged { isFocused = it.isFocused }
-            .focusable()
-            .clickable { onDismiss() }
+            .focusRequester(focusRequester)
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null,
+                onClick = onDismiss
+            )
     ) {
         Row(
             modifier = Modifier
@@ -311,13 +354,21 @@ private fun TvAdhanAlertBanner(
                 )
                 Column {
                     Text(
-                        text = "ADHAN TIME ENTERED • ${alert.prayerName.uppercase()} (${alert.prayerTime})",
+                        text = stringResource(
+                            R.string.tv_adhan_banner_title,
+                            alert.prayerName.uppercase(),
+                            alert.prayerTime
+                        ),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.ExtraBold,
                         color = TvColors.GoldAccent
                     )
                     Text(
-                        text = "Hayya 'alas-Salah — It is time to establish ${alert.prayerName} prayer in $cityName",
+                        text = stringResource(
+                            R.string.tv_adhan_banner_body,
+                            alert.prayerName,
+                            cityName
+                        ),
                         fontSize = 13.sp,
                         color = TvColors.TextPrimary
                     )
@@ -330,7 +381,7 @@ private fun TvAdhanAlertBanner(
                     .padding(horizontal = 12.dp, vertical = 6.dp)
             ) {
                 Text(
-                    text = "Dismiss (OK)",
+                    text = stringResource(R.string.tv_dismiss_ok),
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black
@@ -360,7 +411,11 @@ private fun TvNextPrayerHeroCard(
         ) {
             Column {
                 Text(
-                    text = if (state.isToday) "UPCOMING PRAYER" else "SELECTED SCHEDULE",
+                    text = if (state.isToday) {
+                        stringResource(R.string.tv_upcoming_prayer)
+                    } else {
+                        stringResource(R.string.tv_selected_schedule)
+                    },
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Bold,
                     color = TvColors.TealBright,
@@ -372,7 +427,9 @@ private fun TvNextPrayerHeroCard(
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     Text(
-                        text = state.nextPrayerName.ifBlank { "Schedule Ready" },
+                        text = state.nextPrayerName.ifBlank {
+                            stringResource(R.string.tv_schedule_ready)
+                        },
                         fontSize = 30.sp,
                         fontWeight = FontWeight.ExtraBold,
                         color = TvColors.TextPrimary
@@ -390,7 +447,7 @@ private fun TvNextPrayerHeroCard(
                 Spacer(modifier = Modifier.height(4.dp))
                 if (state.nextPrayerTime.isNotBlank()) {
                     Text(
-                        text = "Scheduled at ${state.nextPrayerTime}",
+                        text = stringResource(R.string.tv_scheduled_at, state.nextPrayerTime),
                         fontSize = 15.sp,
                         fontWeight = FontWeight.Medium,
                         color = TvColors.TextSecondary
@@ -407,7 +464,7 @@ private fun TvNextPrayerHeroCard(
                         .padding(horizontal = 18.dp, vertical = 12.dp)
                 ) {
                     Text(
-                        text = "TIME REMAINING",
+                        text = stringResource(R.string.tv_time_remaining),
                         fontSize = 10.sp,
                         fontWeight = FontWeight.Bold,
                         color = TvColors.TextMuted,
@@ -432,7 +489,8 @@ private fun TvSpiritualVerseCard(
     onClickNext: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var isFocused by remember { mutableStateOf(false) }
+    val interactionSource = remember { MutableInteractionSource() }
+    val isFocused by interactionSource.collectIsFocusedAsState()
 
     Surface(
         shape = RoundedCornerShape(20.dp),
@@ -442,9 +500,11 @@ private fun TvSpiritualVerseCard(
             color = if (isFocused) TvColors.GoldAccent else TvColors.SurfaceCard
         ),
         modifier = modifier
-            .onFocusChanged { isFocused = it.isFocused }
-            .focusable()
-            .clickable { onClickNext() }
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null,
+                onClick = onClickNext
+            )
     ) {
         Column(
             modifier = Modifier
@@ -465,7 +525,7 @@ private fun TvSpiritualVerseCard(
             )
             Spacer(modifier = Modifier.height(6.dp))
             Text(
-                text = "\"${reminder.translation}\"",
+                text = "\"${reminder.localizedTranslation()}\"",
                 fontSize = 13.sp,
                 color = TvColors.TextPrimary,
                 maxLines = 2,
@@ -479,7 +539,7 @@ private fun TvSpiritualVerseCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Press OK to cycle verse",
+                    text = stringResource(R.string.tv_press_ok_cycle_verse),
                     fontSize = 11.sp,
                     color = TvColors.TextMuted
                 )
@@ -539,7 +599,7 @@ private fun TvPrayerTimeCard(
                         .padding(horizontal = 8.dp, vertical = 2.dp)
                 ) {
                     Text(
-                        text = "NEXT",
+                        text = stringResource(R.string.tv_next_badge),
                         fontSize = 10.sp,
                         fontWeight = FontWeight.ExtraBold,
                         color = TvColors.TealBright
@@ -606,7 +666,7 @@ private fun TvErrorBanner(
             modifier = Modifier.weight(1f)
         )
         TvActionChip(
-            label = "Retry",
+            label = stringResource(R.string.tv_retry),
             isHighlighted = true,
             onClick = onRetry
         )
@@ -616,6 +676,7 @@ private fun TvErrorBanner(
 @Composable
 private fun TvControlBar(
     state: TvAmbientUiState,
+    todayFocusRequester: FocusRequester,
     onPreviousDay: () -> Unit,
     onToday: () -> Unit,
     onNextDay: () -> Unit,
@@ -635,13 +696,20 @@ private fun TvControlBar(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            TvActionChip(label = "‹ Prev Day", onClick = onPreviousDay)
             TvActionChip(
-                label = "Today",
+                label = stringResource(R.string.tv_prev_day),
+                onClick = onPreviousDay
+            )
+            TvActionChip(
+                label = stringResource(R.string.tv_today),
                 isHighlighted = state.isToday,
+                focusRequester = todayFocusRequester,
                 onClick = onToday
             )
-            TvActionChip(label = "Next Day ›", onClick = onNextDay)
+            TvActionChip(
+                label = stringResource(R.string.tv_next_day),
+                onClick = onNextDay
+            )
         }
 
         // City, Calculation Method, Adhan Alerts & Refresh
@@ -650,30 +718,34 @@ private fun TvControlBar(
             verticalAlignment = Alignment.CenterVertically
         ) {
             TvActionChip(
-                label = "City: ${state.cityName}",
+                label = stringResource(R.string.tv_city_chip, state.cityName),
                 onClick = onSwitchCity
             )
             TvActionChip(
-                label = "Method: ${state.calculationMethodName}",
+                label = stringResource(R.string.tv_method_chip, state.calculationMethodName),
                 onClick = onCycleMethod
             )
             TvActionChip(
-                label = if (state.prayerNotificationsEnabled) "Adhan Alerts: ON" else "Adhan Alerts: OFF",
+                label = if (state.prayerNotificationsEnabled) {
+                    stringResource(R.string.tv_notifications_on)
+                } else {
+                    stringResource(R.string.tv_notifications_off)
+                },
                 isHighlighted = state.prayerNotificationsEnabled,
                 onClick = onToggleNotifications
             )
             TvActionChip(
-                label = "Preview Adhan",
+                label = stringResource(R.string.tv_preview_adhan),
                 onClick = onTestAdhanAlert
             )
             TvActionChip(
-                label = "Refresh",
+                label = stringResource(R.string.tv_refresh),
                 onClick = onRefresh,
-                leadingIcon = {
+                leadingIcon = { iconTint ->
                     Icon(
                         imageVector = Icons.Filled.Refresh,
-                        contentDescription = "Refresh",
-                        tint = TvColors.TextPrimary,
+                        contentDescription = stringResource(R.string.tv_refresh),
+                        tint = iconTint,
                         modifier = Modifier.size(14.dp)
                     )
                 }
@@ -686,10 +758,12 @@ private fun TvControlBar(
 private fun TvActionChip(
     label: String,
     isHighlighted: Boolean = false,
-    leadingIcon: (@Composable () -> Unit)? = null,
+    focusRequester: FocusRequester? = null,
+    leadingIcon: (@Composable (Color) -> Unit)? = null,
     onClick: () -> Unit
 ) {
-    var isFocused by remember { mutableStateOf(false) }
+    val interactionSource = remember { MutableInteractionSource() }
+    val isFocused by interactionSource.collectIsFocusedAsState()
 
     val bgColor = when {
         isFocused -> TvColors.GoldAccent
@@ -710,9 +784,12 @@ private fun TvActionChip(
             color = if (isFocused) Color.White else TvColors.TealBright.copy(alpha = 0.35f)
         ),
         modifier = Modifier
-            .onFocusChanged { isFocused = it.isFocused }
-            .focusable()
-            .clickable { onClick() }
+            .let { if (focusRequester != null) it.focusRequester(focusRequester) else it }
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null,
+                onClick = onClick
+            )
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
@@ -720,7 +797,7 @@ private fun TvActionChip(
             horizontalArrangement = Arrangement.spacedBy(6.dp)
         ) {
             if (leadingIcon != null) {
-                leadingIcon()
+                leadingIcon(textColor)
             }
             Text(
                 text = label,

@@ -293,4 +293,95 @@ class TvAmbientViewModelTest {
         coVerify { preferencesManager.setPrayerNotificationsEnabled(true) }
         verify(atLeast = 2) { TvPrayerNotificationWorker.scheduleNow(context) }
     }
+
+    @Test
+    fun `midnight rollover advances currentDate and reloads when following today`() = runTest(testDispatcher) {
+        coEvery {
+            prayerTimesRepository.getCachedPrayerTimes(any(), any(), any(), any())
+        } returns fakePrayerData
+
+        val day1 = java.util.Calendar.getInstance().apply {
+            set(2026, java.util.Calendar.NOVEMBER, 23, 23, 59, 0)
+        }
+        val day2 = java.util.Calendar.getInstance().apply {
+            set(2026, java.util.Calendar.NOVEMBER, 24, 0, 1, 0)
+        }
+
+        val vm = createViewModel().apply {
+            nowProvider = { day1.clone() as java.util.Calendar }
+        }
+        testScheduler.runCurrent()
+        vm.goToToday()
+        testScheduler.runCurrent()
+
+        val rolledOver = vm.checkAndHandleMidnightRollover(day2)
+        testScheduler.runCurrent()
+
+        assertTrue(rolledOver)
+        assertTrue(vm.uiState.value.isToday)
+        coVerify(atLeast = 1) {
+            prayerTimesRepository.getCachedPrayerTimes(any(), any(), "24-11-2026", any())
+        }
+    }
+
+    @Test
+    fun `midnight rollover does not override when user browsed to another day`() = runTest(testDispatcher) {
+        coEvery {
+            prayerTimesRepository.getCachedPrayerTimes(any(), any(), any(), any())
+        } returns fakePrayerData
+
+        val day1 = java.util.Calendar.getInstance().apply {
+            set(2026, java.util.Calendar.NOVEMBER, 23, 12, 0, 0)
+        }
+        val day2 = java.util.Calendar.getInstance().apply {
+            set(2026, java.util.Calendar.NOVEMBER, 24, 0, 1, 0)
+        }
+
+        val vm = createViewModel().apply {
+            nowProvider = { day1.clone() as java.util.Calendar }
+        }
+        testScheduler.runCurrent()
+        vm.goToToday()
+        testScheduler.runCurrent()
+        vm.goToPreviousDay()
+        testScheduler.runCurrent()
+
+        val rolledOver = vm.checkAndHandleMidnightRollover(day2)
+        assertFalse(rolledOver)
+        assertFalse(vm.uiState.value.isToday)
+    }
+
+    @Test
+    fun `spiritual reminder returns localized translation for Indonesian and English`() {
+        val reminder = TvAmbientUiState.DEFAULT_REMINDERS.first()
+        assertTrue(reminder.localizedTranslation("en").contains("prayer has been decreed"))
+        assertTrue(reminder.localizedTranslation("id").contains("shalat itu adalah kewajiban"))
+    }
+
+    @Test
+    fun `prayer timings with timezone suffixes are cleaned cleanly`() = runTest(testDispatcher) {
+        val withSuffix = PrayerTimesData(
+            timings = PrayerTimings(
+                imsak = "04:15 (WIB)",
+                fajr = "04:30 (WIB)",
+                sunrise = "05:45 (WIB)",
+                dhuhr = "11:55 (WIB)",
+                asr = "15:10 (WIB)",
+                maghrib = "17:55 (WIB)",
+                isha = "19:05 (WIB)"
+            ),
+            hijriDate = "14 Shawwal 1445"
+        )
+        coEvery {
+            prayerTimesRepository.getCachedPrayerTimes(any(), any(), any(), any())
+        } returns withSuffix
+
+        val vm = createViewModel()
+        testScheduler.runCurrent()
+
+        val times = vm.uiState.value.prayerTimes
+        assertEquals("04:15", times[0].time)
+        assertEquals("06:05", times[3].time)
+        assertEquals("19:05", times[7].time)
+    }
 }
