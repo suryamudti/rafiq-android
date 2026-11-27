@@ -9,7 +9,10 @@ plugins {
 android {
     namespace = "com.smiledev.rafiq_quran.data"
     compileSdk = 36
-    defaultConfig { minSdk = 23 }
+    defaultConfig {
+        minSdk = 23
+        consumerProguardFiles("consumer-rules.pro")
+    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -65,9 +68,9 @@ dependencies {
 
     // Test
     testImplementation(libs.junit)
-    testImplementation("io.mockk:mockk:1.13.11")
+    testImplementation(libs.mockk)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.androidx.test.core)
-    testImplementation("org.robolectric:robolectric:4.13")
+    testImplementation(libs.robolectric)
     testImplementation(libs.ktor.client.mock)
 }

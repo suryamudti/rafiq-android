@@ -26,7 +26,7 @@ kotlin {
         }
         androidUnitTest.dependencies {
             implementation(libs.junit)
-            implementation("io.mockk:mockk:1.13.11")
+            implementation(libs.mockk)
             implementation(libs.kotlinx.coroutines.test)
         }
     }

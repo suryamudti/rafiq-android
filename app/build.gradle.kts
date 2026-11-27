@@ -132,14 +132,14 @@ dependencies {
   // Local tests: jUnit, coroutines, Android runner
   testImplementation(libs.junit)
   testImplementation(libs.kotlinx.coroutines.test)
-  testImplementation("io.mockk:mockk:1.13.11")
+  testImplementation(libs.mockk)
 
   // Instrumented tests: jUnit rules and runners
   androidTestImplementation(libs.androidx.test.core)
   androidTestImplementation(libs.androidx.test.ext.junit)
   androidTestImplementation(libs.androidx.test.runner)
   androidTestImplementation(libs.androidx.test.espresso.core)
-  androidTestImplementation("io.mockk:mockk-android:1.13.11") {
+  androidTestImplementation(libs.mockk.android) {
     exclude(group = "org.junit.jupiter")
   }
   androidTestImplementation(libs.kotlinx.coroutines.test)

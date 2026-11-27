@@ -117,5 +117,5 @@ dependencies {
     // Unit testing
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
-    testImplementation("io.mockk:mockk:1.13.11")
+    testImplementation(libs.mockk)
 }
