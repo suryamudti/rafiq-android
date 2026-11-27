@@ -79,10 +79,18 @@ class AudioPlayerController @Inject constructor(
     }
 
     fun stop() {
+        connectGeneration++
+        connecting = false
+        connectAttempts = 0
         completionListener = null
-        runOrQueue { c -> c.stop() }
-        controller?.release()
+        pendingCommands.clear()
+        stopPoller()
+        controller?.let { c ->
+            runCatching { c.stop() }
+            runCatching { c.release() }
+        }
         controller = null
+        _playbackState.value = PlaybackState()
         context.stopService(android.content.Intent(context, AudioRecitationService::class.java))
     }
 
@@ -97,7 +105,7 @@ class AudioPlayerController @Inject constructor(
         connecting = false
         connectAttempts = 0
         pendingCommands.clear()
-        pollJob?.cancel()
+        stopPoller()
         completionListener = null
     }
 
@@ -132,7 +140,7 @@ class AudioPlayerController @Inject constructor(
         }, ContextCompat.getMainExecutor(context))
     }
 
-    private fun onControllerConnected(c: MediaController) {
+    internal fun onControllerConnected(c: MediaController) {
         connectAttempts = 0
         controller = c
         c.addListener(object : Player.Listener {
@@ -142,17 +150,28 @@ class AudioPlayerController @Inject constructor(
                     completionListener = null
                     callback?.invoke()
                 }
+                if (playbackState == Player.STATE_ENDED || playbackState == Player.STATE_IDLE) {
+                    stopPoller()
+                }
                 updatePlaybackState()
             }
 
             override fun onIsPlayingChanged(isPlaying: Boolean) {
                 updatePlaybackState()
+                if (isPlaying) {
+                    startPoller()
+                } else {
+                    stopPoller()
+                }
             }
         })
         val commands = pendingCommands.toList()
         pendingCommands.clear()
         commands.forEach { it(c) }
-        startPoller()
+        updatePlaybackState()
+        if (c.isPlaying) {
+            startPoller()
+        }
     }
 
     private fun runOrQueue(command: (MediaController) -> Unit) {
@@ -173,12 +192,22 @@ class AudioPlayerController @Inject constructor(
 
     private fun startPoller() {
         if (pollJob?.isActive == true) return
+        val currentController = controller ?: return
+        if (!currentController.isPlaying) return
         pollJob = scope.launch {
             while (isActive) {
+                val c = controller ?: break
                 updatePlaybackState()
+                if (!c.isPlaying) break
                 delay(500)
             }
+            pollJob = null
         }
+    }
+
+    private fun stopPoller() {
+        pollJob?.cancel()
+        pollJob = null
     }
 
     private fun updatePlaybackState() {

@@ -21,6 +21,7 @@ class DatabaseCopier @Inject constructor(private val context: Context) {
             !dbName.contains("\\")
     }
 
+    @Synchronized
     fun copyDatabaseIfNeeded(dbName: String) {
         if (!isValidDbName(dbName)) {
             android.util.Log.e("DatabaseCopier", "Invalid database name: $dbName")
@@ -28,20 +29,44 @@ class DatabaseCopier @Inject constructor(private val context: Context) {
         }
         val flatName = dbName.replace('/', '_')
         val dbFile = context.translationDbFile(flatName)
-        if (!dbFile.exists() || dbFile.length() == 0L) {
-            try {
-                dbFile.parentFile?.mkdirs()
-                context.assets.open("quran-data/$dbName").use { input ->
+        if (dbFile.exists() && dbFile.length() > 0L) return
+
+        val tempFile = File(dbFile.parentFile, "${dbFile.name}.tmp")
+        var promoted = false
+        try {
+            dbFile.parentFile?.mkdirs()
+            if (tempFile.exists()) tempFile.delete()
+            context.assets.open("quran-data/$dbName").use { input ->
+                FileOutputStream(tempFile).use { output ->
+                    input.copyTo(output)
+                    output.fd.sync()
+                }
+            }
+            if (dbFile.exists()) {
+                dbFile.delete()
+            }
+            if (tempFile.renameTo(dbFile)) {
+                promoted = true
+            } else {
+                tempFile.inputStream().use { input ->
                     FileOutputStream(dbFile).use { output ->
                         input.copyTo(output)
+                        output.fd.sync()
                     }
                 }
-            } catch (e: Exception) {
-                android.util.Log.e("DatabaseCopier", "Failed to copy database asset: $dbName", e)
+                promoted = true
+                tempFile.delete()
+            }
+        } catch (e: Exception) {
+            android.util.Log.e("DatabaseCopier", "Failed to copy database asset: $dbName", e)
+            tempFile.delete()
+            if (!promoted && dbFile.exists()) {
+                dbFile.delete()
             }
         }
     }
 
+    @Synchronized
     fun copyAndVerifyTranslationDb(dbName: String): Boolean {
         if (!isValidDbName(dbName)) {
             android.util.Log.e("DatabaseCopier", "Invalid database name: $dbName")
@@ -62,23 +87,30 @@ class DatabaseCopier @Inject constructor(private val context: Context) {
             return false
         }
 
-        return try {
-            val db = SQLiteDatabase.openDatabase(dbFile.absolutePath, null, SQLiteDatabase.OPEN_READONLY)
-            val cursor = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='verses'", null)
-            val hasVersesTable = cursor.moveToFirst()
-            cursor.close()
-            if (!hasVersesTable) {
-                android.util.Log.e("DatabaseCopier", "No 'verses' table found in $flatName")
-                db.close()
-                dbFile.delete()
-                return false
+        val hasVersesTable = try {
+            SQLiteDatabase.openDatabase(
+                dbFile.absolutePath,
+                null,
+                SQLiteDatabase.OPEN_READONLY
+            ).use { db ->
+                db.rawQuery(
+                    "SELECT name FROM sqlite_master WHERE type='table' AND name='verses'",
+                    null
+                ).use { cursor ->
+                    cursor.moveToFirst()
+                }
             }
-            db.close()
-            true
         } catch (e: Exception) {
             android.util.Log.e("DatabaseCopier", "Verification failed for $flatName", e)
             dbFile.delete()
-            false
+            return false
         }
+
+        if (!hasVersesTable) {
+            android.util.Log.e("DatabaseCopier", "No 'verses' table found in $flatName")
+            dbFile.delete()
+            return false
+        }
+        return true
     }
 }

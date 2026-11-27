@@ -9,15 +9,14 @@ suspend fun <T> retryIO(
     factor: Double = 2.0,
     block: suspend () -> Result<T, AppError>
 ): Result<T, AppError> {
+    require(times >= 1) { "times must be at least 1" }
     var currentDelay = initialDelay
-    repeat(times - 1) { attempt ->
+    repeat(times - 1) {
         when (val result = block()) {
             is Result.Success -> return result
             is Result.Error -> {
-                if (attempt < times - 2) {
-                    delay(currentDelay)
-                    currentDelay = (currentDelay * factor).toLong().coerceAtMost(maxDelay)
-                }
+                delay(currentDelay)
+                currentDelay = (currentDelay * factor).toLong().coerceAtMost(maxDelay)
             }
         }
     }

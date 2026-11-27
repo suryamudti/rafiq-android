@@ -22,6 +22,7 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
+import com.smiledev.rafiq_quran.MainActivity
 import com.smiledev.rafiq_quran.R
 import com.smiledev.rafiq_quran.core.Result as CoreResult
 import com.smiledev.rafiq_quran.data.preferences.PreferencesManager
@@ -258,7 +259,6 @@ class PrayerNotificationWorker(
             "Isha" to timings.isha
         )
 
-        var scheduled = 0
         for (name in PRAYER_NAMES) {
             val time = timeByPrayer[name].orEmpty()
             if (time.isBlank()) continue
@@ -276,7 +276,10 @@ class PrayerNotificationWorker(
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
             val showIntent = applicationContext.packageManager
-                .getLaunchIntentForPackage(applicationContext.packageName)
+                ?.getLaunchIntentForPackage(applicationContext.packageName)
+                ?: Intent(applicationContext, MainActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                }
             val showPi = PendingIntent.getActivity(
                 applicationContext,
                 0,
@@ -290,24 +293,17 @@ class PrayerNotificationWorker(
                 } else {
                     alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, trigger, pi)
                 }
-                scheduled++
             } catch (_: SecurityException) {
                 try {
                     alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, trigger, pi)
-                    scheduled++
                 } catch (_: Exception) {
                 }
             } catch (_: Exception) {
                 try {
                     alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, trigger, pi)
-                    scheduled++
                 } catch (_: Exception) {
                 }
             }
-        }
-
-        if (scheduled == 0) {
-            postPrayerNotification(applicationContext, "Prayers", "see the app for today's times")
         }
 
         return Result.success()
