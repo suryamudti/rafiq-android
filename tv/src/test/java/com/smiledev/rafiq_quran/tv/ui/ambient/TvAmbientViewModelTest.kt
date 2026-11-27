@@ -384,4 +384,22 @@ class TvAmbientViewModelTest {
         assertEquals("06:05", times[3].time)
         assertEquals("19:05", times[7].time)
     }
+
+    @Test
+    fun `explicit ISNA method 2 is preserved`() = runTest(testDispatcher) {
+        every { preferencesManager.prayerCalculationMethod } returns flowOf(2)
+        coEvery {
+            prayerTimesRepository.getCachedPrayerTimes(any(), any(), any(), 2)
+        } returns fakePrayerData
+
+        val vm = createViewModel()
+        testScheduler.runCurrent()
+
+        val state = vm.uiState.value
+        assertEquals(2, state.calculationMethod)
+        assertEquals("ISNA", state.calculationMethodName)
+        coVerify(atLeast = 1) {
+            prayerTimesRepository.getCachedPrayerTimes(any(), any(), any(), 2)
+        }
+    }
 }

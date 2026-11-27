@@ -62,7 +62,6 @@ abstract class HifzDatabase : RoomDatabase() {
                     HifzDatabase::class.java,
                     "hifz.db"
                 )
-                    .fallbackToDestructiveMigration()
                     .build()
                 INSTANCE = instance
                 instance

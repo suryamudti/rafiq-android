@@ -138,16 +138,22 @@ class QuranRepositoryImpl @Inject constructor(
                 .take(limit)
             val metadata = getMetadataMap()
 
-            val results = keys.map { (sura, aya) ->
-                val arabicData = arabicMatches[sura to aya] ?: fetchArabic(sura, aya)
+            val missingArabicKeys = keys.filter { it !in arabicMatches }
+            val fetchedArabic = fetchArabicBatch(missingArabicKeys)
+
+            val missingTranslationKeys = keys.filter { it !in translationMatches }
+            val fetchedTranslations = fetchTranslationsBatch(missingTranslationKeys, localeCode)
+
+            val results = keys.map { key ->
+                val (sura, aya) = key
+                val arabicData = arabicMatches[key] ?: fetchedArabic[key]
                 val meta = metadata["$sura:$aya"]
                 AyahData(
                     sura = sura,
                     aya = aya,
                     text = arabicData?.text ?: "",
                     bismillah = arabicData?.bismillah,
-                    translation = translationMatches[sura to aya]
-                        ?: getTranslationForAya(sura, aya, localeCode),
+                    translation = translationMatches[key] ?: fetchedTranslations[key],
                     page = meta?.page ?: 0,
                     juz = meta?.juz ?: 0,
                     sajda = meta?.sajda ?: false,
@@ -310,40 +316,84 @@ class QuranRepositoryImpl @Inject constructor(
         return result
     }
 
-    private fun fetchArabic(sura: Int, aya: Int): AyahData? {
+    private fun fetchArabicBatch(keys: List<Pair<Int, Int>>): Map<Pair<Int, Int>, AyahData> {
+        if (keys.isEmpty()) return emptyMap()
         val db = getQuranDatabase()
-        db.rawQuery(
-            "SELECT text, bismillah FROM quran WHERE sura = ? AND aya = ?",
-            arrayOf(sura.toString(), aya.toString())
-        ).use { c ->
-            if (!c.moveToFirst()) return null
-            val bismillahStr = if (c.isNull(1)) null else c.getString(1)
-            return AyahData(
-                sura = sura,
-                aya = aya,
-                text = c.getString(0),
-                bismillah = if (bismillahStr.isNullOrEmpty()) null else bismillahStr
-            )
+        val result = mutableMapOf<Pair<Int, Int>, AyahData>()
+        for ((sura, pairs) in keys.groupBy { it.first }) {
+            val distinctAyas = pairs.map { it.second }.distinct()
+            for (chunk in distinctAyas.chunked(SQLITE_IN_CLAUSE_CHUNK_SIZE)) {
+                val placeholders = chunk.joinToString(",") { "?" }
+                val args = Array(chunk.size + 1) { index ->
+                    if (index == 0) sura.toString() else chunk[index - 1].toString()
+                }
+                db.rawQuery(
+                    "SELECT aya, text, bismillah FROM quran WHERE sura = ? AND aya IN ($placeholders)",
+                    args
+                ).use { c ->
+                    while (c.moveToNext()) {
+                        val aya = c.getString(0).toIntOrNull() ?: 0
+                        val bismillahStr = if (c.isNull(2)) null else c.getString(2)
+                        result[sura to aya] = AyahData(
+                            sura = sura,
+                            aya = aya,
+                            text = c.getString(1),
+                            bismillah = if (bismillahStr.isNullOrEmpty()) null else bismillahStr
+                        )
+                    }
+                }
+            }
         }
+        return result
     }
 
-    private fun getTranslationForAya(sura: Int, aya: Int, localeCode: String): String? {
+    private fun fetchTranslationsBatch(
+        keys: List<Pair<Int, Int>>,
+        localeCode: String
+    ): Map<Pair<Int, Int>, String> {
+        if (keys.isEmpty()) return emptyMap()
         if (localeCode == "both") {
-            return getTranslationForAyaSingle(sura, aya, "id") ?: getTranslationForAyaSingle(sura, aya, "en")
+            val idTranslations = fetchTranslationsBatchSingle(keys, "id")
+            val remaining = keys.filter { it !in idTranslations }
+            if (remaining.isEmpty()) return idTranslations
+            val enTranslations = fetchTranslationsBatchSingle(remaining, "en")
+            return enTranslations + idTranslations
         }
-        return getTranslationForAyaSingle(sura, aya, localeCode)
+        return fetchTranslationsBatchSingle(keys, localeCode)
     }
 
-    private fun getTranslationForAyaSingle(sura: Int, aya: Int, localeCode: String): String? {
-        val db = getTranslationDatabase(localeCode) ?: return null
-        db.rawQuery(
-            "SELECT text FROM verses WHERE CAST(sura AS INTEGER) = ? AND ayah = ?",
-            arrayOf(sura.toString(), aya.toString())
-        ).use { c ->
-            return if (c.moveToFirst()) c.getString(0) else null
+    private fun fetchTranslationsBatchSingle(
+        keys: List<Pair<Int, Int>>,
+        localeCode: String
+    ): Map<Pair<Int, Int>, String> {
+        if (keys.isEmpty()) return emptyMap()
+        val db = getTranslationDatabase(localeCode) ?: return emptyMap()
+        val result = mutableMapOf<Pair<Int, Int>, String>()
+        for ((sura, pairs) in keys.groupBy { it.first }) {
+            val distinctAyas = pairs.map { it.second }.distinct()
+            for (chunk in distinctAyas.chunked(SQLITE_IN_CLAUSE_CHUNK_SIZE)) {
+                val placeholders = chunk.joinToString(",") { "?" }
+                val args = Array(chunk.size + 1) { index ->
+                    if (index == 0) sura.toString() else chunk[index - 1].toString()
+                }
+                db.rawQuery(
+                    "SELECT ayah, text FROM verses WHERE CAST(sura AS INTEGER) = ? AND CAST(ayah AS INTEGER) IN ($placeholders)",
+                    args
+                ).use { c ->
+                    while (c.moveToNext()) {
+                        val aya = c.getInt(0)
+                        result[sura to aya] = c.getString(1)
+                    }
+                }
+            }
         }
+        return result
     }
 
     private fun escapeLike(input: String): String =
         input.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
+
+    companion object {
+        private const val SQLITE_IN_CLAUSE_CHUNK_SIZE = 500
+    }
 }

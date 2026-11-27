@@ -223,7 +223,7 @@ class WearPrayerNotificationWorker(
 
         val lat = snapshot.latStr.toDoubleOrNull() ?: -6.2088
         val lon = snapshot.lonStr.toDoubleOrNull() ?: 106.8456
-        val calcMethod = if (snapshot.method == 2) 20 else snapshot.method
+        val calcMethod = snapshot.method
 
         val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.US)
         val today = dateFormat.format(Date())
