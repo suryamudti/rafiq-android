@@ -78,14 +78,6 @@ kapt {
     correctErrorTypes = true
 }
 
-configurations.all {
-    resolutionStrategy {
-        force("org.jetbrains.kotlin:kotlin-stdlib:2.1.20")
-        force("org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.1.20")
-        force("org.jetbrains.kotlin:kotlin-stdlib-jdk7:2.1.20")
-    }
-}
-
 // Firebase plugins require google-services.json; apply only when present so builds work without it.
 if (file("google-services.json").exists()) {
     apply(plugin = "com.google.gms.google-services")

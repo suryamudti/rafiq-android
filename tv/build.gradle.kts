@@ -66,14 +66,6 @@ kapt {
     correctErrorTypes = true
 }
 
-configurations.all {
-    resolutionStrategy {
-        force("org.jetbrains.kotlin:kotlin-stdlib:2.1.20")
-        force("org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.1.20")
-        force("org.jetbrains.kotlin:kotlin-stdlib-jdk7:2.1.20")
-    }
-}
-
 dependencies {
     val composeBom = platform(libs.androidx.compose.bom)
     implementation(composeBom)

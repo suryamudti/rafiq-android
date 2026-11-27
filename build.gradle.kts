@@ -14,3 +14,15 @@ plugins {
   alias(libs.plugins.google.services) apply false
   alias(libs.plugins.firebase.crashlytics) apply false
 }
+
+val kotlinVersion = libs.versions.kotlin.get()
+
+subprojects {
+  configurations.all {
+    resolutionStrategy {
+      force("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion")
+      force("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
+      force("org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion")
+    }
+  }
+}
