@@ -23,6 +23,8 @@ import androidx.work.WorkerParameters
 import com.smiledev.rafiq_quran.core.Result as CoreResult
 import com.smiledev.rafiq_quran.data.preferences.PreferencesManager
 import com.smiledev.rafiq_quran.domain.repository.PrayerTimesRepository
+import com.smiledev.rafiq_quran.domain.util.PrayerNameKey
+import com.smiledev.rafiq_quran.domain.util.PrayerScheduleUtils
 import com.smiledev.rafiq_quran.wear.R
 import com.smiledev.rafiq_quran.wear.WearMainActivity
 import com.smiledev.rafiq_quran.wear.navigation.WearRoutes
@@ -55,7 +57,7 @@ class WearPrayerNotificationWorker(
         const val WORK_NAME = "wear_prayer_notification_worker"
         const val IMMEDIATE_WORK_NAME = "wear_prayer_notification_immediate"
         private const val PRAYER_NOTIFICATION_ID = 2000
-        internal val PRAYER_NAMES = listOf("Fajr", "Dhuhr", "Asr", "Maghrib", "Isha")
+        internal val PRAYER_NAMES = PrayerScheduleUtils.DAILY_PRAYER_NAMES
 
         fun schedule(context: Context) {
             val now = Calendar.getInstance()
@@ -124,22 +126,17 @@ class WearPrayerNotificationWorker(
             calendar: Calendar = Calendar.getInstance()
         ): String {
             val isFriday = calendar.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY
-            return when (name.lowercase()) {
-                "imsak" -> context.getString(R.string.prayer_imsak)
-                "fajr", "subuh" -> context.getString(R.string.prayer_fajr)
-                "sunrise", "terbit" -> context.getString(R.string.prayer_sunrise)
-                "dhuha" -> context.getString(R.string.prayer_dhuha)
-                "dhuhr", "dzuhur" -> if (isFriday) {
-                    context.getString(R.string.prayer_friday)
-                } else {
-                    context.getString(R.string.prayer_dhuhr)
-                }
-                "friday", "friday prayer", "friday_prayer", "jumat", "jum'at", "jumuah", "jumu'ah" ->
-                    context.getString(R.string.prayer_friday)
-                "asr", "ashar" -> context.getString(R.string.prayer_asr)
-                "maghrib" -> context.getString(R.string.prayer_maghrib)
-                "isha", "isya" -> context.getString(R.string.prayer_isha)
-                else -> name
+            return when (PrayerScheduleUtils.resolvePrayerNameKey(name, isFriday)) {
+                PrayerNameKey.IMSAK -> context.getString(R.string.prayer_imsak)
+                PrayerNameKey.FAJR -> context.getString(R.string.prayer_fajr)
+                PrayerNameKey.SUNRISE -> context.getString(R.string.prayer_sunrise)
+                PrayerNameKey.DHUHA -> context.getString(R.string.prayer_dhuha)
+                PrayerNameKey.DHUHR -> context.getString(R.string.prayer_dhuhr)
+                PrayerNameKey.FRIDAY -> context.getString(R.string.prayer_friday)
+                PrayerNameKey.ASR -> context.getString(R.string.prayer_asr)
+                PrayerNameKey.MAGHRIB -> context.getString(R.string.prayer_maghrib)
+                PrayerNameKey.ISHA -> context.getString(R.string.prayer_isha)
+                null -> name
             }
         }
 
@@ -296,17 +293,8 @@ class WearPrayerNotificationWorker(
         return Result.success()
     }
 
-    private fun cleanTime(raw: String): String {
-        return raw.substringBefore(" ").trim()
-    }
-
     internal fun prayerTriggerMillis(time: String): Long {
-        val clean = cleanTime(time)
-        val parts = clean.split(":")
-        if (parts.size != 2) return 0L
-        val hour = parts[0].toIntOrNull() ?: return 0L
-        val minute = parts[1].toIntOrNull() ?: return 0L
-        if (hour !in 0..23 || minute !in 0..59) return 0L
+        val (hour, minute) = PrayerScheduleUtils.parsePrayerTimeHourMinute(time) ?: return 0L
         val cal = Calendar.getInstance().apply {
             set(Calendar.HOUR_OF_DAY, hour)
             set(Calendar.MINUTE, minute)
