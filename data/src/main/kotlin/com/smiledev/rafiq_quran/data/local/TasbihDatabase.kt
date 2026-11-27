@@ -63,7 +63,6 @@ abstract class TasbihDatabase : RoomDatabase() {
                     TasbihDatabase::class.java,
                     "tasbih.db"
                 )
-                    .fallbackToDestructiveMigration()
                     .build()
                 INSTANCE = instance
                 instance

@@ -120,10 +120,10 @@ class PreferencesManager @Inject constructor(
 
     /**
      * Returns the prayer calculation method as a [Flow].
-     * Defaults to index 2 (the standard/primary method) if not set.
+     * Defaults to 20 (Kemenag RI) if not set.
      */
     val prayerCalculationMethod: Flow<Int> = context.dataStore.data.map { prefs ->
-        prefs[PRAYER_CALCULATION_METHOD] ?: 2
+        prefs[PRAYER_CALCULATION_METHOD] ?: 20
     }.distinctUntilChanged()
 
     /**

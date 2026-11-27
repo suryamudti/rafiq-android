@@ -117,4 +117,12 @@ class PreferencesManagerTest {
 
         collectJob.cancel()
     }
+
+    @Test
+    fun `prayerCalculationMethod defaults to 20 and preserves explicitly selected method 2`() = runBlocking {
+        assertEquals(20, preferencesManager.prayerCalculationMethod.first())
+
+        preferencesManager.setPrayerCalculationMethod(2)
+        assertEquals(2, preferencesManager.prayerCalculationMethod.first())
+    }
 }

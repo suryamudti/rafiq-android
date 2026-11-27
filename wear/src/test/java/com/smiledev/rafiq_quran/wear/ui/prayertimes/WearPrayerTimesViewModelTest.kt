@@ -188,18 +188,21 @@ class WearPrayerTimesViewModelTest {
     }
 
     @Test
-    fun `legacy ISNA method 2 normalizes to KEMENAG method 20`() = runTest(testDispatcher) {
+    fun `explicit ISNA method 2 is preserved`() = runTest(testDispatcher) {
         every { preferencesManager.prayerCalculationMethod } returns flowOf(2)
         coEvery {
-            prayerTimesRepository.getCachedPrayerTimes(any(), any(), any(), 20)
+            prayerTimesRepository.getCachedPrayerTimes(any(), any(), any(), 2)
         } returns fakePrayerData
 
         val vm = createViewModel()
         testScheduler.runCurrent()
 
         val state = vm.uiState.value
-        assertEquals(20, state.calculationMethod)
-        assertEquals("KEMENAG", state.calculationMethodName)
+        assertEquals(2, state.calculationMethod)
+        assertEquals("ISNA", state.calculationMethodName)
+        coVerify(atLeast = 1) {
+            prayerTimesRepository.getCachedPrayerTimes(any(), any(), any(), 2)
+        }
     }
 
     @Test

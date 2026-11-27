@@ -168,13 +168,12 @@ class TvAmbientViewModel @Inject constructor(
             ) { latStr, lonStr, method, city, notifEnabled ->
                 val lat = latStr.toDoubleOrNull() ?: -6.2088
                 val lon = lonStr.toDoubleOrNull() ?: 106.8456
-                val calcMethod = if (method == 2) 20 else method
-                val methodName = getMethodDisplayName(calcMethod)
+                val methodName = getMethodDisplayName(method)
                 val resolvedCity = if (city.isNotBlank()) city else "Jakarta"
                 _uiState.value = _uiState.value.copy(
                     latitude = lat,
                     longitude = lon,
-                    calculationMethod = calcMethod,
+                    calculationMethod = method,
                     calculationMethodName = methodName,
                     cityName = resolvedCity,
                     prayerNotificationsEnabled = notifEnabled

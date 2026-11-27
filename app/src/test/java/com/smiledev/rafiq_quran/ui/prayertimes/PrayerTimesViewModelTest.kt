@@ -151,4 +151,33 @@ class PrayerTimesViewModelTest {
 
         coVerify { preferencesManager.setPrayerNotificationsEnabled(false) }
     }
+
+    @Test
+    fun `explicit ISNA method 2 is preserved`() = runTest(testDispatcher) {
+        every { preferencesManager.prayerCalculationMethod } returns flowOf(2)
+
+        val vm = PrayerTimesViewModel(
+            prayerTimesRepository = prayerTimesRepository,
+            preferencesManager = preferencesManager,
+            appContext = context,
+            dispatcherProvider = testDispatcherProvider
+        ).apply {
+            enablePeriodicCountdown = false
+        }
+
+        testScheduler.runCurrent()
+
+        val state = vm.uiState.value
+        assertEquals(2, state.calculationMethod)
+        assertEquals("ISNA", state.calculationMethodName)
+        coVerify(atLeast = 1) {
+            prayerTimesRepository.fetchPrayerTimes(
+                lat = -6.2088,
+                lon = 106.8456,
+                date = any(),
+                method = 2,
+                forceRefresh = false
+            )
+        }
+    }
 }

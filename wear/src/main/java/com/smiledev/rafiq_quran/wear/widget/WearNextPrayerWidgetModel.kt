@@ -220,9 +220,8 @@ object WearNextPrayerDataProvider {
             ) { latStr, lonStr, method, city ->
                 val lat = latStr.toDoubleOrNull() ?: -6.2088
                 val lon = lonStr.toDoubleOrNull() ?: 106.8456
-                val calcMethod = if (method == 2) 20 else method
                 val resolvedCity = city.ifBlank { "Jakarta" }
-                PrefConfig(lat, lon, calcMethod, resolvedCity)
+                PrefConfig(lat, lon, method, resolvedCity)
             }.first()
         }.getOrElse {
             PrefConfig(-6.2088, 106.8456, 20, "Jakarta")

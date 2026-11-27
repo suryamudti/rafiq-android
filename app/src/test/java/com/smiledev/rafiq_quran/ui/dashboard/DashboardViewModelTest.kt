@@ -392,5 +392,32 @@ class DashboardViewModelTest {
 
         assertNull(vm.uiState.value.updateInfo)
     }
+
+    @Test
+    fun `explicit ISNA method 2 is preserved`() = runTest(testDispatcher) {
+        methodFlow.value = 2
+
+        val vm = DashboardViewModel(
+            prayerTimesRepository = prayerTimesRepository,
+            preferencesManager = preferencesManager,
+            context = context,
+            dispatcherProvider = testDispatcherProvider,
+            quranRepository = quranRepository,
+            prayerLogRepository = prayerLogRepository,
+            enablePeriodicCountdown = false
+        )
+        testScheduler.runCurrent()
+
+        assertEquals(2, vm.uiState.value.calculationMethod)
+        coVerify(atLeast = 1) {
+            prayerTimesRepository.fetchPrayerTimes(
+                lat = -6.2088,
+                lon = 106.8456,
+                date = any(),
+                method = 2,
+                forceRefresh = false
+            )
+        }
+    }
 }
 

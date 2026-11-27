@@ -287,8 +287,7 @@ class DashboardViewModel @Inject constructor(
             ) { latStr, lonStr, method ->
                 val lat = latStr.toDoubleOrNull() ?: -6.2088
                 val lon = lonStr.toDoubleOrNull() ?: 106.8456
-                val calcMethod = if (method == 2) 20 else method
-                Triple(lat, lon, calcMethod)
+                Triple(lat, lon, method)
             }.distinctUntilChanged().collect { (lat, lon, calcMethod) ->
                 _uiState.update {
                     it.copy(
