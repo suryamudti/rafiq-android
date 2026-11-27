@@ -83,4 +83,23 @@ class DatabaseCopierTest {
         assertFalse(copier.copyAndVerifyTranslationDb("path\\evil.db"))
         assertFalse(copier.copyAndVerifyTranslationDb(""))
     }
+
+    @Test
+    fun `copyDatabaseIfNeeded cleans up temp file and leaves no partial db on interrupted stream`() {
+        val failingStream = object : java.io.InputStream() {
+            private var count = 0
+            override fun read(): Int {
+                if (count++ < 10) return 0x41
+                throw java.io.IOException("Simulated read failure mid-copy")
+            }
+        }
+        every { assetManager.open("quran-data/translations/interrupted.db") } returns failingStream
+
+        copier.copyDatabaseIfNeeded("translations/interrupted.db")
+
+        val targetFile = File(tempDir, "databases/translations_interrupted.db")
+        val tempFile = File(tempDir, "databases/translations_interrupted.db.tmp")
+        assertFalse("Partial target DB should not exist after failed copy", targetFile.exists())
+        assertFalse("Temp file should be cleaned up after failed copy", tempFile.exists())
+    }
 }

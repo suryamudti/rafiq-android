@@ -31,9 +31,18 @@ class QuranRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context,
     private val databaseCopier: DatabaseCopier
 ) : QuranRepository {
+    private val dbLock = Any()
+
+    @Volatile
     private var quranDb: SQLiteDatabase? = null
+
+    @Volatile
     private var translationIdDb: SQLiteDatabase? = null
+
+    @Volatile
     private var translationEnDb: SQLiteDatabase? = null
+
+    @Volatile
     private var metadataCache: Map<String, VerseMetadata>? = null
 
     override fun getChapters(localeCode: String): Result<List<Surah>, AppError> {
@@ -64,23 +73,23 @@ class QuranRepositoryImpl @Inject constructor(
     override fun getAyahsWithTranslation(suraNumber: Int, localeCode: String): Result<List<Ayah>, AppError> {
         return try {
             val db = getQuranDatabase()
-            val cursor = db.rawQuery(
+            val rawList = mutableListOf<AyahData>()
+            db.rawQuery(
                 "SELECT sura, aya, text, bismillah FROM quran WHERE sura = ? ORDER BY CAST(aya AS INTEGER) ASC",
                 arrayOf(suraNumber.toString())
-            )
-            val rawList = mutableListOf<AyahData>()
-            while (cursor.moveToNext()) {
-                val bismillahStr = if (cursor.isNull(3)) null else cursor.getString(3)
-                rawList.add(
-                    AyahData(
-                        sura = cursor.getString(0).toIntOrNull() ?: 0,
-                        aya = cursor.getString(1).toIntOrNull() ?: 0,
-                        text = cursor.getString(2),
-                        bismillah = if (bismillahStr.isNullOrEmpty()) null else bismillahStr
+            ).use { cursor ->
+                while (cursor.moveToNext()) {
+                    val bismillahStr = if (cursor.isNull(3)) null else cursor.getString(3)
+                    rawList.add(
+                        AyahData(
+                            sura = cursor.getString(0).toIntOrNull() ?: 0,
+                            aya = cursor.getString(1).toIntOrNull() ?: 0,
+                            text = cursor.getString(2),
+                            bismillah = if (bismillahStr.isNullOrEmpty()) null else bismillahStr
+                        )
                     )
-                )
+                }
             }
-            cursor.close()
 
             val metadata = getMetadataMap()
             val translationMapId = getTranslationForSuraSafe(suraNumber, "id")
@@ -152,39 +161,42 @@ class QuranRepositoryImpl @Inject constructor(
     }
 
     private fun getMetadataMap(): Map<String, VerseMetadata> {
-        if (metadataCache != null) return metadataCache!!
-        val json = readAssetJson("quran-data/quran-metadata.json")
-        val verses = json.getJSONArray("verses")
-        val map = mutableMapOf<String, VerseMetadata>()
-        for (i in 0 until verses.length()) {
-            val v = verses.getJSONObject(i)
-            val sura = v.getInt("sura")
-            val aya = v.getInt("aya")
-            val sajdaObj = v.optJSONObject("sajda")
-            val sajda = sajdaObj != null
-            val sajdaType = sajdaObj?.optString("type").let { if (it.isNullOrEmpty()) null else it }
-            map["$sura:$aya"] = VerseMetadata(
-                page = v.getInt("page"),
-                juz = v.getInt("juz"),
-                sajda = sajda,
-                sajdaType = sajdaType
-            )
+        metadataCache?.let { return it }
+        return synchronized(dbLock) {
+            metadataCache?.let { return it }
+            val json = readAssetJson("quran-data/quran-metadata.json")
+            val verses = json.getJSONArray("verses")
+            val map = mutableMapOf<String, VerseMetadata>()
+            for (i in 0 until verses.length()) {
+                val v = verses.getJSONObject(i)
+                val sura = v.getInt("sura")
+                val aya = v.getInt("aya")
+                val sajdaObj = v.optJSONObject("sajda")
+                val sajda = sajdaObj != null
+                val sajdaType = sajdaObj?.optString("type").let { if (it.isNullOrEmpty()) null else it }
+                map["$sura:$aya"] = VerseMetadata(
+                    page = v.getInt("page"),
+                    juz = v.getInt("juz"),
+                    sajda = sajda,
+                    sajdaType = sajdaType
+                )
+            }
+            metadataCache = map
+            map
         }
-        metadataCache = map
-        return map
     }
 
     private fun getTranslationForSura(suraNumber: Int, localeCode: String): Map<Int, String> {
         val db = getTranslationDatabase(localeCode) ?: return emptyMap()
-        val cursor = db.rawQuery(
+        val map = mutableMapOf<Int, String>()
+        db.rawQuery(
             "SELECT ayah, text FROM verses WHERE CAST(sura AS INTEGER) = ?",
             arrayOf(suraNumber.toString())
-        )
-        val map = mutableMapOf<Int, String>()
-        while (cursor.moveToNext()) {
-            map[cursor.getInt(0)] = cursor.getString(1)
+        ).use { cursor ->
+            while (cursor.moveToNext()) {
+                map[cursor.getInt(0)] = cursor.getString(1)
+            }
         }
-        cursor.close()
         return map
     }
 
@@ -198,47 +210,54 @@ class QuranRepositoryImpl @Inject constructor(
     }
 
     private fun getQuranDatabase(): SQLiteDatabase {
-        if (quranDb?.isOpen == true) return quranDb!!
-        databaseCopier.copyDatabaseIfNeeded("quran-uthmani.db")
-        val dbFile = File(context.filesDir, "databases/quran-uthmani.db")
-        quranDb = SQLiteDatabase.openDatabase(dbFile.absolutePath, null, SQLiteDatabase.OPEN_READONLY)
-        return quranDb!!
+        val existing = quranDb
+        if (existing?.isOpen == true) return existing
+        return synchronized(dbLock) {
+            val current = quranDb
+            if (current?.isOpen == true) return current
+            databaseCopier.copyDatabaseIfNeeded("quran-uthmani.db")
+            val dbFile = File(context.filesDir, "databases/quran-uthmani.db")
+            val opened = SQLiteDatabase.openDatabase(dbFile.absolutePath, null, SQLiteDatabase.OPEN_READONLY)
+            quranDb = opened
+            opened
+        }
     }
 
     private fun getTranslationDatabase(localeCode: String): SQLiteDatabase? {
         val isId = localeCode == "id"
-        val cachedDb = if (isId) translationIdDb else translationEnDb
-        if (cachedDb?.isOpen == true) return cachedDb
+        val existing = if (isId) translationIdDb else translationEnDb
+        if (existing?.isOpen == true) return existing
+        return synchronized(dbLock) {
+            val current = if (isId) translationIdDb else translationEnDb
+            if (current?.isOpen == true) return current
 
-        val fileKey = if (isId) "translations/id.indonesian.db" else "translations/en.sahih.db"
-        val flatName = fileKey.replace('/', '_')
-        val dbFile = File(context.filesDir, "databases/$flatName")
+            val fileKey = if (isId) "translations/id.indonesian.db" else "translations/en.sahih.db"
+            val flatName = fileKey.replace('/', '_')
+            val dbFile = File(context.filesDir, "databases/$flatName")
 
-        if (!databaseCopier.copyAndVerifyTranslationDb(fileKey)) {
-            android.util.Log.w("QuranRepository", "Retrying copy for $fileKey after failed verification")
-            dbFile.delete()
             if (!databaseCopier.copyAndVerifyTranslationDb(fileKey)) {
-                android.util.Log.e("QuranRepository", "Failed to copy and verify translation database: $fileKey")
-                return null
+                android.util.Log.w("QuranRepository", "Retrying copy for $fileKey after failed verification")
+                dbFile.delete()
+                if (!databaseCopier.copyAndVerifyTranslationDb(fileKey)) {
+                    android.util.Log.e("QuranRepository", "Failed to copy and verify translation database: $fileKey")
+                    return null
+                }
             }
-        }
 
-        return try {
-            val db = SQLiteDatabase.openDatabase(dbFile.absolutePath, null, SQLiteDatabase.OPEN_READONLY)
-            if (isId) translationIdDb = db else translationEnDb = db
-            db
-        } catch (e: Exception) {
-            android.util.Log.e("QuranRepository", "Error opening translation database: ${dbFile.absolutePath}", e)
-            dbFile.delete()
-            null
+            try {
+                val db = SQLiteDatabase.openDatabase(dbFile.absolutePath, null, SQLiteDatabase.OPEN_READONLY)
+                if (isId) translationIdDb = db else translationEnDb = db
+                db
+            } catch (e: Exception) {
+                android.util.Log.e("QuranRepository", "Error opening translation database: ${dbFile.absolutePath}", e)
+                dbFile.delete()
+                null
+            }
         }
     }
 
     private fun readAssetJson(path: String): JSONObject {
-        val stream = context.assets.open(path)
-        val reader = BufferedReader(InputStreamReader(stream))
-        val text = reader.readText()
-        reader.close()
+        val text = BufferedReader(InputStreamReader(context.assets.open(path))).use { it.readText() }
         return JSONObject(text)
     }
 

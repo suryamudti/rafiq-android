@@ -5,28 +5,35 @@ import android.content.Context
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.Tasks
 import com.smiledev.rafiq_quran.core.AppError
+import com.smiledev.rafiq_quran.core.DefaultDispatcherProvider
+import com.smiledev.rafiq_quran.core.DispatcherProvider
 import com.smiledev.rafiq_quran.core.Result
 import com.smiledev.rafiq_quran.core.retryIO
 import com.smiledev.rafiq_quran.data.preferences.PreferencesManager
 import com.smiledev.rafiq_quran.domain.repository.LocationProvider
 import com.smiledev.rafiq_quran.domain.repository.GeoLocation
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class LocationProviderImpl @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val preferencesManager: PreferencesManager
+    private val preferencesManager: PreferencesManager,
+    private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider
 ) : LocationProvider {
 
     @SuppressLint("MissingPermission") // Permission checked at call site (UI layer)
     override suspend fun getLastLocation(): Result<GeoLocation, AppError> {
         return retryIO {
             try {
-                val fusedClient = LocationServices.getFusedLocationProviderClient(context)
-                val location = Tasks.await(fusedClient.lastLocation)
+                val location = withContext(dispatcherProvider.io) {
+                    val fusedClient = LocationServices.getFusedLocationProviderClient(context)
+                    Tasks.await(fusedClient.lastLocation)
+                }
                 if (location != null) {
                     preferencesManager.setLatitude(location.latitude.toString())
                     preferencesManager.setLongitude(location.longitude.toString())
@@ -34,6 +41,8 @@ class LocationProviderImpl @Inject constructor(
                 } else {
                     fallbackToPreferences()
                 }
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
                 fallbackToPreferences()
             }

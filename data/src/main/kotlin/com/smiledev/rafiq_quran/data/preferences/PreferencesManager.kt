@@ -11,6 +11,7 @@ import com.google.gson.Gson
 import com.smiledev.rafiq_quran.domain.model.PrayerTimesData
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -115,7 +116,7 @@ class PreferencesManager @Inject constructor(
      */
     val themeMode: Flow<String> = context.dataStore.data.map { prefs ->
         prefs[THEME_MODE] ?: "system"
-    }
+    }.distinctUntilChanged()
 
     /**
      * Returns the prayer calculation method as a [Flow].
@@ -123,7 +124,7 @@ class PreferencesManager @Inject constructor(
      */
     val prayerCalculationMethod: Flow<Int> = context.dataStore.data.map { prefs ->
         prefs[PRAYER_CALCULATION_METHOD] ?: 2
-    }
+    }.distinctUntilChanged()
 
     /**
      * Returns the user's latitude as a [Flow].
@@ -131,7 +132,7 @@ class PreferencesManager @Inject constructor(
      */
     val latitude: Flow<String> = context.dataStore.data.map { prefs ->
         prefs[LATITUDE] ?: ""
-    }
+    }.distinctUntilChanged()
 
     /**
      * Returns the user's longitude as a [Flow].
@@ -139,7 +140,7 @@ class PreferencesManager @Inject constructor(
      */
     val longitude: Flow<String> = context.dataStore.data.map { prefs ->
         prefs[LONGITUDE] ?: ""
-    }
+    }.distinctUntilChanged()
 
     /**
      * Returns the user's city name as a [Flow].
@@ -147,7 +148,7 @@ class PreferencesManager @Inject constructor(
      */
     val cityName: Flow<String> = context.dataStore.data.map { prefs ->
         prefs[CITY_NAME] ?: ""
-    }
+    }.distinctUntilChanged()
 
     /**
      * Returns the last selected reciter ID as a [Flow].
@@ -155,7 +156,7 @@ class PreferencesManager @Inject constructor(
      */
     val lastSelectedReciter: Flow<Int> = context.dataStore.data.map { prefs ->
         prefs[LAST_SELECTED_RECITER] ?: 1
-    }
+    }.distinctUntilChanged()
 
     /**
      * Returns whether prayer notifications are enabled as a [Flow].
@@ -163,7 +164,7 @@ class PreferencesManager @Inject constructor(
      */
     val prayerNotificationsEnabled: Flow<Boolean> = context.dataStore.data.map { prefs ->
         prefs[PRAYER_NOTIFICATIONS_ENABLED] ?: true
-    }
+    }.distinctUntilChanged()
 
     /**
      * Returns the translation language as a [Flow].
@@ -171,7 +172,7 @@ class PreferencesManager @Inject constructor(
      */
     val translationLanguage: Flow<String> = context.dataStore.data.map { prefs ->
         prefs[TRANSLATION_LANGUAGE] ?: "system"
-    }
+    }.distinctUntilChanged()
 
     /**
      * Returns the Ayah font size as a [Flow].
@@ -179,7 +180,7 @@ class PreferencesManager @Inject constructor(
      */
     val ayahFontSize: Flow<Int> = context.dataStore.data.map { prefs ->
         prefs[AYAH_FONT_SIZE] ?: 22
-    }
+    }.distinctUntilChanged()
 
     /**
      * Returns the Translation font size as a [Flow].
@@ -187,7 +188,7 @@ class PreferencesManager @Inject constructor(
      */
     val translationFontSize: Flow<Int> = context.dataStore.data.map { prefs ->
         prefs[TRANSLATION_FONT_SIZE] ?: 15
-    }
+    }.distinctUntilChanged()
 
     /**
      * Returns whether Ayah translation is shown as a [Flow].
@@ -195,7 +196,7 @@ class PreferencesManager @Inject constructor(
      */
     val showAyahTranslation: Flow<Boolean> = context.dataStore.data.map { prefs ->
         prefs[SHOW_AYAH_TRANSLATION] ?: true
-    }
+    }.distinctUntilChanged()
 
     /**
      * Returns the last read Surah number as a [Flow].
@@ -203,7 +204,7 @@ class PreferencesManager @Inject constructor(
      */
     val lastReadSura: Flow<Int> = context.dataStore.data.map { prefs ->
         prefs[LAST_READ_SURA] ?: 0
-    }
+    }.distinctUntilChanged()
 
     /**
      * Returns the last read Ayah number as a [Flow].
@@ -211,7 +212,7 @@ class PreferencesManager @Inject constructor(
      */
     val lastReadAya: Flow<Int> = context.dataStore.data.map { prefs ->
         prefs[LAST_READ_AYA] ?: 0
-    }
+    }.distinctUntilChanged()
 
     /**
      * Returns the set of favorite Prophet IDs as a [Flow].
@@ -219,7 +220,7 @@ class PreferencesManager @Inject constructor(
      */
     val favoriteProphetIds: Flow<Set<Int>> = context.dataStore.data.map { prefs ->
         prefs[FAVORITE_PROPHET_IDS].orEmpty().mapNotNull { it.toIntOrNull() }.toSet()
-    }
+    }.distinctUntilChanged()
 
     /**
      * Returns the set of favorite Asmaul Husna IDs as a [Flow].
@@ -227,7 +228,7 @@ class PreferencesManager @Inject constructor(
      */
     val favoriteAsmaulHusnaIds: Flow<Set<Int>> = context.dataStore.data.map { prefs ->
         prefs[FAVORITE_ASMAUL_HUSNA_IDS].orEmpty().mapNotNull { it.toIntOrNull() }.toSet()
-    }
+    }.distinctUntilChanged()
 
     /**
      * Returns the Story font size as a [Flow].
@@ -235,7 +236,7 @@ class PreferencesManager @Inject constructor(
      */
     val storyFontSize: Flow<Int> = context.dataStore.data.map { prefs ->
         prefs[STORY_FONT_SIZE] ?: 16
-    }
+    }.distinctUntilChanged()
 
     /**
      * Returns the selected Tasbih dhikr ID as a [Flow].
@@ -243,7 +244,7 @@ class PreferencesManager @Inject constructor(
      */
     val tasbihSelectedId: Flow<Int> = context.dataStore.data.map { prefs ->
         prefs[TASBIH_SELECTED_ID] ?: 1
-    }
+    }.distinctUntilChanged()
 
     /**
      * Returns the current Tasbih count as a [Flow].
@@ -251,7 +252,7 @@ class PreferencesManager @Inject constructor(
      */
     val tasbihCount: Flow<Int> = context.dataStore.data.map { prefs ->
         prefs[TASBIH_COUNT] ?: 0
-    }
+    }.distinctUntilChanged()
 
     /**
      * Returns the current Tasbih lap as a [Flow].
@@ -259,7 +260,7 @@ class PreferencesManager @Inject constructor(
      */
     val tasbihLap: Flow<Int> = context.dataStore.data.map { prefs ->
         prefs[TASBIH_LAP] ?: 1
-    }
+    }.distinctUntilChanged()
 
     /**
      * Returns the total Tasbih count as a [Flow].
@@ -267,7 +268,7 @@ class PreferencesManager @Inject constructor(
      */
     val tasbihTotal: Flow<Int> = context.dataStore.data.map { prefs ->
         prefs[TASBIH_TOTAL] ?: 0
-    }
+    }.distinctUntilChanged()
 
     /**
      * Returns the Tasbih target count as a [Flow].
@@ -275,7 +276,7 @@ class PreferencesManager @Inject constructor(
      */
     val tasbihTarget: Flow<Int> = context.dataStore.data.map { prefs ->
         prefs[TASBIH_TARGET] ?: 33
-    }
+    }.distinctUntilChanged()
 
     /**
      * Returns whether Tasbih vibration is enabled as a [Flow].
@@ -283,7 +284,7 @@ class PreferencesManager @Inject constructor(
      */
     val tasbihVibrationEnabled: Flow<Boolean> = context.dataStore.data.map { prefs ->
         prefs[TASBIH_VIBRATION] ?: true
-    }
+    }.distinctUntilChanged()
 
     /**
      * Returns whether Tasbih click sound is enabled as a [Flow].
@@ -291,7 +292,7 @@ class PreferencesManager @Inject constructor(
      */
     val tasbihSoundEnabled: Flow<Boolean> = context.dataStore.data.map { prefs ->
         prefs[TASBIH_SOUND] ?: false
-    }
+    }.distinctUntilChanged()
 
     /**
      * Returns the set of hidden dashboard shortcut keys as a [Flow].
@@ -299,7 +300,7 @@ class PreferencesManager @Inject constructor(
      */
     val hiddenDashboardKeys: Flow<Set<String>> = context.dataStore.data.map { prefs ->
         prefs[HIDDEN_DASHBOARD_KEYS].orEmpty()
-    }
+    }.distinctUntilChanged()
 
     /**
      * Sets the theme mode preference.
@@ -320,37 +321,39 @@ class PreferencesManager @Inject constructor(
     }
 
     /**
-     * Sets the user's latitude after validating the format.
-     * Accepts coordinates in the format "-DD.D" (e.g., "-6.2088").
-     * Silently ignores invalid formats.
+     * Sets the user's latitude after validating numeric range (-90.0..90.0).
+     * Silently ignores non-numeric, non-finite, or out-of-range values.
      *
      * @param lat the latitude string to validate and store
      */
     suspend fun setLatitude(lat: String) {
-        if (!lat.matches(Regex("^-?\\d{1,3}\\.\\d+$"))) return
-        context.dataStore.edit { prefs -> prefs[LATITUDE] = lat }
+        val trimmed = lat.trim()
+        val parsed = trimmed.toDoubleOrNull() ?: return
+        if (!parsed.isFinite() || parsed !in -90.0..90.0) return
+        context.dataStore.edit { prefs -> prefs[LATITUDE] = trimmed }
     }
 
     /**
-     * Sets the user's longitude after validating the format.
-     * Accepts coordinates in the format "-DD.D" (e.g., "106.8456").
-     * Silently ignores invalid formats.
+     * Sets the user's longitude after validating numeric range (-180.0..180.0).
+     * Silently ignores non-numeric, non-finite, or out-of-range values.
      *
      * @param lng the longitude string to validate and store
      */
     suspend fun setLongitude(lng: String) {
-        if (!lng.matches(Regex("^-?\\d{1,3}\\.\\d+$"))) return
-        context.dataStore.edit { prefs -> prefs[LONGITUDE] = lng }
+        val trimmed = lng.trim()
+        val parsed = trimmed.toDoubleOrNull() ?: return
+        if (!parsed.isFinite() || parsed !in -180.0..180.0) return
+        context.dataStore.edit { prefs -> prefs[LONGITUDE] = trimmed }
     }
 
     /**
-     * Sets the user's city name, sanitizing to printable ASCII characters.
-     * Filters to characters with codes in the range 32..126 (space through tilde).
+     * Sets the user's city name, preserving Unicode text while stripping control characters
+     * and trimming surrounding whitespace.
      *
      * @param name the city name to store (will be sanitized)
      */
     suspend fun setCityName(name: String) {
-        val sanitized = name.trim().filter { it.code in 32..126 }
+        val sanitized = name.filterNot { it.isISOControl() }.trim()
         context.dataStore.edit { prefs -> prefs[CITY_NAME] = sanitized }
     }
 
@@ -609,7 +612,7 @@ class PreferencesManager @Inject constructor(
      */
     val lastDismissedUpdateVersion: Flow<String?> = context.dataStore.data.map { prefs ->
         prefs[LAST_DISMISSED_UPDATE_VERSION]
-    }
+    }.distinctUntilChanged()
 
     /**
      * Records the dismissed update version to prevent recurring popups.

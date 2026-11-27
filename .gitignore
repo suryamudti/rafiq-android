@@ -35,3 +35,6 @@ app/google-services.json
 
 # Logs
 *.log
+
+# Local tester lists
+*.csv
